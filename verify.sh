@@ -4,7 +4,7 @@ cd "$(dirname "$0")"
 : "${BEND:=bend}"
 export BEND_NO_TELEMETRY=1
 ./build.sh
-"$BEND" PROOF.bend --check-only
+"$BEND" PROOF.bend --verdict
 "$BEND" qa/run.bend --check-only
 "$BEND" qa_run.bend -o bin/qa-run
 ./bin/qa-run --threads 1

@@ -1,0 +1,60 @@
+{
+  "release": "https://github.com/leanprover/lean4/releases/tag/v4.34.0",
+  "archive": "lean-4.34.0-linux.tar.zst",
+  "archive_sha256": "caaa98356098c85dc0fcbbd28e1ec66f39eb6551829972b752ff20e1286b646b",
+  "digest_matched": true,
+  "version": "Lean4.34.0 x86_64-unknown-linux-gnu Release commit293d5d0c0c3f3dded4688b3ccd6a33939ac5102b",
+  "installation": "workspace-local; no sudo, profile edits or global system/security changes",
+  "kernel_source_sha256": "61e0d2d9f4ddd7dd8bb1497fa612fb49a7274fcac647bf70702ba22321d7c292",
+  "kernel_sha256": "a7e5203de58d989b97e759c014d2347d4355ebc652d696012c7552db0716bfca",
+  "kernel_source_modified": false,
+  "build": [
+    {
+      "phase": "lean-compile",
+      "seconds": 17.779,
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "phase": "native-link",
+      "seconds": 8.37,
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "verification": {
+    "command": "bend PROOF.bend --verdict",
+    "seconds": 12.641,
+    "returncode": 0,
+    "stdout": "ALL PROOFS CHECK\n",
+    "stderr": "",
+    "lean": "4.34.0"
+  },
+  "laws_and_proof_files_changed": false,
+  "verified_bend_sources": {
+    "LAWS.bend": "2f08b33b6306fdd791d6b811642f48038315e87ec2a0526117ebcfce3040e4e0",
+    "PROOF.bend": "cad2aad018172fc3132b019e8b06e059f747b569413794606bb252c30836be89",
+    "main.bend": "631757d2671e8b45ef2bf0b571820fb18fec0e290778ab3101cf133a4677b14d",
+    "qa/fuel_cli.bend": "e1e77d4c0d2ddbcc47209142cddb17b6ed55d70113bdded3dedf5a802e84464e",
+    "qa/run.bend": "51561dfa0649c0246d66216430820f53c3cb9c882dcc16da6c4da1ba0ad1fa37",
+    "qa/runtime.bend": "c1f8a534be4612da28b561cd81a19526a6b3168f1b636117071539c3729fd104",
+    "qa_run.bend": "43c8611713e806e7e5deca325713ff72b2eb6b0428a0cbc30460abaa12595e32",
+    "sudoku/batch.bend": "f7967186e0a38ff045260e38aef42a0695a7f122fd750482790d1a82de06149a",
+    "sudoku/bench.bend": "e93c93bb190b8dbb1705df29c7fddaed8f979bd461d89dc131114a9ca5022875",
+    "sudoku/board.bend": "85d78e19ff7a44a6915c6c62ce186d7a71a81036d392ff3de42b9d6eb9d5354b",
+    "sudoku/candidates.bend": "793413eb13df50d52c9a3d79c82796ace4bad2ad633789be9752dd04aedd87e5",
+    "sudoku/cliargs.bend": "a6d13a1157d5983a0587f1e8b35ec9a225fdb1d254f412257926c91c262c059d",
+    "sudoku/commands.bend": "63c2fed04c84feaae6f30e1e5f99eea2acdb00256c1cffbafff5951d4394f876",
+    "sudoku/counter.bend": "9c81c1254c0e2d2902726e3d6b0a700e1b91bf0f0beed278bb00c742d98592ec",
+    "sudoku/difficulty.bend": "86219fedf369f357991dcebb0ec15c4ff00ca046f9facf386e4ce3762c9f89f4",
+    "sudoku/generator.bend": "ab0ce97f2fe5033b688ae3fb0055f441e0103a9a2cb12313ba78afddb9238735",
+    "sudoku/parser.bend": "fb34c0a283529b394b0f70ba4a0ee1d2f8b255d111905c3ac2325400e4a5891a",
+    "sudoku/properties.bend": "f8097e6cd2cfe2f892c21f6a24feeaa81b097f059cb0de0d7199f50d4c597ab7",
+    "sudoku/search.bend": "d6c69fb69ef72b8ee15853eef8ee0ed8d9ccab0514d943e79e054e64c51f335f",
+    "sudoku/solver.bend": "0e4b5d9de93a17ef5ccd4b5b9e7403e6e968dd837a3f17f920f3fcbddbe2fb78",
+    "sudoku/types.bend": "ea048c099c5817bf6039dd15ccd30088d2649b94ce6a9d7c5023d715d531aa4c",
+    "sudoku/validate.bend": "9a29f9a09a93ee8dc15f80784ecc090fffd930d12a33d24b85d57f5e2726c869"
+  }
+}

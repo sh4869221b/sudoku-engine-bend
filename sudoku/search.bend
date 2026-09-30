@@ -42,15 +42,25 @@ def record(stop: Bool, board: Array<U32>, frames: List<&2, Frame>, found: U32) -
     case False{}:
       Backtracking{board, frames, found}
 
-def selected(limit: U32, frames: List<&2, Frame>, +found: U32, result: Array<U32> & C.Choice) -> SearchState:
+def selected_dead(dead: Bool, frames: List<&2, Frame>, found: U32, board: Array<U32>, pos: U32, mask: U32) -> SearchState:
+  match dead:
+    case True{}:
+      Backtracking{board, frames, found}
+    case False{}:
+      alternatives(C.mask_digits(mask), pos, frames, found, board)
+
+def selected_complete(complete: Bool, limit: U32, frames: List<&2, Frame>, +found: U32, board: Array<U32>, pos: U32, mask: U32, size: U32) -> SearchState:
+  match complete:
+    case True{}:
+      record(((found + 1) >= limit : U32), board, frames, (found + 1 : U32))
+    case False{}:
+      selected_dead(U32.is_eq(size, 0), frames, found, board, pos, mask)
+
+def selected(limit: U32, frames: List<&2, Frame>, found: U32, result: Array<U32> & C.Choice) -> SearchState:
   (board, choice) = result
   match choice:
-    case C.Choice{81, mask, size}:
-      record(((found + 1) >= limit : U32), board, frames, (found + 1 : U32))
-    case C.Choice{pos, mask, 0}:
-      Backtracking{board, frames, found}
-    case C.Choice{pos, mask, size}:
-      alternatives(C.mask_digits(mask), pos, frames, found, board)
+    case C.Choice{+pos, mask, size}:
+      selected_complete(U32.is_eq(pos, 81), limit, frames, found, board, pos, mask, size)
 
 def search(fuel: Nat, +limit: U32, state: SearchState) -> SearchState:
   match fuel state:

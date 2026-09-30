@@ -18,12 +18,14 @@
   "bend_assertions": 49,
   "cli_cases": 216,
   "standard_proof_checker": "ALL PROOFS CHECK",
-  "kernel_verdict": "not established;120s bounded attempt timed out",
+  "kernel_verdict": "ALL PROOFS CHECK; independent official Lean4.34.0-built BendTT kernel; exit0",
   "gpu": "unavailable; explicit GPU request rejected, CPU fallback distinguished",
   "javascript_file_io": "not verified; needs Bun ffi unavailable in environment",
   "ci": "no workflows configured; local verify.sh all gates passed",
   "benchmark": "all15 size/thread combinations succeeded;warmup+3 repetitions;fixed10000-puzzle corpus",
   "counter_mutation": "detected",
   "mirror_mutation": "detected",
-  "original_source_code_read": false
+  "original_source_code_read": false,
+  "lean": "4.34.0",
+  "verification_script": "verify.sh now requires --verdict"
 }

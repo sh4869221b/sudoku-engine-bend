@@ -1,7 +1,6 @@
 ALL PROOFS CHECK
 Use --verdict for mathematical validity.
 ALL PROOFS CHECK
-Use --verdict for mathematical validity.
 ALL PROOFS CHECK
 Use --verdict for mathematical validity.
 PASS mirror all81
@@ -96,7 +95,7 @@ RESULT: all assertions passed
       "pair_minimal": true
     }
   ],
-  "seconds": 0.152
+  "seconds": 0.156
 }
 {
   "status": "PASS",
@@ -113,4 +112,4 @@ RESULT: all assertions passed
 PASS production handlers fuel exit4 and generation valid-prefix
 PASS counter and noncentral mirror-law mutants detected; original source unchanged
 PASS all7 native/Bend and5 Node-compatible commands; JS file IO requires Bun (not installed)
-{"status": "PASS", "records": 15, "wall_seconds": 11.539}
+{"status": "PASS", "records": 15, "wall_seconds": 10.869}

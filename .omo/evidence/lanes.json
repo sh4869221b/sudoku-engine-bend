@@ -47,7 +47,7 @@
       "lane": "bend",
       "command": "bench",
       "exit": 0,
-      "stdout": "N=1 mode=cpu threads=runtime total_ms=3 per_ms=3\n",
+      "stdout": "N=1 mode=cpu threads=runtime total_ms=1 per_ms=1\n",
       "stderr": ""
     },
     {

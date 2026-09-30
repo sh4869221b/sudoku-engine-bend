@@ -1,4 +1,8 @@
-Command: bend PROOF.bend --verdict (Bend2.0.34)
-Bound: timeout120 seconds
-Observed exit:124 (timeout), no completed independent-kernel verdict.
-The ordinary checker passed; see proof-check.log. Independent kernel validity is not claimed.
+Bend2.0.34; official Lean4.34.0; unmodified bundled BendTT kernel
+Command: bend PROOF.bend --verdict
+Elapsed:12.641 seconds
+Exit:0
+Stdout:
+ALL PROOFS CHECK
+Stderr: empty
+LAWS.bend and PROOF.bend are byte-identical to published1620b006.
