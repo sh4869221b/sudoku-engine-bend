@@ -1,0 +1,21 @@
+[
+  {
+    "seed": 4294967295,
+    "count": 3,
+    "wrap_and_repeat": true
+  },
+  {
+    "seed": 4294967294,
+    "count": 3,
+    "wrap_and_repeat": true
+  },
+  {
+    "seed": 2463534242,
+    "count": 3,
+    "wrap_and_repeat": true
+  },
+  {
+    "complete_boards": 100,
+    "distinct": 100
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "date": "2026-09-30",
+  "toolchain": {
+    "bend": "2.0.34",
+    "clang": "19.1.7"
+  },
+  "engine": "Bend only; independent implementation; Array128 undo-by-swap DFS",
+  "commands": [
+    "solve",
+    "check",
+    "count",
+    "generate",
+    "rate",
+    "batch",
+    "bench"
+  ],
+  "bend_assertions": 49,
+  "cli_cases": 216,
+  "standard_proof_checker": "ALL PROOFS CHECK",
+  "kernel_verdict": "not established;120s bounded attempt timed out",
+  "gpu": "unavailable; explicit GPU request rejected, CPU fallback distinguished",
+  "javascript_file_io": "not verified; needs Bun ffi unavailable in environment",
+  "ci": "no workflows configured; local verify.sh all gates passed",
+  "benchmark": "all15 size/thread combinations succeeded;warmup+3 repetitions;fixed10000-puzzle corpus",
+  "counter_mutation": "detected",
+  "mirror_mutation": "detected",
+  "original_source_code_read": false
+}

@@ -1,0 +1,5 @@
+bend 2.0.34
+Debian clang version 19.1.7 (3+b1)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /workspace/scratch/b81277eea609/bend2-smoke/toolchain/root/usr/lib/llvm-19/bin

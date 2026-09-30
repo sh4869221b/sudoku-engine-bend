@@ -1,0 +1,4 @@
+Command: bend PROOF.bend --verdict (Bend2.0.34)
+Bound: timeout120 seconds
+Observed exit:124 (timeout), no completed independent-kernel verdict.
+The ordinary checker passed; see proof-check.log. Independent kernel validity is not claimed.

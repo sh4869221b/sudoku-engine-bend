@@ -1,0 +1,6 @@
+gpu-probe-build-exit=0
+16
+CPU fallback was successful; it is not evidence of CUDA availability.
+/usr/local/cuda absent; /dev/nvidia* absent.
+Explicit native --gpu 1GB returned: bend: --gpu on, but this binary found no usable GPU (a CUDA GPU needs concurrent managed access, which WSL2's lack)
+Classification: gpu-unavailable. GPU benchmark skipped. No system/CUDA installation attempted.
