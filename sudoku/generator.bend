@@ -73,8 +73,28 @@ def complete_go(n: Nat, +i: U32, +seed: U32, +digits: List<&2, U32>, b: Array<U3
       +d = nth(digits, ((r * 3 + r / 3 + c) % 9 : U32))
       complete_go(k, (i + 1 : U32), seed, digits, Array.set(U32, b, i, d))
 
+def axis_values(n: Nat, +i: U32, +seed: U32) -> List<&2, U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+k:
+      axis(seed, i) <> axis_values(k, (i + 1 : U32), seed)
+
+def complete_cached(n: Nat, +i: U32, +transpose: Bool, +rows: List<&2, U32>, +cols: List<&2, U32>, +digits: List<&2, U32>, b: Array<U32>) -> Array<U32>:
+  match n:
+    case 0n:
+      b
+    case 1n+k:
+      +r0 = (i / 9 : U32)
+      +c0 = (i % 9 : U32)
+      +r = nth(rows, Bool.pick(U32, transpose, c0, r0))
+      +c = nth(cols, Bool.pick(U32, transpose, r0, c0))
+      +d = nth(digits, ((r * 3 + r / 3 + c) % 9 : U32))
+      complete_cached(k, (i + 1 : U32), transpose, rows, cols, digits, Array.set(U32, b, i, d))
+
 def complete(+seed: U32) -> Array<U32>:
-  complete_go(81n, 0, normalize(seed), shuffle(next(next(next(normalize(seed)))), [1,2,3,4,5,6,7,8,9]), B.empty())
+  +s = normalize(seed)
+  complete_cached(81n, 0, U32.is_ne(U32.and(s, 1), 0), axis_values(9n, 0, next(s)), axis_values(9n, 0, next(next(s))), shuffle(next(next(next(s))), [1,2,3,4,5,6,7,8,9]), B.empty())
 
 type RemovalUnit is Data:
   Single{pos: U32}

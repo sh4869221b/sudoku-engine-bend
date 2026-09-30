@@ -1,0 +1,1181 @@
+{
+  "metadata": {
+    "date_utc": "2026-09-30T14:26:33Z",
+    "source_base_commit": "42d465a8d089e5d4662d892bc14da183cafef7ba",
+    "optimized_source_sha256": {
+      "LAWS.bend": "2f08b33b6306fdd791d6b811642f48038315e87ec2a0526117ebcfce3040e4e0",
+      "PROOF.bend": "cad2aad018172fc3132b019e8b06e059f747b569413794606bb252c30836be89",
+      "main.bend": "4e8ef3ba879d89b00a63c27823d808a054c4d05008186a18171ea783ca573b16",
+      "qa/fuel_cli.bend": "e1e77d4c0d2ddbcc47209142cddb17b6ed55d70113bdded3dedf5a802e84464e",
+      "qa/optimization.bend": "3be0a53ac1c3882f9585c9af8864058b48871cbe526fe89ee6f29e923431a945",
+      "qa/run.bend": "51561dfa0649c0246d66216430820f53c3cb9c882dcc16da6c4da1ba0ad1fa37",
+      "qa/runtime.bend": "c1f8a534be4612da28b561cd81a19526a6b3168f1b636117071539c3729fd104",
+      "qa_run.bend": "43c8611713e806e7e5deca325713ff72b2eb6b0428a0cbc30460abaa12595e32",
+      "sudoku/batch.bend": "6bef91bd809cf46f2766d528ed0e85a4bcdf4089a60a12c97f096580790af168",
+      "sudoku/bench.bend": "e93c93bb190b8dbb1705df29c7fddaed8f979bd461d89dc131114a9ca5022875",
+      "sudoku/board.bend": "05d16c1c6e07675edb5138af67c7e5feffaa31a242eadf649474f65b14ee41b2",
+      "sudoku/candidates.bend": "1f3d5ba8ca5bea64c2a1c66d70932b17bc8c281e6059fdb5a36e4662b01187e8",
+      "sudoku/cliargs.bend": "a6d13a1157d5983a0587f1e8b35ec9a225fdb1d254f412257926c91c262c059d",
+      "sudoku/commands.bend": "63c2fed04c84feaae6f30e1e5f99eea2acdb00256c1cffbafff5951d4394f876",
+      "sudoku/counter.bend": "9c81c1254c0e2d2902726e3d6b0a700e1b91bf0f0beed278bb00c742d98592ec",
+      "sudoku/difficulty.bend": "42b89490a5c2e1d64f3a69a48f9106bbc8cca7cc84b263f62cc6d41be40db4f6",
+      "sudoku/generator.bend": "409100e1ca0f6fcd69b4fec40b489f0b71aff21e17cf1602ce64728c3d2fd999",
+      "sudoku/parser.bend": "6a17008d94fac3ad94a0bd55cfe12b5fac8fb75f489038b74b6cd8b65c88a0e9",
+      "sudoku/properties.bend": "f8097e6cd2cfe2f892c21f6a24feeaa81b097f059cb0de0d7199f50d4c597ab7",
+      "sudoku/search.bend": "699cad9abf6939c07a2aa8a67ddb2f1879c737022fab76edebe483a4993392f2",
+      "sudoku/solver.bend": "0e4b5d9de93a17ef5ccd4b5b9e7403e6e968dd837a3f17f920f3fcbddbe2fb78",
+      "sudoku/types.bend": "ea048c099c5817bf6039dd15ccd30088d2649b94ce6a9d7c5023d715d531aa4c",
+      "sudoku/validate.bend": "5a9a1bb2909853af6d2ed375438000f41192fe1b6611f6e5b5186fa1732bb096"
+    },
+    "go": "go1.27.1 linux/amd64",
+    "bend": "2.0.34",
+    "clang": "19.1.7",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "cpus": 9,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "warmups": 2,
+    "ordering": "alternating Bend/Go per repetition",
+    "scope": "native fresh process wall time including startup/read/parse/work/write/capture; internal bench includes solve+solution validation and parallel reduction, excludes preparation",
+    "gc": "default Go GC; no tuning",
+    "corpus_sha256": {
+      "batch-10000.txt": "579f50198664b02d66e5a263beb2074c542f584833e92ec30f78465809c1c5f0",
+      "batch-mixed-1000.txt": "2875ac1fdc4641de71494e9d7cd0bf43fed14d0380fabcf4c3b7473361118539"
+    },
+    "binaries_sha256": {
+      "bend": "7f8cef7806b5c9ed139c3336b0b9dd2d02caed9428b3bfaf65d778776846d335",
+      "go": "ce3a34194fe36bc18b7b95c316cf1399f7a6acc5ab5f023048ef40da6ce3bd6b"
+    }
+  },
+  "results": [
+    {
+      "case": "solve_new_easy",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 0.973327,
+        "p25_ms": 0.927348,
+        "p75_ms": 1.016713,
+        "min_ms": 0.860467,
+        "max_ms": 1.231747,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.125667,
+        "p25_ms": 0.984485,
+        "p75_ms": 1.287766,
+        "min_ms": 0.937835,
+        "max_ms": 1.79721,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8646669041554919
+    },
+    {
+      "case": "count_new_easy",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.07484,
+        "p25_ms": 1.004895,
+        "p75_ms": 1.22058,
+        "min_ms": 0.960057,
+        "max_ms": 1.283725,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.144566,
+        "p25_ms": 1.07432,
+        "p75_ms": 1.380391,
+        "min_ms": 1.03456,
+        "max_ms": 2.090112,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.9390808393749247
+    },
+    {
+      "case": "rate_new_easy",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 3.19678,
+        "p25_ms": 3.011872,
+        "p75_ms": 3.327157,
+        "min_ms": 2.813492,
+        "max_ms": 5.561396,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.639513,
+        "p25_ms": 1.411118,
+        "p75_ms": 1.872453,
+        "min_ms": 1.297987,
+        "max_ms": 2.252196,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 1.9498351034727994
+    },
+    {
+      "case": "solve_original_medium",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.095612,
+        "p25_ms": 0.962351,
+        "p75_ms": 1.207481,
+        "min_ms": 0.953237,
+        "max_ms": 1.557493,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.10088,
+        "p25_ms": 1.027579,
+        "p75_ms": 2.165089,
+        "min_ms": 0.973097,
+        "max_ms": 2.283398,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.9952147373010682
+    },
+    {
+      "case": "count_original_medium",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.094581,
+        "p25_ms": 1.042542,
+        "p75_ms": 1.232919,
+        "min_ms": 0.950763,
+        "max_ms": 1.608771,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.275594,
+        "p25_ms": 1.044675,
+        "p75_ms": 1.447578,
+        "min_ms": 0.992987,
+        "max_ms": 2.199837,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8580951305823014
+    },
+    {
+      "case": "rate_original_medium",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 3.287747,
+        "p25_ms": 3.001095,
+        "p75_ms": 3.505582,
+        "min_ms": 2.879402,
+        "max_ms": 3.625867,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.482635,
+        "p25_ms": 1.367342,
+        "p75_ms": 2.56648,
+        "min_ms": 1.301543,
+        "max_ms": 3.751827,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 2.217502622020929
+    },
+    {
+      "case": "solve_original_hard",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 7.643525,
+        "p25_ms": 7.265786,
+        "p75_ms": 7.909476,
+        "min_ms": 7.189846,
+        "max_ms": 10.805087,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 9.84895,
+        "p25_ms": 9.294384,
+        "p75_ms": 11.20203,
+        "min_ms": 8.448579,
+        "max_ms": 11.826823,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.7760751146061255
+    },
+    {
+      "case": "count_original_hard",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 12.327984,
+        "p25_ms": 10.821878,
+        "p75_ms": 13.716337,
+        "min_ms": 10.548194,
+        "max_ms": 14.03381,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 15.483576,
+        "p25_ms": 14.943442,
+        "p75_ms": 16.44736,
+        "min_ms": 14.366292,
+        "max_ms": 20.085896,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.7961974675617571
+    },
+    {
+      "case": "rate_original_hard",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 3.712804,
+        "p25_ms": 3.513839,
+        "p75_ms": 3.762634,
+        "min_ms": 3.40249,
+        "max_ms": 5.861999,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.555366,
+        "p25_ms": 1.200991,
+        "p75_ms": 2.145094,
+        "min_ms": 1.150349,
+        "max_ms": 2.571567,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 2.38709345581683
+    },
+    {
+      "case": "solve_new_unsolvable",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.057936,
+        "p25_ms": 0.980989,
+        "p75_ms": 1.231707,
+        "min_ms": 0.937924,
+        "max_ms": 1.509206,
+        "exit_codes": [
+          3
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.220741,
+        "p25_ms": 1.116504,
+        "p75_ms": 1.290006,
+        "min_ms": 1.033117,
+        "max_ms": 2.111994,
+        "exit_codes": [
+          3
+        ]
+      },
+      "bend_over_go": 0.8666342819648065
+    },
+    {
+      "case": "count_new_unsolvable",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.195303,
+        "p25_ms": 1.076794,
+        "p75_ms": 1.331658,
+        "min_ms": 0.972116,
+        "max_ms": 1.619852,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.901848,
+        "p25_ms": 1.036714,
+        "p75_ms": 2.213103,
+        "min_ms": 0.978125,
+        "max_ms": 2.421431,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.628495547488548
+    },
+    {
+      "case": "rate_new_unsolvable",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.31989,
+        "p25_ms": 1.19383,
+        "p75_ms": 1.375654,
+        "min_ms": 1.042813,
+        "max_ms": 1.532932,
+        "exit_codes": [
+          3
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.239635,
+        "p25_ms": 1.129262,
+        "p75_ms": 1.268703,
+        "min_ms": 1.016623,
+        "max_ms": 1.955809,
+        "exit_codes": [
+          3
+        ]
+      },
+      "bend_over_go": 1.0647408309704065
+    },
+    {
+      "case": "solve_new_multi_solution",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.056453,
+        "p25_ms": 1.029292,
+        "p75_ms": 1.256684,
+        "min_ms": 0.970233,
+        "max_ms": 1.563978,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.276625,
+        "p25_ms": 1.176604,
+        "p75_ms": 2.24169,
+        "min_ms": 1.083764,
+        "max_ms": 2.563525,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8275358856359543
+    },
+    {
+      "case": "count_new_multi_solution",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.079007,
+        "p25_ms": 1.059868,
+        "p75_ms": 1.335664,
+        "min_ms": 1.005316,
+        "max_ms": 1.541619,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.261592,
+        "p25_ms": 1.173279,
+        "p75_ms": 2.321205,
+        "min_ms": 1.079884,
+        "max_ms": 3.172644,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8552741298296122
+    },
+    {
+      "case": "rate_new_multi_solution",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 3.51485,
+        "p25_ms": 3.473066,
+        "p75_ms": 3.905238,
+        "min_ms": 3.318054,
+        "max_ms": 4.011558,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.296415,
+        "p25_ms": 1.166329,
+        "p75_ms": 2.147778,
+        "min_ms": 1.086989,
+        "max_ms": 2.261009,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 2.7112074451468087
+    },
+    {
+      "case": "solve_new_complete",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 0.977549,
+        "p25_ms": 0.958525,
+        "p75_ms": 1.035451,
+        "min_ms": 0.943313,
+        "max_ms": 1.137385,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.130534,
+        "p25_ms": 1.06159,
+        "p75_ms": 2.165451,
+        "min_ms": 1.008781,
+        "max_ms": 2.800899,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.864678992405359
+    },
+    {
+      "case": "count_new_complete",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.009162,
+        "p25_ms": 0.919396,
+        "p75_ms": 1.165121,
+        "min_ms": 0.873397,
+        "max_ms": 1.431339,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.158918,
+        "p25_ms": 1.010714,
+        "p75_ms": 2.050361,
+        "min_ms": 0.998756,
+        "max_ms": 2.151705,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8707794684352128
+    },
+    {
+      "case": "rate_new_complete",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.408543,
+        "p25_ms": 1.257236,
+        "p75_ms": 1.587924,
+        "min_ms": 1.163424,
+        "max_ms": 2.324976,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.20726,
+        "p25_ms": 1.083474,
+        "p75_ms": 2.056317,
+        "min_ms": 0.942181,
+        "max_ms": 2.271014,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 1.1667271341715952
+    },
+    {
+      "case": "generate_seed0_clues36",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.378154,
+        "p25_ms": 1.283545,
+        "p75_ms": 1.519501,
+        "min_ms": 1.252258,
+        "max_ms": 1.785502,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.589967,
+        "p25_ms": 1.34658,
+        "p75_ms": 2.373649,
+        "min_ms": 1.242764,
+        "max_ms": 2.624492,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8667815118175409
+    },
+    {
+      "case": "generate_seed0_clues28",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 2.770839,
+        "p25_ms": 2.392513,
+        "p75_ms": 2.890579,
+        "min_ms": 2.259286,
+        "max_ms": 3.095808,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 2.988967,
+        "p25_ms": 2.934475,
+        "p75_ms": 3.033184,
+        "min_ms": 2.749886,
+        "max_ms": 5.278789,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.9270222789344947
+    },
+    {
+      "case": "generate_seed7_clues36",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.237156,
+        "p25_ms": 1.165137,
+        "p75_ms": 1.328483,
+        "min_ms": 1.12755,
+        "max_ms": 1.440532,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.821462,
+        "p25_ms": 1.230616,
+        "p75_ms": 2.241079,
+        "min_ms": 1.192208,
+        "max_ms": 2.322973,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.6792104364515976
+    },
+    {
+      "case": "generate_seed7_clues28",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.653453,
+        "p25_ms": 1.453292,
+        "p75_ms": 2.011253,
+        "min_ms": 1.365418,
+        "max_ms": 2.464507,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 2.096231,
+        "p25_ms": 1.674641,
+        "p75_ms": 2.749516,
+        "min_ms": 1.526402,
+        "max_ms": 3.48565,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.788774233374089
+    },
+    {
+      "case": "generate_seed42_clues36",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 1.327261,
+        "p25_ms": 1.267516,
+        "p75_ms": 1.529076,
+        "min_ms": 1.204777,
+        "max_ms": 1.88399,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 1.574044,
+        "p25_ms": 1.367763,
+        "p75_ms": 2.040898,
+        "min_ms": 1.208041,
+        "max_ms": 2.531747,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.8432172162912854
+    },
+    {
+      "case": "generate_seed42_clues28",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 2.251886,
+        "p25_ms": 2.071954,
+        "p75_ms": 3.24977,
+        "min_ms": 1.855658,
+        "max_ms": 4.376385,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 2.235992,
+        "p25_ms": 2.070763,
+        "p75_ms": 3.140646,
+        "min_ms": 2.020527,
+        "max_ms": 4.035946,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 1.0071082544123593
+    },
+    {
+      "case": "generate_100_clues36",
+      "threads": 1,
+      "bend": {
+        "n": 11,
+        "median_ms": 24.291026,
+        "p25_ms": 23.100593,
+        "p75_ms": 26.663334,
+        "min_ms": 21.658516,
+        "max_ms": 28.285064,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 11,
+        "median_ms": 24.409547,
+        "p25_ms": 22.655962,
+        "p75_ms": 25.934665,
+        "min_ms": 21.548071,
+        "max_ms": 29.500703,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.9951444817882118
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 1,
+      "bend": {
+        "n": 7,
+        "median_ms": 312.634299,
+        "p25_ms": 297.704526,
+        "p75_ms": 314.151998,
+        "min_ms": 296.782802,
+        "max_ms": 320.063586,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          231,
+          241,
+          237,
+          232,
+          242,
+          232,
+          248
+        ],
+        "internal_median_ms": 237
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 187.909611,
+        "p25_ms": 178.622787,
+        "p75_ms": 193.439765,
+        "min_ms": 176.1836,
+        "max_ms": 194.267603,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          176,
+          178,
+          166,
+          173,
+          182,
+          178,
+          160
+        ],
+        "internal_median_ms": 176
+      },
+      "bend_over_go": 1.6637483167372422
+    },
+    {
+      "case": "batch_solve_easy10000",
+      "threads": 1,
+      "bend": {
+        "n": 7,
+        "median_ms": 369.503964,
+        "p25_ms": 364.216747,
+        "p75_ms": 381.632799,
+        "min_ms": 358.391764,
+        "max_ms": 399.04603,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 171.773914,
+        "p25_ms": 170.20343,
+        "p75_ms": 183.671218,
+        "min_ms": 168.403234,
+        "max_ms": 204.106803,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 2.151106389763
+    },
+    {
+      "case": "bench_mixed1000",
+      "threads": 1,
+      "bend": {
+        "n": 7,
+        "median_ms": 1691.785757,
+        "p25_ms": 1617.25797,
+        "p75_ms": 1702.905511,
+        "min_ms": 1546.147079,
+        "max_ms": 1752.598852,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          1609,
+          1634,
+          1742,
+          1693,
+          1537,
+          1685,
+          1682
+        ],
+        "internal_median_ms": 1682
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 2059.691064,
+        "p25_ms": 1896.848516,
+        "p75_ms": 2097.371644,
+        "min_ms": 1881.425778,
+        "max_ms": 2155.612896,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          2084,
+          2001,
+          2093,
+          2055,
+          2148,
+          1876,
+          1894
+        ],
+        "internal_median_ms": 2055
+      },
+      "bend_over_go": 0.8213784030865708
+    },
+    {
+      "case": "batch_solve_mixed1000",
+      "threads": 1,
+      "bend": {
+        "n": 7,
+        "median_ms": 1559.248121,
+        "p25_ms": 1532.228207,
+        "p75_ms": 1584.627493,
+        "min_ms": 1518.669292,
+        "max_ms": 1597.591945,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 2039.965788,
+        "p25_ms": 2017.373576,
+        "p75_ms": 2075.539927,
+        "min_ms": 1956.596958,
+        "max_ms": 2132.162878,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.7643501328170313
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 8,
+      "bend": {
+        "n": 7,
+        "median_ms": 124.617782,
+        "p25_ms": 123.617088,
+        "p75_ms": 128.717308,
+        "min_ms": 118.790496,
+        "max_ms": 133.940128,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          50,
+          52,
+          51,
+          50,
+          58,
+          52,
+          45
+        ],
+        "internal_median_ms": 51
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 87.985497,
+        "p25_ms": 83.538332,
+        "p75_ms": 89.582324,
+        "min_ms": 82.952467,
+        "max_ms": 99.029109,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          66,
+          83,
+          74,
+          74,
+          71,
+          71,
+          71
+        ],
+        "internal_median_ms": 71
+      },
+      "bend_over_go": 1.416344582334973
+    },
+    {
+      "case": "batch_solve_easy10000",
+      "threads": 8,
+      "bend": {
+        "n": 7,
+        "median_ms": 168.280454,
+        "p25_ms": 150.802814,
+        "p75_ms": 169.308293,
+        "min_ms": 142.003672,
+        "max_ms": 188.449685,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 82.680962,
+        "p25_ms": 81.402744,
+        "p75_ms": 90.704706,
+        "min_ms": 78.613511,
+        "max_ms": 91.997664,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 2.035298694274989
+    },
+    {
+      "case": "bench_mixed1000",
+      "threads": 8,
+      "bend": {
+        "n": 7,
+        "median_ms": 481.885658,
+        "p25_ms": 450.985856,
+        "p75_ms": 540.866726,
+        "min_ms": 431.666183,
+        "max_ms": 593.257814,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          473,
+          441,
+          509,
+          582,
+          442,
+          420,
+          530
+        ],
+        "internal_median_ms": 473
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 391.318158,
+        "p25_ms": 373.700822,
+        "p75_ms": 415.847257,
+        "min_ms": 369.056602,
+        "max_ms": 422.886892,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          420,
+          411,
+          411,
+          387,
+          366,
+          378,
+          369
+        ],
+        "internal_median_ms": 387
+      },
+      "bend_over_go": 1.2314421095685522
+    },
+    {
+      "case": "batch_solve_mixed1000",
+      "threads": 8,
+      "bend": {
+        "n": 7,
+        "median_ms": 398.729508,
+        "p25_ms": 372.387064,
+        "p75_ms": 454.572801,
+        "min_ms": 365.522097,
+        "max_ms": 489.058555,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 348.462894,
+        "p25_ms": 332.158305,
+        "p75_ms": 401.509485,
+        "min_ms": 327.494559,
+        "max_ms": 401.961046,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 1.1442524150074929
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 16,
+      "bend": {
+        "n": 7,
+        "median_ms": 118.366688,
+        "p25_ms": 113.869417,
+        "p75_ms": 127.471827,
+        "min_ms": 109.847843,
+        "max_ms": 128.914829,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          55,
+          50,
+          56,
+          50,
+          45,
+          59,
+          52
+        ],
+        "internal_median_ms": 52
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 57.732948,
+        "p25_ms": 54.417853,
+        "p75_ms": 63.233612,
+        "min_ms": 53.168159,
+        "max_ms": 71.073242,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          39,
+          44,
+          43,
+          48,
+          41,
+          45,
+          53
+        ],
+        "internal_median_ms": 44
+      },
+      "bend_over_go": 2.050245000480488
+    },
+    {
+      "case": "batch_solve_easy10000",
+      "threads": 16,
+      "bend": {
+        "n": 7,
+        "median_ms": 152.478618,
+        "p25_ms": 151.734342,
+        "p75_ms": 160.287229,
+        "min_ms": 147.010569,
+        "max_ms": 171.195415,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 61.131191,
+        "p25_ms": 56.4678,
+        "p75_ms": 62.928164,
+        "min_ms": 54.910556,
+        "max_ms": 72.15272,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 2.494285085988264
+    },
+    {
+      "case": "bench_mixed1000",
+      "threads": 16,
+      "bend": {
+        "n": 7,
+        "median_ms": 392.335481,
+        "p25_ms": 371.128509,
+        "p75_ms": 419.14793,
+        "min_ms": 321.619275,
+        "max_ms": 451.06823,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          375,
+          361,
+          438,
+          388,
+          410,
+          311,
+          383
+        ],
+        "internal_median_ms": 383
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 375.561277,
+        "p25_ms": 359.074735,
+        "p75_ms": 391.461754,
+        "min_ms": 344.95698,
+        "max_ms": 393.573331,
+        "exit_codes": [
+          0
+        ],
+        "internal_raw_ms": [
+          372,
+          388,
+          368,
+          389,
+          341,
+          354,
+          381
+        ],
+        "internal_median_ms": 372
+      },
+      "bend_over_go": 1.0446643597923435
+    },
+    {
+      "case": "batch_solve_mixed1000",
+      "threads": 16,
+      "bend": {
+        "n": 7,
+        "median_ms": 336.918715,
+        "p25_ms": 318.94251,
+        "p75_ms": 353.145668,
+        "min_ms": 317.373199,
+        "max_ms": 365.314823,
+        "exit_codes": [
+          0
+        ]
+      },
+      "go": {
+        "n": 7,
+        "median_ms": 358.952805,
+        "p25_ms": 336.132836,
+        "p75_ms": 383.779613,
+        "min_ms": 313.859585,
+        "max_ms": 384.886764,
+        "exit_codes": [
+          0
+        ]
+      },
+      "bend_over_go": 0.9386156349997042
+    }
+  ]
+}

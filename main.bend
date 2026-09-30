@@ -124,7 +124,7 @@ def batch(mode: U32, path: String) -> IO(Unit):
     case _:
       do IO<Unit>:
         text : String <- read_file(path)
-        IO.write(Batch.run(mode, Batch.build(Batch.jobs(String.lines(text), 1))))
+        IO.write(Batch.run(mode, Batch.build(Batch.text_jobs(text))))
 
 def benchmark_generated(ok: Bool, value: String) -> IO(Unit):
   match ok:
@@ -138,7 +138,7 @@ def benchmark(args: List<String>) -> IO(Unit):
     case path <> Nil{}:
       do IO<Unit>:
         text : String <- read_file(path)
-        Bench.file_jobs(Batch.jobs(String.lines(text), 1))
+        Bench.file_jobs(Batch.text_jobs(text))
     case flag <> count <> Nil{}:
       benchmark_generated(String.eq(flag, "--generate"), count)
     case _:

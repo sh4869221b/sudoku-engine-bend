@@ -129,19 +129,37 @@ def naked(xs: List<&2, Cell>, +pos: U32, found: Action) -> Action:
     case h <> t NoAction{}:
       naked(t, (pos + 1 : U32), naked_cell(pos, mask(h)))
 
-def unit_support(n: Nat, +unit: U32, +j: U32, +digit: U32, +xs: List<&2, Cell>) -> List<&2, U32>:
-  match n:
-    case 0n:
+def support_scan(xs: List<&2, Cell>, +p: U32, +unit: U32, +digit: U32) -> List<&2, U32>:
+  match xs:
+    case Nil{}:
       Nil{}
-    case 1n+k:
+    case h <> tail:
+      List.append(&2, U32, Bool.pick(List<&2, U32>, in_unit(unit, p) && U32.is_ne(U32.and(mask(h), B.bit(digit)), 0), [p], Nil{}), support_scan(tail, (p + 1 : U32), unit, digit))
+
+def unit_support(n: Nat, +unit: U32, +j: U32, +digit: U32, +xs: List<&2, Cell>) -> List<&2, U32>:
+  match n j:
+    case 9n 0:
+      support_scan(xs, 0, unit, digit)
+    case 0n _:
+      Nil{}
+    case 1n+k _:
       +p = B.unit_pos(unit, j)
       List.append(&2, U32, Bool.pick(List<&2, U32>, U32.is_ne(U32.and(mask(cell(xs, p)), B.bit(digit)), 0), [p], Nil{}), unit_support(k, unit, (j + 1 : U32), digit, xs))
 
-def fixed_in(n: Nat, +unit: U32, +j: U32, +digit: U32, +xs: List<&2, Cell>) -> Bool:
-  match n:
-    case 0n:
+def fixed_scan(xs: List<&2, Cell>, +p: U32, +unit: U32, +digit: U32) -> Bool:
+  match xs:
+    case Nil{}:
       False{}
-    case 1n+k:
+    case h <> tail:
+      (in_unit(unit, p) && is_fixed(h, digit)) || fixed_scan(tail, (p + 1 : U32), unit, digit)
+
+def fixed_in(n: Nat, +unit: U32, +j: U32, +digit: U32, +xs: List<&2, Cell>) -> Bool:
+  match n j:
+    case 9n 0:
+      fixed_scan(xs, 0, unit, digit)
+    case 0n _:
+      False{}
+    case 1n+k _:
       is_fixed(cell(xs, B.unit_pos(unit, j)), digit) || fixed_in(k, unit, (j + 1 : U32), digit, xs)
 
 def hidden_one(support: List<&2, U32>, digit: U32, fixed: Bool) -> Action:
@@ -293,11 +311,34 @@ def zero_cell(xs: List<&2, Cell>) -> Bool:
     case other <> tail:
       zero_cell(tail)
 
-def missing_go(n: Nat, +index: U32, +xs: List<&2, Cell>) -> Bool:
+def possible_bits(c: Cell) -> U32:
+  match c:
+    case Fixed{d}:
+      B.bit(d)
+    case Open{m}:
+      m
+
+def covered_scan(xs: List<&2, Cell>, +p: U32, +unit: U32, covered: U32) -> U32:
+  match xs:
+    case Nil{}:
+      covered
+    case h <> tail:
+      covered_scan(tail, (p + 1 : U32), unit, U32.or(covered, Bool.pick(U32, in_unit(unit, p), possible_bits(h), 0)))
+
+def missing_units(n: Nat, +unit: U32, +xs: List<&2, Cell>) -> Bool:
   match n:
     case 0n:
       False{}
     case 1n+k:
+      U32.is_ne(covered_scan(xs, 0, unit, 0), 1022) || missing_units(k, (unit + 1 : U32), xs)
+
+def missing_go(n: Nat, +index: U32, +xs: List<&2, Cell>) -> Bool:
+  match n index:
+    case 243n 0:
+      missing_units(27n, 0, xs)
+    case 0n _:
+      False{}
+    case 1n+k _:
       +u = (index / 9 : U32)
       +d = (1 + index % 9 : U32)
       (Bool.not(fixed_in(9n, u, 0, d, xs)) && List.is_empty(&2, U32, unit_support(9n, u, 0, d, xs))) || missing_go(k, (index + 1 : U32), xs)

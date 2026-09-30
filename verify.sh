@@ -8,6 +8,8 @@ export BEND_NO_TELEMETRY=1
 "$BEND" qa/run.bend --check-only
 "$BEND" qa_run.bend -o bin/qa-run
 ./bin/qa-run --threads 1
+"$BEND" qa/optimization.bend -o bin/qa-optimization
+./bin/qa-optimization --threads 1
 python3 qa/integration.py > qa/integration-result.json
 cat qa/integration-result.json
 python3 qa/rate_reference.py > qa/rate-reference-result.json

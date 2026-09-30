@@ -1,0 +1,3 @@
+PASS SWAR equals reference low10-bit popcount for4096masks
+PASS popcount upperbits ignored
+PASS cached/public candidates equal100seededboards x81cells

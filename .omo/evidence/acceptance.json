@@ -5,7 +5,7 @@
     "bend": "2.0.34",
     "clang": "19.1.7"
   },
-  "engine": "Bend only; independent implementation; Array128 undo-by-swap DFS",
+  "engine": "Bend only; cached Array128 board + packed affine Array128 DFS frame stack",
   "commands": [
     "solve",
     "check",
@@ -27,5 +27,10 @@
   "mirror_mutation": "detected",
   "original_source_code_read": false,
   "lean": "4.34.0",
-  "verification_script": "verify.sh now requires --verdict"
+  "verification_script": "verify.sh now requires --verdict",
+  "optimization_assertions": 3,
+  "go_differential_cases": 638,
+  "physical_line_boundary_cases": 68,
+  "optimization_goal": "partial: stable single-thread hard solve/count and mixed batch wins over pinned Go; easy batch/rating remain slower; generation100 approximately tied",
+  "optimization_full_gate_exit": 0
 }

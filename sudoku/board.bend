@@ -15,13 +15,21 @@ def peers(+p: U32, +q: U32) -> Bool:
 def bit(d: U32) -> U32:
   U32.shln(1, U32.to_nat(d))
 
+# Sudoku digits need one character, avoiding general integer formatting.
+def show_digit(single: Bool, d: U32, tail: String) -> String:
+  match single:
+    case True{}:
+      SCon{Char.from_u32((48 + d : U32)), tail}
+    case False{}:
+      U32.show(d) ++ tail
+
 def show_go(n: Nat, +i: U32, r: Array<U32> & U32) -> String:
   match n:
     case 0n:
       ""
     case 1n+k:
-      (b, d) = r
-      U32.show(d) ++ show_go(k, (i + 1 : U32), Array.get(U32, b, (i + 1 : U32)))
+      (b, +d) = r
+      show_digit((d <= 9 : U32), d, show_go(k, (i + 1 : U32), Array.get(U32, b, (i + 1 : U32))))
 
 def show(b: Array<U32>) -> String:
   show_go(81n, 0, Array.get(U32, b, 0))

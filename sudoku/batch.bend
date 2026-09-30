@@ -46,9 +46,27 @@ def depth_go(fuel: Nat, +n: U32, +size: U32, +depth: U32) -> U32:
     case 1n+k:
       Bool.pick(U32, (size >= n : U32), depth, depth_go(k, n, U32.shl(size), (depth + 1 : U32)))
 
+def consume_join(left: JobTree, pair: JobTree & List<&2, Job>) -> JobTree & List<&2, Job>:
+  (right, tail) = pair
+  (JFork{left, right}, tail)
+
+def consume_right(next: List<&2, Job> -> JobTree & List<&2, Job>, pair: JobTree & List<&2, Job>) -> JobTree & List<&2, Job>:
+  (left, rest) = pair
+  consume_join(left, next(rest))
+
+# Consume each list node once instead of copying take/drop prefixes at each level.
+def consume(+depth: Nat, xs: List<&2, Job>) -> JobTree & List<&2, Job>:
+  match depth xs:
+    case _ Nil{}:
+      (JEmpty{}, Nil{})
+    case 0n j <> tail:
+      (JLeaf{j}, tail)
+    case 1n+k items:
+      consume_right(rest => consume(k, rest), consume(k, items))
+
 def build(+xs: List<&2, Job>) -> JobTree:
   +d = U32.to_nat(depth_go(32n, U32.from_nat(List.length(&2, Job, xs)), 1, 0))
-  tree(d, U32.to_nat(U32.shln(1, d)), xs)
+  Pair.fst(JobTree, List<&2, Job>, consume(d, xs))
 
 def job_line(mode: U32, job: Job) -> String:
   match job:
@@ -149,3 +167,40 @@ def seq_rate(tree: JobTree) -> String:
       job_line(4, job)
     case JFork{l, r}:
       seq_rate(l) ++ seq_rate(r)
+
+# One streaming pass keeps line and job accumulators reversed until finalized.
+def text_reverse(s: String, acc: String) -> String:
+  match s:
+    case SNil{}:
+      acc
+    case SCon{h, tail}:
+      text_reverse(tail, SCon{h, acc})
+
+def text_line(reversed: String) -> String:
+  match reversed:
+    case SCon{'\r', tail}:
+      text_reverse(tail, "")
+    case other:
+      text_reverse(other, "")
+
+def text_add_if(omit: Bool, line: String, index: U32, acc: List<&2, Job>) -> List<&2, Job>:
+  match omit:
+    case True{}:
+      acc
+    case False{}:
+      Job{index, line} <> acc
+
+def text_add(+line: String, index: U32, acc: List<&2, Job>) -> List<&2, Job>:
+  text_add_if(skip(line), line, index, acc)
+
+def text_scan(s: String, +index: U32, line: String, acc: List<&2, Job>) -> List<&2, Job>:
+  match s:
+    case SNil{}:
+      List.reverse(&2, Job, text_add(text_line(line), index, acc))
+    case SCon{'\n', tail}:
+      text_scan(tail, (index + 1 : U32), "", text_add(text_line(line), index, acc))
+    case SCon{h, tail}:
+      text_scan(tail, index, SCon{h, line}, acc)
+
+def text_jobs(text: String) -> List<&2, Job>:
+  text_scan(text, 1, "", Nil{})

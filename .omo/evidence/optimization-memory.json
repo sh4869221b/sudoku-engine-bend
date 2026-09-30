@@ -1,0 +1,176 @@
+{
+  "unit": "KiB on Linux",
+  "method": "wait4 child ru_maxrss; 7 fresh executions; OS peak resident memory, not allocator heap; short-process noise applies",
+  "results": [
+    {
+      "case": "solve_hard",
+      "threads": 1,
+      "engine": "bend",
+      "peak_rss_kib": [
+        1420,
+        1416,
+        1356,
+        1328,
+        1320,
+        1372,
+        1372
+      ],
+      "median_kib": 1372,
+      "min_kib": 1320,
+      "max_kib": 1420
+    },
+    {
+      "case": "solve_hard",
+      "threads": 1,
+      "engine": "go",
+      "peak_rss_kib": [
+        2064,
+        2064,
+        2064,
+        2064,
+        2064,
+        2064,
+        2064
+      ],
+      "median_kib": 2064,
+      "min_kib": 2064,
+      "max_kib": 2064
+    },
+    {
+      "case": "generate100",
+      "threads": 1,
+      "engine": "bend",
+      "peak_rss_kib": [
+        1384,
+        1372,
+        1344,
+        1340,
+        1232,
+        1372,
+        1380
+      ],
+      "median_kib": 1372,
+      "min_kib": 1232,
+      "max_kib": 1384
+    },
+    {
+      "case": "generate100",
+      "threads": 1,
+      "engine": "go",
+      "peak_rss_kib": [
+        3216,
+        3216,
+        3216,
+        3216,
+        3216,
+        3216,
+        3216
+      ],
+      "median_kib": 3216,
+      "min_kib": 3216,
+      "max_kib": 3216
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 1,
+      "engine": "bend",
+      "peak_rss_kib": [
+        21340,
+        21384,
+        21248,
+        21232,
+        21348,
+        21376,
+        21376
+      ],
+      "median_kib": 21348,
+      "min_kib": 21232,
+      "max_kib": 21384
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 1,
+      "engine": "go",
+      "peak_rss_kib": [
+        6160,
+        6160,
+        6288,
+        6160,
+        6160,
+        6160,
+        6288
+      ],
+      "median_kib": 6160,
+      "min_kib": 6160,
+      "max_kib": 6288
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 8,
+      "engine": "bend",
+      "peak_rss_kib": [
+        22132,
+        22288,
+        22052,
+        22272,
+        22164,
+        22272,
+        22172
+      ],
+      "median_kib": 22172,
+      "min_kib": 22052,
+      "max_kib": 22288
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 8,
+      "engine": "go",
+      "peak_rss_kib": [
+        6928,
+        6416,
+        6672,
+        6672,
+        6672,
+        6160,
+        7056
+      ],
+      "median_kib": 6672,
+      "min_kib": 6160,
+      "max_kib": 7056
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 16,
+      "engine": "bend",
+      "peak_rss_kib": [
+        23288,
+        23260,
+        23436,
+        23440,
+        23224,
+        23316,
+        23180
+      ],
+      "median_kib": 23288,
+      "min_kib": 23180,
+      "max_kib": 23440
+    },
+    {
+      "case": "bench_easy10000",
+      "threads": 16,
+      "engine": "go",
+      "peak_rss_kib": [
+        7184,
+        7440,
+        7440,
+        6928,
+        6928,
+        6928,
+        6672
+      ],
+      "median_kib": 6928,
+      "min_kib": 6672,
+      "max_kib": 7440
+    }
+  ]
+}
