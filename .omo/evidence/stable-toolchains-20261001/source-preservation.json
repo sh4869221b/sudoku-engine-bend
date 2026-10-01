@@ -1,0 +1,48 @@
+{
+  "production_bend_files": {
+    "LAWS.bend": "2f08b33b6306fdd791d6b811642f48038315e87ec2a0526117ebcfce3040e4e0",
+    "PROOF.bend": "cad2aad018172fc3132b019e8b06e059f747b569413794606bb252c30836be89",
+    "main.bend": "4e8ef3ba879d89b00a63c27823d808a054c4d05008186a18171ea783ca573b16",
+    "qa/bench-direct.bend": "eb2913ea9409a9ad16f4d924bf015fdb5b5c7e1500ec659e7b21c9ce571d55f3",
+    "qa/empty-search-state.bend": "32e2ef6d1102283bafe1f0847b17f10dea7f41669b553160c91cfbe249fb18bb",
+    "qa/fuel_cli.bend": "e1e77d4c0d2ddbcc47209142cddb17b6ed55d70113bdded3dedf5a802e84464e",
+    "qa/optimization.bend": "3be0a53ac1c3882f9585c9af8864058b48871cbe526fe89ee6f29e923431a945",
+    "qa/rating-cache.bend": "0cab29e99d335ee09edf04abceb39d022f4e3010f6d1f402e238c0b2f8afcb15",
+    "qa/run.bend": "51561dfa0649c0246d66216430820f53c3cb9c882dcc16da6c4da1ba0ad1fa37",
+    "qa/runtime.bend": "c1f8a534be4612da28b561cd81a19526a6b3168f1b636117071539c3729fd104",
+    "qa_run.bend": "43c8611713e806e7e5deca325713ff72b2eb6b0428a0cbc30460abaa12595e32",
+    "sudoku/batch.bend": "6bef91bd809cf46f2766d528ed0e85a4bcdf4089a60a12c97f096580790af168",
+    "sudoku/bench.bend": "635b9ff957e905bc3a5c43d2ba35e178db9ed22c78ee9f42f6769916f25bf233",
+    "sudoku/board.bend": "05d16c1c6e07675edb5138af67c7e5feffaa31a242eadf649474f65b14ee41b2",
+    "sudoku/candidates.bend": "1f3d5ba8ca5bea64c2a1c66d70932b17bc8c281e6059fdb5a36e4662b01187e8",
+    "sudoku/cliargs.bend": "a6d13a1157d5983a0587f1e8b35ec9a225fdb1d254f412257926c91c262c059d",
+    "sudoku/commands.bend": "63c2fed04c84feaae6f30e1e5f99eea2acdb00256c1cffbafff5951d4394f876",
+    "sudoku/counter.bend": "9c81c1254c0e2d2902726e3d6b0a700e1b91bf0f0beed278bb00c742d98592ec",
+    "sudoku/difficulty.bend": "8484955b46d3a6c8d56fc952c8f57ba1f295fb116aea97b98e53c77cd64ed6b9",
+    "sudoku/generator.bend": "409100e1ca0f6fcd69b4fec40b489f0b71aff21e17cf1602ce64728c3d2fd999",
+    "sudoku/parser.bend": "6a17008d94fac3ad94a0bd55cfe12b5fac8fb75f489038b74b6cd8b65c88a0e9",
+    "sudoku/properties.bend": "f8097e6cd2cfe2f892c21f6a24feeaa81b097f059cb0de0d7199f50d4c597ab7",
+    "sudoku/search.bend": "699cad9abf6939c07a2aa8a67ddb2f1879c737022fab76edebe483a4993392f2",
+    "sudoku/solver.bend": "0e4b5d9de93a17ef5ccd4b5b9e7403e6e968dd837a3f17f920f3fcbddbe2fb78",
+    "sudoku/types.bend": "ea048c099c5817bf6039dd15ccd30088d2649b94ce6a9d7c5023d715d531aa4c",
+    "sudoku/validate.bend": "5a9a1bb2909853af6d2ed375438000f41192fe1b6611f6e5b5186fa1732bb096"
+  },
+  "all_production_bend_files_unchanged": true,
+  "native_binary_sha256": "24bd34da85f9a663331696a685fb262f5e6dac6029e93fec46f587d436b0c2f6",
+  "prior_native_binary_path": "<previous-source>/bin/bend-sudoku",
+  "prior_native_binary_sha256": "24bd34da85f9a663331696a685fb262f5e6dac6029e93fec46f587d436b0c2f6",
+  "native_binary_byte_identical": true,
+  "intended_existing_file_changes": [
+    ".gitignore",
+    "README.md",
+    "build.sh",
+    "verify.sh"
+  ],
+  "historical_files_recovered_by_integration": [
+    ".omo/evidence/benchmark.json",
+    ".omo/evidence/cli-results.json",
+    ".omo/evidence/lanes.json",
+    "qa/integration-result.json"
+  ],
+  "other_existing_files_unchanged": 140
+}

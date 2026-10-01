@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "case": "ambient BEND/CC/BENDTT ignored",
+      "exit": 0,
+      "selected": [
+        ".toolchains/bend/bin/bend",
+        ".toolchains/clang19/usr/bin/clang-19",
+        ".toolchains/kernel-4.34.1/bendtt"
+      ]
+    },
+    {
+      "case": "missing installation fails closed",
+      "exit": 1,
+      "stderr": "Toolchain error: No locked toolchain in .toolchains/missing-h078w9qs; run ./setup.sh first\n"
+    },
+    {
+      "case": "replaced Bend executable fails checksum before execution",
+      "exit": 1,
+      "stderr": "Toolchain error: Checksum mismatch: .toolchains/tamper-oq_yavxm/bend/bin/bend\n"
+    }
+  ]
+}

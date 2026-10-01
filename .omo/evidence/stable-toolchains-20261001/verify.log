@@ -1,0 +1,176 @@
+ALL PROOFS CHECK
+Use --verdict for mathematical validity.
+ALL PROOFS CHECK
+ALL PROOFS CHECK
+Use --verdict for mathematical validity.
+PASS mirror all81
+PASS set/get128 four values
+PASS 20 peers all81
+PASS actual candidates bounded easy81
+PASS actual candidates bounded empty81
+PASS solve preserves known easy solution
+PASS unique count
+PASS empty multiple count
+PASS invalid parse exit2
+PASS solve fuel0
+PASS count fuel0
+PASS dig fuel0
+PASS rate fuel0
+PASS rate complete
+PASS rate requires guess
+PASS rate51 singles independently counted blanks
+PASS score24
+PASS score25
+PASS score59
+PASS score60
+PASS contradiction has no label
+PASS naked single real placement
+PASS hidden single row digit1
+PASS locked candidates pointing/claiming
+PASS naked pair actual elimination
+PASS one two-mask cell is not a pair
+PASS unit digit with no placement contradiction
+PASS zero candidate contradiction
+PASS 100 complete seeded transformations valid
+PASS batch solve equals sequential3
+PASS batch check equals sequential3
+PASS batch count equals sequential3
+PASS batch rate equals sequential3
+PASS count table Zero+Zero
+PASS count table Zero+One
+PASS count table Zero+Many
+PASS count table Zero+Fuel
+PASS count table One+Zero
+PASS count table One+One
+PASS count table One+Many
+PASS count table One+Fuel
+PASS count table Many+Zero
+PASS count table Many+One
+PASS count table Many+Many
+PASS count table Many+Fuel
+PASS count table Fuel+Zero
+PASS count table Fuel+One
+PASS count table Fuel+Many
+PASS count table Fuel+Fuel
+RESULT: all assertions passed
+PASS SWAR equals reference low10-bit popcount for4096masks
+PASS popcount upperbits ignored
+PASS cached/public candidates equal100seededboards x81cells
+PASS hidden-single action order matches reference
+PASS locked/pair action order matches reference
+PASS pair ordering including bit0 and upper-bit malformed masks
+PASS ladder exact action order on82 malformed/partial states
+PASS initialization matches public reference on1000 malformed/partial states
+PASS coverage matches public missing_go on1000 malformed/partial cell states
+PASS one-cell array rate semantics
+PASS short invalid-digit array rate semantics
+PASS hidden-single trace everyfuel0..63
+PASS locked/pair trace everyfuel0..23
+PASS empty-board guess/fuel boundary
+PASS direct BENCH board validation equals string/reparse path; 100 generated boards and edge cases
+candidate: 6060 state/fuel observations
+{
+  "status": "PASS",
+  "observations": 6060,
+  "sha256": "9e91f20cab655505fb2ebf74a1d838062567c76476018342c8aa5ac60cb2b592",
+  "golden_baseline_commit": "648cd0cf65e7e3cc48c2f063dddc377f947481f2",
+  "verification": "committed baseline golden hash",
+  "baseline": null,
+  "candidate": "<verification-worktree>",
+  "limits": [
+    1,
+    2
+  ],
+  "all_fuel_0_through_300": [
+    "easy",
+    "empty",
+    "contradiction",
+    "complete",
+    "hard"
+  ],
+  "hard_additional_fuels": [
+    500,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    50000,
+    100000,
+    199999,
+    200000
+  ],
+  "observed_fields": [
+    "state tag",
+    "depth",
+    "found",
+    "board cells 0..80",
+    "active frame words"
+  ],
+  "production_runs": 3030,
+  "direct_transition_states": 3030,
+  "searching_states": 630,
+  "backtracking_states": 375,
+  "completed_states": 4050,
+  "fuel_exhaustion_states": 1005
+}
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "seed": 0,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 0,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "seed": 1,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 1,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "seed": 42,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 42,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "minimal": true,
+      "pair_minimal": false
+    },
+    {
+      "minimal": true,
+      "pair_minimal": true
+    }
+  ],
+  "seconds": 0.146
+}
+{
+  "status": "PASS",
+  "seeds_checked": 4,
+  "covered_techniques": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "fixtures": 2
+}
+{"status": "PASS", "cases": 216, "evidence": ".omo/evidence/cli-results.json"}
+PASS production handlers fuel exit4 and generation valid-prefix
+PASS counter and noncentral mirror-law mutants detected; original source unchanged
+PASS all7 native/Bend and5 Node-compatible commands; JS file IO requires Bun (not installed)
+NOT RUN: timing benchmark (explicit --skip-benchmark)

@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-10-01",
+  "platform": "linux-x86_64",
+  "bend": {
+    "version": "2.0.34",
+    "classification": "latest official stable",
+    "released_at_utc": "2026-09-29",
+    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.34",
+    "source_commit": "7d8a3eb036042c6549461054d25a10f26d361c5c",
+    "url": "https://github.com/bendlang/bend/releases/download/v2.0.34/bend-2.0.34-linux-x64.tar.gz",
+    "sha256": "78106a97af242429dcc057258eb8d10f69cddebcd5e263022185a52d003e09bf",
+    "binary_sha256": "7fafb749dd33df446a0cb5839c5694df237312a8e8048d2e9420480164ff5934",
+    "kernel_source_sha256": "61e0d2d9f4ddd7dd8bb1497fa612fb49a7274fcac647bf70702ba22321d7c292"
+  },
+  "lean": {
+    "default_version": "4.34.1",
+    "versions": {
+      "4.34.1": {
+        "version": "4.34.1",
+        "classification": "latest official stable proof-kernel compiler",
+        "released_at_utc": "2026-09-24",
+        "release_url": "https://github.com/leanprover/lean4/releases/tag/v4.34.1",
+        "url": "https://github.com/leanprover/lean4/releases/download/v4.34.1/lean-4.34.1-linux.tar.zst",
+        "sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4"
+      },
+      "4.34.0": {
+        "version": "4.34.0",
+        "classification": "explicit upstream-compatible fallback; not latest stable",
+        "release_url": "https://github.com/leanprover/lean4/releases/tag/v4.34.0",
+        "url": "https://github.com/leanprover/lean4/releases/download/v4.34.0/lean-4.34.0-linux.tar.zst",
+        "sha256": "caaa98356098c85dc0fcbbd28e1ec66f39eb6551829972b752ff20e1286b646b"
+      }
+    }
+  },
+  "clang": {
+    "version": "19.1.7",
+    "classification": "preserved compatible backend; outside language-compiler upgrade scope",
+    "debian_version": "1:19.1.7-3+b1",
+    "source_url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/",
+    "host_dependencies": "Debian-compatible glibc, C development headers/linker, libstdc++, libffi8, libedit2, libz3-4, zlib, libzstd, libxml2, libtinfo6; no system installation is performed",
+    "packages": [
+      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/clang-19_19.1.7-3+b1_amd64.deb", "sha256": "bbb74458d782b7792b61b0eed92746df5e6d033778c045cf8c2b3835b7c4efc4"},
+      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-cpp19_19.1.7-3+b1_amd64.deb", "sha256": "a7d2b6df51050834f6ea5c0d5e34869c2298b0bcdaa91eff17ba3db2cd545c47"},
+      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-common-19-dev_19.1.7-3+b1_amd64.deb", "sha256": "4018e40e2d4144fe38c45822e68cca63c1bf6c7872c3073ebb262ad4b2f9b8bc"},
+      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libllvm19_19.1.7-3+b1_amd64.deb", "sha256": "db0d614d61345ca710fb73e75105f1ec6e38898fa7b3aa99fa7eb7d8b0a11d57"}
+    ]
+  }
+}
