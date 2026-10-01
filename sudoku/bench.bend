@@ -40,12 +40,59 @@ def add(a: Stats, b: Stats) -> Stats:
     case Stats{sa, fa} Stats{sb, fb}:
       Stats{(sa + sb : U32), (fa + fb : U32)}
 
+# Validate the solved board directly. This retains clue/full-grid/unit checks
+# while avoiding board formatting followed by parsing inside BENCH only.
+def clue_board_done(ok: Bool, r: Array<U32> & String) -> Stats:
+  (b, reason) = r
+  +valid = ok && String.is_empty(reason)
+  Stats{Bool.pick(U32, valid, 1, 0), Bool.pick(U32, valid, 0, 1)}
+
+def clue_board(puzzle: String, +pos: U32, r: Array<U32> & U32, ok: Bool) -> Array<U32> & Bool:
+  match puzzle:
+    case SNil{}:
+      (Pair.fst(Array<U32>, U32, r), ok)
+    case SCon{+ch, tail}:
+      (b, +digit) = r
+      clue_board(tail, (pos + 1 : U32), Array.get(U32, b, (pos + 1 : U32)), ok && (digit >= 1 : U32) && (digit <= 9 : U32) && (Char.is_eq(ch, '0') || Char.is_eq(ch, '.') || U32.is_eq((Char.to_u32(ch) - 48 : U32), digit)))
+
+def direct_checked(r: Array<U32> & Bool) -> Stats:
+  (b, ok) = r
+  clue_board_done(ok, V.validate(b))
+
+def direct_solved(puzzle: String, result: T.SolveResult) -> Stats:
+  match result:
+    case T.Solved{b}:
+      direct_checked(clue_board(puzzle, 0, Array.get(U32, b, 0), True{}))
+    case _:
+      Stats{0, 1}
+
+def direct_valid(ok: Bool, puzzle: String, b: Array<U32>) -> Stats:
+  match ok:
+    case True{}:
+      direct_solved(puzzle, S.solve(T.solve_fuel(), b))
+    case False{}:
+      Stats{0, 1}
+
+def direct_validation(puzzle: String, r: Array<U32> & String) -> Stats:
+  (b, reason) = r
+  direct_valid(String.is_empty(reason), puzzle, b)
+
+def direct_parsed(puzzle: String, result: P.Parsed) -> Stats:
+  match result:
+    case P.ParseError{reason}:
+      Stats{0, 1}
+    case P.ParsedBoard{b}:
+      direct_validation(puzzle, V.validate(b))
+
+def direct_job(+puzzle: String) -> Stats:
+  direct_parsed(puzzle, P.parse81(puzzle))
+
 def run(tree: B.JobTree) -> Stats:
   match tree:
     case B.JEmpty{}:
       Stats{0, 0}
     case B.JLeaf{B.Job{index, +puzzle}}:
-      count_reply(puzzle, C.eval(1, False{}, T.solve_fuel(), T.rate_fuel(), puzzle))
+      direct_job(puzzle)
     case B.JFork{l, r}:
       a b = run(l) run(r)
       add(a, b)

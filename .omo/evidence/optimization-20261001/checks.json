@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "full_verify_exit": 0,
+  "independent_kernel_verdict": "ALL PROOFS CHECK",
+  "native_and_bend_invocation_commands": 7,
+  "cli_differential_comparisons": 1931,
+  "independent_puzzles": 347,
+  "exact_search_fuel_observations": 6060,
+  "rating_qa_groups": 11,
+  "direct_bench_generated_comparisons": 100,
+  "existing_cli_cases": 216,
+  "existing_native_assertions": 49,
+  "existing_optimization_assertions": 3,
+  "proof_scope": "Existing finite executable and structural laws unchanged; not a full solver proof",
+  "js_lane": "five Node-compatible commands pass; JS batch/bench not run (requires Bun)"
+}

@@ -1,0 +1,304 @@
+[
+  {
+    "name": "solve_new_easy",
+    "args": [
+      "solve",
+      "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "solve_original_hard",
+    "args": [
+      "solve",
+      "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "solve_new_complete",
+    "args": [
+      "solve",
+      "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "solve_new_multi_solution",
+    "args": [
+      "solve",
+      "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "count_new_easy",
+    "args": [
+      "count",
+      "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "count_original_hard",
+    "args": [
+      "count",
+      "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "count_new_complete",
+    "args": [
+      "count",
+      "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "count_new_multi_solution",
+    "args": [
+      "count",
+      "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "rate_new_easy",
+    "args": [
+      "rate",
+      "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "rate_original_hard",
+    "args": [
+      "rate",
+      "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "rate_new_complete",
+    "args": [
+      "rate",
+      "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "rate_new_multi_solution",
+    "args": [
+      "rate",
+      "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "generate100_clues36",
+    "args": [
+      "generate",
+      "--seed",
+      "1",
+      "--count",
+      "100",
+      "--clues",
+      "36"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "generate_minimal",
+    "args": [
+      "generate",
+      "--seed",
+      "42",
+      "--minimal"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_easy-10000_solve_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/easy-10000.txt",
+      "solve"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_mixed-1000_solve_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/mixed-1000.txt",
+      "solve"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_hard-100_count_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_rate-300_rate_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/rate-300.txt",
+      "rate"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_verification_check_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/verification.txt",
+      "check"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "bench_easy-10000_t1",
+    "args": [
+      "bench",
+      "@CORPORA@/easy-10000.txt"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "bench_mixed-1000_t1",
+    "args": [
+      "bench",
+      "@CORPORA@/mixed-1000.txt"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_easy-10000_solve_t8",
+    "args": [
+      "batch",
+      "@CORPORA@/easy-10000.txt",
+      "solve"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "batch_mixed-1000_solve_t8",
+    "args": [
+      "batch",
+      "@CORPORA@/mixed-1000.txt",
+      "solve"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "batch_hard-100_count_t8",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "batch_rate-300_rate_t8",
+    "args": [
+      "batch",
+      "@CORPORA@/rate-300.txt",
+      "rate"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "batch_verification_check_t8",
+    "args": [
+      "batch",
+      "@CORPORA@/verification.txt",
+      "check"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "bench_easy-10000_t8",
+    "args": [
+      "bench",
+      "@CORPORA@/easy-10000.txt"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "bench_mixed-1000_t8",
+    "args": [
+      "bench",
+      "@CORPORA@/mixed-1000.txt"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "batch_easy-10000_solve_t16",
+    "args": [
+      "batch",
+      "@CORPORA@/easy-10000.txt",
+      "solve"
+    ],
+    "threads": 16
+  },
+  {
+    "name": "batch_mixed-1000_solve_t16",
+    "args": [
+      "batch",
+      "@CORPORA@/mixed-1000.txt",
+      "solve"
+    ],
+    "threads": 16
+  },
+  {
+    "name": "batch_hard-100_count_t16",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 16
+  },
+  {
+    "name": "batch_rate-300_rate_t16",
+    "args": [
+      "batch",
+      "@CORPORA@/rate-300.txt",
+      "rate"
+    ],
+    "threads": 16
+  },
+  {
+    "name": "batch_verification_check_t16",
+    "args": [
+      "batch",
+      "@CORPORA@/verification.txt",
+      "check"
+    ],
+    "threads": 16
+  },
+  {
+    "name": "bench_easy-10000_t16",
+    "args": [
+      "bench",
+      "@CORPORA@/easy-10000.txt"
+    ],
+    "threads": 16
+  },
+  {
+    "name": "bench_mixed-1000_t16",
+    "args": [
+      "bench",
+      "@CORPORA@/mixed-1000.txt"
+    ],
+    "threads": 16
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "source_commit": "e286b377307a5e2013f07e89dabf0f1e0fad8189",
+  "selection": "first10000 easy, first1000 mixed, first300 rating, first100 hard physical lines; verification unchanged",
+  "files": [
+    {
+      "file": "easy-10000.txt",
+      "sha256": "a1d229cfbcef749580785d9255cc4a1682b64e658a525a0b86092183b665beab",
+      "bytes": 820000
+    },
+    {
+      "file": "mixed-1000.txt",
+      "sha256": "950392a86e7d51e865ab891fc98bc3e15293bcba69a7b697cacce9c893402e7b",
+      "bytes": 82000
+    },
+    {
+      "file": "rate-300.txt",
+      "sha256": "20ded164160b2e80184f462f44c6e76914e4ac9a7b636b8c4a78fd8566771753",
+      "bytes": 24600
+    },
+    {
+      "file": "hard-100.txt",
+      "sha256": "51ca8cce3b10ce07ac04f1990b5fbc2f594bbb645fc1234e59ddf49e9f06b8ce",
+      "bytes": 8200
+    },
+    {
+      "file": "verification.txt",
+      "sha256": "9cc41695a5d42087ff9c79d97e5695ebbc9b3d89d542e79db19d99ccb6fc0135",
+      "bytes": 4337
+    }
+  ]
+}
