@@ -1,0 +1,5817 @@
+{
+  "node_budget": 50000,
+  "seconds_budget": 0.25,
+  "time_check_interval_nodes": 128,
+  "results": {
+    "valid-00-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005666880024364218
+    },
+    "valid-00-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.0004954530013492331
+    },
+    "valid-00-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004469499981496483
+    },
+    "valid-00-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 97,
+      "seconds": 0.0004363449988886714
+    },
+    "valid-00-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0003830560017377138
+    },
+    "valid-00-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.00034252600016770884
+    },
+    "valid-00-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 97,
+      "seconds": 0.0003863809979520738
+    },
+    "valid-00-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.0002963779988931492
+    },
+    "valid-00-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 63,
+      "seconds": 0.0002577010018285364
+    },
+    "valid-00-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.0002282170025864616
+    },
+    "valid-00-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00017189400386996567
+    },
+    "valid-00-48": {
+      "status": "known",
+      "count": 2,
+      "nodes": 40,
+      "seconds": 0.00014628600183641538
+    },
+    "valid-00-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.598800195613876e-05
+    },
+    "valid-00-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.594200047198683e-05
+    },
+    "valid-00-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.5207001676317304e-05
+    },
+    "valid-00-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.319399886298925e-05
+    },
+    "valid-01-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004780060044140555
+    },
+    "valid-01-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 99,
+      "seconds": 0.0005046259975642897
+    },
+    "valid-01-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 103,
+      "seconds": 0.0004821520051336847
+    },
+    "valid-01-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00042749199928948656
+    },
+    "valid-01-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0003682749957079068
+    },
+    "valid-01-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 170,
+      "seconds": 0.0006232310042832978
+    },
+    "valid-01-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.0004277830012142658
+    },
+    "valid-01-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 121,
+      "seconds": 0.0004573049955070019
+    },
+    "valid-01-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 169,
+      "seconds": 0.0006991539994487539
+    },
+    "valid-01-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 106,
+      "seconds": 0.00042928499897243455
+    },
+    "valid-01-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.0001664160008658655
+    },
+    "valid-01-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012879999849246815
+    },
+    "valid-01-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.509499457431957e-05
+    },
+    "valid-01-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.439999949885532e-05
+    },
+    "valid-01-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.496600013226271e-05
+    },
+    "valid-01-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.3594001908786595e-05
+    },
+    "valid-02-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00047718499990878627
+    },
+    "valid-02-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.00044549800077220425
+    },
+    "valid-02-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0004358340011094697
+    },
+    "valid-02-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 85,
+      "seconds": 0.00040222399547928944
+    },
+    "valid-02-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 88,
+      "seconds": 0.00038330599636537954
+    },
+    "valid-02-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.00045393100299406797
+    },
+    "valid-02-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 93,
+      "seconds": 0.00040258499939227477
+    },
+    "valid-02-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.000372030001017265
+    },
+    "valid-02-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 198,
+      "seconds": 0.0006624890011153184
+    },
+    "valid-02-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.0002198349975515157
+    },
+    "valid-02-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00019071199494646862
+    },
+    "valid-02-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012977100413991138
+    },
+    "valid-02-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.500499825458974e-05
+    },
+    "valid-02-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.5251999583560973e-05
+    },
+    "valid-02-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.45059995399788e-05
+    },
+    "valid-02-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.384400381240994e-05
+    },
+    "valid-03-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00047868800174910575
+    },
+    "valid-03-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 113,
+      "seconds": 0.000534570004674606
+    },
+    "valid-03-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.0004634949946193956
+    },
+    "valid-03-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00040031100070336834
+    },
+    "valid-03-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.00038120299723232165
+    },
+    "valid-03-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004222539937472902
+    },
+    "valid-03-20": {
+      "status": "unknown",
+      "count": null,
+      "solutions_found_lower_bound": 0,
+      "reason": "node_budget",
+      "nodes": 50001,
+      "seconds": 0.1790665450025699
+    },
+    "valid-03-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.00036438799725146964
+    },
+    "valid-03-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.00032634300441714004
+    },
+    "valid-03-32": {
+      "status": "known",
+      "count": 1,
+      "nodes": 50,
+      "seconds": 0.0002729029947659001
+    },
+    "valid-03-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016717700054869056
+    },
+    "valid-03-48": {
+      "status": "known",
+      "count": 2,
+      "nodes": 40,
+      "seconds": 0.00013112400483805686
+    },
+    "valid-03-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.287300443043932e-05
+    },
+    "valid-03-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.396000051405281e-05
+    },
+    "valid-03-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.592799814417958e-05
+    },
+    "valid-03-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.529699799604714e-05
+    },
+    "valid-04-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005018309966544621
+    },
+    "valid-04-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 113,
+      "seconds": 0.0005073200009064749
+    },
+    "valid-04-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004634649958461523
+    },
+    "valid-04-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0003896060006809421
+    },
+    "valid-04-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.0003965560026699677
+    },
+    "valid-04-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004483230004552752
+    },
+    "valid-04-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 240,
+      "seconds": 0.0011674750057864003
+    },
+    "valid-04-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.00044952399912290275
+    },
+    "valid-04-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 69,
+      "seconds": 0.0002634289994603023
+    },
+    "valid-04-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.00029224200261523947
+    },
+    "valid-04-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.0001692609948804602
+    },
+    "valid-04-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001450749987270683
+    },
+    "valid-04-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.436499774688855e-05
+    },
+    "valid-04-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.597299605142325e-05
+    },
+    "valid-04-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.453599831322208e-05
+    },
+    "valid-04-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.8030997277237475e-05
+    },
+    "valid-05-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00045270899863680825
+    },
+    "valid-05-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.0004547520002233796
+    },
+    "valid-05-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0004120090015931055
+    },
+    "valid-05-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.0004662289939005859
+    },
+    "valid-05-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0003734619967872277
+    },
+    "valid-05-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 121,
+      "seconds": 0.00046526699588866904
+    },
+    "valid-05-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0003354959990247153
+    },
+    "valid-05-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 64,
+      "seconds": 0.00027102000603917986
+    },
+    "valid-05-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.00036964599712518975
+    },
+    "valid-05-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.0002484069991623983
+    },
+    "valid-05-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016287100152112544
+    },
+    "valid-05-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00019408600201131776
+    },
+    "valid-05-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.5145999037195e-05
+    },
+    "valid-05-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.625299672828987e-05
+    },
+    "valid-05-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.330399679020047e-05
+    },
+    "valid-05-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.204300057608634e-05
+    },
+    "valid-06-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046687999565619975
+    },
+    "valid-06-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.00043767700117314234
+    },
+    "valid-06-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 93,
+      "seconds": 0.0004736099945148453
+    },
+    "valid-06-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 83,
+      "seconds": 0.00038333600241458043
+    },
+    "valid-06-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.0003874930043821223
+    },
+    "valid-06-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.00032868599373614416
+    },
+    "valid-06-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.00034431899985065684
+    },
+    "valid-06-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 64,
+      "seconds": 0.0002664540006662719
+    },
+    "valid-06-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.0002759280032478273
+    },
+    "valid-06-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00020919900271110237
+    },
+    "valid-06-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.0001604270000825636
+    },
+    "valid-06-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001264160018763505
+    },
+    "valid-06-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.392400195589289e-05
+    },
+    "valid-06-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.336799949873239e-05
+    },
+    "valid-06-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.521699884207919e-05
+    },
+    "valid-06-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.200200055493042e-05
+    },
+    "valid-07-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00047632399946451187
+    },
+    "valid-07-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 111,
+      "seconds": 0.0005192270036786795
+    },
+    "valid-07-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.0004695639945566654
+    },
+    "valid-07-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0003919790033251047
+    },
+    "valid-07-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.00036947600165149197
+    },
+    "valid-07-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00033860999974422157
+    },
+    "valid-07-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.00029589699988719076
+    },
+    "valid-07-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.0003354259970365092
+    },
+    "valid-07-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 63,
+      "seconds": 0.0002527230026316829
+    },
+    "valid-07-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00021398699755081907
+    },
+    "valid-07-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 49,
+      "seconds": 0.00016770799993537366
+    },
+    "valid-07-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012641699868254364
+    },
+    "valid-07-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.361400250578299e-05
+    },
+    "valid-07-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.6994002079591155e-05
+    },
+    "valid-07-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.633799835573882e-05
+    },
+    "valid-07-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 5.951800267212093e-05
+    },
+    "valid-08-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046743100392632186
+    },
+    "valid-08-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 128,
+      "seconds": 0.0005730570046580397
+    },
+    "valid-08-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004159640011494048
+    },
+    "valid-08-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0003779879989451729
+    },
+    "valid-08-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 83,
+      "seconds": 0.0004005309965577908
+    },
+    "valid-08-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0003202029984095134
+    },
+    "valid-08-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.00030592199618695304
+    },
+    "valid-08-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.00031219099764712155
+    },
+    "valid-08-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 115,
+      "seconds": 0.00040367699693888426
+    },
+    "valid-08-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 59,
+      "seconds": 0.0002140869983122684
+    },
+    "valid-08-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.0001807670050766319
+    },
+    "valid-08-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001243840015376918
+    },
+    "valid-08-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.264200005214661e-05
+    },
+    "valid-08-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.438100197352469e-05
+    },
+    "valid-08-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.408499808050692e-05
+    },
+    "valid-08-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.319399886298925e-05
+    },
+    "valid-09-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004511360020842403
+    },
+    "valid-09-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.000504906005517114
+    },
+    "valid-09-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.00046338499669218436
+    },
+    "valid-09-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 97,
+      "seconds": 0.0004588679948938079
+    },
+    "valid-09-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 81,
+      "seconds": 0.00035903100069845095
+    },
+    "valid-09-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.0003407539988984354
+    },
+    "valid-09-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0003044199984287843
+    },
+    "valid-09-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.0002857020008377731
+    },
+    "valid-09-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.00028018399461871013
+    },
+    "valid-09-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 61,
+      "seconds": 0.00025633900077082217
+    },
+    "valid-09-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.0002340159990126267
+    },
+    "valid-09-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00013003200001548976
+    },
+    "valid-09-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.368300041183829e-05
+    },
+    "valid-09-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.435999628389254e-05
+    },
+    "valid-09-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.392499977257103e-05
+    },
+    "valid-09-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.185200668871403e-05
+    },
+    "valid-10-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005262569975457154
+    },
+    "valid-10-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004914660021313466
+    },
+    "valid-10-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004750720036099665
+    },
+    "valid-10-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.00045372000022325665
+    },
+    "valid-10-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 81,
+      "seconds": 0.00040636100311530754
+    },
+    "valid-10-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.00033805899875005707
+    },
+    "valid-10-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.00030456000240519643
+    },
+    "valid-10-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.00028662299882853404
+    },
+    "valid-10-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.00032201599969994277
+    },
+    "valid-10-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 127,
+      "seconds": 0.000468262005597353
+    },
+    "valid-10-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00021084200125187635
+    },
+    "valid-10-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012655700265895575
+    },
+    "valid-10-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.475500362692401e-05
+    },
+    "valid-10-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.4019998060539365e-05
+    },
+    "valid-10-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.40560033894144e-05
+    },
+    "valid-10-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.28629937232472e-05
+    },
+    "valid-11-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046073099656496197
+    },
+    "valid-11-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 114,
+      "seconds": 0.0005523259969777428
+    },
+    "valid-11-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 105,
+      "seconds": 0.00047062600060598925
+    },
+    "valid-11-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.000398940006562043
+    },
+    "valid-11-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00038867499824846163
+    },
+    "valid-11-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0003342039999552071
+    },
+    "valid-11-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.0002931730050477199
+    },
+    "valid-11-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 194,
+      "seconds": 0.0007455119994119741
+    },
+    "valid-11-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 60,
+      "seconds": 0.0002426290011499077
+    },
+    "valid-11-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 69,
+      "seconds": 0.0002740359996096231
+    },
+    "valid-11-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.0001627610035939142
+    },
+    "valid-11-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012569600221468136
+    },
+    "valid-11-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.350399730261415e-05
+    },
+    "valid-11-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 6.773000495741144e-05
+    },
+    "valid-11-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.497700138017535e-05
+    },
+    "valid-11-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.3052998080383986e-05
+    },
+    "valid-12-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004482730000745505
+    },
+    "valid-12-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 98,
+      "seconds": 0.00048529700143262744
+    },
+    "valid-12-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005556110045290552
+    },
+    "valid-12-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.00042501799907768145
+    },
+    "valid-12-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0003487049980321899
+    },
+    "valid-12-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 79,
+      "seconds": 0.00041333099943585694
+    },
+    "valid-12-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 144,
+      "seconds": 0.0006261750022531487
+    },
+    "valid-12-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 67,
+      "seconds": 0.0002719920012168586
+    },
+    "valid-12-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 60,
+      "seconds": 0.00023829199926694855
+    },
+    "valid-12-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00021819200628669932
+    },
+    "valid-12-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.0001843430000008084
+    },
+    "valid-12-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012565499491756782
+    },
+    "valid-12-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.369400165975094e-05
+    },
+    "valid-12-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.3848998504690826e-05
+    },
+    "valid-12-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.509700374910608e-05
+    },
+    "valid-12-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.294300015317276e-05
+    },
+    "valid-13-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004562540052575059
+    },
+    "valid-13-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 116,
+      "seconds": 0.0005465169961098582
+    },
+    "valid-13-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004097950004506856
+    },
+    "valid-13-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 88,
+      "seconds": 0.0006749129970557988
+    },
+    "valid-13-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00037987199903000146
+    },
+    "valid-13-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 123,
+      "seconds": 0.0005296829986036755
+    },
+    "valid-13-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 98,
+      "seconds": 0.00039105799805838615
+    },
+    "valid-13-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 227,
+      "seconds": 0.0008585090035921894
+    },
+    "valid-13-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 183,
+      "seconds": 0.0007037200048216619
+    },
+    "valid-13-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 57,
+      "seconds": 0.00021864299924345687
+    },
+    "valid-13-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.0001605869983904995
+    },
+    "valid-13-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00015527999494224787
+    },
+    "valid-13-60": {
+      "status": "known",
+      "count": 2,
+      "nodes": 28,
+      "seconds": 0.00013560000661527738
+    },
+    "valid-13-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.5262004025280476e-05
+    },
+    "valid-13-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.430599801708013e-05
+    },
+    "valid-13-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.1872001020237803e-05
+    },
+    "valid-14-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004645460066967644
+    },
+    "valid-14-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 126,
+      "seconds": 0.0007349459992838092
+    },
+    "valid-14-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.00045841700193705037
+    },
+    "valid-14-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0004180469986749813
+    },
+    "valid-14-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.00038113399932626635
+    },
+    "valid-14-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00035879999632015824
+    },
+    "valid-14-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 98,
+      "seconds": 0.0003930509992642328
+    },
+    "valid-14-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 79,
+      "seconds": 0.00037949099350953475
+    },
+    "valid-14-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 73,
+      "seconds": 0.00037099899782333523
+    },
+    "valid-14-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 109,
+      "seconds": 0.00041789800161495805
+    },
+    "valid-14-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016801799938548356
+    },
+    "valid-14-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012830999912694097
+    },
+    "valid-14-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.953200449468568e-05
+    },
+    "valid-14-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 7.5151001510676e-05
+    },
+    "valid-14-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.665899905376136e-05
+    },
+    "valid-14-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.386500222608447e-05
+    },
+    "valid-15-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046719000238226727
+    },
+    "valid-15-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 114,
+      "seconds": 0.0005445140050142072
+    },
+    "valid-15-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 105,
+      "seconds": 0.00047890700079733506
+    },
+    "valid-15-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.00045777699415339157
+    },
+    "valid-15-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0003445790061959997
+    },
+    "valid-15-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.0003154160003759898
+    },
+    "valid-15-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.00040054199780570343
+    },
+    "valid-15-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.000271300996246282
+    },
+    "valid-15-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.00028059399483026937
+    },
+    "valid-15-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00021210299746599048
+    },
+    "valid-15-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00018267000268679112
+    },
+    "valid-15-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012525499914772809
+    },
+    "valid-15-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.295299630844966e-05
+    },
+    "valid-15-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.314899317454547e-05
+    },
+    "valid-15-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.3723994167521596e-05
+    },
+    "valid-15-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.207199526717886e-05
+    },
+    "valid-16-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005431029931060039
+    },
+    "valid-16-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 99,
+      "seconds": 0.0004680009951698594
+    },
+    "valid-16-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 98,
+      "seconds": 0.0004629039976862259
+    },
+    "valid-16-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0003912679967470467
+    },
+    "valid-16-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 112,
+      "seconds": 0.0004649069960578345
+    },
+    "valid-16-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0004200809999019839
+    },
+    "valid-16-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00041013600275618955
+    },
+    "valid-16-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0002809249999700114
+    },
+    "valid-16-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.00036030199407832697
+    },
+    "valid-16-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.0002345970060559921
+    },
+    "valid-16-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016349100042134523
+    },
+    "valid-16-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012970199895789847
+    },
+    "valid-16-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.150999929057434e-05
+    },
+    "valid-16-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.333900480763987e-05
+    },
+    "valid-16-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 5.798499478260055e-05
+    },
+    "valid-16-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.250300116837025e-05
+    },
+    "valid-17-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004568250005831942
+    },
+    "valid-17-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.000456303998362273
+    },
+    "valid-17-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.000479098001960665
+    },
+    "valid-17-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004802690018550493
+    },
+    "valid-17-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.0004570660021272488
+    },
+    "valid-17-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0003258910001022741
+    },
+    "valid-17-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.0004205619989079423
+    },
+    "valid-17-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 117,
+      "seconds": 0.000458707996585872
+    },
+    "valid-17-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.00041720699664438143
+    },
+    "valid-17-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 59,
+      "seconds": 0.00021623900101985782
+    },
+    "valid-17-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016419200255768374
+    },
+    "valid-17-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012514500122051686
+    },
+    "valid-17-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.262199844466522e-05
+    },
+    "valid-17-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.4821000958327204e-05
+    },
+    "valid-17-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.372500552562997e-05
+    },
+    "valid-17-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.237300163367763e-05
+    },
+    "valid-18-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00047914800234138966
+    },
+    "valid-18-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 128,
+      "seconds": 0.0005467480004881509
+    },
+    "valid-18-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0004964129984728061
+    },
+    "valid-18-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 85,
+      "seconds": 0.00040898499719332904
+    },
+    "valid-18-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0003841779980575666
+    },
+    "valid-18-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 73,
+      "seconds": 0.00032466000266140327
+    },
+    "valid-18-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 85,
+      "seconds": 0.00033774899929994717
+    },
+    "valid-18-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 100,
+      "seconds": 0.00043127699609613046
+    },
+    "valid-18-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 73,
+      "seconds": 0.0003958049928769469
+    },
+    "valid-18-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 150,
+      "seconds": 0.0005642839969368652
+    },
+    "valid-18-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016995099576888606
+    },
+    "valid-18-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012878000416094437
+    },
+    "valid-18-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.436500502284616e-05
+    },
+    "valid-18-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.36700026714243e-05
+    },
+    "valid-18-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.4135005737189204e-05
+    },
+    "valid-18-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 0.00010463399667060003
+    },
+    "valid-19-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005389569996623322
+    },
+    "valid-19-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.0004391589973238297
+    },
+    "valid-19-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004229949990985915
+    },
+    "valid-19-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0003872320012305863
+    },
+    "valid-19-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.00044779200106859207
+    },
+    "valid-19-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 586,
+      "seconds": 0.0032316770011675544
+    },
+    "valid-19-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.00035369200486456975
+    },
+    "valid-19-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0003951339967898093
+    },
+    "valid-19-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0002787019984680228
+    },
+    "valid-19-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 65,
+      "seconds": 0.00023553800565423444
+    },
+    "valid-19-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016607600264251232
+    },
+    "valid-19-48": {
+      "status": "known",
+      "count": 2,
+      "nodes": 41,
+      "seconds": 0.00013216500519774854
+    },
+    "valid-19-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.374399476451799e-05
+    },
+    "valid-19-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.345899990061298e-05
+    },
+    "valid-19-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 5.680399772245437e-05
+    },
+    "valid-19-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 5.4370000725612044e-05
+    },
+    "valid-20-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00045255899749463424
+    },
+    "valid-20-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 114,
+      "seconds": 0.0006022000015946105
+    },
+    "valid-20-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 136,
+      "seconds": 0.0005731069977628067
+    },
+    "valid-20-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004047580005135387
+    },
+    "valid-20-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0003690450030262582
+    },
+    "valid-20-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 81,
+      "seconds": 0.0004126799976802431
+    },
+    "valid-20-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00040383700252277777
+    },
+    "valid-20-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.00026636399707058445
+    },
+    "valid-20-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.00026034400070784613
+    },
+    "valid-20-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 73,
+      "seconds": 0.0002629990049172193
+    },
+    "valid-20-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00017048199515556917
+    },
+    "valid-20-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012431399954948574
+    },
+    "valid-20-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.183099998859689e-05
+    },
+    "valid-20-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.432100442703813e-05
+    },
+    "valid-20-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.358399746706709e-05
+    },
+    "valid-20-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.2963998566847295e-05
+    },
+    "valid-21-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005524070002138615
+    },
+    "valid-21-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.0004481329960981384
+    },
+    "valid-21-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 100,
+      "seconds": 0.00048260299809044227
+    },
+    "valid-21-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 97,
+      "seconds": 0.0004454180016182363
+    },
+    "valid-21-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0005832110036863014
+    },
+    "valid-21-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00037854899710509926
+    },
+    "valid-21-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.0003044299955945462
+    },
+    "valid-21-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.0003636270048446022
+    },
+    "valid-21-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 60,
+      "seconds": 0.00024280899378936738
+    },
+    "valid-21-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 85,
+      "seconds": 0.00031499499891651794
+    },
+    "valid-21-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 55,
+      "seconds": 0.00021935399854555726
+    },
+    "valid-21-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001730660005705431
+    },
+    "valid-21-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.387400157516822e-05
+    },
+    "valid-21-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 6.674799806205556e-05
+    },
+    "valid-21-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.5016000512987375e-05
+    },
+    "valid-21-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.4045002141501755e-05
+    },
+    "valid-22-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00045483299618354067
+    },
+    "valid-22-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.00047544200060656294
+    },
+    "valid-22-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00048509699990972877
+    },
+    "valid-22-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0005052970009273849
+    },
+    "valid-22-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00037459399754879996
+    },
+    "valid-22-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.0003228980058338493
+    },
+    "valid-22-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.00035845999809680507
+    },
+    "valid-22-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 91,
+      "seconds": 0.00035131900222040713
+    },
+    "valid-22-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 152,
+      "seconds": 0.0006238120040507056
+    },
+    "valid-22-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00021797200315631926
+    },
+    "valid-22-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016736700490582734
+    },
+    "valid-22-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001263470039702952
+    },
+    "valid-22-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.362299558939412e-05
+    },
+    "valid-22-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.420999514171854e-05
+    },
+    "valid-22-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 5.786599649582058e-05
+    },
+    "valid-22-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 0.00010802000178955495
+    },
+    "valid-23-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004669400004786439
+    },
+    "valid-23-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 101,
+      "seconds": 0.0005174739999347366
+    },
+    "valid-23-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0004361440005595796
+    },
+    "valid-23-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.000398379001126159
+    },
+    "valid-23-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0003948929952457547
+    },
+    "valid-23-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0003815439995378256
+    },
+    "valid-23-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 79,
+      "seconds": 0.00040912500116974115
+    },
+    "valid-23-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.0002785420001600869
+    },
+    "valid-23-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 58,
+      "seconds": 0.00048412600153824314
+    },
+    "valid-23-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 95,
+      "seconds": 0.00037883000186411664
+    },
+    "valid-23-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016480399790452793
+    },
+    "valid-23-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001241530044353567
+    },
+    "valid-23-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.271199476439506e-05
+    },
+    "valid-23-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.370899452827871e-05
+    },
+    "valid-23-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.309399810153991e-05
+    },
+    "valid-23-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.249300400260836e-05
+    },
+    "valid-24-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.000473991000035312
+    },
+    "valid-24-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 113,
+      "seconds": 0.0007332040040637366
+    },
+    "valid-24-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.0004912060030619614
+    },
+    "valid-24-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0006174320005811751
+    },
+    "valid-24-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.0004175369977019727
+    },
+    "valid-24-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0003161569984513335
+    },
+    "valid-24-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.0003238179997424595
+    },
+    "valid-24-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.0003153669968014583
+    },
+    "valid-24-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 60,
+      "seconds": 0.0002371809969190508
+    },
+    "valid-24-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00020450200099730864
+    },
+    "valid-24-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 49,
+      "seconds": 0.00018287100101588294
+    },
+    "valid-24-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012725799751933664
+    },
+    "valid-24-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.308300311909989e-05
+    },
+    "valid-24-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.400000372901559e-05
+    },
+    "valid-24-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.394500138005242e-05
+    },
+    "valid-24-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.377400182420388e-05
+    },
+    "valid-25-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00044980500388192013
+    },
+    "valid-25-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 99,
+      "seconds": 0.0005014709968236275
+    },
+    "valid-25-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 154,
+      "seconds": 0.0006943159969523549
+    },
+    "valid-25-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00039259999903151765
+    },
+    "valid-25-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00036530999932438135
+    },
+    "valid-25-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.0003345239965710789
+    },
+    "valid-25-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 486,
+      "seconds": 0.0024880970013327897
+    },
+    "valid-25-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 79,
+      "seconds": 0.00038796399894636124
+    },
+    "valid-25-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.00033774899929994717
+    },
+    "valid-25-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00020960999972885475
+    },
+    "valid-25-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00021008099429309368
+    },
+    "valid-25-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00015301600069506094
+    },
+    "valid-25-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.582699956605211e-05
+    },
+    "valid-25-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.486099689733237e-05
+    },
+    "valid-25-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.422500205691904e-05
+    },
+    "valid-25-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.269299824954942e-05
+    },
+    "valid-26-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.000459959999716375
+    },
+    "valid-26-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.00048652900295564905
+    },
+    "valid-26-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0004158949959673919
+    },
+    "valid-26-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 430,
+      "seconds": 0.0017456000059610233
+    },
+    "valid-26-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00036212499981047586
+    },
+    "valid-26-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 122,
+      "seconds": 0.0005774130040663294
+    },
+    "valid-26-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.0003123220012639649
+    },
+    "valid-26-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 123,
+      "seconds": 0.000436474998423364
+    },
+    "valid-26-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.00025927299429895356
+    },
+    "valid-26-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.00030136499844957143
+    },
+    "valid-26-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016453300486318767
+    },
+    "valid-26-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012689700088230893
+    },
+    "valid-26-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 9.655200119595975e-05
+    },
+    "valid-26-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.630299710901454e-05
+    },
+    "valid-26-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.4025000534020364e-05
+    },
+    "valid-26-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.2822997784242034e-05
+    },
+    "valid-27-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00045305999810807407
+    },
+    "valid-27-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005389569996623322
+    },
+    "valid-27-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 99,
+      "seconds": 0.00046097199810901657
+    },
+    "valid-27-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.0004195100045762956
+    },
+    "valid-27-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 88,
+      "seconds": 0.0003790300033870153
+    },
+    "valid-27-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.000593757999013178
+    },
+    "valid-27-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0003873730020131916
+    },
+    "valid-27-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.00029085999995004386
+    },
+    "valid-27-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 73,
+      "seconds": 0.000481491006212309
+    },
+    "valid-27-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 54,
+      "seconds": 0.00022233899653656408
+    },
+    "valid-27-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00017111300257965922
+    },
+    "valid-27-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001264160018763505
+    },
+    "valid-27-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 0.00013958699855720624
+    },
+    "valid-27-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 0.0001591749969520606
+    },
+    "valid-27-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 9.607199899619445e-05
+    },
+    "valid-27-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 7.082500087562948e-05
+    },
+    "valid-28-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.000464687000203412
+    },
+    "valid-28-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 111,
+      "seconds": 0.0005637330032186583
+    },
+    "valid-28-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 101,
+      "seconds": 0.0004704449966084212
+    },
+    "valid-28-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0005424419941846281
+    },
+    "valid-28-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0003747630034922622
+    },
+    "valid-28-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.00034220600355183706
+    },
+    "valid-28-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.0003447400013101287
+    },
+    "valid-28-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 1152,
+      "seconds": 0.0058432250007172115
+    },
+    "valid-28-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 264,
+      "seconds": 0.001271699002245441
+    },
+    "valid-28-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.0002163600001949817
+    },
+    "valid-28-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00017304599896306172
+    },
+    "valid-28-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012489500659285113
+    },
+    "valid-28-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 0.00011205599730601534
+    },
+    "valid-28-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.475100624607876e-05
+    },
+    "valid-28-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.5136999688111246e-05
+    },
+    "valid-28-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.299400461604819e-05
+    },
+    "valid-29-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00047257800179068
+    },
+    "valid-29-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 111,
+      "seconds": 0.0006903600005898625
+    },
+    "valid-29-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 101,
+      "seconds": 0.00046577799366787076
+    },
+    "valid-29-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004545619958662428
+    },
+    "valid-29-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0003639779970399104
+    },
+    "valid-29-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0004312370001571253
+    },
+    "valid-29-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 85,
+      "seconds": 0.0003509480011416599
+    },
+    "valid-29-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 64,
+      "seconds": 0.00028316899988567457
+    },
+    "valid-29-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 60,
+      "seconds": 0.00023954400239745155
+    },
+    "valid-29-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.0002878560044337064
+    },
+    "valid-29-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 55,
+      "seconds": 0.00020000600488856435
+    },
+    "valid-29-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012652700388571247
+    },
+    "valid-29-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.327300020027906e-05
+    },
+    "valid-29-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 0.00011763400107156485
+    },
+    "valid-29-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.487599653657526e-05
+    },
+    "valid-29-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.18010022258386e-05
+    },
+    "valid-30-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004898440020042472
+    },
+    "valid-30-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.0004788070000358857
+    },
+    "valid-30-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0004254989980836399
+    },
+    "valid-30-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0003898559953086078
+    },
+    "valid-30-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.00041333099943585694
+    },
+    "valid-30-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 161,
+      "seconds": 0.0005988050033920445
+    },
+    "valid-30-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.00038312599644996226
+    },
+    "valid-30-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 139,
+      "seconds": 0.0006089300004532561
+    },
+    "valid-30-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 192,
+      "seconds": 0.0006515330023830757
+    },
+    "valid-30-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00020903900440316647
+    },
+    "valid-30-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00017632099479669705
+    },
+    "valid-30-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001228319961228408
+    },
+    "valid-30-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.163099846569821e-05
+    },
+    "valid-30-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.340899951988831e-05
+    },
+    "valid-30-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 5.9297999541740865e-05
+    },
+    "valid-30-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.5376997150015086e-05
+    },
+    "valid-31-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004579470041790046
+    },
+    "valid-31-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 122,
+      "seconds": 0.0005801570005132817
+    },
+    "valid-31-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 93,
+      "seconds": 0.000456303998362273
+    },
+    "valid-31-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0004223650030326098
+    },
+    "valid-31-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0006251840022741817
+    },
+    "valid-31-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.00038648099871352315
+    },
+    "valid-31-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 71,
+      "seconds": 0.0003120909968856722
+    },
+    "valid-31-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.00036216500302543864
+    },
+    "valid-31-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 63,
+      "seconds": 0.0002443310004309751
+    },
+    "valid-31-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0003361269991728477
+    },
+    "valid-31-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016477399913128465
+    },
+    "valid-31-48": {
+      "status": "known",
+      "count": 2,
+      "nodes": 40,
+      "seconds": 0.0001297310009249486
+    },
+    "valid-31-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.44449969008565e-05
+    },
+    "valid-31-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.347900150809437e-05
+    },
+    "valid-31-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.34239991591312e-05
+    },
+    "valid-31-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.247300239512697e-05
+    },
+    "valid-32-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0007345150006585754
+    },
+    "valid-32-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005147809933987446
+    },
+    "valid-32-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00041661500290501863
+    },
+    "valid-32-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.0004968139983247966
+    },
+    "valid-32-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0005000189994461834
+    },
+    "valid-32-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.00032745399948908016
+    },
+    "valid-32-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.000329486996633932
+    },
+    "valid-32-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 172,
+      "seconds": 0.0008024660055525601
+    },
+    "valid-32-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.00035403400397626683
+    },
+    "valid-32-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 63,
+      "seconds": 0.00022794699907535687
+    },
+    "valid-32-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.0001733070021145977
+    },
+    "valid-32-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012673700257437304
+    },
+    "valid-32-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.303300273837522e-05
+    },
+    "valid-32-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.403000250225887e-05
+    },
+    "valid-32-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 5.8206001995131373e-05
+    },
+    "valid-32-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.336399433668703e-05
+    },
+    "valid-33-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00045357999624684453
+    },
+    "valid-33-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 128,
+      "seconds": 0.0006330850010272115
+    },
+    "valid-33-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.00044211400381755084
+    },
+    "valid-33-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0004285440008970909
+    },
+    "valid-33-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 500,
+      "seconds": 0.0019622899999376386
+    },
+    "valid-33-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.000346601998899132
+    },
+    "valid-33-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.00030838599923299626
+    },
+    "valid-33-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0003563270001905039
+    },
+    "valid-33-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 63,
+      "seconds": 0.0002474759967299178
+    },
+    "valid-33-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.0002124739985447377
+    },
+    "valid-33-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016605499695288017
+    },
+    "valid-33-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012501500168582425
+    },
+    "valid-33-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.13610022305511e-05
+    },
+    "valid-33-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.287799285724759e-05
+    },
+    "valid-33-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 5.725499795516953e-05
+    },
+    "valid-33-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.339400038588792e-05
+    },
+    "valid-34-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004576359933707863
+    },
+    "valid-34-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.0004872399949817918
+    },
+    "valid-34-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 114,
+      "seconds": 0.00048633899859851226
+    },
+    "valid-34-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 102,
+      "seconds": 0.00045199799933470786
+    },
+    "valid-34-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.00036967600317439064
+    },
+    "valid-34-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 115,
+      "seconds": 0.0004953119932906702
+    },
+    "valid-34-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 112,
+      "seconds": 0.00047404000360984355
+    },
+    "valid-34-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 71,
+      "seconds": 0.00029822099895682186
+    },
+    "valid-34-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 61,
+      "seconds": 0.0002400939993094653
+    },
+    "valid-34-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.00023322500055655837
+    },
+    "valid-34-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016139899526024237
+    },
+    "valid-34-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001282500015804544
+    },
+    "valid-34-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.542599971406162e-05
+    },
+    "valid-34-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.698500172002241e-05
+    },
+    "valid-34-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.4395004806574434e-05
+    },
+    "valid-34-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.3094005377497524e-05
+    },
+    "valid-35-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0004864289949182421
+    },
+    "valid-35-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 97,
+      "seconds": 0.0005068789978395216
+    },
+    "valid-35-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 111,
+      "seconds": 0.0005703630013158545
+    },
+    "valid-35-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005381049995776266
+    },
+    "valid-35-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.00046966400259407237
+    },
+    "valid-35-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 76,
+      "seconds": 0.0003284859994892031
+    },
+    "valid-35-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0003291769971838221
+    },
+    "valid-35-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.00028226699942024425
+    },
+    "valid-35-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.00031203099933918566
+    },
+    "valid-35-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 57,
+      "seconds": 0.00020717600273201242
+    },
+    "valid-35-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016698699619155377
+    },
+    "valid-35-48": {
+      "status": "known",
+      "count": 2,
+      "nodes": 40,
+      "seconds": 0.0001345389973721467
+    },
+    "valid-35-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 0.0001234720039064996
+    },
+    "valid-35-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.5071002861950547e-05
+    },
+    "valid-35-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.4174994400236756e-05
+    },
+    "valid-35-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.285299655748531e-05
+    },
+    "valid-36-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00044909400457981974
+    },
+    "valid-36-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.0004710060020443052
+    },
+    "valid-36-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00040740300028119236
+    },
+    "valid-36-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0003953539999201894
+    },
+    "valid-36-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0003671630038297735
+    },
+    "valid-36-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.00032500000088475645
+    },
+    "valid-36-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.0002983110025525093
+    },
+    "valid-36-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.00034323699946980923
+    },
+    "valid-36-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 69,
+      "seconds": 0.00026959800015902147
+    },
+    "valid-36-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.0002098400000249967
+    },
+    "valid-36-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.0002332540025236085
+    },
+    "valid-36-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012554600107250735
+    },
+    "valid-36-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.188100036932155e-05
+    },
+    "valid-36-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.3278999985195696e-05
+    },
+    "valid-36-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.388500383356586e-05
+    },
+    "valid-36-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.309300129534677e-05
+    },
+    "valid-37-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046012000530026853
+    },
+    "valid-37-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.00048058000538730994
+    },
+    "valid-37-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0004427439998835325
+    },
+    "valid-37-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.00044132200127933174
+    },
+    "valid-37-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 111,
+      "seconds": 0.00047510200238320976
+    },
+    "valid-37-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 167,
+      "seconds": 0.0007315809998544864
+    },
+    "valid-37-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 25474,
+      "seconds": 0.09775012600584887
+    },
+    "valid-37-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.00033360299858031794
+    },
+    "valid-37-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 95,
+      "seconds": 0.0005911039988859557
+    },
+    "valid-37-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 100,
+      "seconds": 0.0003755249999812804
+    },
+    "valid-37-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016721800056984648
+    },
+    "valid-37-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012849000631831586
+    },
+    "valid-37-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.504500146955252e-05
+    },
+    "valid-37-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.4609998187515885e-05
+    },
+    "valid-37-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.4224994780961424e-05
+    },
+    "valid-37-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.340399755164981e-05
+    },
+    "valid-38-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005023820049245842
+    },
+    "valid-38-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 131,
+      "seconds": 0.0006052050011930987
+    },
+    "valid-38-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.0004373070041765459
+    },
+    "valid-38-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.00043216799531364813
+    },
+    "valid-38-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0006035729966242798
+    },
+    "valid-38-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 12717,
+      "seconds": 0.046449809000478126
+    },
+    "valid-38-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.00034188599966000766
+    },
+    "valid-38-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 71,
+      "seconds": 0.0002916509984061122
+    },
+    "valid-38-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 118,
+      "seconds": 0.00046740000107092783
+    },
+    "valid-38-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 56,
+      "seconds": 0.0002124640013789758
+    },
+    "valid-38-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016961099754553288
+    },
+    "valid-38-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00012568599777296185
+    },
+    "valid-38-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.869099838193506e-05
+    },
+    "valid-38-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.609299842035398e-05
+    },
+    "valid-38-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.5658001909032464e-05
+    },
+    "valid-38-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 0.00011792399891419336
+    },
+    "valid-39-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005052069973316975
+    },
+    "valid-39-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 99,
+      "seconds": 0.0004594889978761785
+    },
+    "valid-39-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004351430034148507
+    },
+    "valid-39-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00039441300032194704
+    },
+    "valid-39-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0003966959993704222
+    },
+    "valid-39-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0003575980008463375
+    },
+    "valid-39-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.0002947149987448938
+    },
+    "valid-39-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0003650189973996021
+    },
+    "valid-39-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 60,
+      "seconds": 0.0002357580015086569
+    },
+    "valid-39-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.00031006799690658227
+    },
+    "valid-39-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 49,
+      "seconds": 0.0001966010022442788
+    },
+    "valid-39-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00013946599938208237
+    },
+    "valid-39-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.340400381712243e-05
+    },
+    "valid-39-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.4780997743364424e-05
+    },
+    "valid-39-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.43660028395243e-05
+    },
+    "valid-39-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.383400664664805e-05
+    },
+    "valid-40-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005994249950163066
+    },
+    "valid-40-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 106,
+      "seconds": 0.0005260480029392056
+    },
+    "valid-40-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0004132409958401695
+    },
+    "valid-40-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 100,
+      "seconds": 0.0004766139973071404
+    },
+    "valid-40-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 117,
+      "seconds": 0.00047558199730701745
+    },
+    "valid-40-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.00037902100302744657
+    },
+    "valid-40-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.0003009850042872131
+    },
+    "valid-40-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 64,
+      "seconds": 0.00031938200118020177
+    },
+    "valid-40-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 120,
+      "seconds": 0.0004565740018733777
+    },
+    "valid-40-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 213,
+      "seconds": 0.0006724640043103136
+    },
+    "valid-40-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 49,
+      "seconds": 0.00018853800429496914
+    },
+    "valid-40-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00013009200483793393
+    },
+    "valid-40-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 0.00014114900113781914
+    },
+    "valid-40-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.603300087386742e-05
+    },
+    "valid-40-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.382399492897093e-05
+    },
+    "valid-40-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.194200300844386e-05
+    },
+    "valid-41-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005019119998905808
+    },
+    "valid-41-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 100,
+      "seconds": 0.00048601800517644733
+    },
+    "valid-41-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.0004591789984260686
+    },
+    "valid-41-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.0004433249996509403
+    },
+    "valid-41-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 77,
+      "seconds": 0.00036791300226468593
+    },
+    "valid-41-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0003800310005317442
+    },
+    "valid-41-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0003498470032354817
+    },
+    "valid-41-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.00029417499899864197
+    },
+    "valid-41-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 58,
+      "seconds": 0.00025321399880340323
+    },
+    "valid-41-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 72,
+      "seconds": 0.00024757599749136716
+    },
+    "valid-41-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00016884900105651468
+    },
+    "valid-41-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00013042299542576075
+    },
+    "valid-41-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.498499664710835e-05
+    },
+    "valid-41-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.526099994312972e-05
+    },
+    "valid-41-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.462600190890953e-05
+    },
+    "valid-41-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.276300023775548e-05
+    },
+    "valid-42-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00048622900067130104
+    },
+    "valid-42-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.0004712369991466403
+    },
+    "valid-42-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 103,
+      "seconds": 0.00048658000014256686
+    },
+    "valid-42-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.0004145720013184473
+    },
+    "valid-42-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0003894749970640987
+    },
+    "valid-42-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.0003605129968491383
+    },
+    "valid-42-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 140,
+      "seconds": 0.0005230730021139607
+    },
+    "valid-42-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 94,
+      "seconds": 0.0003443990062805824
+    },
+    "valid-42-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 58,
+      "seconds": 0.00023415600298903883
+    },
+    "valid-42-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 64,
+      "seconds": 0.00022713600628776476
+    },
+    "valid-42-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00017921399557963014
+    },
+    "valid-42-48": {
+      "status": "known",
+      "count": 2,
+      "nodes": 40,
+      "seconds": 0.00012851000064983964
+    },
+    "valid-42-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.30429999041371e-05
+    },
+    "valid-42-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.3618998208548874e-05
+    },
+    "valid-42-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.4305001210886985e-05
+    },
+    "valid-42-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.309399810153991e-05
+    },
+    "valid-43-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00044959499791730195
+    },
+    "valid-43-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 122,
+      "seconds": 0.0005652349937008694
+    },
+    "valid-43-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 96,
+      "seconds": 0.00043488300434546545
+    },
+    "valid-43-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.00041261000296799466
+    },
+    "valid-43-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 78,
+      "seconds": 0.0003594509980757721
+    },
+    "valid-43-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 197,
+      "seconds": 0.0009453269958612509
+    },
+    "valid-43-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.0002976299947476946
+    },
+    "valid-43-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.00048223200428765267
+    },
+    "valid-43-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 70,
+      "seconds": 0.00025397600256837904
+    },
+    "valid-43-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 64,
+      "seconds": 0.0002244909992441535
+    },
+    "valid-43-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 59,
+      "seconds": 0.0004756130001624115
+    },
+    "valid-43-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00013298600242706016
+    },
+    "valid-43-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.542599971406162e-05
+    },
+    "valid-43-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.454000347526744e-05
+    },
+    "valid-43-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.555800114758313e-05
+    },
+    "valid-43-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.364399501355365e-05
+    },
+    "valid-44-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0005737980027333833
+    },
+    "valid-44-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 104,
+      "seconds": 0.0004886620008619502
+    },
+    "valid-44-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00045533299999078736
+    },
+    "valid-44-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.00040984599763760343
+    },
+    "valid-44-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 81,
+      "seconds": 0.0003606029931688681
+    },
+    "valid-44-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 1246,
+      "seconds": 0.005151272998773493
+    },
+    "valid-44-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 74,
+      "seconds": 0.0003033280008821748
+    },
+    "valid-44-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.00027433499781182036
+    },
+    "valid-44-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 90,
+      "seconds": 0.0007569790031993762
+    },
+    "valid-44-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 59,
+      "seconds": 0.00031328299519373104
+    },
+    "valid-44-40": {
+      "status": "known",
+      "count": 2,
+      "nodes": 48,
+      "seconds": 0.00017981600103667006
+    },
+    "valid-44-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00015242500376189128
+    },
+    "valid-44-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.72490054462105e-05
+    },
+    "valid-44-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.629299994325265e-05
+    },
+    "valid-44-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.554699989967048e-05
+    },
+    "valid-44-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.305399488657713e-05
+    },
+    "valid-45-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046956400183262303
+    },
+    "valid-45-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 114,
+      "seconds": 0.0007890159977250732
+    },
+    "valid-45-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 82,
+      "seconds": 0.0007646900048712268
+    },
+    "valid-45-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 86,
+      "seconds": 0.00047489099961239845
+    },
+    "valid-45-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 110,
+      "seconds": 0.0006306020004558377
+    },
+    "valid-45-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.0003873730020131916
+    },
+    "valid-45-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 95,
+      "seconds": 0.0006036220001988113
+    },
+    "valid-45-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 75,
+      "seconds": 0.00039707700489088893
+    },
+    "valid-45-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 65,
+      "seconds": 0.00039033700159052387
+    },
+    "valid-45-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 54,
+      "seconds": 0.0008226560021284968
+    },
+    "valid-45-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00017474799824412912
+    },
+    "valid-45-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001266269973712042
+    },
+    "valid-45-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.353400335181504e-05
+    },
+    "valid-45-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.460099782794714e-05
+    },
+    "valid-45-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.49860017397441e-05
+    },
+    "valid-45-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 4.302399611333385e-05
+    },
+    "valid-46-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.0006820880007580854
+    },
+    "valid-46-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 128,
+      "seconds": 0.0005538579935091548
+    },
+    "valid-46-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 89,
+      "seconds": 0.0004719680000562221
+    },
+    "valid-46-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 100,
+      "seconds": 0.00042936400132020935
+    },
+    "valid-46-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00039824900159146637
+    },
+    "valid-46-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 99,
+      "seconds": 0.0003949029996874742
+    },
+    "valid-46-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 83,
+      "seconds": 0.0003232480012229644
+    },
+    "valid-46-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 62,
+      "seconds": 0.00027907199546461925
+    },
+    "valid-46-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 61,
+      "seconds": 0.00029647799965459853
+    },
+    "valid-46-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 57,
+      "seconds": 0.00021632899733958766
+    },
+    "valid-46-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016079699707916006
+    },
+    "valid-46-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.00024550299713155255
+    },
+    "valid-46-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 8.790999709162861e-05
+    },
+    "valid-46-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.604299803962931e-05
+    },
+    "valid-46-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.401499609230086e-05
+    },
+    "valid-46-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 0.00011331700079608709
+    },
+    "valid-47-00": {
+      "status": "known",
+      "count": 2,
+      "nodes": 92,
+      "seconds": 0.00046811199717922136
+    },
+    "valid-47-01": {
+      "status": "known",
+      "count": 2,
+      "nodes": 107,
+      "seconds": 0.0005648149963235483
+    },
+    "valid-47-04": {
+      "status": "known",
+      "count": 2,
+      "nodes": 97,
+      "seconds": 0.0004608710005413741
+    },
+    "valid-47-08": {
+      "status": "known",
+      "count": 2,
+      "nodes": 80,
+      "seconds": 0.0004214229993522167
+    },
+    "valid-47-12": {
+      "status": "known",
+      "count": 2,
+      "nodes": 87,
+      "seconds": 0.0003800109989242628
+    },
+    "valid-47-16": {
+      "status": "known",
+      "count": 2,
+      "nodes": 84,
+      "seconds": 0.00037853899993933737
+    },
+    "valid-47-20": {
+      "status": "known",
+      "count": 2,
+      "nodes": 102,
+      "seconds": 0.00041709600191097707
+    },
+    "valid-47-24": {
+      "status": "known",
+      "count": 2,
+      "nodes": 66,
+      "seconds": 0.00027544700424186885
+    },
+    "valid-47-28": {
+      "status": "known",
+      "count": 2,
+      "nodes": 68,
+      "seconds": 0.00044065199472242966
+    },
+    "valid-47-32": {
+      "status": "known",
+      "count": 2,
+      "nodes": 69,
+      "seconds": 0.0002486279990989715
+    },
+    "valid-47-40": {
+      "status": "known",
+      "count": 1,
+      "nodes": 42,
+      "seconds": 0.00016317100380547345
+    },
+    "valid-47-48": {
+      "status": "known",
+      "count": 1,
+      "nodes": 34,
+      "seconds": 0.0001254150047316216
+    },
+    "valid-47-60": {
+      "status": "known",
+      "count": 1,
+      "nodes": 22,
+      "seconds": 0.00012048800272168592
+    },
+    "valid-47-72": {
+      "status": "known",
+      "count": 1,
+      "nodes": 10,
+      "seconds": 5.501100531546399e-05
+    },
+    "valid-47-80": {
+      "status": "known",
+      "count": 1,
+      "nodes": 2,
+      "seconds": 4.561700188787654e-05
+    },
+    "valid-47-81": {
+      "status": "known",
+      "count": 1,
+      "nodes": 1,
+      "seconds": 6.509599916171283e-05
+    },
+    "duplicate-row-00": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-01": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-02": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-03": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-04": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-05": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-06": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-07": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-08": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-09": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-10": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-11": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-12": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-13": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-14": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-15": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-16": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-17": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-18": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-19": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-20": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-21": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-22": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-23": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-24": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-25": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-26": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-27": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-28": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-29": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-30": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-row-31": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-00": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-01": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-02": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-03": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-04": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-05": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-06": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-07": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-08": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-09": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-10": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-11": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-12": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-13": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-14": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-15": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-16": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-17": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-18": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-19": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-20": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-21": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-22": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-23": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-24": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-25": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-26": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-27": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-28": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-29": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-30": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-column-31": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-00": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-01": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-02": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-03": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-04": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-05": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-06": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-07": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-08": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-09": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-10": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-11": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-12": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-13": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-14": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-15": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-16": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-17": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-18": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-19": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-20": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-21": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-22": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-23": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-24": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-25": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-26": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-27": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-28": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-29": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-30": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "duplicate-box-31": {
+      "status": "invalid",
+      "input_status": "duplicate",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "unsatisfiable-00": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 2.9984999855514616e-05
+    },
+    "unsatisfiable-01": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.6844001442659646e-05
+    },
+    "unsatisfiable-02": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.112600097665563e-05
+    },
+    "unsatisfiable-03": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.340999683132395e-05
+    },
+    "unsatisfiable-04": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 2.8893002308905125e-05
+    },
+    "unsatisfiable-05": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 4.8822003009263426e-05
+    },
+    "unsatisfiable-06": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.46810047631152e-05
+    },
+    "unsatisfiable-07": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.4220000088680536e-05
+    },
+    "unsatisfiable-08": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.45009975717403e-05
+    },
+    "unsatisfiable-09": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.529200330376625e-05
+    },
+    "unsatisfiable-10": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.604299854487181e-05
+    },
+    "unsatisfiable-11": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.4910997783299536e-05
+    },
+    "unsatisfiable-12": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.402999573154375e-05
+    },
+    "unsatisfiable-13": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.518199810059741e-05
+    },
+    "unsatisfiable-14": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.5772995033767074e-05
+    },
+    "unsatisfiable-15": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.264899714849889e-05
+    },
+    "unsatisfiable-16": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.321899566799402e-05
+    },
+    "unsatisfiable-17": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.050500527024269e-05
+    },
+    "unsatisfiable-18": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 2.914400101872161e-05
+    },
+    "unsatisfiable-19": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.660399670479819e-05
+    },
+    "unsatisfiable-20": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.584299702197313e-05
+    },
+    "unsatisfiable-21": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.3549993531778455e-05
+    },
+    "unsatisfiable-22": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.190700226696208e-05
+    },
+    "unsatisfiable-23": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.1326002499554306e-05
+    },
+    "unsatisfiable-24": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.21669940603897e-05
+    },
+    "unsatisfiable-25": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 2.8702001145575196e-05
+    },
+    "unsatisfiable-26": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.324999852338806e-05
+    },
+    "unsatisfiable-27": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 2.919299731729552e-05
+    },
+    "unsatisfiable-28": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.4131000575143844e-05
+    },
+    "unsatisfiable-29": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 2.8882997867185622e-05
+    },
+    "unsatisfiable-30": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.0044997402001172e-05
+    },
+    "unsatisfiable-31": {
+      "status": "known",
+      "count": 0,
+      "nodes": 1,
+      "seconds": 3.0574999982491136e-05
+    },
+    "malformed-short-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-short-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-short-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-short-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-short-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-short-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-long-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-long-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-long-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-long-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-long-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-long-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-ascii-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-ascii-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-ascii-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-ascii-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-ascii-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-ascii-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-unicode-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-unicode-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-unicode-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-unicode-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-unicode-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-unicode-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-space-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-space-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-space-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-space-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-space-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-space-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-tab-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-tab-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-tab-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-tab-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-tab-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-tab-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-minus-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-minus-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-minus-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-minus-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-minus-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-minus-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-colon-00": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-colon-01": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-colon-02": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-colon-03": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-colon-04": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    },
+    "malformed-colon-05": {
+      "status": "invalid",
+      "input_status": "malformed",
+      "count": null,
+      "nodes": 0,
+      "seconds": 0.0
+    }
+  }
+}

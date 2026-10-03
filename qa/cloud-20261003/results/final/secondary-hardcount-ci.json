@@ -1,0 +1,42 @@
+{
+  "measurement": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/final/secondary-hardcount.json",
+  "statistic": "median baseline wall_ms / median candidate wall_ms",
+  "resampling": "paired by rep;warmups excluded;percentile bootstrap",
+  "bootstrap_samples": 5000,
+  "seed": 20261003,
+  "cases": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "paired_repetitions": 300,
+      "baseline_median_ms": 38.3962995,
+      "candidate_median_ms": 34.262893,
+      "speedup": 1.1206379887419313,
+      "paired_bootstrap_95_ci": [
+        1.1083858393754855,
+        1.1333871702531455
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "paired_repetitions": 300,
+      "baseline_median_ms": 11.126199,
+      "candidate_median_ms": 10.2908185,
+      "speedup": 1.0811772649571072,
+      "paired_bootstrap_95_ci": [
+        1.0485821976762961,
+        1.128728277165476
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "paired_repetitions": 300,
+      "baseline_median_ms": 10.739587,
+      "candidate_median_ms": 9.7980205,
+      "speedup": 1.0960976250253816,
+      "paired_bootstrap_95_ci": [
+        1.0627487822163886,
+        1.1284490991836378
+      ]
+    }
+  ]
+}

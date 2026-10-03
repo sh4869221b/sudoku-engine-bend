@@ -1,0 +1,795 @@
+{
+  "files": [
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/build.log",
+      "copy": "38/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/differential.json",
+      "copy": "38/differential.json",
+      "sha256": "a7ade2821cbed79da0b567c62a569b40e756d411ce79ce3abc7d034521924c96"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/differential.json.raw.json.gz",
+      "copy": "38/differential.json.raw.json.gz",
+      "sha256": "1a127649d5ec0bccb62b550f4443605fb4895574e2485f568f0e8b309de2e5ed"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/differential.log",
+      "copy": "38/differential.log",
+      "sha256": "d559a0fe8018049c1f15e7c5139554b9ba85f3ac0c01b61cdc9c3c0fed6ea175"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/qa-build.log",
+      "copy": "38/qa-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/qa-check.log",
+      "copy": "38/qa-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-init-cloud/qa/cloud38/qa-run.log",
+      "copy": "38/qa-run.log",
+      "sha256": "7dccbc974e5e26b311c5c589b18b16983725169003c53c510fcce8b1b6ef5c0a"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-init-cloud.patch",
+      "copy": "38/change.patch",
+      "sha256": "8af3ab6324612d5936c6dbe3280bf830bacf3253ac3dd87327668fa8185c0ee7"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-confirm-aggregate.json",
+      "copy": "38/38-confirm-aggregate.json",
+      "sha256": "297724b6495bd7613a0d0c1bd5258dc9a9cea15179b9ccb219557f6d5fa20010"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-confirm.json",
+      "copy": "38/38-confirm.json",
+      "sha256": "09d2011023fb67e65b2d2de9ff0ca023ed4d68bcabc017b8c4e4a9d720f16596"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-confirm.json.raw.json.gz",
+      "copy": "38/38-confirm.json.raw.json.gz",
+      "sha256": "01a50db04774e5729563abe8ef13eddb6b68da66a8c936feb377ad4d24d603f6"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-confirm.log",
+      "copy": "38/38-confirm.log",
+      "sha256": "c00251129e9a8342f7bd001ad3919b1e6bdfa8476855bc06bcbb30b791f3130c"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-screen-aggregate.json",
+      "copy": "38/38-screen-aggregate.json",
+      "sha256": "19c3266ae9930aee850ada9efad624f7d4db39b2f483f871ab2c601276dcc987"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-screen.json",
+      "copy": "38/38-screen.json",
+      "sha256": "4d9e3105653faecf1f272cd71a623ca7c2ba520a7822f1327f870116bc1d10a5"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-screen.json.raw.json.gz",
+      "copy": "38/38-screen.json.raw.json.gz",
+      "sha256": "999ee30b016c19564633342e7602364b8f83ed133398f33509c83e0bdee55734"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/qa/cloud-20261003/results/38-screen.log",
+      "copy": "38/38-screen.log",
+      "sha256": "f313888cd7cedae2fd1398d156d588983bb3d1095cf1f589d7d97f0f667a989f"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/array-techniques-build.log",
+      "copy": "41/array-techniques-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/array-techniques-run.log",
+      "copy": "41/array-techniques-run.log",
+      "sha256": "0e2594697fa63c00960218ee02db82ce619a8bbde507a60489572508817dd100"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/build.log",
+      "copy": "41/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/differential.json",
+      "copy": "41/differential.json",
+      "sha256": "0fbd0e1ae38bf319b08d4730f0914f8d94f5bc3358b6b6fb5366256eb0bcfe8e"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/differential.json.raw.json.gz",
+      "copy": "41/differential.json.raw.json.gz",
+      "sha256": "5c1728a5a94357d3a3ae67497dfbdb126bd9e237038fc8ad3cd1d7e403847374"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/differential.log",
+      "copy": "41/differential.log",
+      "sha256": "a195dcf3599bc2a329cda17646230be8fcbe4f8f3e53d68c8ba1423e56f9436b"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/incremental35-aggregate.json",
+      "copy": "41/incremental35-aggregate.json",
+      "sha256": "008afe469a1eeeee2ee46c87bf191c287dcf33b0d875adeee50e61d2bfdb3da9"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/incremental35.json",
+      "copy": "41/incremental35.json",
+      "sha256": "294d7680cff18d70fd5b4a13595d32002afb5d0320f321f33b8b22d550fd49ce"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/incremental35.json.raw.json.gz",
+      "copy": "41/incremental35.json.raw.json.gz",
+      "sha256": "38d69527e956c771882577ca84134672288c4d53dc5474b72449672b67d7a552"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/incremental35.log",
+      "copy": "41/incremental35.log",
+      "sha256": "dca028bee4cd563bc61636ba44715a2ddce2b2293c8d1947ec82587a1afb7b40"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/qa-build.log",
+      "copy": "41/qa-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/qa-check.log",
+      "copy": "41/qa-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/qa-run.log",
+      "copy": "41/qa-run.log",
+      "sha256": "02db6c97ce5aa9a8ac90c5242bc1f32e4c160865695a3119f017f69308e5ccf3"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/rating-array-build.log",
+      "copy": "41/rating-array-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/rating-array-run.log",
+      "copy": "41/rating-array-run.log",
+      "sha256": "cfa69a10d91ddc1e3d4fd2f227aa13b4809c3f1418321c2d834429ce92207ee8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/rating-cache-build.log",
+      "copy": "41/rating-cache-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/rating-cache-run.log",
+      "copy": "41/rating-cache-run.log",
+      "sha256": "ce5387e038ba039c3cc144715b133d602e59a26ae1e1645edac07ca72e03bff8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/rating-index-build.log",
+      "copy": "41/rating-index-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/rating-index-run.log",
+      "copy": "41/rating-index-run.log",
+      "sha256": "e4d453c905728e40160dcdd4f811354d3f28a6e74e2299a1da32816b4cb883c5"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/screen-aggregate.json",
+      "copy": "41/screen-aggregate.json",
+      "sha256": "6cac3ba2bdc200a58a0c51851776adb4e52552156e3b5ba6463b730eaddd78ec"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/screen.json",
+      "copy": "41/screen.json",
+      "sha256": "0d24be1774f1f505860e7adb6b1756a8d930b2bf9153737838c7c03647ac474f"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/screen.json.raw.json.gz",
+      "copy": "41/screen.json.raw.json.gz",
+      "sha256": "c6e54f4770b2d61fc4ac825d3a2b8da65707fd4b4641a1a7ede5df99605993a6"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-missing-cloud/qa/cloud41/screen.log",
+      "copy": "41/screen.log",
+      "sha256": "fe58e336bf79e0143d684ce0f5c012d246541ed528c6e90d0250889c5af44aae"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-missing-cloud.patch",
+      "copy": "41/change.patch",
+      "sha256": "bbdc51be10f1185fa183b8c03fa45a1571a0b254166d6eb50fb624cc1f917f6e"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/build.log",
+      "copy": "41b/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/differential.json",
+      "copy": "41b/differential.json",
+      "sha256": "d05b365156bfe17489f3b55e8593ea1ced914601b0cfb27bb72fbd27375b8155"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/differential.json.raw.json.gz",
+      "copy": "41b/differential.json.raw.json.gz",
+      "sha256": "7d15943e1d5e43e412521f2ef7420d73f3045bf86adfbe226070b0392aa417b8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/differential.log",
+      "copy": "41b/differential.log",
+      "sha256": "633dcacd13025d10f3a42d117a3c2e402a581866831d40ee74e17e0d4e297de4"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/incremental35-aggregate.json",
+      "copy": "41b/incremental35-aggregate.json",
+      "sha256": "b23367514e377017fea8ae65507e74370bd050dd08e200bbe25585e1d3d7227a"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/incremental35.json",
+      "copy": "41b/incremental35.json",
+      "sha256": "3d67c9cf4a1189cebad1a6ccc7f88b9d585aefdbfece7347f1b6c3724f774b02"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/incremental35.json.raw.json.gz",
+      "copy": "41b/incremental35.json.raw.json.gz",
+      "sha256": "dbdcea1e2f64a3806c19334a54de9cf588d5f44deff8a909afb57739fa7d8b66"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/incremental35.log",
+      "copy": "41b/incremental35.log",
+      "sha256": "88c0696fae2aaef5ba1ebb22d6d8a866149952f6c125ca35d4fe069407bc5611"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/rating-missing-build.log",
+      "copy": "41b/rating-missing-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/rating-missing-check.log",
+      "copy": "41b/rating-missing-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/rating-missing-run.log",
+      "copy": "41b/rating-missing-run.log",
+      "sha256": "02db6c97ce5aa9a8ac90c5242bc1f32e4c160865695a3119f017f69308e5ccf3"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/rating-prepared-build.log",
+      "copy": "41b/rating-prepared-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/rating-prepared-check.log",
+      "copy": "41b/rating-prepared-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/rating-prepared-run.log",
+      "copy": "41b/rating-prepared-run.log",
+      "sha256": "7dccbc974e5e26b311c5c589b18b16983725169003c53c510fcce8b1b6ef5c0a"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/screen-aggregate.json",
+      "copy": "41b/screen-aggregate.json",
+      "sha256": "8febc9c7fd24f6609e8e0f68d442e6c7b7cc5a4dd9f03a5c522ad97129611885"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/screen.json",
+      "copy": "41b/screen.json",
+      "sha256": "b3d76e003eec56d7fbabeb1961371865d480b368aedb1e6698b28972ef1ce3d8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/screen.json.raw.json.gz",
+      "copy": "41b/screen.json.raw.json.gz",
+      "sha256": "13fe224b3494364446f96b7f430afee22e602b289fd6ac445d46f89e5ad88ec6"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-cloud/qa/cloud41b/screen.log",
+      "copy": "41b/screen.log",
+      "sha256": "a572e7e9ed2c07df260128cf45021881ff8ebd3dc1f7350ec23eee8a77f74ba4"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-joint-cloud.patch",
+      "copy": "41b/change.patch",
+      "sha256": "60788c41bad02394a09e40b9bcd5b0a793b99d2d5cfd422320942532d1bd295e"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/array-techniques-build.log",
+      "copy": "43/array-techniques-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/array-techniques-check.log",
+      "copy": "43/array-techniques-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/array-techniques-run.log",
+      "copy": "43/array-techniques-run.log",
+      "sha256": "0e2594697fa63c00960218ee02db82ce619a8bbde507a60489572508817dd100"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/build.log",
+      "copy": "43/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/differential.json",
+      "copy": "43/differential.json",
+      "sha256": "069c6f6577908cde1df1bfce8aab5355de9f7d714919360f1ffa7f54d22f9f2b"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/differential.json.raw.json.gz",
+      "copy": "43/differential.json.raw.json.gz",
+      "sha256": "af03de6d7d4e70b85c3ad0450cff68c66201493cc372ae19102e7c5e1a83fc4d"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/differential.log",
+      "copy": "43/differential.log",
+      "sha256": "1a7cbf23442170b7f8ccecff634f2e2f3d16b72d754780731261c27e4992031e"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/rating-array-build.log",
+      "copy": "43/rating-array-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/rating-array-check.log",
+      "copy": "43/rating-array-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/rating-array-run.log",
+      "copy": "43/rating-array-run.log",
+      "sha256": "cfa69a10d91ddc1e3d4fd2f227aa13b4809c3f1418321c2d834429ce92207ee8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/rating-peers-build.log",
+      "copy": "43/rating-peers-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/rating-peers-check.log",
+      "copy": "43/rating-peers-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/rating-peers-run.log",
+      "copy": "43/rating-peers-run.log",
+      "sha256": "a9768c0b5a79bf1029151ba25aae094eb772d505c3b109b20b0755bd998f3f0e"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/screen-aggregate.json",
+      "copy": "43/screen-aggregate.json",
+      "sha256": "7f78a550e18171bbb4befe421b4e11b8daf190cbce475c38a1c1d66d64a13523"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/screen.json",
+      "copy": "43/screen.json",
+      "sha256": "cdb5345d56a235466e7306888f807386488faa4bbfa281de4a86e417ae6a2a39"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/screen.json.raw.json.gz",
+      "copy": "43/screen.json.raw.json.gz",
+      "sha256": "5c000a0174ea046f8d64ade395f2de29647a55eb2854b0d8594d15b926e2130d"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-peers-cloud/qa/cloud43/screen.log",
+      "copy": "43/screen.log",
+      "sha256": "f8e73c9fa356c746af710b00083ce01806390f7f1b12ccb96dc1644881623dd9"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-peers-cloud.patch",
+      "copy": "43/change.patch",
+      "sha256": "b47a1354da4ea5d650d0073a9f5aafc8629f8ea655ae657743475b06fdacda48"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/arithmetic-build.log",
+      "copy": "46/arithmetic-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/arithmetic-check.log",
+      "copy": "46/arithmetic-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/arithmetic-run.log",
+      "copy": "46/arithmetic-run.log",
+      "sha256": "f0de7119c7df0a245417d74828eb2d7cc2fc07bab965c80d792680dac271ad29"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/array-techniques-build.log",
+      "copy": "46/array-techniques-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/array-techniques-check.log",
+      "copy": "46/array-techniques-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/array-techniques-run.log",
+      "copy": "46/array-techniques-run.log",
+      "sha256": "0e2594697fa63c00960218ee02db82ce619a8bbde507a60489572508817dd100"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/build.log",
+      "copy": "46/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/differential.json",
+      "copy": "46/differential.json",
+      "sha256": "d23b1696cab26986d4d1d9fbade639b06fcce8fab804fc868ff39a3e6d55c7bd"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/differential.json.raw.json.gz",
+      "copy": "46/differential.json.raw.json.gz",
+      "sha256": "cbbcc76f9546b10f4139a309124a78250f1e6e70c39d296465e952cdccaf19a8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/differential.log",
+      "copy": "46/differential.log",
+      "sha256": "3d55a79351c26d4c119c4ac470ae0a1bfc2cee0a6698728396f957cbfabbe7ec"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-arithmetic-build.log",
+      "copy": "46/rating-arithmetic-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-arithmetic-check.log",
+      "copy": "46/rating-arithmetic-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-arithmetic-run.log",
+      "copy": "46/rating-arithmetic-run.log",
+      "sha256": "b7c9e47201fbc24b5d97cfe90a65294d7ab640bd0b0d6a0ff29b046dca05beec"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-array-build.log",
+      "copy": "46/rating-array-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-array-check.log",
+      "copy": "46/rating-array-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-array-run.log",
+      "copy": "46/rating-array-run.log",
+      "sha256": "cfa69a10d91ddc1e3d4fd2f227aa13b4809c3f1418321c2d834429ce92207ee8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-cache-build.log",
+      "copy": "46/rating-cache-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-cache-check.log",
+      "copy": "46/rating-cache-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/rating-cache-run.log",
+      "copy": "46/rating-cache-run.log",
+      "sha256": "ce5387e038ba039c3cc144715b133d602e59a26ae1e1645edac07ca72e03bff8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/screen-aggregate.json",
+      "copy": "46/screen-aggregate.json",
+      "sha256": "5e21ad98e198c70eb728020599fef1baa74d8437cd8744a4982ed7bc456d06f3"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/screen.json",
+      "copy": "46/screen.json",
+      "sha256": "64bbab3b2486c497aa51c162a158ecc2b950f17b071fc14c7928d4ff2982e0af"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/screen.json.raw.json.gz",
+      "copy": "46/screen.json.raw.json.gz",
+      "sha256": "43a663215ec27804c54b697110c9c922ae9673e50e5672967e123e98f745ee43"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-arithmetic-cloud/qa/cloud46/screen.log",
+      "copy": "46/screen.log",
+      "sha256": "18a0d1433dca2aebdb6b9e17a220da40df5920c312ebff8dd681013f26c6eeb4"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-arithmetic-cloud.patch",
+      "copy": "46/change.patch",
+      "sha256": "9856c56b73fda8adc54eaafba9328ab5c4c51e63f6d769c5cdc2a8e0779beaac"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/array-techniques-build.log",
+      "copy": "51/array-techniques-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/array-techniques-check.log",
+      "copy": "51/array-techniques-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/array-techniques-run.log",
+      "copy": "51/array-techniques-run.log",
+      "sha256": "0e2594697fa63c00960218ee02db82ce619a8bbde507a60489572508817dd100"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/build.log",
+      "copy": "51/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/differential.json",
+      "copy": "51/differential.json",
+      "sha256": "2a4ac21205dedd87699a49f46f56125a1b3dea6dc33ad5d2122cc0dc9c54b91a"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/differential.json.raw.json.gz",
+      "copy": "51/differential.json.raw.json.gz",
+      "sha256": "4da0f82e8aefc384f801fdadb4569714869bb45e3786d23f7004690d49a1ad38"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/differential.log",
+      "copy": "51/differential.log",
+      "sha256": "ceab0171a9225d3de580d0b3b33d26c1074cdb6aaeccabb12b646d38fde35614"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/rating-array-build.log",
+      "copy": "51/rating-array-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/rating-array-check.log",
+      "copy": "51/rating-array-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/rating-array-run.log",
+      "copy": "51/rating-array-run.log",
+      "sha256": "cfa69a10d91ddc1e3d4fd2f227aa13b4809c3f1418321c2d834429ce92207ee8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/rating-intersection-build.log",
+      "copy": "51/rating-intersection-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/rating-intersection-check.log",
+      "copy": "51/rating-intersection-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/rating-intersection-run.log",
+      "copy": "51/rating-intersection-run.log",
+      "sha256": "be891bfd8a9a61c36afb23eaddf362b096b51170e9c74c4a90d1931999a530ce"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/screen-aggregate.json",
+      "copy": "51/screen-aggregate.json",
+      "sha256": "88ec9b7166bec065628fc6e4b7dc6bfd8450a52504dc08d724409f1833c7657c"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/screen.json",
+      "copy": "51/screen.json",
+      "sha256": "4153a7e350f06aee4304eaa5dd10d3780779e620cf8b97d1391c409219913114"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/screen.json.raw.json.gz",
+      "copy": "51/screen.json.raw.json.gz",
+      "sha256": "7aec7b9ae167f42606dca8a520e729dff64a7da5a6b9e9d143b1413063335c20"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-intersection-cloud/qa/cloud51/screen.log",
+      "copy": "51/screen.log",
+      "sha256": "2cc645b7ba2041786089eb1e5cbdceca55f394a0ad9face8b1af096b6cf106a8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-intersection-cloud.patch",
+      "copy": "51/change.patch",
+      "sha256": "2eff46c8899869a37e068463ce5f28a65d65b21fe72652eeea0a90a432ca54fc"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/array-techniques-build.log",
+      "copy": "41b-on52/array-techniques-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/array-techniques-check.log",
+      "copy": "41b-on52/array-techniques-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/array-techniques-run.log",
+      "copy": "41b-on52/array-techniques-run.log",
+      "sha256": "0e2594697fa63c00960218ee02db82ce619a8bbde507a60489572508817dd100"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/binary-hashes.json",
+      "copy": "41b-on52/binary-hashes.json",
+      "sha256": "7a519afc4ae0ec66ec08efd04a3ac467d2f8ed1c40887ba0945d8ad8f0bdf57a"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block1.json",
+      "copy": "41b-on52/block1.json",
+      "sha256": "adb275afa52b239c9ae19425ad616bade5a6b872dab1647be18f136b7c120b7b"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block1.json.raw.json.gz",
+      "copy": "41b-on52/block1.json.raw.json.gz",
+      "sha256": "a41e689e487a0ae061599b14c8ee2e621d7e08fb88b7da65c7156cb84fafcb6d"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block1.log",
+      "copy": "41b-on52/block1.log",
+      "sha256": "9778de85ba80464ce98c25b832dddb172cff6759da40dec6aa8432d9574ddd81"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block2.json",
+      "copy": "41b-on52/block2.json",
+      "sha256": "ae4db3b635cf5365d34dd3450399f63a432149962988d97eea912ee4a4a2886d"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block2.json.raw.json.gz",
+      "copy": "41b-on52/block2.json.raw.json.gz",
+      "sha256": "dffd61adcde9fd4acf86677308284911869e7df71afb68544ce2fce0d7942ca6"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block2.log",
+      "copy": "41b-on52/block2.log",
+      "sha256": "6a6aa6a1b6227b852e6e24c2ad7064e2cf565396fd6b459555caa3172886b927"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block3.json",
+      "copy": "41b-on52/block3.json",
+      "sha256": "ee9a9f41f6fc5e539435c9ae844359f944a3a099f45760d06530c29405436664"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block3.json.raw.json.gz",
+      "copy": "41b-on52/block3.json.raw.json.gz",
+      "sha256": "9de8c197a96e39370bc732b4b40555230c2b0ad487d687bedeb6cbba1e1feb14"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/block3.log",
+      "copy": "41b-on52/block3.log",
+      "sha256": "2aec68e6ac984bbed7f4e5d86c264a36f406a7ef2f3fdf2cb711314f774a3a29"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/build.log",
+      "copy": "41b-on52/build.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/candidate-digits-build.log",
+      "copy": "41b-on52/candidate-digits-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/candidate-digits-check.log",
+      "copy": "41b-on52/candidate-digits-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/candidate-digits-run.log",
+      "copy": "41b-on52/candidate-digits-run.log",
+      "sha256": "808c86382b524781f38ae938f66be78604c458ab8419be03a10a2c5204532e76"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/decision.json",
+      "copy": "41b-on52/decision.json",
+      "sha256": "6b186ebd2dcb7af42b01df0b1b39b49a2c8b41b814f4b9e0057ecb331475a66b"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/differential.json",
+      "copy": "41b-on52/differential.json",
+      "sha256": "ae9a87d07217f4514d273bfe504019c708899131a03a7d4949b4d567d558fa43"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/differential.json.raw.json.gz",
+      "copy": "41b-on52/differential.json.raw.json.gz",
+      "sha256": "0bdf34e4732c07f74c32e38a60b3964847253d42d9a19fad384f8486d7ed4f11"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/differential.log",
+      "copy": "41b-on52/differential.log",
+      "sha256": "555c6c906a9943125808d0ee2eb22808aa3bdd53d130e510099ec824c361a01d"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/optimization-build.log",
+      "copy": "41b-on52/optimization-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/optimization-check.log",
+      "copy": "41b-on52/optimization-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/optimization-run.log",
+      "copy": "41b-on52/optimization-run.log",
+      "sha256": "f3aa8624a1c7501690e8ab68752a26b3be9e37c06874929c3cfa01505a152715"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/pooled-record-validation.json",
+      "copy": "41b-on52/pooled-record-validation.json",
+      "sha256": "ed96e7bbf277e2dffe99093b5267707c111c31b6300a9915dfdd7c1d089e682f"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/pooled63-aggregate.json",
+      "copy": "41b-on52/pooled63-aggregate.json",
+      "sha256": "f294dc4ea471ae9f6759c030643b39411166c815686ba4794a8da58f0fbbae59"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/pooled63.json",
+      "copy": "41b-on52/pooled63.json",
+      "sha256": "5e5b076dee8223dc60a3a8005f10eb485a98c6c834bfe374d583ae9e3a6b108f"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/pooled63.json.raw.json.gz",
+      "copy": "41b-on52/pooled63.json.raw.json.gz",
+      "sha256": "a57063daaf5637ab328c093b525b20965cff8d7b70d90e4b9563fe048d78aba5"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/protocol.json",
+      "copy": "41b-on52/protocol.json",
+      "sha256": "b4b69edf37a10555c90b63e4781941b16ff69bb6c7ec9e66e9e9c5c7f8a4e9ab"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-array-build.log",
+      "copy": "41b-on52/rating-array-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-array-check.log",
+      "copy": "41b-on52/rating-array-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-array-run.log",
+      "copy": "41b-on52/rating-array-run.log",
+      "sha256": "cfa69a10d91ddc1e3d4fd2f227aa13b4809c3f1418321c2d834429ce92207ee8"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-missing-build.log",
+      "copy": "41b-on52/rating-missing-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-missing-check.log",
+      "copy": "41b-on52/rating-missing-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-missing-run.log",
+      "copy": "41b-on52/rating-missing-run.log",
+      "sha256": "02db6c97ce5aa9a8ac90c5242bc1f32e4c160865695a3119f017f69308e5ccf3"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-prepared-build.log",
+      "copy": "41b-on52/rating-prepared-build.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-prepared-check.log",
+      "copy": "41b-on52/rating-prepared-check.log",
+      "sha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/qa/cloud41b-on52/rating-prepared-run.log",
+      "copy": "41b-on52/rating-prepared-run.log",
+      "sha256": "7dccbc974e5e26b311c5c589b18b16983725169003c53c510fcce8b1b6ef5c0a"
+    },
+    {
+      "source": "/workspace/scratch/b81277eea609/rating-joint-on52-incremental.patch",
+      "copy": "41b-on52/change.patch",
+      "sha256": "60788c41bad02394a09e40b9bcd5b0a793b99d2d5cfd422320942532d1bd295e"
+    }
+  ],
+  "verification": "Every copied file was SHA-256 compared to its unchanged original immediately after copying."
+}

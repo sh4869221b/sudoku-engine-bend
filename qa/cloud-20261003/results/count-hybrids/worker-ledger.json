@@ -1,0 +1,194 @@
+[
+  {
+    "trial": "59",
+    "status": "REJECTED",
+    "source_base_commit": "6bf2bb8fc89904d9df5d00ddf3c08bd60b339cc6",
+    "candidate_sha256": "fecb11eb4c7cb4ca1fd7073726492e563a46b94e7473073928a2981ef5262044",
+    "comparison": "accepted54",
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 449.516857,
+      "candidate_sum_median_ms": 467.111876,
+      "primary_speedup": 0.962332323573807,
+      "paired_bootstrap_95_ci": [
+        0.9521433183836394,
+        0.9749848349508718
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "hard100count": [
+      {
+        "case": "batch_hard-100_count_t1",
+        "speedup": 0.9015157043533256,
+        "paired_bootstrap_95_ci": [
+          0.8774407836903251,
+          0.941848424781233
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 38.877478,
+        "candidate_median_ms": 43.124571
+      },
+      {
+        "case": "batch_hard-100_count_t8",
+        "speedup": 0.8961046265881252,
+        "paired_bootstrap_95_ci": [
+          0.800981127216474,
+          0.9761364780364145
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 10.801569,
+        "candidate_median_ms": 12.053915
+      },
+      {
+        "case": "batch_hard-100_count_t16",
+        "speedup": 0.9084760821816461,
+        "paired_bootstrap_95_ci": [
+          0.8161621503727507,
+          1.0248950536338952
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 10.633976,
+        "candidate_median_ms": 11.70529
+      }
+    ],
+    "correctness": {
+      "exact_fuel": 6060,
+      "cli": 1931,
+      "invariants": "PASS: row/scalar or legacy low-occupancy/MRV + active-mask/choice",
+      "build": "PASS",
+      "full_lean_verdict": "NOT_RUN: rejected after requested focused QA"
+    },
+    "direct52": "NOT_RUN: no confirmed winning hybrid",
+    "decision": "See 59/decision.json",
+    "artifacts": "59/"
+  },
+  {
+    "trial": "59b",
+    "status": "REJECTED",
+    "source_base_commit": "6bf2bb8fc89904d9df5d00ddf3c08bd60b339cc6",
+    "candidate_sha256": "9441154ff4aa77602cb2692c28ac052204152fcbd5666e87182f4f0a805129ee",
+    "comparison": "accepted54",
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 447.09491,
+      "candidate_sum_median_ms": 453.218372,
+      "primary_speedup": 0.9864889369489197,
+      "paired_bootstrap_95_ci": [
+        0.976346938351677,
+        1.0043978062761119
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "hard100count": [
+      {
+        "case": "batch_hard-100_count_t1",
+        "speedup": 0.9332323658881319,
+        "paired_bootstrap_95_ci": [
+          0.900429608066407,
+          1.0137538637335124
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 38.978557,
+        "candidate_median_ms": 41.767258
+      },
+      {
+        "case": "batch_hard-100_count_t8",
+        "speedup": 0.989378771572316,
+        "paired_bootstrap_95_ci": [
+          0.9024485739183146,
+          1.097701616858835
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 10.536131,
+        "candidate_median_ms": 10.649239
+      },
+      {
+        "case": "batch_hard-100_count_t16",
+        "speedup": 0.9422970663713125,
+        "paired_bootstrap_95_ci": [
+          0.8595054662698698,
+          1.082500865041442
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 10.63636,
+        "candidate_median_ms": 11.287693
+      }
+    ],
+    "correctness": {
+      "exact_fuel": 6060,
+      "cli": 1931,
+      "invariants": "PASS: row/scalar or legacy low-occupancy/MRV + active-mask/choice",
+      "build": "PASS",
+      "full_lean_verdict": "NOT_RUN: rejected after requested focused QA"
+    },
+    "direct52": "NOT_RUN: no confirmed winning hybrid",
+    "decision": "See 59b/decision.json",
+    "artifacts": "59b/"
+  },
+  {
+    "trial": "60",
+    "status": "REJECTED",
+    "source_base_commit": "6bf2bb8fc89904d9df5d00ddf3c08bd60b339cc6",
+    "candidate_sha256": "23d70c1b14ca7cd0fecd1f5009fdd40f6fcf303045ad0ad3d53b36d9bfad3426",
+    "comparison": "accepted54",
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 446.486117,
+      "candidate_sum_median_ms": 442.462234,
+      "primary_speedup": 1.009094297073951,
+      "paired_bootstrap_95_ci": [
+        0.9962483227318822,
+        1.021997720740147
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "hard100count": [
+      {
+        "case": "batch_hard-100_count_t1",
+        "speedup": 0.9848985655263247,
+        "paired_bootstrap_95_ci": [
+          0.9612342548425412,
+          1.0193518444918692
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 38.432896,
+        "candidate_median_ms": 39.022187
+      },
+      {
+        "case": "batch_hard-100_count_t8",
+        "speedup": 0.9924557192187762,
+        "paired_bootstrap_95_ci": [
+          0.822759071067486,
+          1.1487933343847214
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 10.826889,
+        "candidate_median_ms": 10.909191
+      },
+      {
+        "case": "batch_hard-100_count_t16",
+        "speedup": 0.9874644363316349,
+        "paired_bootstrap_95_ci": [
+          0.9244458691111308,
+          1.1327044510041244
+        ],
+        "pairs": 21,
+        "baseline_median_ms": 10.83468,
+        "candidate_median_ms": 10.972223
+      }
+    ],
+    "correctness": {
+      "exact_fuel": 6060,
+      "cli": 1931,
+      "invariants": "PASS: row/scalar or legacy low-occupancy/MRV + active-mask/choice",
+      "build": "PASS",
+      "full_lean_verdict": "NOT_RUN: rejected after requested focused QA"
+    },
+    "direct52": "NOT_RUN: no confirmed winning hybrid",
+    "decision": "See 60/decision.json",
+    "artifacts": "60/"
+  }
+]

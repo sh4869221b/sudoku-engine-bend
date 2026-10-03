@@ -1,0 +1,5 @@
+START 7 reverse board rendering accumulator
+{"number": 7, "idea": "reverse board rendering accumulator", "accepted": false, "screen_speedup": 0.9996931278013903, "cases": {"generate100_clues36": 1.0032900034990164, "batch_easy-10000_solve_t1": 0.9975831457932798, "batch_mixed-1000_solve_t1": 0.9894478715547051, "batch_hard-100_count_t1": 1.0035331523170077, "batch_rate-300_rate_t1": 1.0053079399132259, "bench_easy-10000_t1": 0.996168218610092, "bench_mixed-1000_t1": 0.9985211628431747}, "status": "TESTED"}
+START 10 specialized blank occupancy update
+{"number": 10, "idea": "specialized blank occupancy update", "accepted": false, "screen_speedup": 1.0055039144983795, "cases": {"generate100_clues36": 0.9894743998301541, "batch_easy-10000_solve_t1": 0.9932917933584673, "batch_mixed-1000_solve_t1": 1.005838225511068, "batch_hard-100_count_t1": 1.002579539237263, "batch_rate-300_rate_t1": 1.0569476245677532, "bench_easy-10000_t1": 0.98933456607968, "bench_mixed-1000_t1": 1.0033580507472677}, "status": "TESTED"}
+DONE TEN SCREENS

@@ -1,0 +1,205 @@
+{
+  "status": "PASS",
+  "Bend": "2.0.34",
+  "Clang": "19.1.7",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "machine": "x86_64",
+  "logical_cpus": 9,
+  "solve_fuel": 200000,
+  "digging_fuel": 20000,
+  "corpus": {
+    "seed_start": 1,
+    "count": 10000,
+    "clues": 36,
+    "symmetry": false,
+    "minimal": false,
+    "sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e",
+    "stderr": ""
+  },
+  "timed_scope": "batch solve plus result validation and original-clue preservation; corpus preparation and tree construction excluded",
+  "warmup": 1,
+  "repetitions": 3,
+  "records": [
+    {
+      "threads": 1,
+      "N": 1,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "2cd894a005a4fdac8e94380985e6c8fb48005050680cb2c016fa7e624ce17ede"
+    },
+    {
+      "threads": 1,
+      "N": 10,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "758d72b9f717849d18494d22954fde65fa5aad03116b04dca0004395a8e23631"
+    },
+    {
+      "threads": 1,
+      "N": 100,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "74c4d9c09ba5cdc627e9084da51c030060f2da275bcc3aae35d64acfbb44ae3c"
+    },
+    {
+      "threads": 1,
+      "N": 1000,
+      "status": "success",
+      "raw_ms": [
+        3,
+        3,
+        3
+      ],
+      "median_ms": 3,
+      "corpus_sha256": "17cb5c2744f6e11955530153ec989efd34977caadc7c8753a93cc7d9e66cfc74"
+    },
+    {
+      "threads": 1,
+      "N": 10000,
+      "status": "success",
+      "raw_ms": [
+        33,
+        33,
+        34
+      ],
+      "median_ms": 33,
+      "corpus_sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e"
+    },
+    {
+      "threads": 8,
+      "N": 1,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "2cd894a005a4fdac8e94380985e6c8fb48005050680cb2c016fa7e624ce17ede"
+    },
+    {
+      "threads": 8,
+      "N": 10,
+      "status": "success",
+      "raw_ms": [
+        1,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "758d72b9f717849d18494d22954fde65fa5aad03116b04dca0004395a8e23631"
+    },
+    {
+      "threads": 8,
+      "N": 100,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "74c4d9c09ba5cdc627e9084da51c030060f2da275bcc3aae35d64acfbb44ae3c"
+    },
+    {
+      "threads": 8,
+      "N": 1000,
+      "status": "success",
+      "raw_ms": [
+        1,
+        1,
+        2
+      ],
+      "median_ms": 1,
+      "corpus_sha256": "17cb5c2744f6e11955530153ec989efd34977caadc7c8753a93cc7d9e66cfc74"
+    },
+    {
+      "threads": 8,
+      "N": 10000,
+      "status": "success",
+      "raw_ms": [
+        6,
+        7,
+        8
+      ],
+      "median_ms": 7,
+      "corpus_sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e"
+    },
+    {
+      "threads": 16,
+      "N": 1,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "2cd894a005a4fdac8e94380985e6c8fb48005050680cb2c016fa7e624ce17ede"
+    },
+    {
+      "threads": 16,
+      "N": 10,
+      "status": "success",
+      "raw_ms": [
+        0,
+        0,
+        0
+      ],
+      "median_ms": 0,
+      "corpus_sha256": "758d72b9f717849d18494d22954fde65fa5aad03116b04dca0004395a8e23631"
+    },
+    {
+      "threads": 16,
+      "N": 100,
+      "status": "success",
+      "raw_ms": [
+        1,
+        1,
+        1
+      ],
+      "median_ms": 1,
+      "corpus_sha256": "74c4d9c09ba5cdc627e9084da51c030060f2da275bcc3aae35d64acfbb44ae3c"
+    },
+    {
+      "threads": 16,
+      "N": 1000,
+      "status": "success",
+      "raw_ms": [
+        1,
+        2,
+        2
+      ],
+      "median_ms": 2,
+      "corpus_sha256": "17cb5c2744f6e11955530153ec989efd34977caadc7c8753a93cc7d9e66cfc74"
+    },
+    {
+      "threads": 16,
+      "N": 10000,
+      "status": "success",
+      "raw_ms": [
+        8,
+        10,
+        8
+      ],
+      "median_ms": 8,
+      "corpus_sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e"
+    }
+  ],
+  "wall_seconds": 1.477
+}

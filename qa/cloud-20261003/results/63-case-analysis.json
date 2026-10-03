@@ -1,0 +1,379 @@
+{
+  "statistic": "median baseline/candidate wall_ms; paired5000 bootstrap; seed20261003;21pairs each",
+  "cases": [
+    {
+      "case": "solve_new_easy",
+      "baseline_median_ms": 0.971606,
+      "candidate_median_ms": 0.946168,
+      "speedup": 1.0268852888704754,
+      "paired_bootstrap_95_ci": [
+        0.9804644967279369,
+        1.085916489738146
+      ]
+    },
+    {
+      "case": "solve_original_hard",
+      "baseline_median_ms": 1.926117,
+      "candidate_median_ms": 1.973547,
+      "speedup": 0.9759671292348244,
+      "paired_bootstrap_95_ci": [
+        0.9356472718582799,
+        1.0410026523294882
+      ]
+    },
+    {
+      "case": "solve_new_complete",
+      "baseline_median_ms": 0.988616,
+      "candidate_median_ms": 0.98816,
+      "speedup": 1.00046146373057,
+      "paired_bootstrap_95_ci": [
+        0.9496486592219575,
+        1.0626780655811205
+      ]
+    },
+    {
+      "case": "solve_new_multi_solution",
+      "baseline_median_ms": 0.952958,
+      "candidate_median_ms": 0.946889,
+      "speedup": 1.0064094101842982,
+      "paired_bootstrap_95_ci": [
+        0.9555007458690526,
+        1.061323730190277
+      ]
+    },
+    {
+      "case": "count_new_easy",
+      "baseline_median_ms": 0.985917,
+      "candidate_median_ms": 0.945217,
+      "speedup": 1.043058895470564,
+      "paired_bootstrap_95_ci": [
+        0.9998367269120698,
+        1.096259269829235
+      ]
+    },
+    {
+      "case": "count_original_hard",
+      "baseline_median_ms": 2.528668,
+      "candidate_median_ms": 2.550349,
+      "speedup": 0.9914988105549476,
+      "paired_bootstrap_95_ci": [
+        0.9505918065240773,
+        1.0343091789169605
+      ]
+    },
+    {
+      "case": "count_new_complete",
+      "baseline_median_ms": 0.961231,
+      "candidate_median_ms": 0.929133,
+      "speedup": 1.0345461844536787,
+      "paired_bootstrap_95_ci": [
+        0.9670276520175947,
+        1.0903218342042846
+      ]
+    },
+    {
+      "case": "count_new_multi_solution",
+      "baseline_median_ms": 0.971081,
+      "candidate_median_ms": 0.927991,
+      "speedup": 1.0464336399814222,
+      "paired_bootstrap_95_ci": [
+        0.9694060682721688,
+        1.0728994527947673
+      ]
+    },
+    {
+      "case": "rate_new_easy",
+      "baseline_median_ms": 1.04545,
+      "candidate_median_ms": 0.992166,
+      "speedup": 1.0537047227984027,
+      "paired_bootstrap_95_ci": [
+        0.9458101277671174,
+        1.0940398299578988
+      ]
+    },
+    {
+      "case": "rate_original_hard",
+      "baseline_median_ms": 1.067568,
+      "candidate_median_ms": 1.021881,
+      "speedup": 1.0447087283157237,
+      "paired_bootstrap_95_ci": [
+        0.9250960295458456,
+        1.096529166625617
+      ]
+    },
+    {
+      "case": "rate_new_complete",
+      "baseline_median_ms": 0.988721,
+      "candidate_median_ms": 0.963319,
+      "speedup": 1.0263692504767372,
+      "paired_bootstrap_95_ci": [
+        0.9595375954804257,
+        1.0757506378664803
+      ]
+    },
+    {
+      "case": "rate_new_multi_solution",
+      "baseline_median_ms": 1.010033,
+      "candidate_median_ms": 1.026026,
+      "speedup": 0.984412675702175,
+      "paired_bootstrap_95_ci": [
+        0.9463718796462032,
+        1.03369422760258
+      ]
+    },
+    {
+      "case": "generate100_clues36",
+      "baseline_median_ms": 8.502717,
+      "candidate_median_ms": 8.825978,
+      "speedup": 0.9633739173154523,
+      "paired_bootstrap_95_ci": [
+        0.9257939183413307,
+        1.0062169383543929
+      ]
+    },
+    {
+      "case": "generate_minimal",
+      "baseline_median_ms": 1.392884,
+      "candidate_median_ms": 1.409744,
+      "speedup": 0.988040381799816,
+      "paired_bootstrap_95_ci": [
+        0.9210089530272679,
+        1.0474692150195193
+      ]
+    },
+    {
+      "case": "batch_easy-10000_solve_t1",
+      "baseline_median_ms": 72.915383,
+      "candidate_median_ms": 74.214683,
+      "speedup": 0.982492682748507,
+      "paired_bootstrap_95_ci": [
+        0.9595772414540947,
+        0.9976333892700903
+      ]
+    },
+    {
+      "case": "batch_mixed-1000_solve_t1",
+      "baseline_median_ms": 10.371668,
+      "candidate_median_ms": 10.536902,
+      "speedup": 0.9843185406868167,
+      "paired_bootstrap_95_ci": [
+        0.955715295537356,
+        1.0304388429243967
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t1",
+      "baseline_median_ms": 35.805968,
+      "candidate_median_ms": 34.8597,
+      "speedup": 1.0271450414088477,
+      "paired_bootstrap_95_ci": [
+        0.9552443393518263,
+        1.0908453481800764
+      ]
+    },
+    {
+      "case": "batch_rate-300_rate_t1",
+      "baseline_median_ms": 15.210991,
+      "candidate_median_ms": 15.381212,
+      "speedup": 0.9889331867995839,
+      "paired_bootstrap_95_ci": [
+        0.9688252132476343,
+        1.0242621322689005
+      ]
+    },
+    {
+      "case": "batch_verification_check_t1",
+      "baseline_median_ms": 1.496682,
+      "candidate_median_ms": 1.534659,
+      "speedup": 0.975253786020217,
+      "paired_bootstrap_95_ci": [
+        0.9032385723666758,
+        1.0667190561551458
+      ]
+    },
+    {
+      "case": "bench_easy-10000_t1",
+      "baseline_median_ms": 61.355578,
+      "candidate_median_ms": 58.24008,
+      "speedup": 1.053494054266409,
+      "paired_bootstrap_95_ci": [
+        1.0114534448174133,
+        1.127197078025992
+      ],
+      "internal_ms": {
+        "baseline": 30,
+        "candidate": 25
+      }
+    },
+    {
+      "case": "bench_mixed-1000_t1",
+      "baseline_median_ms": 9.796178,
+      "candidate_median_ms": 9.731958,
+      "speedup": 1.006598877635929,
+      "paired_bootstrap_95_ci": [
+        0.9765039059971281,
+        1.0812244668080235
+      ],
+      "internal_ms": {
+        "baseline": 5,
+        "candidate": 5
+      }
+    },
+    {
+      "case": "batch_easy-10000_solve_t8",
+      "baseline_median_ms": 39.363526,
+      "candidate_median_ms": 39.812079,
+      "speedup": 0.9887332434962767,
+      "paired_bootstrap_95_ci": [
+        0.9260755222113908,
+        1.0468981453701318
+      ]
+    },
+    {
+      "case": "batch_mixed-1000_solve_t8",
+      "baseline_median_ms": 6.375232,
+      "candidate_median_ms": 6.350896,
+      "speedup": 1.0038319002547043,
+      "paired_bootstrap_95_ci": [
+        0.9434377079043186,
+        1.0352592241604968
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "baseline_median_ms": 10.452769,
+      "candidate_median_ms": 10.912378,
+      "speedup": 0.9578818658957745,
+      "paired_bootstrap_95_ci": [
+        0.8655206958556604,
+        1.1356814325102282
+      ]
+    },
+    {
+      "case": "batch_rate-300_rate_t8",
+      "baseline_median_ms": 5.924111,
+      "candidate_median_ms": 5.721236,
+      "speedup": 1.0354599950080716,
+      "paired_bootstrap_95_ci": [
+        0.9030071104926435,
+        1.185721404099785
+      ]
+    },
+    {
+      "case": "batch_verification_check_t8",
+      "baseline_median_ms": 1.891966,
+      "candidate_median_ms": 1.911905,
+      "speedup": 0.9895711345490493,
+      "paired_bootstrap_95_ci": [
+        0.9551818128679558,
+        1.0695597553572316
+      ]
+    },
+    {
+      "case": "bench_easy-10000_t8",
+      "baseline_median_ms": 30.359659,
+      "candidate_median_ms": 29.411368,
+      "speedup": 1.032242328884532,
+      "paired_bootstrap_95_ci": [
+        0.9911677291886638,
+        1.064066104893585
+      ],
+      "internal_ms": {
+        "baseline": 6,
+        "candidate": 5
+      }
+    },
+    {
+      "case": "bench_mixed-1000_t8",
+      "baseline_median_ms": 5.864467,
+      "candidate_median_ms": 6.035339,
+      "speedup": 0.9716880857893816,
+      "paired_bootstrap_95_ci": [
+        0.9276049005652641,
+        1.0647437290604105
+      ],
+      "internal_ms": {
+        "baseline": 2,
+        "candidate": 2
+      }
+    },
+    {
+      "case": "batch_easy-10000_solve_t16",
+      "baseline_median_ms": 40.545208,
+      "candidate_median_ms": 40.768768,
+      "speedup": 0.9945163905860487,
+      "paired_bootstrap_95_ci": [
+        0.945233444385663,
+        1.075142235873916
+      ]
+    },
+    {
+      "case": "batch_mixed-1000_solve_t16",
+      "baseline_median_ms": 6.834161,
+      "candidate_median_ms": 6.792069,
+      "speedup": 1.0061972279728018,
+      "paired_bootstrap_95_ci": [
+        0.9125237089574939,
+        1.114875482177191
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "baseline_median_ms": 10.397909,
+      "candidate_median_ms": 9.99985,
+      "speedup": 1.0398064970974565,
+      "paired_bootstrap_95_ci": [
+        0.9067060752258957,
+        1.127761573200908
+      ]
+    },
+    {
+      "case": "batch_rate-300_rate_t16",
+      "baseline_median_ms": 6.545254,
+      "candidate_median_ms": 6.340601,
+      "speedup": 1.032276593338707,
+      "paired_bootstrap_95_ci": [
+        0.9691196611502898,
+        1.1071395267876016
+      ]
+    },
+    {
+      "case": "batch_verification_check_t16",
+      "baseline_median_ms": 2.392687,
+      "candidate_median_ms": 2.358156,
+      "speedup": 1.0146432212287906,
+      "paired_bootstrap_95_ci": [
+        0.9474288789963646,
+        1.0634320034058853
+      ]
+    },
+    {
+      "case": "bench_easy-10000_t16",
+      "baseline_median_ms": 32.347781,
+      "candidate_median_ms": 31.848002,
+      "speedup": 1.015692632774891,
+      "paired_bootstrap_95_ci": [
+        0.9399967483310151,
+        1.0459378301223368
+      ],
+      "internal_ms": {
+        "baseline": 7,
+        "candidate": 6
+      }
+    },
+    {
+      "case": "bench_mixed-1000_t16",
+      "baseline_median_ms": 6.524634,
+      "candidate_median_ms": 6.696007,
+      "speedup": 0.974406687448206,
+      "paired_bootstrap_95_ci": [
+        0.9306429579759731,
+        1.1211894633971315
+      ],
+      "internal_ms": {
+        "baseline": 2,
+        "candidate": 2
+      }
+    }
+  ]
+}

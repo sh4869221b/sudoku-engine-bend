@@ -1,0 +1,32 @@
+{
+  "trial": 37,
+  "idea": "Dense de Bruijn decoder for known one-hot adaptive-search digit bits",
+  "accepted": false,
+  "status": "TESTED",
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 265.196122,
+    "candidate_sum_median_ms": 260.499618,
+    "primary_speedup": 1.0180288325797084,
+    "paired_bootstrap_95_ci": [
+      0.9904084565817086,
+      1.0386544553288561
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 532.067827,
+    "candidate_sum_median_ms": 531.878571,
+    "primary_speedup": 1.0003558255780904,
+    "paired_bootstrap_95_ci": [
+      0.986024037637017,
+      1.0160340416342324
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "1931 CLI comparisons,6060 exact state/fuel observations,32 one-hot indices,9 actual Sudoku digits,1024 lowmask/zero-guard cases",
+  "reason": "Full35-case21rep aggregate1.00036,95%CI0.9860-1.0160; no verified gain. Sparse nine-way micro03 was not repeated."
+}

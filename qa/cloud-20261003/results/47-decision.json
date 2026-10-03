@@ -1,0 +1,58 @@
+{
+  "trial": 47,
+  "status": "REJECTED_AFTER_SCREEN",
+  "worktree": "/workspace/scratch/b81277eea609/sudoku-bend-buffer-cloud",
+  "base_git_head": "2541ccac10680e1c200c81eabc9390fc215a480c",
+  "incremental_baseline": "cloud-trial42",
+  "baseline_sha256": "db3a36cf79736091a1ad723879c73426c1df031e929c92a911fe5029a96675ac",
+  "candidate": "cloud-trial47",
+  "candidate_sha256": "0507efa223f75b4d20f3d3abcc51ddba1ad1b026217fec630dc60faf990c4e2a",
+  "design": "A single affine 128-element Array<U32> is reused across all physical lines; common lines render once backwards from the array into their final forward String. Overflow beyond128 is retained as reversed String and finalized with original text_line before prefixing the buffer. Original text_jobs remains unchanged as an independent exact Job/index/text oracle.",
+  "validation": {
+    "main_build": "PASS",
+    "new_exact_jobs_oracle": "PASS",
+    "full_cli_differential": 1931,
+    "file_differential": 129,
+    "file_random_and_edge_lines": 928,
+    "new_oracle_random_inputs": 4096,
+    "new_oracle_all_lengths": "0..260",
+    "new_oracle_long_lines": 100000,
+    "new_oracle_extra_char_values": [
+      0,
+      55296,
+      1114111,
+      4294967295
+    ],
+    "full_verify_gates": "NOT RUN: unpromising performance screen",
+    "full35case21rep": "NOT RUN: unpromising performance screen"
+  },
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 256.07421,
+    "candidate_sum_median_ms": 253.55572800000002,
+    "primary_speedup": 1.0099326566978601,
+    "paired_bootstrap_95_ci": [
+      0.9586652891974817,
+      1.0564924349225373
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "decision_reason": "Seven-case9rep screen does not establish an incremental gain; bootstrap interval contains1, and dominant easy-10000 batch is effectively unchanged (1.000439x). Do not adopt or merge source.",
+  "protocol": "Pinned shared Bend2.0.34 toolchain; entire build/QA/differential/screen/analyze pipeline held flock -x /tmp/bend-cloud-cpu.lock. Original corpora and frozen cases unchanged. No C/runtime changes, toolchain upgrades, remote push or merge.",
+  "artifacts": [
+    "47-change.patch",
+    "47-incremental-from42.patch",
+    "47-build-attempt1.log",
+    "47-build.log",
+    "47-qa-build.log",
+    "47-qa.log",
+    "47-differential.json",
+    "47-differential.json.raw.json.gz",
+    "47-file-differential.json",
+    "47-file-differential.json.raw.json.gz",
+    "47-screen.json",
+    "47-screen.json.raw.json.gz",
+    "47-screen-aggregate.json"
+  ]
+}

@@ -1,0 +1,953 @@
+[
+  {
+    "number": 11,
+    "idea": "scalar MRV scan; eliminate per-candidate Choice allocations",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 492.284187,
+      "candidate_sum_median_ms": 314.617264,
+      "primary_speedup": 1.5647081178609448,
+      "paired_bootstrap_95_ci": [
+        1.5532907027890903,
+        1.5790605011930787
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1113.131043,
+      "candidate_sum_median_ms": 533.580144,
+      "primary_speedup": 2.0861552955388833,
+      "paired_bootstrap_95_ci": [
+        2.077103876896843,
+        2.1000483946538946
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 independent CLI comparisons and full gates including6060 exact states/fuel pass",
+    "reason": "screen1.565x incremental; substantial hard count2.375x; exact selection/fuel preserved"
+  },
+  {
+    "number": 12,
+    "idea": "lazy packed candidate/count cache with unit bitmap invalidation",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 317.646966,
+      "candidate_sum_median_ms": 346.293276,
+      "primary_speedup": 0.9172773138107366,
+      "paired_bootstrap_95_ci": [
+        0.9064929511524806,
+        0.9286813013861552
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "variant_screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 314.503734,
+      "candidate_sum_median_ms": 380.92238,
+      "primary_speedup": 0.8256373227532602,
+      "paired_bootstrap_95_ci": [
+        0.8215218436146116,
+        0.830122899887401
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact independent CLI comparisons pass for both versions",
+    "reason": "cache/bitmap writes and propagation cost outweigh recomputation;0.917x, scalar-flags variant0.826x; no algorithm/fuel change retained"
+  },
+  {
+    "number": 13,
+    "idea": "reuse row and box occupancy in scalar MRV scan",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 313.60424,
+      "candidate_sum_median_ms": 374.404014,
+      "primary_speedup": 0.8376091822562565,
+      "paired_bootstrap_95_ci": [
+        0.8304468856140179,
+        0.842545771585523
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact independent CLI comparisons pass",
+    "reason": "extra unit-cache state and helper overhead causes0.838x slowdown"
+  },
+  {
+    "number": 14,
+    "idea": "avoid discarded Cell branches during rating placement/elimination",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 317.350751,
+      "candidate_sum_median_ms": 317.375939,
+      "primary_speedup": 0.9999206367058594,
+      "paired_bootstrap_95_ci": [
+        0.9890699172226458,
+        1.0102554134425044
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons; every edited Cell vs unchanged D.apply and index/fuel oracles pass",
+    "reason": "rating1.017x; full screen1.000x, below reproducible meaningful effect"
+  },
+  {
+    "number": 15,
+    "idea": "affine packed rating cells and targeted action updates",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 313.25181100000003,
+      "candidate_sum_median_ms": 290.36399800000004,
+      "primary_speedup": 1.0788245552397993,
+      "paired_bootstrap_95_ci": [
+        1.069933100732252,
+        1.0849684451749597
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1074.4913960000001,
+      "candidate_sum_median_ms": 485.461266,
+      "primary_speedup": 2.2133411484161543,
+      "paired_bootstrap_95_ci": [
+        2.2037051842304862,
+        2.226552762275837
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 CLI comparisons; every action81cells and243index entries against unchanged list reference; NS/HS/LC/NP everyfuel boundaries; full gates",
+    "reason": "rating1.936x incremental and full screen1.079x; combined35-case confirmation significant"
+  },
+  {
+    "number": 16,
+    "idea": "iterate present candidate bits instead of constructing nine conditional digit nodes",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 289.396591,
+      "candidate_sum_median_ms": 283.39000599999997,
+      "primary_speedup": 1.0211954722214165,
+      "paired_bootstrap_95_ci": [
+        1.015785631275945,
+        1.029303601563804
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 485.702406,
+      "candidate_sum_median_ms": 475.689397,
+      "primary_speedup": 1.0210494685463842,
+      "paired_bootstrap_95_ci": [
+        1.0155507262116388,
+        1.0253725839071348
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1075.3722480000001,
+      "candidate_sum_median_ms": 475.153932,
+      "primary_speedup": 2.2632081428298063,
+      "paired_bootstrap_95_ci": [
+        2.2541407479649744,
+        2.278174518307887
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "8192 masks/all-upper-bits match old scanner;1931 CLI comparisons; all gates",
+    "reason": "rating1.368x incremental; significant paired35-case aggregate gain"
+  },
+  {
+    "number": 17,
+    "idea": "conflict-directed branch pruning using decision dependency sets",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 311.23067699999996,
+      "candidate_sum_median_ms": 327.61115,
+      "primary_speedup": 0.9500002579277291,
+      "paired_bootstrap_95_ci": [
+        0.8777390403608145,
+        0.975774158535218
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons pass; final semantic fuel/nogood gates not performed because performance rejects it",
+    "reason": "seven-case screen0.950x; all search workloads slower despite identical answers. Dependency tracking and larger state outweigh pruning. No fuel golden changed."
+  },
+  {
+    "number": 18,
+    "idea": "dynamic three-word bitmap of empty cells; scan only set bits",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 280.793886,
+      "candidate_sum_median_ms": 404.25392999999997,
+      "primary_speedup": 0.6945977890678763,
+      "paired_bootstrap_95_ci": [
+        0.6900161246746279,
+        0.7029064257777591
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons pass",
+    "reason": "screen0.695x; mask iteration/popcount, additional state and bitmap writes exceed saved filled-cell reads"
+  },
+  {
+    "number": 19,
+    "idea": "pack best position/candidate mask into one MRV scan word",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 282.15708,
+      "candidate_sum_median_ms": 284.837066,
+      "primary_speedup": 0.9905911613343188,
+      "paired_bootstrap_95_ci": [
+        0.985883149739847,
+        0.9989798870255926
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons pass",
+    "reason": "screen0.991x with CI below1; no gain from reduced scalar state after compiler tuple unboxing"
+  },
+  {
+    "number": 20,
+    "idea": "skip candidate-count and best-choice comparisons for filled cells",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 281.745209,
+      "candidate_sum_median_ms": 273.133957,
+      "primary_speedup": 1.0315275775102544,
+      "paired_bootstrap_95_ci": [
+        1.0235899824804096,
+        1.0391008700204873
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 478.9556,
+      "candidate_sum_median_ms": 465.859175,
+      "primary_speedup": 1.028112411867814,
+      "paired_bootstrap_95_ci": [
+        1.0212715970269277,
+        1.0330750687052737
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1085.258609,
+      "candidate_sum_median_ms": 465.615662,
+      "primary_speedup": 2.3308034878775192,
+      "paired_bootstrap_95_ci": [
+        2.3164773186713257,
+        2.4284187450150525
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons and all gates including6060 exact state/fuel observations pass",
+    "reason": "screen1.032x, hardcount1.062x; paired35-case increment1.028x confirmed CI above1"
+  },
+  {
+    "number": 21,
+    "idea": "execute LC/NP actions directly on affine packed cells without List conversion/cloning",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 274.40048,
+      "candidate_sum_median_ms": 268.215275,
+      "primary_speedup": 1.0230605993637014,
+      "paired_bootstrap_95_ci": [
+        1.0155422810599066,
+        1.0335969515903831
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 464.762416,
+      "candidate_sum_median_ms": 456.623321,
+      "primary_speedup": 1.0178245276263496,
+      "paired_bootstrap_95_ci": [
+        1.0121831476228869,
+        1.0245401679885529
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1076.057437,
+      "candidate_sum_median_ms": 452.579788,
+      "primary_speedup": 2.3776082483824927,
+      "paired_bootstrap_95_ci": [
+        2.3655943379001014,
+        2.4777337352124915
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons, all gates;180ordered advanced-action trace states plus256random candidate states and synthetic pair versus unchanged List oracle",
+    "reason": "rate3001.743x incremental; screen1.023x and paired35-case1.018x CI above1"
+  },
+  {
+    "number": 22,
+    "idea": "guess-only occupancy/board snapshots; clear forced cells without unit updates during unwind",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 266.631546,
+      "candidate_sum_median_ms": 267.235704,
+      "primary_speedup": 0.997739231730802,
+      "paired_bootstrap_95_ci": [
+        0.974909421319023,
+        1.0062625080258578
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons and6060 exact search/fuel observations pass",
+    "reason": "screen0.998x; clone allocations and snapshot stack offset fewer unwind updates. CI includes slowdown; reject"
+  },
+  {
+    "number": 23,
+    "idea": "prepare benchmark inputs once; affine prepared fork-join tree with per-job solve and full validation",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 266.941544,
+      "candidate_sum_median_ms": 244.49051599999999,
+      "primary_speedup": 1.091827807341206,
+      "paired_bootstrap_95_ci": [
+        1.0717299681890424,
+        1.096810732081237
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 706.002569,
+      "candidate_sum_median_ms": 663.196878,
+      "primary_speedup": 1.0645444700057831,
+      "paired_bootstrap_95_ci": [
+        1.050361385298159,
+        1.0755847050580978
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "repeat": {
+      "cases": 35,
+      "baseline_sum_median_ms": 521.435169,
+      "candidate_sum_median_ms": 489.245826,
+      "primary_speedup": 1.0657938019894317,
+      "paired_bootstrap_95_ci": [
+        1.0531112096309618,
+        1.0746595980154463
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1214.7264949999999,
+      "candidate_sum_median_ms": 463.739941,
+      "primary_speedup": 2.619413140003828,
+      "paired_bootstrap_95_ci": [
+        2.5796531884485874,
+        2.70160523053634
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI comparisons, all gates incl6060 fuel;100generated+edgecases validate prepared stats versus original string/reparse checks",
+    "reason": "35-case incremental1.065x independently repeats1.066x; wall time includes preparation. All N searches and original clue/full-grid/unit checks remain. Unchanged batch source also improves after whole-program recompilation; attribution beyond bench is uncertain. Host load caused higher absolute times in one run; all raw runs retained."
+  },
+  {
+    "number": 24,
+    "idea": "exact constant division via Nat conversion; bypass Bend2.0.34 U32 quotient workaround",
+    "accepted": true,
+    "status": "CONFIRMED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 295.611043,
+      "candidate_sum_median_ms": 260.556539,
+      "primary_speedup": 1.1345370342058467,
+      "paired_bootstrap_95_ci": [
+        1.1114605141632161,
+        1.1693053024363251
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 487.157642,
+      "candidate_sum_median_ms": 434.615756,
+      "primary_speedup": 1.1208927317398039,
+      "paired_bootstrap_95_ci": [
+        1.1117760877414387,
+        1.1351509299739146
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1296.6630890000001,
+      "candidate_sum_median_ms": 451.991966,
+      "primary_speedup": 2.8687746387952395,
+      "paired_bootstrap_95_ci": [
+        2.8369079073348,
+        2.910496778518253
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI, all gates incl6060fuel,4096consecutive+65536full-width random+upper U32 boundaries for div/rem3/9/27",
+    "reason": "screen1.135x, hardcount1.269x; paired35-case incremental1.121x CI above1. Same2.0.34 binary/toolchain and compiler flags; Nat conversion exact across U32 domain. Reference: official2.0.35 release U32 quotient implementation note; no compiler update."
+  },
+  {
+    "number": 25,
+    "idea": "stream physical lines into eleven compact digit words; validate at parallel leaves",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 232.067712,
+      "candidate_sum_median_ms": 229.06845800000002,
+      "primary_speedup": 1.013093264896383,
+      "paired_bootstrap_95_ci": [
+        0.9976697048105491,
+        1.0353857368878054
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 421.97855400000003,
+      "candidate_sum_median_ms": 416.363271,
+      "primary_speedup": 1.0134864993891357,
+      "paired_bootstrap_95_ci": [
+        1.0069333350425758,
+        1.0195779871447979
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI+129file comparisons928lines;1000complete/1000random arrays all128words; all gates incl four generic batch laws/6060fuel",
+    "reason": "35-case1.013x CI>1 but net too small/uneven: batch easy16threads0.920x,mixed16threads0.826x; no memory saving. Reject material parallel regressions despite bench improvement."
+  },
+  {
+    "number": 26,
+    "idea": "Fenwick order-statistic generator shuffle preserving every seed ordinal",
+    "accepted": true,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 212.869129,
+      "candidate_sum_median_ms": 209.66762,
+      "primary_speedup": 1.0152694488543343,
+      "paired_bootstrap_95_ci": [
+        1.0075218315435637,
+        1.0213494120373752
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 376.402431,
+      "candidate_sum_median_ms": 373.639002,
+      "primary_speedup": 1.0073959864607496,
+      "paired_bootstrap_95_ci": [
+        1.0018959477673293,
+        1.012528879445387
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1079.072536,
+      "candidate_sum_median_ms": 374.017368,
+      "primary_speedup": 2.885086705385296,
+      "paired_bootstrap_95_ci": [
+        2.871500010976902,
+        2.9579436561417696
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931 exact CLI; full gates/6060fuel; shuffle lengths0..81 and1000 full-width seeds for41/81 positions compared to old List shuffle",
+    "reason": "generate1001.451x; paired35-case aggregate1.007396x CI1.001896\u20131.012529, no material substantial-case regression. Fixed toolchain/output/seed sequence."
+  },
+  {
+    "number": 27,
+    "idea": "adaptive incremental candidate masks plus first zero/singleton bitmap activated at first guess; guess-only snapshots and exact forced unwind fuel",
+    "accepted": true,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 209.670274,
+      "candidate_sum_median_ms": 201.679318,
+      "primary_speedup": 1.0396220895590296,
+      "paired_bootstrap_95_ci": [
+        1.0338012174613715,
+        1.0481546931852967
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 373.105857,
+      "candidate_sum_median_ms": 361.750429,
+      "primary_speedup": 1.031390226768743,
+      "paired_bootstrap_95_ci": [
+        1.0278684253242412,
+        1.0364619316661559
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1082.473205,
+      "candidate_sum_median_ms": 363.341482,
+      "primary_speedup": 2.9792172339958696,
+      "paired_bootstrap_95_ci": [
+        2.962105710732881,
+        3.0012639788217275
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI,6060exactfuel,allgates;24000 trace calls including terminal states across4fixtures; check every active candidate mask/all81urgency bits/exact MRV position andmask against decoded independent occupancy; all32low-bit indices",
+    "reason": "Hardcount1.298x screen;35case increment1.03139 CI1.02787\u20131.03646; minor1\u20132% easy overhead included in aggregate; candidate preserves exact MRV ties/digits/one frame per fuel.",
+    "variants": [
+      {
+        "name": "27b eager initial candidate-cache activation",
+        "accepted": false,
+        "distinct_trial": false,
+        "screen": {
+          "cases": 7,
+          "baseline_sum_median_ms": 202.66825699999998,
+          "candidate_sum_median_ms": 207.948984,
+          "primary_speedup": 0.9746056609730779,
+          "paired_bootstrap_95_ci": [
+            0.9639744892688664,
+            0.9789404684939401
+          ],
+          "bootstrap_samples": 5000,
+          "seed": 20261003
+        },
+        "correctness": "1931exactCLI",
+        "reason": "same algorithm activation variant;0.9746aggregate CIbelow1; revert"
+      }
+    ]
+  },
+  {
+    "number": 28,
+    "idea": "lazy validation diagnostic construction while retaining every unit check and first error priority",
+    "accepted": true,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 202.2138,
+      "candidate_sum_median_ms": 179.652841,
+      "primary_speedup": 1.1255808640398846,
+      "paired_bootstrap_95_ci": [
+        1.1155790414850673,
+        1.138545063268189
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 359.757399,
+      "candidate_sum_median_ms": 331.232329,
+      "primary_speedup": 1.0861180129551908,
+      "paired_bootstrap_95_ci": [
+        1.0819450113690179,
+        1.0910283979345667
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1077.165332,
+      "candidate_sum_median_ms": 332.579815,
+      "primary_speedup": 3.2388175211415042,
+      "paired_bootstrap_95_ci": [
+        3.2218045113569826,
+        3.255289345558499
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI/fullgates6060fuel;2048random bounded/fullwidth UInt boards/81valid-grid edits/edge grids versus immutable old validation module",
+    "reason": "avoid27 discarded unit-diagnostic strings on valid solutions; screen1.1256,bench easy1.429;35-case increment1.0861 CI1.0819\u20131.0910, no substantial regression. All full-grid/unit/clue validation unchanged."
+  },
+  {
+    "number": 29,
+    "idea": "direct row/column strides and four residual box peers for incremental candidates; omit redundant guess urgency writes",
+    "accepted": true,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 178.045131,
+      "candidate_sum_median_ms": 172.712106,
+      "primary_speedup": 1.0308781192211274,
+      "paired_bootstrap_95_ci": [
+        1.02285155835746,
+        1.036166933943912
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 357.847649,
+      "candidate_sum_median_ms": 349.131147,
+      "primary_speedup": 1.024966268621115,
+      "paired_bootstrap_95_ci": [
+        1.0064524369561942,
+        1.0350595956661717
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1117.180245,
+      "candidate_sum_median_ms": 333.96524,
+      "primary_speedup": 3.3451991740218237,
+      "paired_bootstrap_95_ci": [
+        3.3295099570811613,
+        3.4814316892435944
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI/fullgates6060fuel; unchanged active candidate/all81urgency/exactMRV oracle passes24000trace calls",
+    "reason": "Profiling-only -pg build5samples suggested candidate placement cost, insufficient to quantify percentages. Direct geometry retains20unique peers and exact first urgent cell. Screen1.0309 hardcount1.101;35caseincrement1.02497 CI1.00645\u20131.03506."
+  },
+  {
+    "number": 30,
+    "idea": "dedicated independent complete-board OR unit validation; range/clue checks remain",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 175.380863,
+      "candidate_sum_median_ms": 174.901963,
+      "primary_speedup": 1.0027381053464792,
+      "paired_bootstrap_95_ci": [
+        0.9975353542858206,
+        1.014647390068974
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI;3072random/generated boards vsrange+unchanged duplicate checks and243all-position invalid mutations",
+    "reason": "screen1.002738 CIcrosses1; dedicated checker still rereads every27unit but no meaningful net effect",
+    "variants": [
+      {
+        "name": "30b direct unrolled unit spans; compute geometry once per unit",
+        "distinct_trial": false,
+        "accepted": false,
+        "screen": {
+          "cases": 7,
+          "baseline_sum_median_ms": 176.321937,
+          "candidate_sum_median_ms": 175.02838500000001,
+          "primary_speedup": 1.007390526970811,
+          "paired_bootstrap_95_ci": [
+            1.0006934736826112,
+            1.01508850578903
+          ],
+          "bootstrap_samples": 5000,
+          "seed": 20261003
+        },
+        "incremental": {
+          "cases": 35,
+          "baseline_sum_median_ms": 328.091265,
+          "candidate_sum_median_ms": 326.876021,
+          "primary_speedup": 1.0037177520586622,
+          "paired_bootstrap_95_ci": [
+            0.9987295325931091,
+            1.0093928031885857
+          ],
+          "bootstrap_samples": 5000,
+          "seed": 20261003
+        },
+        "correctness": "same1931/full-board oracle",
+        "reason": "35-case1.003718 CI0.998730\u20131.009393; noise not separated despitebench1.046t1, revert both"
+      }
+    ]
+  },
+  {
+    "number": 31,
+    "idea": "coarse BENCH fork-join leaves: sequential groups of4/2 searches, parallelism above",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 172.046302,
+      "candidate_sum_median_ms": 172.68934099999998,
+      "primary_speedup": 0.9962763248948875,
+      "paired_bootstrap_95_ci": [
+        0.9880345754320182,
+        1.0078138638964458
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 327.803978,
+      "candidate_sum_median_ms": 327.111085,
+      "primary_speedup": 1.0021182192587572,
+      "paired_bootstrap_95_ci": [
+        0.9980722417401345,
+        1.0089217747643604
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI and100generated BENCH stats versusstring/reparse validation, all N actual solves unchanged",
+    "reason": "7case.9963 and35case1.00212 CI.99807\u20131.00892; no meaningful effect including8/16threadcases. Revert."
+  },
+  {
+    "number": 32,
+    "idea": "exact MRV lowerbound from complete urgent bitmap: stop at first count2 when all count0/1 flags absent",
+    "accepted": true,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 174.161259,
+      "candidate_sum_median_ms": 169.135358,
+      "primary_speedup": 1.0297152591831213,
+      "paired_bootstrap_95_ci": [
+        1.0193764977569502,
+        1.0396147116468404
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 324.487477,
+      "candidate_sum_median_ms": 317.634926,
+      "primary_speedup": 1.0215736697670332,
+      "paired_bootstrap_95_ci": [
+        1.017885157069293,
+        1.0261336188699586
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1082.288015,
+      "candidate_sum_median_ms": 319.914078,
+      "primary_speedup": 3.3830584192046715,
+      "paired_bootstrap_95_ci": [
+        3.3649442450535387,
+        3.5161067941375377
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI/fullgates6060fuel; all active masks/all81urgency bits/exactMRV on trace;1024arbitrary domain ties versus independent bit-loop popcount/old0/1-stop scanner",
+    "reason": "screenhardcount1.161;35case1.021574 CI1.017885\u20131.026134. Known lower bound preserves first physical MRV tie and every fuel operation."
+  },
+  {
+    "number": 33,
+    "idea": "copy each physical input line once; terminal-CR stripping in delimiter handling",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 168.39747,
+      "candidate_sum_median_ms": 233.3146,
+      "primary_speedup": 0.7217613899858817,
+      "paired_bootstrap_95_ci": [
+        0.7115245069867232,
+        0.7259497701740486
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI/129file comparisons928lines;4096random jobs/index/text cases and100000-char lines vslegacy text_scan",
+    "reason": "String structural fuel retains shared input;0.72176aggregate CIbelow1. Revert.",
+    "variants": [
+      {
+        "name": "33b pre-count newlines for unbounded Nat structural fuel",
+        "distinct_trial": false,
+        "accepted": false,
+        "screen": {
+          "cases": 7,
+          "baseline_sum_median_ms": 167.111959,
+          "candidate_sum_median_ms": 205.108323,
+          "primary_speedup": 0.8147497700519934,
+          "paired_bootstrap_95_ci": [
+            0.8103793868693139,
+            0.8236454418943994
+          ],
+          "bootstrap_samples": 5000,
+          "seed": 20261003
+        },
+        "correctness": "same1931/file/lineoracle",
+        "reason": "pre-count eliminates retained suffix but still0.81475 CIbelow1; revert. No finite input cap introduced."
+      }
+    ]
+  },
+  {
+    "number": 34,
+    "idea": "suffix-aware solved-board rendering for batch solve; avoid rebuilding81-digit string to append newline",
+    "accepted": true,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 168.677566,
+      "candidate_sum_median_ms": 162.808798,
+      "primary_speedup": 1.0360469954455411,
+      "paired_bootstrap_95_ci": [
+        1.0240230105484616,
+        1.05087968766898
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 316.796698,
+      "candidate_sum_median_ms": 310.740235,
+      "primary_speedup": 1.0194904370848532,
+      "paired_bootstrap_95_ci": [
+        1.0157935982536814,
+        1.0240880507608396
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1082.351081,
+      "candidate_sum_median_ms": 312.668306,
+      "primary_speedup": 3.461659081621148,
+      "paired_bootstrap_95_ci": [
+        3.4446529540230157,
+        3.4766853261246906
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI/fullgates6060fuel/all4 genericbatch laws;1024wide/generated arrays vsoldshow+tail;100generated solves/invalidedges/all4mode/index UInt limits/unsolved/fuel formatting",
+    "reason": "screen1.0360;35increment1.01949 CI1.01579\u20131.02409. PublicC.eval/Reply/B.show unchanged asoracle; same full output/order."
+  },
+  {
+    "number": 35,
+    "idea": "bit-sliced digit supports/count planes with bulk20-peer elimination and cached0/1/2 bitmaps",
+    "accepted": false,
+    "status": "TESTED",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 162.294523,
+      "candidate_sum_median_ms": 163.57778000000002,
+      "primary_speedup": 0.9921550653151057,
+      "paired_bootstrap_95_ci": [
+        0.987156427719915,
+        1.0016903028912545
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "correctness": "1931exactCLI and6060exactfuel",
+    "reason": "35screen.99216 CIcross1; no meaningful net gain despitehardcount1.034; revert",
+    "variants": [
+      {
+        "name": "35b hybrid supports+packed cell masks/counts; iterate changed targets only",
+        "distinct_trial": false,
+        "accepted": false,
+        "screen": {
+          "cases": 7,
+          "baseline_sum_median_ms": 165.09328399999998,
+          "candidate_sum_median_ms": 169.084436,
+          "primary_speedup": 0.9763955092827111,
+          "paired_bootstrap_95_ci": [
+            0.9666951992226177,
+            0.9854160084158813
+          ],
+          "bootstrap_samples": 5000,
+          "seed": 20261003
+        },
+        "correctness": "1931exactCLI/6060fuel",
+        "reason": ".9764CIbelow1, revert"
+      },
+      {
+        "name": "35c compact hybrid metadata tosameArray128 snapshot size",
+        "distinct_trial": false,
+        "accepted": false,
+        "screen": {
+          "cases": 7,
+          "baseline_sum_median_ms": 163.159177,
+          "candidate_sum_median_ms": 165.815406,
+          "primary_speedup": 0.9839808069462497,
+          "paired_bootstrap_95_ci": [
+            0.971199353008928,
+            0.9920770677049633
+          ],
+          "bootstrap_samples": 5000,
+          "seed": 20261003
+        },
+        "correctness": "1931exactCLI/6060fuel",
+        "reason": ".9840CIbelow1 acrossall substantialcases, revert"
+      }
+    ]
+  }
+]

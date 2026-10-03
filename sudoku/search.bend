@@ -1,6 +1,7 @@
 import Base
 import ./candidates.bend as C
 import ./types.bend as T
+import ./adaptivesearch.bend as F
 
 # One affine board and one fixed-capacity affine stack. A frame packs position
 # (7bits), old digit (4bits), and remaining candidate mask (10bits).
@@ -81,5 +82,15 @@ def search(fuel: Nat, +limit: U32, state: SearchState) -> SearchState:
     case 1n+k Backtracking{board, frames, +depth, found}:
       search(k, limit, backtrack(U32.is_eq(depth, 0), frames, depth, found, board))
 
+def converted(state: F.State) -> SearchState:
+  match state:
+    case F.SnapshotDone{found, answer}:
+      SearchDone{found, answer}
+    case _:
+      SearchFuel{}
+
 def run(fuel: Nat, limit: U32, board: Array<U32>) -> SearchState:
-  search(fuel, limit, Searching{C.cache(board), [0 : U32*128n], 0, 0})
+  converted(F.prepared(fuel, limit, C.cache(board)))
+
+def run_prepared(fuel: Nat, limit: U32, board: Array<U32>) -> SearchState:
+  converted(F.prepared(fuel, limit, board))

@@ -1,0 +1,32 @@
+{
+  "variant": "50b-on52 count-table singleton predicate",
+  "status": "TESTED",
+  "accepted": false,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 242.563735,
+    "candidate_sum_median_ms": 238.303927,
+    "primary_speedup": 1.0178755258195977,
+    "paired_bootstrap_95_ci": [
+      0.983292128514293,
+      1.0674054286730703
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 481.376971,
+    "candidate_sum_median_ms": 478.304392,
+    "primary_speedup": 1.0064238987795036,
+    "paired_bootstrap_95_ci": [
+      0.9861581621854868,
+      1.0221993030212515
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "Same1931CLI,6060fuel,placement/active/MRV andwide predicate/count oracles pass",
+  "native_codegen": "Active placement has22 TAB_0 accesses andzero software-popcount sequences",
+  "reason": "Full35-case21rep1.00642,CI0.98616-1.02220. No established net gain."
+}

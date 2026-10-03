@@ -1,0 +1,19 @@
+{
+  "trial": 44,
+  "status": "TESTED",
+  "accepted": false,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 270.10616,
+    "candidate_sum_median_ms": 275.27335999999997,
+    "primary_speedup": 0.9812288410327829,
+    "paired_bootstrap_95_ci": [
+      0.9439144382455272,
+      1.0309925188948739
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "1931 exact CLI,6060 exact state/fuel,2916 all128-word placement comparisons",
+  "reason": "Screen0.98123,CI0.9439-1.0310; no useful net effect and hardcount regression; rejected"
+}

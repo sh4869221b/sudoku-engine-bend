@@ -1,0 +1,19 @@
+{
+  "trial": 49,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 249.592849,
+    "candidate_sum_median_ms": 254.55336200000002,
+    "primary_speedup": 0.9805128757246584,
+    "paired_bootstrap_95_ci": [
+      0.9460270586559087,
+      1.0081600813995124
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "1931CLI,6060state/fuel,2916 fullarrayplacements,24000 candidate trace calls,1024domain choices,65536 fullwidth arithmetic randoms plus12288 boundary/consecutive cases",
+  "status": "TESTED",
+  "accepted": false,
+  "reason": "Explicit shift/mask removed14 native quotient sequences but screen0.98051,CI0.94603-1.00816;target hardcount1.0034. No demonstrated net benefit;rejected."
+}

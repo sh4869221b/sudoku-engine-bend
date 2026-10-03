@@ -1,0 +1,19 @@
+{
+  "variant": "55c fixed24-visit activation with combinedactivekernel",
+  "status": "SUPERSEDED_BY62",
+  "accepted": false,
+  "confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 451.461979,
+    "candidate_sum_median_ms": 443.007935,
+    "primary_speedup": 1.0190832789484912,
+    "paired_bootstrap_95_ci": [
+      1.0064232858908344,
+      1.0368316588695066
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "Five oracles,1931CLI,6060fuelpass;fullgatesdeferredfor62ablation",
+  "reason": "Positive1.01908CI1.00642-1.03683 versus54,but62 retains54activation and hasverifiednetgain/direct52 recovery checks withlessnewstate."
+}

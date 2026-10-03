@@ -1,0 +1,20 @@
+{
+  "trial": 50,
+  "idea": "Equivalent XOR/compare singleton predicate to avoid software popcount",
+  "status": "TESTED",
+  "accepted": false,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 259.224407,
+    "candidate_sum_median_ms": 270.077922,
+    "primary_speedup": 0.9598133941507443,
+    "paired_bootstrap_95_ci": [
+      0.8717380174359155,
+      1.040872258700048
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "1931CLI,6060fuel,2916placement,24000active states,1024MRVties,all1024low masks+4096upper+32power edges+65536fullwidth random predicate/count checks",
+  "reason": "Native code retains22 software population-count sequences;screen0.95981,CI0.87174-1.04087. No demonstrated gain."
+}

@@ -1,0 +1,42 @@
+{
+  "trial": 62,
+  "status": "READY_FOR_INTEGRATION",
+  "accepted": false,
+  "idea": "54 unchanged activation/row selection plus active-kernel count-table urgency,shift/mask bitmap indexing and branchfree harmless self visits",
+  "production_changes": [
+    "sudoku/queuedcandidates.bend"
+  ],
+  "base54_files_verified_identical": [
+    "sudoku/candidates.bend",
+    "sudoku/adaptivesearch.bend",
+    "sudoku/parser.bend"
+  ],
+  "confirmation_vs54": {
+    "cases": 35,
+    "baseline_sum_median_ms": 451.082836,
+    "candidate_sum_median_ms": 437.526269,
+    "primary_speedup": 1.0309845784368206,
+    "paired_bootstrap_95_ci": [
+      1.0138862043529977,
+      1.0449678047484052
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "pooled_confirmation_vs52": {
+    "cases": 35,
+    "baseline_sum_median_ms": 470.68742249999997,
+    "candidate_sum_median_ms": 432.909313,
+    "primary_speedup": 1.08726564286225,
+    "paired_bootstrap_95_ci": [
+      1.0783954322981149,
+      1.0956951335217213
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "All five independent oracles,1931 CLI,6060 exact fuel/state and full verify --skip-benchmark PASS",
+  "not_run": "Final timing benchmark deferred;JSfileIO requires unavailable Bun",
+  "parallel_hard_count_conclusion": "Both direct52 blocks have favorable point estimates;pooled95% CIs still cross1 for8 and16threads. Recovery statistically inconclusive. t1andnetgain established.",
+  "general_contract_note": "Branchfree selfvisits rely on internal Sudoku placementdigit1..9;predicatefallback andshift/mask arithmetic retainfullU32 semantics."
+}

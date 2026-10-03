@@ -1,0 +1,72 @@
+{
+  "trial": "57b",
+  "idea": "Sole predeclared4096-job variant of trial57",
+  "accepted": false,
+  "status": "REJECTED: full35 confidence interval includes1",
+  "base_commit": "e62c7e2",
+  "base_binary": "cloud-accepted52",
+  "base_sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92",
+  "candidate_sha256": "1abe0722ba65fdca6f094d749838c37ee6c02ac5ef5612b0434e1c50490a652b",
+  "design": {
+    "chunk_jobs": 4096,
+    "chunk_limit_fixed_before_timing": true,
+    "rationale": "After57 showed persistent1thread gain but8/16thread regressions, this single variant reduces10waves to3for10000jobs. No grid or further tuning.",
+    "input": "unchanged whole-file File.read with16MiB upfront limit",
+    "recursion": "structural String-tail recursion with affine one-shot continuation; no unsafe or artificial fuel",
+    "batch_solver": "unchanged balanced build, parallel output computation and ordered leaf writer",
+    "oracles": "original text_jobs/write preserved; BENCH unchanged"
+  },
+  "correctness": {
+    "build": "ALL PROOFS CHECK",
+    "boundary_comparisons": 396,
+    "file_differential": 129,
+    "cli_differential": 1931,
+    "threads": [
+      1,
+      8,
+      16
+    ],
+    "all_passed": true
+  },
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 242.923355,
+    "candidate_sum_median_ms": 235.45339199999998,
+    "primary_speedup": 1.0317258670030118,
+    "paired_bootstrap_95_ci": [
+      1.0058304750160993,
+      1.0462992233094792
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 481.069354,
+    "candidate_sum_median_ms": 474.631239,
+    "primary_speedup": 1.0135644569320057,
+    "paired_bootstrap_95_ci": [
+      0.9988037130525471,
+      1.0299061198788937
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "selected_case_speedups": {
+    "batch_easy-10000_solve_t1": 1.052320294367956,
+    "batch_easy-10000_solve_t8": 1.0025621698106968,
+    "batch_easy-10000_solve_t16": 0.9861008921899026
+  },
+  "interpretation": "4096 largely removes the8/16thread regression of1024, while retaining a smaller t1 gain, but whole-suite confidence interval includes1. Rejected under the meaningful verified gains requirement. All data retained.",
+  "limitations": [
+    "Full aggregate proof/lane/fuel gates not run because candidate is rejected. Build checker and listed differential suites passed.",
+    "No engine-memory claim: raw Python-launcher wait4 RSS may inherit pre-exec high-water mark; C-launcher memory test not run."
+  ],
+  "scope": "Isolated worktree only; main production source unchanged; no FFI, runtime, compiler flags, toolchain change or remote push.",
+  "toolchain": {
+    "Bend": "2.0.34",
+    "Clang": "19.1.7",
+    "Lean": "4.34.1"
+  },
+  "serialization": "All compilation, QA, measurements and bootstrap analysis executed under exclusive /tmp/bend-cloud-cpu.lock."
+}

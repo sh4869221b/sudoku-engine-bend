@@ -1,4 +1,7 @@
 import Base
+import ./arithmetic.bend as M
+import ./orderstat.bend as F
+import ./prng.bend as R
 import ./board.bend as B
 import ./counter.bend as K
 import ./types.bend as T
@@ -9,10 +12,8 @@ type Rng is Data:
 def normalize(+seed: U32) -> U32:
   Bool.pick(U32, U32.is_eq(seed, 0), 2463534242, seed)
 
-def next(+seed: U32) -> U32:
-  +a = U32.xor(seed, U32.shln(seed, 13n))
-  +b = U32.xor(a, U32.shrn(a, 17n))
-  U32.xor(b, U32.shln(b, 5n))
+def next(seed: U32) -> U32:
+  R.next(seed)
 
 def random(rng: Rng) -> Rng:
   match rng:
@@ -58,19 +59,19 @@ def range(n: Nat, +start: U32) -> List<&2, U32>:
 
 # Each band/stack has an independently seeded permutation of its three entries.
 def axis(+seed: U32, +i: U32) -> U32:
-  (3 * nth(shuffle(seed, [0,1,2]), (i / 3 : U32)) + nth(shuffle(next((seed + i / 3 + 1 : U32)), [0,1,2]), (i % 3 : U32)) : U32)
+  (3 * nth(shuffle(seed, [0,1,2]), (M.div3(i) : U32)) + nth(shuffle(next((seed + M.div3(i) + 1 : U32)), [0,1,2]), (M.rem3(i) : U32)) : U32)
 
 def complete_go(n: Nat, +i: U32, +seed: U32, +digits: List<&2, U32>, b: Array<U32>) -> Array<U32>:
   match n:
     case 0n:
       b
     case 1n+k:
-      +r0 = (i / 9 : U32)
-      +c0 = (i % 9 : U32)
+      +r0 = (M.div9(i) : U32)
+      +c0 = (M.rem9(i) : U32)
       +transpose = U32.is_ne(U32.and(seed, 1), 0)
       +r = axis(next(seed), Bool.pick(U32, transpose, c0, r0))
       +c = axis(next(next(seed)), Bool.pick(U32, transpose, r0, c0))
-      +d = nth(digits, ((r * 3 + r / 3 + c) % 9 : U32))
+      +d = nth(digits, ((r * 3 + M.div3(r) + c) % 9 : U32))
       complete_go(k, (i + 1 : U32), seed, digits, Array.set(U32, b, i, d))
 
 def axis_values(n: Nat, +i: U32, +seed: U32) -> List<&2, U32>:
@@ -85,11 +86,11 @@ def complete_cached(n: Nat, +i: U32, +transpose: Bool, +rows: List<&2, U32>, +co
     case 0n:
       b
     case 1n+k:
-      +r0 = (i / 9 : U32)
-      +c0 = (i % 9 : U32)
+      +r0 = (M.div9(i) : U32)
+      +c0 = (M.rem9(i) : U32)
       +r = nth(rows, Bool.pick(U32, transpose, c0, r0))
       +c = nth(cols, Bool.pick(U32, transpose, r0, c0))
-      +d = nth(digits, ((r * 3 + r / 3 + c) % 9 : U32))
+      +d = nth(digits, ((r * 3 + M.div3(r) + c) % 9 : U32))
       complete_cached(k, (i + 1 : U32), transpose, rows, cols, digits, Array.set(U32, b, i, d))
 
 def complete(+seed: U32) -> Array<U32>:
@@ -168,4 +169,4 @@ def dig_go(units: List<&2, RemovalUnit>, +fuel: Nat, +target: U32, +symmetry: Bo
       dig_go(tail, fuel, target, symmetry, try_unit((clues >= target + size : U32), fuel, pos, symmetry, clues, size, b))
 
 def generate(fuel: Nat, +seed: U32, target: U32, +symmetry: Bool) -> DigResult:
-  dig_go(removal_units(shuffle(next(normalize(seed)), range(Bool.pick(Nat, symmetry, 41n, 81n), 0)), symmetry), fuel, target, symmetry, DigDone{complete(seed), 81})
+  dig_go(removal_units(F.shuffle(Bool.pick(Nat, symmetry, 41n, 81n), normalize(next(normalize(seed)))), symmetry), fuel, target, symmetry, DigDone{complete(seed), 81})

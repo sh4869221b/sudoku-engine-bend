@@ -4,14 +4,23 @@ import ../sudoku/commands.bend as C
 import ../sudoku/types.bend as T
 import ../sudoku/generator.bend as G
 import ../sudoku/board.bend as Board
+import ../sudoku/parser.bend as P
 
 def same(a: B.Stats, b: B.Stats) -> Bool:
   match a b:
     case B.Stats{sa, fa} B.Stats{sb, fb}:
       U32.is_eq(sa, sb) && U32.is_eq(fa, fb)
 
+def prepared_result(r: B.PreparedTree & Bool) -> B.Stats:
+  (tree, valid) = r
+  match valid:
+    case False{}:
+      B.Stats{0, 1}
+    case True{}:
+      B.prepared_run(tree)
+
 def compare(+s: String) -> Bool:
-  same(B.direct_job(s), B.count_reply(s, C.eval(1, False{}, T.solve_fuel(), T.rate_fuel(), s)))
+  same(B.direct_job(s), B.count_reply(s, C.eval(1, False{}, T.solve_fuel(), T.rate_fuel(), s))) && same(B.direct_job(s), prepared_result(B.prepare_leaf(P.prepare81(s))))
 
 def generated(r: G.DigResult) -> Bool:
   match r:

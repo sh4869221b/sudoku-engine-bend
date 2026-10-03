@@ -1,0 +1,8 @@
+{
+  "trial": 61,
+  "variant_limit": "one prescribed implementation",
+  "base": "62 active kernel with54 row selector",
+  "design": "sameRowScan field count;existingboxbaseword packs7bitbase+2bitgroup+10bitmask;sentinelgroup3loadsfirstactualbox;ascendingcolsreusecurrentgrouponly",
+  "measurement": "allrow/packet/MRV/fuel/CLI oracles;7case9rep screen against62;full35ifpromising",
+  "read_only_work_estimate": "Canonical easy fixture has416 empty visits across51 forced moves;226row/box groups,maximum190boxreads avoided. Cache adds packing and a perempty group branch;timing needed."
+}

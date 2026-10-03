@@ -1,0 +1,89 @@
+{
+  "status": "PASS",
+  "records": [
+    {
+      "corpus": "verification.txt",
+      "mode": "solve",
+      "sha256": "5bc4f43a670a83019c395b0d74c92e986e6c15b5ded17382e551526df67e2354",
+      "exit": 0
+    },
+    {
+      "corpus": "verification.txt",
+      "mode": "check",
+      "sha256": "97edc3df75603a4cac6e130cb52d277a5ac86209aeff51b9d980cba1095c24a0",
+      "exit": 0
+    },
+    {
+      "corpus": "verification.txt",
+      "mode": "count",
+      "sha256": "4e479e28f2aec8cbabc8a0a30043ebc0602fe129228e5107b10628e5d66045e7",
+      "exit": 0
+    },
+    {
+      "corpus": "verification.txt",
+      "mode": "rate",
+      "sha256": "904386e0553670f9875aa10adfc24b1cc6e2897045f4dbdf1ece1aaf8029b679",
+      "exit": 0
+    },
+    {
+      "corpus": "hard-100.txt",
+      "mode": "solve",
+      "sha256": "aaad2e4e58aa21cf4d31040ef97d7a605b306ff83c470dbad605eab3ae65d4d2",
+      "exit": 0
+    },
+    {
+      "corpus": "hard-100.txt",
+      "mode": "check",
+      "sha256": "7e3abb427fa0e83af671a6af9fcf17288e1900fec8aeee2f2ad31bff2d3ec83b",
+      "exit": 0
+    },
+    {
+      "corpus": "hard-100.txt",
+      "mode": "count",
+      "sha256": "c166a0ab49dbb0a0d9ef35ef8532fe7890a080fec3f522908cc75aab813a0842",
+      "exit": 0
+    },
+    {
+      "corpus": "hard-100.txt",
+      "mode": "rate",
+      "sha256": "8ded9f2166fa14fc4a08b77f431ad087743c798124473cf5043376c36647ad09",
+      "exit": 0
+    },
+    {
+      "corpus": "rate-300.txt",
+      "mode": "solve",
+      "sha256": "216edad0ba66240573afbec7a12bb5fdf92646fc08f13d96e47e57266be49be2",
+      "exit": 0
+    },
+    {
+      "corpus": "rate-300.txt",
+      "mode": "check",
+      "sha256": "e8981aa634b2eabc9124d3882039bf24c66f94cb7f18b8f329b4e1b16b0c98cd",
+      "exit": 0
+    },
+    {
+      "corpus": "rate-300.txt",
+      "mode": "count",
+      "sha256": "a7830d56e277072d5489d5f98097a9e491df6b1a135d9fe1176e57879214d859",
+      "exit": 0
+    },
+    {
+      "corpus": "rate-300.txt",
+      "mode": "rate",
+      "sha256": "896f36a80f52b1fd1419caae8d61953e64b3c131469fb5ae322da60b04149238",
+      "exit": 0
+    },
+    {
+      "seed": 0,
+      "sha256": "420d24a7808acba638c953ce4b98a8d69cfaada3e4bb06e38a29533e1d01bd4f"
+    },
+    {
+      "seed": 42,
+      "sha256": "783785905cb21bc7c075bf247a305fbfb85531583145d03c1b5ddaf60d2fb224"
+    },
+    {
+      "seed": 4294967295,
+      "sha256": "a9334d885cc5aa5e973b5d2415168496fbebbdea259769e6b121e14c1e80c7c2"
+    }
+  ]
+}

@@ -54,6 +54,6 @@ def emit(ok: Bool, text: String) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    emit(mask_counts(4096n, 0), "SWAR equals reference low10-bit popcount for4096masks")
+    emit(mask_counts(4096n, 0), "mask count equals reference low10-bit popcount for4096masks")
     emit(U32.is_eq(C.mask_count(4294967295), 10), "popcount upperbits ignored")
     emit(cached_seeds(100n, 0), "cached/public candidates equal100seededboards x81cells")

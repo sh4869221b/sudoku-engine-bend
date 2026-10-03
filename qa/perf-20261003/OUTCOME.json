@@ -1,0 +1,23 @@
+{
+  "baseline_commit": "343bf98cd6d2b128882bc4dcd8300df0cd2b55c6",
+  "branch": "perf/optimization-loop",
+  "implemented_validated_ideas": 10,
+  "accepted_ideas": 0,
+  "stop_condition": "Ten distinct implemented and validated ideas; 5x not achieved",
+  "engine_sources_unchanged": true,
+  "baseline_and_final_binary_equal": true,
+  "final_full_tests": "PASS",
+  "additional_differential_comparisons": 1931,
+  "final_performance": {
+    "cases": 35,
+    "baseline_sum_median_ms": 1071.078922,
+    "candidate_sum_median_ms": 1073.272762,
+    "primary_speedup": 0.9979559343368484,
+    "paired_bootstrap_95_ci": [
+      0.9918683063870022,
+      1.0362683891686972
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  }
+}

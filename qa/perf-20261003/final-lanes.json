@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "lane": "bend",
+      "command": "solve",
+      "exit": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": ""
+    },
+    {
+      "lane": "bend",
+      "command": "check",
+      "exit": 0,
+      "stdout": "valid\n",
+      "stderr": ""
+    },
+    {
+      "lane": "bend",
+      "command": "count",
+      "exit": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    },
+    {
+      "lane": "bend",
+      "command": "generate",
+      "exit": 0,
+      "stdout": "124835769583679421967241385875496132231758946649312578416523897798164253352987614\n",
+      "stderr": ""
+    },
+    {
+      "lane": "bend",
+      "command": "rate",
+      "exit": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": ""
+    },
+    {
+      "lane": "bend",
+      "command": "batch",
+      "exit": 0,
+      "stdout": "1 count:1\n",
+      "stderr": ""
+    },
+    {
+      "lane": "bend",
+      "command": "bench",
+      "exit": 0,
+      "stdout": "N=1 mode=cpu threads=runtime total_ms=1 per_ms=1\n",
+      "stderr": ""
+    },
+    {
+      "lane": "js",
+      "command": "solve",
+      "exit": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": ""
+    },
+    {
+      "lane": "js",
+      "command": "check",
+      "exit": 0,
+      "stdout": "valid\n",
+      "stderr": ""
+    },
+    {
+      "lane": "js",
+      "command": "count",
+      "exit": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    },
+    {
+      "lane": "js",
+      "command": "generate",
+      "exit": 0,
+      "stdout": "124835769583679421967241385875496132231758946649312578416523897798164253352987614\n",
+      "stderr": ""
+    },
+    {
+      "lane": "js",
+      "command": "rate",
+      "exit": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": ""
+    },
+    {
+      "lane": "js",
+      "command": "batch",
+      "status": "not-run",
+      "reason": "Bun ffi unavailable; Node does not support Bend File effects"
+    },
+    {
+      "lane": "js",
+      "command": "bench",
+      "status": "not-run",
+      "reason": "Bun ffi unavailable; Node does not support Bend File effects"
+    },
+    {
+      "lane": "native",
+      "command": "solve",
+      "exit": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "command": "check",
+      "exit": 0,
+      "stdout": "valid\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "command": "count",
+      "exit": 0,
+      "stdout": "1\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "command": "generate",
+      "exit": 0,
+      "stdout": "124835769583679421967241385875496132231758946649312578416523897798164253352987614\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "command": "rate",
+      "exit": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "command": "batch",
+      "exit": 0,
+      "stdout": "1 count:1\n",
+      "stderr": ""
+    },
+    {
+      "lane": "native",
+      "command": "bench",
+      "exit": 0,
+      "stdout": "N=1 mode=cpu threads=runtime total_ms=0 per_ms=0\n",
+      "stderr": ""
+    }
+  ]
+}

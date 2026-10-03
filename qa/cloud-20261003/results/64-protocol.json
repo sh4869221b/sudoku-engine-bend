@@ -1,0 +1,9 @@
+{
+  "trial": 64,
+  "baseline": "accepted62",
+  "idea": "Known-one-bit active placement flags exactly old low-ten-bit masks with count two, retaining public general helpers and a full-U32 fallback",
+  "variant_policy": "One fixed variant only; screen then full35x21 only if clearly positive; decision cutoff18:20UTC",
+  "correctness": "All1024 masks times32 one-hot bits and zero;65536 wide random words;arbitrary existing flags;all128-word placements;active oracle;CLI1931;fuel6060;adaptive trace",
+  "cpu_lock": "/tmp/bend-cloud-cpu.lock",
+  "no_flags_or_toolchain_changes": true
+}

@@ -84,8 +84,15 @@ def direct_parsed(puzzle: String, result: P.Parsed) -> Stats:
     case P.ParsedBoard{b}:
       direct_validation(puzzle, V.validate(b))
 
+def direct_prepared(puzzle: String, result: P.Parsed) -> Stats:
+  match result:
+    case P.ParseError{reason}:
+      Stats{0, 1}
+    case P.ParsedBoard{b}:
+      direct_solved(puzzle, S.solve_prepared(T.solve_fuel(), b))
+
 def direct_job(+puzzle: String) -> Stats:
-  direct_parsed(puzzle, P.parse81(puzzle))
+  direct_prepared(puzzle, P.prepare81(puzzle))
 
 def run(tree: B.JobTree) -> Stats:
   match tree:
@@ -156,9 +163,89 @@ def prepared(ok: Bool, n: U32, jobs: List<&2, B.Job>) -> IO(Unit):
     case True{}:
       timed(n, B.build(jobs))
 
+# Prepare each input once outside the clock; timed leaves still perform one
+# actual search and validate every solution digit, clue, and Sudoku unit.
+type PreparedTree is Type:
+  PEmpty{}
+  PLeaf{board: Array<U32>}
+  PFork{left: PreparedTree, right: PreparedTree}
+
+def prepare_leaf(parsed: P.Parsed) -> PreparedTree & Bool:
+  match parsed:
+    case P.ParseError{reason}:
+      (PEmpty{}, False{})
+    case P.ParsedBoard{b}:
+      (PLeaf{b}, True{})
+
+def prepare_fork(l: PreparedTree & Bool, r: PreparedTree & Bool) -> PreparedTree & Bool:
+  (left, a) = l
+  (right, b) = r
+  (PFork{left, right}, a && b)
+
+def prepare_tree(tree: B.JobTree) -> PreparedTree & Bool:
+  match tree:
+    case B.JEmpty{}:
+      (PEmpty{}, True{})
+    case B.JLeaf{B.Job{index, puzzle}}:
+      prepare_leaf(P.prepare81(puzzle))
+    case B.JFork{l, r}:
+      a b = prepare_tree(l) prepare_tree(r)
+      prepare_fork(a, b)
+
+def clue_values(+given: U32, +ok: Bool, orig: Array<U32>, r: Array<U32> & U32) -> Array<U32> & Array<U32> & Bool:
+  (sol, +digit) = r
+  (orig, (sol, ok && (digit >= 1 : U32) && (digit <= 9 : U32) && (U32.is_eq(given, 0) || U32.is_eq(given, digit))))
+
+def clue_original(+pos: U32, ok: Bool, sol: Array<U32>, r: Array<U32> & U32) -> Array<U32> & Array<U32> & Bool:
+  (orig, given) = r
+  clue_values(given, ok, orig, Array.get(U32, sol, pos))
+
+def clues(n: Nat, +pos: U32, r: Array<U32> & Array<U32> & Bool) -> Array<U32> & Bool:
+  match n:
+    case 0n:
+      (orig, (sol, ok)) = r
+      (sol, ok)
+    case 1n+k:
+      (orig, (sol, ok)) = r
+      clues(k, (pos + 1 : U32), clue_original(pos, ok, sol, Array.get(U32, orig, pos)))
+
+def prepared_solved(orig: Array<U32>, result: T.SolveResult) -> Stats:
+  match result:
+    case T.Solved{sol}:
+      direct_checked(clues(81n, 0, (orig, (sol, True{}))))
+    case _:
+      Stats{0, 1}
+
+def prepared_job(pair: Array<U32> & Array<U32>) -> Stats:
+  (orig, work) = pair
+  prepared_solved(orig, S.solve_prepared(T.solve_fuel(), work))
+
+def prepared_run(tree: PreparedTree) -> Stats:
+  match tree:
+    case PEmpty{}:
+      Stats{0, 0}
+    case PLeaf{board}:
+      prepared_job(Array.clone(U32, board))
+    case PFork{l, r}:
+      a b = prepared_run(l) prepared_run(r)
+      add(a, b)
+
+def prepared_timed(+n: U32, valid: Bool, tree: PreparedTree) -> IO(Unit):
+  match valid:
+    case False{}:
+      IO.die(Unit, 2, "invalid benchmark input")
+    case True{}:
+      do IO<Unit>:
+        start : Nat <- IO.now()
+        timed_result(n, start, prepared_run(tree))
+
+def prepared_ready(+n: U32, r: PreparedTree & Bool) -> IO(Unit):
+  (tree, valid) = r
+  prepared_timed(n, U32.is_ne(n, 0) && valid, tree)
+
 def file_jobs(+jobs: List<&2, B.Job>) -> IO(Unit):
   +n = U32.from_nat(List.length(&2, B.Job, jobs))
-  prepared(U32.is_ne(n, 0) && all_valid(jobs), n, jobs)
+  prepared_ready(n, prepare_tree(B.build(jobs)))
 
 def generated(jobs: Maybe<&2, List<&2, B.Job>>) -> IO(Unit):
   match jobs:

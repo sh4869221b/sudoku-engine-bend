@@ -1,0 +1,19 @@
+{
+  "variant": "55b fixed24-visit activation with table-based urgency",
+  "status": "TESTED",
+  "accepted": false,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 217.925868,
+    "candidate_sum_median_ms": 227.17517700000002,
+    "primary_speedup": 0.9592855649013096,
+    "paired_bootstrap_95_ci": [
+      0.8962854434661535,
+      0.9787970249999622
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "reason": "Screen0.95929 CI0.89629-0.97880;no gain. Threshold unchanged.",
+  "correctness": "work/activation/singleton oracles,1931CLI,6060fuel pass"
+}

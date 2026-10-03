@@ -2,3 +2,9 @@ bin/
 __pycache__/
 .toolchains/
 .verification/
+qa/perf-20261003/results/*/binary
+# Cloud diagnostic-only generated/instrumented files (never performance inputs).
+qa/cloud-20261003/diagnostics/*.c
+qa/cloud-20261003/diagnostics/profile-only
+qa/cloud-20261003/diagnostics/gmon*
+qa/cloud-20261003/diagnostics/hard52/gmon*

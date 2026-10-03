@@ -1,0 +1,26 @@
+START 1 single-pass occupancy initialization
+{"number": 1, "idea": "single-pass occupancy initialization", "accepted": false, "screen_speedup": 1.001103109006266, "cases": {"generate100_clues36": 1.0142476343119546, "batch_easy-10000_solve_t1": 0.9994020340976646, "batch_mixed-1000_solve_t1": 1.000960066289969, "batch_hard-100_count_t1": 0.9997257968932894, "batch_rate-300_rate_t1": 0.9910182612377161, "bench_easy-10000_t1": 1.0086498080732877, "bench_mixed-1000_t1": 1.0127901674391016}, "status": "TESTED"}
+START 3 least-bit digit decoding
+{"number": 3, "idea": "least-bit digit decoding", "accepted": false, "screen_speedup": 0.9914666102080025, "cases": {"generate100_clues36": 0.9849315242062231, "batch_easy-10000_solve_t1": 0.9886578460753691, "batch_mixed-1000_solve_t1": 0.9845753890607354, "batch_hard-100_count_t1": 0.9930586266484568, "batch_rate-300_rate_t1": 1.0059631909573505, "bench_easy-10000_t1": 0.9859834402084969, "bench_mixed-1000_t1": 0.9853683678238586}, "status": "TESTED"}
+START 4 branch-specific unit indexing
+{"number": 4, "idea": "branch-specific unit indexing", "accepted": false, "screen_speedup": 1.000246772054707, "cases": {"generate100_clues36": 1.002273209105336, "batch_easy-10000_solve_t1": 1.0004319096485599, "batch_mixed-1000_solve_t1": 0.9969342340324759, "batch_hard-100_count_t1": 1.0006340296899507, "batch_rate-300_rate_t1": 1.0107014282849225, "bench_easy-10000_t1": 0.9936581790468304, "bench_mixed-1000_t1": 0.9940508582782646}, "status": "TESTED"}
+START 5 validation stop after first error
+Traceback (most recent call last):
+  File "/home/sh4869/Documents/Codex/2026-10-03/task/sudoku-engine-bend/qa/perf-20261003/experiments.py", line 175, in <module>
+    src=variant(n,accepted)
+  File "/home/sh4869/Documents/Codex/2026-10-03/task/sudoku-engine-bend/qa/perf-20261003/experiments.py", line 145, in variant
+    s['sudoku/board.bend']=b;s['sudoku/candidates.bend']=c;return {p:order_defs(t) for p,t in s.items()}
+                                                                     ~~~~~~~~~~^^^
+  File "/home/sh4869/Documents/Codex/2026-10-03/task/sudoku-engine-bend/qa/perf-20261003/experiments.py", line 25, in order_defs
+    for name in byname:visit(name)
+                       ~~~~~^^^^^^
+  File "/home/sh4869/Documents/Codex/2026-10-03/task/sudoku-engine-bend/qa/perf-20261003/experiments.py", line 23, in visit
+    if other!=name and re.search(r'(?<![\w.])'+re.escape(other)+r'\s*\(',byname[name].split('\n',1)[1]):visit(other)
+                                                                                                        ~~~~~^^^^^^^
+  File "/home/sh4869/Documents/Codex/2026-10-03/task/sudoku-engine-bend/qa/perf-20261003/experiments.py", line 23, in visit
+    if other!=name and re.search(r'(?<![\w.])'+re.escape(other)+r'\s*\(',byname[name].split('\n',1)[1]):visit(other)
+                                                                                                        ~~~~~^^^^^^^
+  File "/home/sh4869/Documents/Codex/2026-10-03/task/sudoku-engine-bend/qa/perf-20261003/experiments.py", line 20, in visit
+    if name in visiting:raise RuntimeError('mutual recursion '+name)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mutual recursion go

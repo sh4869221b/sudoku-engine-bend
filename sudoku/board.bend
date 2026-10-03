@@ -1,4 +1,5 @@
 import Base
+import ./arithmetic.bend as M
 
 def empty() -> Array<U32>:
   [0 : U32*128n]
@@ -7,10 +8,10 @@ def mirror(p: U32) -> U32:
   (80 - p : U32)
 
 def box_of(+p: U32) -> U32:
-  ((p / 27) * 3 + (p % 9) / 3 : U32)
+  ((M.div27(p)) * 3 + M.div3(M.rem9(p)) : U32)
 
 def peers(+p: U32, +q: U32) -> Bool:
-  U32.is_ne(p, q) && (U32.is_eq((p / 9 : U32), (q / 9 : U32)) || U32.is_eq((p % 9 : U32), (q % 9 : U32)) || U32.is_eq(box_of(p), box_of(q)))
+  U32.is_ne(p, q) && (U32.is_eq((M.div9(p) : U32), (M.div9(q) : U32)) || U32.is_eq((M.rem9(p) : U32), (M.rem9(q) : U32)) || U32.is_eq(box_of(p), box_of(q)))
 
 def bit(d: U32) -> U32:
   U32.shln(1, U32.to_nat(d))
@@ -34,6 +35,18 @@ def show_go(n: Nat, +i: U32, r: Array<U32> & U32) -> String:
 def show(b: Array<U32>) -> String:
   show_go(81n, 0, Array.get(U32, b, 0))
 
+# Render directly onto a suffix instead of copying the completed81-digit string.
+def show_tail_go(n: Nat, +i: U32, r: Array<U32> & U32, tail: String) -> String:
+  match n:
+    case 0n:
+      tail
+    case 1n+k:
+      (b, +d) = r
+      show_digit((d <= 9 : U32), d, show_tail_go(k, (i + 1 : U32), Array.get(U32, b, (i + 1 : U32)), tail))
+
+def show_tail(b: Array<U32>, tail: String) -> String:
+  show_tail_go(81n, 0, Array.get(U32, b, 0), tail)
+
 def clues_go(n: Nat, +i: U32, r: Array<U32> & U32, count: U32) -> Array<U32> & U32:
   match n:
     case 0n:
@@ -48,7 +61,7 @@ def clues(b: Array<U32>) -> Array<U32> & U32:
 def unit_pos(+unit: U32, +j: U32) -> U32:
   Bool.pick(U32, (unit < 9 : U32), (unit * 9 + j : U32),
     Bool.pick(U32, (unit < 18 : U32), (j * 9 + unit - 9 : U32),
-      (((unit - 18) / 3) * 27 + ((unit - 18) % 3) * 3 + (j / 3) * 9 + j % 3 : U32)))
+      ((M.div3((unit - 18 : U32))) * 27 + (M.rem3((unit - 18 : U32))) * 3 + (M.div3(j)) * 9 + M.rem3(j) : U32)))
 
 def complete_go(n: Nat, +i: U32, r: Array<U32> & U32, ok: Bool) -> Bool:
   match n:

@@ -5,7 +5,7 @@ with tempfile.TemporaryDirectory() as td:
  p=pathlib.Path(td)
  for f in ROOT.rglob('*.bend'):
   out=p/f.relative_to(ROOT);out.parent.mkdir(parents=True,exist_ok=True);out.write_text(f.read_text())
- cf=p/'sudoku/counter.bend';original=cf.read_text();cf.write_text(original.replace('finish(S.run(fuel, 2, board))','T.CountOne{}'))
+ cf=p/'sudoku/counter.bend';original=cf.read_text();cf.write_text(original.replace('finish(S.run(fuel, 2, board))','T.CountOne{}').replace('finish(S.run_prepared(fuel, 2, board))','T.CountOne{}'))
  build=subprocess.run([BEND,str(p/'qa_run.bend'),'-o',str(p/'mutant')],capture_output=True,text=True,timeout=60);assert build.returncode==0,build.stderr+build.stdout
  check=subprocess.run([str(p/'mutant'),'--threads','1'],capture_output=True,text=True,timeout=30);assert check.returncode!=0 and 'empty multiple count' in check.stderr,(check.stdout,check.stderr)
  logs.append({'mutation':'count2 always CountOne','detected':True,'exit':check.returncode,'stdout':check.stdout,'stderr':check.stderr});cf.write_text(original)

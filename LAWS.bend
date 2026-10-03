@@ -57,3 +57,33 @@ law count_add_assoc:
   for +b: DecidedCount
   for +c: DecidedCount
   {K.count_add(K.count_add(to_count(a), to_count(b)), to_count(c)) == K.count_add(to_count(a), K.count_add(to_count(b), to_count(c))) : T.Count}
+
+law string_append_empty:
+  for +text: String
+  {text ++ "" == text : String}
+
+law string_append_assoc:
+  for +a: String
+  for +b: String
+  for +c: String
+  {(a ++ b) ++ c == a ++ (b ++ c) : String}
+
+law batch_solve_tail:
+  for +tree: Batch.JobTree
+  for +tail: String
+  {Batch.flatten(Batch.output_solve(tree), tail) == Batch.seq_solve(tree) ++ tail : String}
+
+law batch_check_tail:
+  for +tree: Batch.JobTree
+  for +tail: String
+  {Batch.flatten(Batch.output_check(tree), tail) == Batch.seq_check(tree) ++ tail : String}
+
+law batch_count_tail:
+  for +tree: Batch.JobTree
+  for +tail: String
+  {Batch.flatten(Batch.output_count(tree), tail) == Batch.seq_count(tree) ++ tail : String}
+
+law batch_rate_tail:
+  for +tree: Batch.JobTree
+  for +tail: String
+  {Batch.flatten(Batch.output_rate(tree), tail) == Batch.seq_rate(tree) ++ tail : String}

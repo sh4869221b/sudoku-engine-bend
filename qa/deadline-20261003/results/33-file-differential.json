@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "comparisons": 129,
+  "random_and_edge_lines": 928,
+  "scope": "exact physical LF/CRLF/EOF, indices, skip rules, length/character/unit error precedence, threads1/8/16, NUL/invalid byte/Unicode",
+  "base_sha256": "ba0d2e27c6ab81219f20fbb2cdb67389453b7d22b6ce4440bb887bf4c9979720",
+  "candidate_sha256": "820a58bbd2725c1fb765ac62e4b00e66ea13322c0765844da1c326746cd80de2"
+}

@@ -68,50 +68,85 @@ def build(+xs: List<&2, Job>) -> JobTree:
   +d = U32.to_nat(depth_go(32n, U32.from_nat(List.length(&2, Job, xs)), 1, 0))
   Pair.fst(JobTree, List<&2, Job>, consume(d, xs))
 
+def job_tail(mode: U32, puzzle: String, tail: String) -> String:
+  match mode:
+    case 1:
+      C.batch_solve_tail(puzzle, tail)
+    case other:
+      C.only_out(C.eval(other, True{}, T.solve_fuel(), T.rate_fuel(), puzzle)) ++ tail
+
 def job_line(mode: U32, job: Job) -> String:
   match job:
     case Job{index, puzzle}:
-      U32.show(index) ++ " " ++ C.only_out(C.eval(mode, True{}, T.solve_fuel(), T.rate_fuel(), puzzle)) ++ "\n"
+      U32.show(index) ++ " " ++ job_tail(mode, puzzle, "\n")
+
+# Preserve fork-join computation, then flatten the output rope once.
+type Output is Data:
+  OEmpty{}
+  OLeaf{text: String}
+  OFork{left: Output, right: Output}
+
+def flatten(out: Output, tail: String) -> String:
+  match out:
+    case OEmpty{}:
+      tail
+    case OLeaf{text}:
+      text ++ tail
+    case OFork{l, r}:
+      flatten(l, flatten(r, tail))
+
+def output_solve(tree: JobTree) -> Output:
+  match tree:
+    case JEmpty{}:
+      OEmpty{}
+    case JLeaf{job}:
+      OLeaf{job_line(1, job)}
+    case JFork{l, r}:
+      a b = output_solve(l) output_solve(r)
+      OFork{a, b}
+
+def output_check(tree: JobTree) -> Output:
+  match tree:
+    case JEmpty{}:
+      OEmpty{}
+    case JLeaf{job}:
+      OLeaf{job_line(2, job)}
+    case JFork{l, r}:
+      a b = output_check(l) output_check(r)
+      OFork{a, b}
+
+def output_count(tree: JobTree) -> Output:
+  match tree:
+    case JEmpty{}:
+      OEmpty{}
+    case JLeaf{job}:
+      OLeaf{job_line(3, job)}
+    case JFork{l, r}:
+      a b = output_count(l) output_count(r)
+      OFork{a, b}
+
+def output_rate(tree: JobTree) -> Output:
+  match tree:
+    case JEmpty{}:
+      OEmpty{}
+    case JLeaf{job}:
+      OLeaf{job_line(4, job)}
+    case JFork{l, r}:
+      a b = output_rate(l) output_rate(r)
+      OFork{a, b}
+
 
 def batch_solve(tree: JobTree) -> String:
-  match tree:
-    case JEmpty{}:
-      ""
-    case JLeaf{job}:
-      job_line(1, job)
-    case JFork{l, r}:
-      a b = batch_solve(l) batch_solve(r)
-      a ++ b
+  flatten(output_solve(tree), "")
 
 def batch_check(tree: JobTree) -> String:
-  match tree:
-    case JEmpty{}:
-      ""
-    case JLeaf{job}:
-      job_line(2, job)
-    case JFork{l, r}:
-      a b = batch_check(l) batch_check(r)
-      a ++ b
+  flatten(output_check(tree), "")
 
 def batch_count(tree: JobTree) -> String:
-  match tree:
-    case JEmpty{}:
-      ""
-    case JLeaf{job}:
-      job_line(3, job)
-    case JFork{l, r}:
-      a b = batch_count(l) batch_count(r)
-      a ++ b
+  flatten(output_count(tree), "")
 
 def batch_rate(tree: JobTree) -> String:
-  match tree:
-    case JEmpty{}:
-      ""
-    case JLeaf{job}:
-      job_line(4, job)
-    case JFork{l, r}:
-      a b = batch_rate(l) batch_rate(r)
-      a ++ b
+  flatten(output_rate(tree), "")
 
 def run(mode: U32, tree: JobTree) -> String:
   match mode:
@@ -204,3 +239,27 @@ def text_scan(s: String, +index: U32, line: String, acc: List<&2, Job>) -> List<
 
 def text_jobs(text: String) -> List<&2, Job>:
   text_scan(text, 1, "", Nil{})
+
+# All pure fork-join jobs complete before the ordered IO traversal. Reuse each
+# leaf string directly rather than copying its characters into a global string.
+def write_output(out: Output) -> IO(Unit):
+  match out:
+    case OEmpty{}:
+      IO.pure(Unit, Unit{})
+    case OLeaf{text}:
+      IO.write(text)
+    case OFork{l, r}:
+      do IO<Unit>:
+        write_output(l)
+        write_output(r)
+
+def write(mode: U32, tree: JobTree) -> IO(Unit):
+  match mode:
+    case 1:
+      write_output(output_solve(tree))
+    case 2:
+      write_output(output_check(tree))
+    case 3:
+      write_output(output_count(tree))
+    case _:
+      write_output(output_rate(tree))

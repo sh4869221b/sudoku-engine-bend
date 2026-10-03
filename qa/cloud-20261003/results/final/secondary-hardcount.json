@@ -1,0 +1,258 @@
+{
+  "metadata": {
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "cpus": 9,
+    "warmups": 2,
+    "repetitions": 300,
+    "order": "seed20261001 randomized per repetition; serial processes",
+    "binaries": {
+      "baseline": {
+        "path": "/workspace/scratch/b81277eea609/cloud-accepted52",
+        "sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92"
+      },
+      "candidate": {
+        "path": "/workspace/scratch/b81277eea609/cloud-final-final-2",
+        "sha256": "9ed5b3446c426fd561586d35e4481c72f852a1cca66bd2d12e33f78358753a44"
+      }
+    },
+    "cases": [
+      {
+        "name": "batch_hard-100_count_t1",
+        "args": [
+          "batch",
+          "/workspace/scratch/b81277eea609/bend-transfer/cloud-handoff-20261003/corpora/hard-100.txt",
+          "count"
+        ],
+        "threads": 1
+      },
+      {
+        "name": "batch_hard-100_count_t8",
+        "args": [
+          "batch",
+          "/workspace/scratch/b81277eea609/bend-transfer/cloud-handoff-20261003/corpora/hard-100.txt",
+          "count"
+        ],
+        "threads": 8
+      },
+      {
+        "name": "batch_hard-100_count_t16",
+        "args": [
+          "batch",
+          "/workspace/scratch/b81277eea609/bend-transfer/cloud-handoff-20261003/corpora/hard-100.txt",
+          "count"
+        ],
+        "threads": 16
+      }
+    ],
+    "clock": "perf_counter_ns; wait4 child user/system CPU and peak RSS; fresh process including parsing/output; bench internal recorded separately"
+  },
+  "summary": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "threads": 1,
+      "baseline": {
+        "wall_ms": {
+          "median": 38.3962995,
+          "p25": 37.464362,
+          "p75": 40.53789999999999,
+          "min": 36.096237,
+          "max": 57.740697
+        },
+        "user_ms": {
+          "median": 37.11749999999999,
+          "p25": 35.949,
+          "p75": 38.80624999999999,
+          "min": 29.031,
+          "max": 51.507
+        },
+        "system_ms": {
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 3.7975000000000003,
+          "min": 0.0,
+          "max": 8.317
+        },
+        "max_rss_kib": {
+          "median": 14080.0,
+          "p25": 13952.0,
+          "p75": 14208.0,
+          "min": 13696,
+          "max": 14336
+        }
+      },
+      "candidate": {
+        "wall_ms": {
+          "median": 34.262893,
+          "p25": 33.3343875,
+          "p75": 36.16903375,
+          "min": 32.054875,
+          "max": 56.696352
+        },
+        "user_ms": {
+          "median": 33.0155,
+          "p25": 32.01825,
+          "p75": 34.91225,
+          "min": 25.610999999999997,
+          "max": 56.04899999999999
+        },
+        "system_ms": {
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 0.0,
+          "min": 0.0,
+          "max": 9.628
+        },
+        "max_rss_kib": {
+          "median": 14080.0,
+          "p25": 13952.0,
+          "p75": 14208.0,
+          "min": 13696,
+          "max": 14336
+        }
+      },
+      "speedup": 1.1206379887419313
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "threads": 8,
+      "baseline": {
+        "wall_ms": {
+          "median": 11.126199,
+          "p25": 10.18950725,
+          "p75": 12.43853425,
+          "min": 8.048545,
+          "max": 19.966729
+        },
+        "user_ms": {
+          "median": 39.732,
+          "p25": 35.539500000000004,
+          "p75": 42.52525,
+          "min": 19.344,
+          "max": 52.053999999999995
+        },
+        "system_ms": {
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 4.008749999999999,
+          "min": 0.0,
+          "max": 18.857
+        },
+        "max_rss_kib": {
+          "median": 14848.0,
+          "p25": 14720.0,
+          "p75": 14976.0,
+          "min": 14592,
+          "max": 15104
+        }
+      },
+      "candidate": {
+        "wall_ms": {
+          "median": 10.2908185,
+          "p25": 9.190327,
+          "p75": 11.6247485,
+          "min": 7.772387,
+          "max": 16.573715
+        },
+        "user_ms": {
+          "median": 34.209999999999994,
+          "p25": 31.450249999999997,
+          "p75": 37.66925,
+          "min": 14.005,
+          "max": 47.093999999999994
+        },
+        "system_ms": {
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 4.7212499999999995,
+          "min": 0.0,
+          "max": 21.518
+        },
+        "max_rss_kib": {
+          "median": 14848.0,
+          "p25": 14720.0,
+          "p75": 14976.0,
+          "min": 14592,
+          "max": 15104
+        }
+      },
+      "speedup": 1.0811772649571072
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "threads": 16,
+      "baseline": {
+        "wall_ms": {
+          "median": 10.739587,
+          "p25": 9.8992825,
+          "p75": 11.8900655,
+          "min": 7.624468,
+          "max": 23.455776
+        },
+        "user_ms": {
+          "median": 42.0685,
+          "p25": 37.008750000000006,
+          "p75": 45.52499999999999,
+          "min": 18.899,
+          "max": 65.244
+        },
+        "system_ms": {
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 4.758749999999999,
+          "min": 0.0,
+          "max": 26.903
+        },
+        "max_rss_kib": {
+          "median": 15488.0,
+          "p25": 15232.0,
+          "p75": 15616.0,
+          "min": 15104,
+          "max": 15744
+        }
+      },
+      "candidate": {
+        "wall_ms": {
+          "median": 9.7980205,
+          "p25": 8.895171,
+          "p75": 10.739786249999998,
+          "min": 7.848771,
+          "max": 15.809154
+        },
+        "user_ms": {
+          "median": 37.5535,
+          "p25": 33.089499999999994,
+          "p75": 40.141749999999995,
+          "min": 16.217,
+          "max": 48.853
+        },
+        "system_ms": {
+          "median": 0.0,
+          "p25": 0.0,
+          "p75": 5.3862499999999995,
+          "min": 0.0,
+          "max": 22.493
+        },
+        "max_rss_kib": {
+          "median": 15488.0,
+          "p25": 15232.0,
+          "p75": 15616.0,
+          "min": 15104,
+          "max": 15744
+        }
+      },
+      "speedup": 1.0960976250253816
+    }
+  ]
+}

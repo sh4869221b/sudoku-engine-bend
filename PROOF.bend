@@ -3,49 +3,89 @@ import ./LAWS.bend as L
 import ./sudoku/batch.bend as B
 import ./sudoku/types.bend as T
 
-def L.batch_solve_eq_seq(tree):
+def L.string_append_empty(text):
+  match text:
+    case SNil{}:
+      {==}
+    case SCon{h, tail}:
+      %L.string_append_empty(tail) : {SCon{h, tail ++ ""} == SCon{h, _} : String}
+      {==}
+
+def L.string_append_assoc(a, b, c):
+  match a:
+    case SNil{}:
+      {==}
+    case SCon{h, tail}:
+      %L.string_append_assoc(tail, b, c) : {SCon{h, (tail ++ b) ++ c} == SCon{h, _} : String}
+      {==}
+
+def L.batch_solve_tail(tree, tail):
   match tree:
     case B.JEmpty{}:
       {==}
     case B.JLeaf{job}:
       {==}
     case B.JFork{l, r}:
-      %L.batch_solve_eq_seq(l) : {B.batch_solve(l) ++ B.batch_solve(r) == _ ++ B.seq_solve(r) : String}
-      %L.batch_solve_eq_seq(r) : {B.batch_solve(l) ++ B.batch_solve(r) == B.batch_solve(l) ++ _ : String}
+      %Equal.sym(String, (B.seq_solve(l) ++ B.seq_solve(r)) ++ tail, B.seq_solve(l) ++ (B.seq_solve(r) ++ tail), L.string_append_assoc(B.seq_solve(l), B.seq_solve(r), tail)) : {B.flatten(B.output_solve(l), B.flatten(B.output_solve(r), tail)) == _ : String}
+      %L.batch_solve_tail(r, tail) : {B.flatten(B.output_solve(l), B.flatten(B.output_solve(r), tail)) == B.seq_solve(l) ++ _ : String}
+      %L.batch_solve_tail(l, B.flatten(B.output_solve(r), tail)) : {B.flatten(B.output_solve(l), B.flatten(B.output_solve(r), tail)) == _ : String}
+      {==}
+
+def L.batch_solve_eq_seq(tree):
+  %L.string_append_empty(B.seq_solve(tree)) : {B.batch_solve(tree) == _ : String}
+  %L.batch_solve_tail(tree, "") : {B.batch_solve(tree) == _ : String}
+  {==}
+
+def L.batch_check_tail(tree, tail):
+  match tree:
+    case B.JEmpty{}:
+      {==}
+    case B.JLeaf{job}:
+      {==}
+    case B.JFork{l, r}:
+      %Equal.sym(String, (B.seq_check(l) ++ B.seq_check(r)) ++ tail, B.seq_check(l) ++ (B.seq_check(r) ++ tail), L.string_append_assoc(B.seq_check(l), B.seq_check(r), tail)) : {B.flatten(B.output_check(l), B.flatten(B.output_check(r), tail)) == _ : String}
+      %L.batch_check_tail(r, tail) : {B.flatten(B.output_check(l), B.flatten(B.output_check(r), tail)) == B.seq_check(l) ++ _ : String}
+      %L.batch_check_tail(l, B.flatten(B.output_check(r), tail)) : {B.flatten(B.output_check(l), B.flatten(B.output_check(r), tail)) == _ : String}
       {==}
 
 def L.batch_check_eq_seq(tree):
+  %L.string_append_empty(B.seq_check(tree)) : {B.batch_check(tree) == _ : String}
+  %L.batch_check_tail(tree, "") : {B.batch_check(tree) == _ : String}
+  {==}
+
+def L.batch_count_tail(tree, tail):
   match tree:
     case B.JEmpty{}:
       {==}
     case B.JLeaf{job}:
       {==}
     case B.JFork{l, r}:
-      %L.batch_check_eq_seq(l) : {B.batch_check(l) ++ B.batch_check(r) == _ ++ B.seq_check(r) : String}
-      %L.batch_check_eq_seq(r) : {B.batch_check(l) ++ B.batch_check(r) == B.batch_check(l) ++ _ : String}
+      %Equal.sym(String, (B.seq_count(l) ++ B.seq_count(r)) ++ tail, B.seq_count(l) ++ (B.seq_count(r) ++ tail), L.string_append_assoc(B.seq_count(l), B.seq_count(r), tail)) : {B.flatten(B.output_count(l), B.flatten(B.output_count(r), tail)) == _ : String}
+      %L.batch_count_tail(r, tail) : {B.flatten(B.output_count(l), B.flatten(B.output_count(r), tail)) == B.seq_count(l) ++ _ : String}
+      %L.batch_count_tail(l, B.flatten(B.output_count(r), tail)) : {B.flatten(B.output_count(l), B.flatten(B.output_count(r), tail)) == _ : String}
       {==}
 
 def L.batch_count_eq_seq(tree):
+  %L.string_append_empty(B.seq_count(tree)) : {B.batch_count(tree) == _ : String}
+  %L.batch_count_tail(tree, "") : {B.batch_count(tree) == _ : String}
+  {==}
+
+def L.batch_rate_tail(tree, tail):
   match tree:
     case B.JEmpty{}:
       {==}
     case B.JLeaf{job}:
       {==}
     case B.JFork{l, r}:
-      %L.batch_count_eq_seq(l) : {B.batch_count(l) ++ B.batch_count(r) == _ ++ B.seq_count(r) : String}
-      %L.batch_count_eq_seq(r) : {B.batch_count(l) ++ B.batch_count(r) == B.batch_count(l) ++ _ : String}
+      %Equal.sym(String, (B.seq_rate(l) ++ B.seq_rate(r)) ++ tail, B.seq_rate(l) ++ (B.seq_rate(r) ++ tail), L.string_append_assoc(B.seq_rate(l), B.seq_rate(r), tail)) : {B.flatten(B.output_rate(l), B.flatten(B.output_rate(r), tail)) == _ : String}
+      %L.batch_rate_tail(r, tail) : {B.flatten(B.output_rate(l), B.flatten(B.output_rate(r), tail)) == B.seq_rate(l) ++ _ : String}
+      %L.batch_rate_tail(l, B.flatten(B.output_rate(r), tail)) : {B.flatten(B.output_rate(l), B.flatten(B.output_rate(r), tail)) == _ : String}
       {==}
 
 def L.batch_rate_eq_seq(tree):
-  match tree:
-    case B.JEmpty{}:
-      {==}
-    case B.JLeaf{job}:
-      {==}
-    case B.JFork{l, r}:
-      %L.batch_rate_eq_seq(l) : {B.batch_rate(l) ++ B.batch_rate(r) == _ ++ B.seq_rate(r) : String}
-      %L.batch_rate_eq_seq(r) : {B.batch_rate(l) ++ B.batch_rate(r) == B.batch_rate(l) ++ _ : String}
-      {==}
+  %L.string_append_empty(B.seq_rate(tree)) : {B.batch_rate(tree) == _ : String}
+  %L.batch_rate_tail(tree, "") : {B.batch_rate(tree) == _ : String}
+  {==}
 
 def L.count_many_absorb(count):
   match count:

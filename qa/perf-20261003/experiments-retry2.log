@@ -1,0 +1,9 @@
+START 5 validation stop after first error
+{"number": 5, "idea": "validation stop after first error", "accepted": false, "screen_speedup": 0.9950695551273816, "cases": {"generate100_clues36": 1.005832917090533, "batch_easy-10000_solve_t1": 0.9960786691459368, "batch_mixed-1000_solve_t1": 1.006289011942592, "batch_hard-100_count_t1": 1.0011482331585893, "batch_rate-300_rate_t1": 0.971945148432267, "bench_easy-10000_t1": 1.0013746788665547, "bench_mixed-1000_t1": 1.0010189556852056}, "status": "TESTED"}
+START 7 reverse board rendering accumulator
+{'number': 7, 'idea': 'reverse board rendering accumulator', 'accepted': False, 'status': 'BUILD FAILED'}
+START 9 singleton candidate count fast path
+{"number": 9, "idea": "singleton candidate count fast path", "accepted": false, "screen_speedup": 1.0018817004096106, "cases": {"generate100_clues36": 1.018226165959501, "batch_easy-10000_solve_t1": 1.0021190364878845, "batch_mixed-1000_solve_t1": 0.9978371805254449, "batch_hard-100_count_t1": 0.9963070109143756, "batch_rate-300_rate_t1": 1.0085655465882855, "bench_easy-10000_t1": 1.0028208548153206, "bench_mixed-1000_t1": 0.9912471522876845}, "status": "TESTED"}
+START 10 specialized blank occupancy update
+{'number': 10, 'idea': 'specialized blank occupancy update', 'accepted': False, 'status': 'BUILD FAILED'}
+DONE TEN SCREENS

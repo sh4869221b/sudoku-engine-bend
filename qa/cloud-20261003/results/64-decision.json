@@ -1,0 +1,78 @@
+{
+  "trial": 64,
+  "status": "REJECTED",
+  "accepted": false,
+  "decision_time_utc": "2026-10-03T18:00:00Z",
+  "source_head": "8c6b360143789e6a0cfcddb89290741552b7e50e",
+  "reason": "Fixed7-case screen95% interval overlaps1; hard-count target point estimate is0.99633. No full35 confirmation, extra variant, or new production change.",
+  "idea": "Placement removes one bit, so a new urgent flag is exactly old popcount2. Specialized bounded lookup with full-U32 fallback; all existing general helpers remain unchanged.",
+  "production_changes": [
+    "sudoku/queuedcandidates.bend"
+  ],
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 208.539094,
+    "candidate_sum_median_ms": 207.220699,
+    "primary_speedup": 1.0063622746490206,
+    "paired_bootstrap_95_ci": [
+      0.9757030892487689,
+      1.0316955097206166
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "per_case_points": [
+    {
+      "case": "generate100_clues36",
+      "speedup": 0.9920125320498849
+    },
+    {
+      "case": "batch_easy-10000_solve_t1",
+      "speedup": 1.0149480017940349
+    },
+    {
+      "case": "batch_mixed-1000_solve_t1",
+      "speedup": 1.0060773819844255
+    },
+    {
+      "case": "batch_hard-100_count_t1",
+      "speedup": 0.9963302760636059
+    },
+    {
+      "case": "batch_rate-300_rate_t1",
+      "speedup": 1.0108478115806796
+    },
+    {
+      "case": "bench_easy-10000_t1",
+      "speedup": 0.9980504527505888
+    },
+    {
+      "case": "bench_mixed-1000_t1",
+      "speedup": 1.0344896577567424
+    }
+  ],
+  "correctness": {
+    "all_run_checks_passed": true,
+    "one_bit_transition_cases": 99328,
+    "one_bit_transition_scope": "All1024 low masks x32 one-hot bits;1024zero-bit cases;65536 full-width random words;arbitrary existing flags;all128 words versus unchanged general peer.",
+    "ordinary_full_placement_cases": 2916,
+    "wide_full_placement_cases": 10692,
+    "wide_full_placement_scope": "All81 positions,digits0through32,forced/guess,two seeds;arbitrary low/wide cell words and flags;all128 words versus frozen accepted62.",
+    "queued_oracle_scope": "24000 mixed trace steps;active forward states checked for81 candidate/urgency bits and exactMRV;1024arbitrary domain tie cases;32trailing-bit indices.",
+    "cli_comparisons": 1931,
+    "fuel_observations": 6060,
+    "fuel_scope": "3030 production terminal/fuel outcomes plus3030 legacy trace observations;not a live adaptive snapshot-stack trace.",
+    "not_run": [
+      "new direct adaptive snapshot trace",
+      "full35 performance confirmation",
+      "full release gates"
+    ]
+  },
+  "native_codegen": "The bounded changed-peer path is one indexed count-table equality and one conditional branch;the originalold-mask multi-bit check is removed there. Wide fallback makes the unrolled native placement larger. No measured net gain.",
+  "binary_sha256": {
+    "baseline62": "9ed5b3446c426fd561586d35e4481c72f852a1cca66bd2d12e33f78358753a44",
+    "candidate64": "fc51981909cfbcda44096f0135db312152bdba62fdaef3f1a55f03e657e69475"
+  },
+  "preserved_source_contract": "All original queued-candidate helpers and their full-U32 behavior are byte-identical except place calls equivalent specialized loops; B.bit supplieszero-or-one-hot for everydigit.",
+  "reproduction": "Unchanged lockedBend2.0.34/Clang19.1.7/Lean4.34.1; allCPU-heavy commands hold/tmp/bend-cloud-cpu.lock; default7-case9rep screen with2warmups and5000paired bootstrap;no push."
+}

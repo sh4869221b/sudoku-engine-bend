@@ -1,0 +1,361 @@
+[
+  {
+    "number": 36,
+    "idea": "cached cardinality repaired affine QA",
+    "accepted": false,
+    "correctness": "1931 CLI,6060 exact fuel,24000 domain trace checks and1024 arbitrary domains passed",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 262.240806,
+      "candidate_sum_median_ms": 258.287378,
+      "primary_speedup": 1.0153063151231494,
+      "paired_bootstrap_95_ci": [
+        0.989731710098779,
+        1.051198519605526
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 534.042734,
+      "candidate_sum_median_ms": 528.730924,
+      "primary_speedup": 1.0100463388065422,
+      "paired_bootstrap_95_ci": [
+        0.9983757705913735,
+        1.0299889277421304
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "No meaningful reproducible gain; full35-case confidence interval crosses1. Production changes reverted."
+  },
+  {
+    "number": 38,
+    "idea": "direct prepared rating initialization",
+    "accepted": false,
+    "correctness": "1931 CLI plus512initial states/256ratings/168fuel boundaries/384malformed text cases/128arbitrary initialization controls",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 272.187902,
+      "candidate_sum_median_ms": 271.00315,
+      "primary_speedup": 1.0043717277825,
+      "paired_bootstrap_95_ci": [
+        0.9540095838779561,
+        1.0895987974647738
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 516.483945,
+      "candidate_sum_median_ms": 514.793807,
+      "primary_speedup": 1.0032831358439398,
+      "paired_bootstrap_95_ci": [
+        0.9900391021303923,
+        1.016243187148428
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Rating subcase improved but full35-case aggregate confidence crosses1; no meaningful net win established; preserve patch for possible jointtrial41."
+  },
+  {
+    "number": 40,
+    "idea": "two-phase first zero/singleton scan before fallback scalar MRV",
+    "accepted": false,
+    "correctness": "1931 CLI/6060 exact fuel/6144arbitrary board oracle +128forced traces and explicit priority edges",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 268.74787599999996,
+      "candidate_sum_median_ms": 249.043521,
+      "primary_speedup": 1.0791201269596569,
+      "paired_bootstrap_95_ci": [
+        0.9889930250181618,
+        1.1109083530636497
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 512.97065,
+      "candidate_sum_median_ms": 508.275692,
+      "primary_speedup": 1.009237030363435,
+      "paired_bootstrap_95_ci": [
+        0.9997701239106791,
+        1.0228684229660643
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Single-thread easy solve improves5%, but35-case net1.0092CI0.9998\u20131.0229 does not establish meaningful net gain; production reverted."
+  },
+  {
+    "number": 42,
+    "idea": "ordered direct output-leaf IO avoids global string concatenation",
+    "accepted": true,
+    "correctness": "full verify --skip-benchmark PASS;1931 CLI +129 file differential;6060 fuel;all unchanged generic laws and independent kernel verdict",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 266.130681,
+      "candidate_sum_median_ms": 250.376152,
+      "primary_speedup": 1.0629234408874533,
+      "paired_bootstrap_95_ci": [
+        1.0293780837514552,
+        1.0915155240111805
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 530.061925,
+      "candidate_sum_median_ms": 487.30030700000003,
+      "primary_speedup": 1.0877520850812843,
+      "paired_bootstrap_95_ci": [
+        1.0624927533966424,
+        1.105955263645632
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "cumulative": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1723.586853,
+      "candidate_sum_median_ms": 481.97231800000003,
+      "primary_speedup": 3.57611171561102,
+      "paired_bootstrap_95_ci": [
+        3.5363373349965275,
+        3.6089431390627236
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Meaningful full35-case incremental1.08775CI1.06249\u20131.10596; same ordered bytes, all jobs still searched and computed in parallel before ordered IO."
+  },
+  {
+    "number": 48,
+    "idea": "static81-Nat-bounded fused parser",
+    "accepted": false,
+    "correctness": "644 length+243malformed position+1024valid partial+100000char scanner equivalence checks,all128arraywords;1931CLI+129file cases PASS",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 257.849978,
+      "candidate_sum_median_ms": 260.597309,
+      "primary_speedup": 0.9894575618967731,
+      "paired_bootstrap_95_ci": [
+        0.9444921593619677,
+        1.0339771747551048
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "No meaningful gain: seven-case0.98946 CI0.94449\u20131.03398. Unmerged isolated source retained."
+  },
+  {
+    "number": 45,
+    "idea": "eight ordered chunks of parallel batch output on top42",
+    "accepted": false,
+    "correctness": "1931CLI and129file differential PASS",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 251.689737,
+      "candidate_sum_median_ms": 246.505147,
+      "primary_speedup": 1.02103238030969,
+      "paired_bootstrap_95_ci": [
+        0.9922088891449599,
+        1.0486809864391138
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 499.042258,
+      "candidate_sum_median_ms": 513.820961,
+      "primary_speedup": 0.9712376408871338,
+      "paired_bootstrap_95_ci": [
+        0.9550766805706106,
+        0.98635297145606
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Full35-case regression0.97124 CI0.95508\u20130.98635; reduces parallel throughput despite small t1screen effect. Unmerged worktree retained."
+  },
+  {
+    "number": 52,
+    "idea": "generated dense1024-entry low-ten-bit popcount lookup",
+    "accepted": true,
+    "correctness": "full verify --skip-benchmark PASS;4096mask exhaustive oracle+upperbit ignore+100seed81cellcandidateQA;1931CLI and6060 exact fuel;1024entry generator independently verifies sums",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 247.693318,
+      "candidate_sum_median_ms": 240.870062,
+      "primary_speedup": 1.0283275386876432,
+      "paired_bootstrap_95_ci": [
+        1.0079806695843236,
+        1.0449882916933915
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental": {
+      "cases": 35,
+      "baseline_sum_median_ms": 491.473025,
+      "candidate_sum_median_ms": 478.092019,
+      "primary_speedup": 1.0279883484103924,
+      "paired_bootstrap_95_ci": [
+        1.0156868915914117,
+        1.041426983850245
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "cumulative": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1756.289372,
+      "candidate_sum_median_ms": 474.055339,
+      "primary_speedup": 3.7048193059165184,
+      "paired_bootstrap_95_ci": [
+        3.6578492356752275,
+        3.7525816163144046
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Real native indexed table established by disassembly; full35-case incremental1.02799CI1.01569\u20131.04143; exact public lower10-bit mask_count contract preserved."
+  },
+  {
+    "number": 56,
+    "idea": "split actual job counts for uniformly balanced parallel tree",
+    "accepted": false,
+    "correctness": "all sizes0..1025/10000/10001/indexwrap exactJobtext/order and everyfork count-difference<=1;1931CLI+129file comparisons PASS",
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 473.972742,
+      "candidate_sum_median_ms": 477.489037,
+      "primary_speedup": 0.9926358623391808,
+      "paired_bootstrap_95_ci": [
+        0.9817931971076601,
+        1.0057522654044284
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Parallel-focused all35-case test predeclared directly;0.99264CI0.98179\u20131.00575. No repeatable aggregate gain despite improved shape balance. Unmerged source retained."
+  },
+  {
+    "number": 58,
+    "idea": "numeric parser result with deferred text diagnostics",
+    "accepted": false,
+    "correctness": "scanner equivalence644length/243malformed/1024valid/longline/all128words;1931CLI+129file cases PASS",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 255.279155,
+      "candidate_sum_median_ms": 255.298716,
+      "primary_speedup": 0.9999233799515075,
+      "paired_bootstrap_95_ci": [
+        0.9632599084562811,
+        1.0301636289915257
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 497.765285,
+      "candidate_sum_median_ms": 500.506668,
+      "primary_speedup": 0.9945227842598893,
+      "paired_bootstrap_95_ci": [
+        0.9736245176986305,
+        1.0116532360473072
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Native parser compilation achieved but full35-case0.99452CI0.97362\u20131.01165; no net gain. Source not merged."
+  },
+  {
+    "number": 54,
+    "idea": "pack empty-column bits into existing row occupancy and scan only empty cells",
+    "accepted": true,
+    "correctness": "full verify --skip-benchmark;1931CLI/6060fuel/24000active invariants;4096cache+1024prepare+891swap independent row metadata oracle;main rebuild SHA exact match",
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 241.496184,
+      "candidate_sum_median_ms": 218.170138,
+      "primary_speedup": 1.106916767866737,
+      "paired_bootstrap_95_ci": [
+        1.0725571286080564,
+        1.1430127660376919
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "incremental_pooled": {
+      "cases": 35,
+      "baseline_sum_median_ms": 490.2678515,
+      "candidate_sum_median_ms": 459.9331795,
+      "primary_speedup": 1.0659545198130242,
+      "paired_bootstrap_95_ci": [
+        1.053014229842334,
+        1.0788177041683427
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "cumulative": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1799.720351,
+      "candidate_sum_median_ms": 459.344985,
+      "primary_speedup": 3.918014585486331,
+      "paired_bootstrap_95_ci": [
+        3.844364819741496,
+        3.9689541387161054
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "hard_count_regressions": {
+      "t8_block1": 0.9293,
+      "t8_block2": 0.9892,
+      "t16_block1": 0.9408,
+      "t16_block2": 0.9254
+    },
+    "reason": "Both35-case blocks retained;42paired observations pool1.06595CI1.05301\u20131.07882. Net criterion clears; parallel hard-count regressions explicitly retained."
+  },
+  {
+    "number": 62,
+    "idea": "combine active-kernel count-table urgency, shift/mask flags and branch-free valid self visits; original activation retained",
+    "accepted": true,
+    "correctness": "full gates PASS;main binary SHA exact;singleton fullU32/bitmap fullU32/2916validpeer-placement independent QA;1931CLI;3030production terminal/fuel+3030legacy traces",
+    "incremental_vs54": {
+      "cases": 35,
+      "baseline_sum_median_ms": 451.082836,
+      "candidate_sum_median_ms": 437.526269,
+      "primary_speedup": 1.0309845784368206,
+      "paired_bootstrap_95_ci": [
+        1.0138862043529977,
+        1.0449678047484052
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "cumulative": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1764.682821,
+      "candidate_sum_median_ms": 440.001589,
+      "primary_speedup": 4.01062829116283,
+      "paired_bootstrap_95_ci": [
+        3.945631589204608,
+        4.060239667873408
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "Full35 net1.03098CI1.01389\u20131.04497 over54. Two direct52 blocks pooled1.08727CI1.07840\u20131.09570; parallelhardcount point recovery favorable but CIs include1, explicitly retained."
+  }
+]

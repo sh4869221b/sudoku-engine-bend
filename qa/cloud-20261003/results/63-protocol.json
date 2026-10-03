@@ -1,0 +1,11 @@
+{
+  "trial": 63,
+  "source_head": "ef7580a932e1afaecb5979cedc3b984221639d5c",
+  "hypothesis": "Fuse BENCH clue/fullness/27-unit validation into one solution-cell pass using reset orig padding for 9 column and 9 box masks plus scalar row masks",
+  "baseline": "/workspace/scratch/b81277eea609/cloud-accepted62",
+  "baseline_sha256": "9ed5b3446c426fd561586d35e4481c72f852a1cca66bd2d12e33f78358753a44",
+  "scope": "Only prepared BENCH solved branch; old clue/direct/string/public validators unchanged; no search/fuel/runtime/compiler/flag changes",
+  "predeclared_measurement": "Existing7case9pairedrep screen plus2warmups; full35case21rep confirmation only for meaningful target/net gain;5000paired bootstrap; exclusive flock /tmp/bend-cloud-cpu.lock",
+  "correctness": "1931CLI, existing bench-direct100generated, new independent equality-based all27unit oracle across thousands valid/partial/wide/malformed pairs, exhaustive position invalid values and clue mismatches, isolated row/column/box failures, generated solutions, poisoned padding",
+  "limit": "One measured structural variant; experiment decision by18:10UTC"
+}

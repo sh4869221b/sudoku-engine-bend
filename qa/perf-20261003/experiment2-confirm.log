@@ -1,0 +1,3 @@
+START 2 bounded digit bit lookup
+{"number": 2, "idea": "bounded digit bit lookup", "accepted": false, "screen_speedup": 0.8419583061962296, "cases": {"generate100_clues36": 0.7581842619611798, "batch_easy-10000_solve_t1": 0.8593725315310483, "batch_mixed-1000_solve_t1": 0.8683948489097139, "batch_hard-100_count_t1": 0.9263026691250001, "batch_rate-300_rate_t1": 0.9229242967128934, "bench_easy-10000_t1": 0.7301141427460998, "bench_mixed-1000_t1": 0.7884430406828571}, "status": "TESTED"}
+DONE TEN SCREENS

@@ -1,0 +1,8 @@
+{
+  "variant": "50b standalone Boolean lookup",
+  "status": "BUILD_FAILED",
+  "accepted": false,
+  "proof_check": "PASS",
+  "native_build": "process killed,exit137,cause not established",
+  "correctness": "No native candidate/oracle/performance result"
+}

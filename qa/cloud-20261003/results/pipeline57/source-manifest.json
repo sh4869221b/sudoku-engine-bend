@@ -1,0 +1,7 @@
+{
+  "base_commit": "e62c7e23c4e805c9f1affe8df8fb6e629dbb8ff1",
+  "source_sha256": {
+    "main.bend": "d8cbf1000b65fa4cd66dd3518cf3a46c8683498ae1028419ac934399ddcebc7e",
+    "sudoku/batch.bend": "00efc2e628e6115a4688b93b2bc862c719293f82c6d2d58c41a50cb16c8e28e5"
+  }
+}

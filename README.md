@@ -37,9 +37,15 @@ correctness, proof and lane gates while explicitly omitting timing measurements.
 See the [stable-toolchain validation](.omo/evidence/stable-toolchains-20261001/REPORT.md)
 and [.omo/evidence/contracts.md](.omo/evidence/contracts.md) for CLI and proof scope.
 
-## 2026-10-01 optimization
+## 2026-10-03 cloud optimization
 
-The latest revision adds measured rating caches and direct board validation inside BENCH. All seven CLI commands, independent rating/solution oracles, 6,060 exact search/fuel observations and the Lean-backed verdict pass. Solver/search/candidate code and the existing laws are unchanged. See the [current before/after report](.omo/evidence/optimization-20261001/REPORT.md) and [reproduction instructions](qa/perf-20261001/README.md), including rejected experiments and all timing samples.
+Publication includes code, tests, reproduction scripts and result summaries. Full raw measurements and trial dumps remain in the separately delivered archive. See [publication and reproduction notes](qa/cloud-20261003/PUBLICATION.md) and [fresh publication verification](qa/cloud-20261003/PUBLICATION-VERIFICATION.md). Earlier reports describe their historical archive checkpoints.
+
+The cloud continuation preserves the pinned toolchain, fixed 35-case workload and exact NS→MRV search/fuel semantics. See the [cloud report](qa/cloud-20261003/REPORT.md) for the current result, retained rejected trials, per-case tradeoffs and correctness scope. The earlier reports below are historical checkpoints, not descriptions of the latest source.
+
+## 2026-10-01 optimization (historical)
+
+That revision added measured rating caches and direct board validation inside BENCH. All seven CLI commands, independent rating/solution oracles, 6,060 exact search/fuel observations and the Lean-backed verdict pass. Solver/search/candidate code and the existing laws are unchanged. See the [current before/after report](.omo/evidence/optimization-20261001/REPORT.md) and [reproduction instructions](qa/perf-20261001/README.md), including rejected experiments and all timing samples.
 
 ## Earlier Go comparison (648cd0c)
 

@@ -1,0 +1,52 @@
+{
+  "trial": 54,
+  "idea": "Pack row-empty bits into existing row-occupancy high bits;fuse bitmap updates with row writes;row-major empty-only scan reuses row occupancy and52 count lookup",
+  "status": "READY_FOR_INTEGRATION",
+  "accepted": false,
+  "base_production_commit": "e62c7e2",
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 241.496184,
+    "candidate_sum_median_ms": 218.170138,
+    "primary_speedup": 1.106916767866737,
+    "paired_bootstrap_95_ci": [
+      1.0725571286080564,
+      1.1430127660376919
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 496.922943,
+    "candidate_sum_median_ms": 463.157192,
+    "primary_speedup": 1.0729034366371233,
+    "paired_bootstrap_95_ci": [
+      1.057473255352717,
+      1.0985307804438447
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "pooled_confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 490.2678515,
+    "candidate_sum_median_ms": 459.9331795,
+    "primary_speedup": 1.0659545198130242,
+    "paired_bootstrap_95_ci": [
+      1.053014229842334,
+      1.0788177041683427
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "1931CLI,6060exactfuel,24000active calls,1024domain ties,4096cached+1024prepared boards,891swaps,independent rowbitmap/lowoccupancy/start/padding/MRV/activation oracle;full verify --skip-benchmark PASS",
+  "not_run": "Final timing benchmark deferred; JS fileIO still requires missing Bun",
+  "hard_count_speedups": {
+    "block1_t8": 0.9293309252331136,
+    "block2_t8": 0.9891852213426436,
+    "block1_t16": 0.9407758239515661,
+    "block2_t16": 0.9254078346715021
+  },
+  "reason": "Both full35-case blocks retained;42-rep pooled1.06595 CI1.05301-1.07882. Meets net criterion;parallelhardcount regressions explicitly retained."
+}

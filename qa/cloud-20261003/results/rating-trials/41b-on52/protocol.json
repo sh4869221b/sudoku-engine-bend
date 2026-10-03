@@ -1,0 +1,28 @@
+{
+  "created_at": "2026-10-03T16:16:21.477522+00:00",
+  "trial": "41b-on52",
+  "purpose": "One predeclared higher-precision confirmation of rating initialization plus missing-support count on prospective accepted52.",
+  "source_commit_42": "d3fb4a9a0775e4b8d87c536398ed225667ae4683",
+  "source_52_patch": "../sudoku-engine-bend-cloud/qa/cloud-20261003/results/52-change.patch",
+  "rating_patch": "../rating-joint-cloud.patch",
+  "preserved_52_files": {
+    "main.bend": "3b3e6e956d0b3b7998fd9c09a5bed7e04f1f8c747825d483a51df1b82b9168a3",
+    "sudoku/batch.bend": "f984c6f07ff922c6989ad123999e83e40c522480acb7e198f18d85f222a9a3ca",
+    "sudoku/candidates.bend": "6cef96545e9924693babfb445f78537583cf40d2b455f1474d91b75dab981687"
+  },
+  "baseline": {
+    "path": "/workspace/scratch/b81277eea609/cloud-trial52",
+    "sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92"
+  },
+  "cases_file": "qa/perf-20261001/cases.json",
+  "cases_sha256": "80d46a8914c09984447f152d65f8c616d5a7f711ed8a1f0914ea680084588898",
+  "case_count": 35,
+  "blocks": 3,
+  "paired_observations_per_case_per_block": 21,
+  "warmups_per_case_per_block": 2,
+  "pooled_paired_observations_per_case": 63,
+  "fixed_analysis": "Retain and pool all three blocks using existing combine_measurements.py, correct only its descriptive42-observation metadata string to63, then use existing paired bootstrap analyzer. No additional blocks based on outcome.",
+  "decision_rule": "Require pooled paired-bootstrap95% CI entirely above1 and primary point speedup at least1.01, with no material substantial-case regressions; otherwise reject. Positive result is reported to parent for explicit integration decision.",
+  "main_integration": "Not authorized automatically; do not change main production files.",
+  "serialization": "All compilation, QA, differential and timing run under exclusive /tmp/bend-cloud-cpu.lock."
+}

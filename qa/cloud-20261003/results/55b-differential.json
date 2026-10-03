@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "comparisons": 1931,
+  "distinct_puzzles": 347,
+  "scope": "all7 CLI commands, exact stdout/stderr/exit except bench timing, seeds/boundaries, threads1/8/16 ordered batch, independent solved-grid validation and rating oracle",
+  "base_sha256": "24bd34da85f9a663331696a685fb262f5e6dac6029e93fec46f587d436b0c2f6",
+  "candidate_sha256": "d7c8d1cc45c5dc60e64bf218773ac6b1cb8c7ff84e02a0bd817ca44525ffc9da"
+}

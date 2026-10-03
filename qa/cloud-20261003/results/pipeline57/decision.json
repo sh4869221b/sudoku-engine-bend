@@ -1,0 +1,71 @@
+{
+  "trial": 57,
+  "idea": "Fixed1024 accepted-job whole-String batch pipeline",
+  "accepted": false,
+  "status": "REJECTED: full35 confirmation does not establish a gain",
+  "base_commit": "e62c7e2",
+  "base_binary": "cloud-accepted52",
+  "base_sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92",
+  "candidate_sha256": "95698986979af2a1b3c20fc828add3117bc2c4fdf761de7e173aca96693d56cb",
+  "design": {
+    "chunk_jobs": 1024,
+    "chunk_limit_fixed_before_timing": true,
+    "input": "unchanged whole-file File.read with16MiB upfront limit",
+    "recursion": "structural String-tail recursion with affine one-shot continuation; no unsafe or artificial fuel",
+    "batch_solver": "unchanged balanced build, parallel output computation and ordered leaf writer",
+    "oracles": "original text_jobs/write preserved; BENCH unchanged"
+  },
+  "correctness": {
+    "build": "ALL PROOFS CHECK",
+    "boundary_comparisons": 288,
+    "file_differential": 129,
+    "cli_differential": 1931,
+    "threads": [
+      1,
+      8,
+      16
+    ],
+    "all_passed": true
+  },
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 243.266087,
+    "candidate_sum_median_ms": 235.244737,
+    "primary_speedup": 1.0340978935481988,
+    "paired_bootstrap_95_ci": [
+      1.0083402367145975,
+      1.0565300750145858
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 482.22298,
+    "candidate_sum_median_ms": 489.939919,
+    "primary_speedup": 0.9842492136265386,
+    "paired_bootstrap_95_ci": [
+      0.9682919430896175,
+      1.0014435866286018
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "selected_case_speedups": {
+    "batch_easy-10000_solve_t1": 1.0795258559162821,
+    "batch_easy-10000_solve_t8": 0.9333789142164772,
+    "batch_easy-10000_solve_t16": 0.8685858459687079
+  },
+  "interpretation": "Single-thread easy10000 improves, but repeated1024-job parallel waves regress8/16-thread easy10000. This fixed design is rejected; no chunk-size retuning or selective-case adoption.",
+  "limitations": [
+    "Full aggregate proof/lane/fuel gate suite not run because candidate is rejected; the build checker and listed differential suites passed.",
+    "Timing-harness RSS is preliminary and may inherit Python pre-exec high-water mark. No engine-memory reduction claimed; C-launcher memory measurement not run."
+  ],
+  "scope": "Isolated worktree only; main production source unchanged; no FFI, runtime, compiler flags, toolchain change or remote push.",
+  "toolchain": {
+    "Bend": "2.0.34",
+    "Clang": "19.1.7",
+    "Lean": "4.34.1"
+  },
+  "serialization": "All compilation, QA, measurement and bootstrap analysis executed under exclusive /tmp/bend-cloud-cpu.lock."
+}

@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "benchmark": "included",
+  "toolchain": {
+    "lock_sha256": "122b9961724e2ce6e2e7de6b4d2f68a71865a1d42d04d9e6d0593a9c236ac99d",
+    "lean_version": "4.34.1",
+    "versions": {
+      "bend": "bend 2.0.34",
+      "clang": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/clang19/usr/lib/llvm-19/bin",
+      "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+    },
+    "files": {
+      "bend": {
+        "path": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/bend/bin/bend",
+        "sha256": "7fafb749dd33df446a0cb5839c5694df237312a8e8048d2e9420480164ff5934"
+      },
+      "clang": {
+        "path": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/clang19/usr/bin/clang-19",
+        "sha256": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a"
+      },
+      "lean": {
+        "path": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/lean-4.34.1-linux/bin/lean",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      },
+      "leanc": {
+        "path": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/lean-4.34.1-linux/bin/leanc",
+        "sha256": "68a45f8329e2d79133cdcc7b1fa494e37844282d7b5f8908ce1deda7cfdf161a"
+      },
+      "kernel": {
+        "path": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/kernel-4.34.1/bendtt",
+        "sha256": "9f8f1ba8fd564b53438f9853a138979da7fcae867c9089043d2e5f82844c4501"
+      },
+      "kernel_source": {
+        "path": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains/bend/bend2/bendtt.lean",
+        "sha256": "61e0d2d9f4ddd7dd8bb1497fa612fb49a7274fcac647bf70702ba22321d7c292"
+      }
+    }
+  },
+  "work": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.verification/20261003T183017Z-pecntfgy/work",
+  "log": "/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.verification/20261003T183017Z-pecntfgy/verify.log"
+}

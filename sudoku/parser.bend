@@ -1,5 +1,8 @@
 import Base
+import ./arithmetic.bend as M
 import ./board.bend as B
+import ./validate.bend as V
+import ./candidates.bend as C
 
 type Parsed is Type:
   ParsedBoard{board: Array<U32>}
@@ -55,3 +58,69 @@ def parse_single(s: String, +i: U32, b: Array<U32>, good: Bool, room: Bool) -> P
 
 def parse81(s: String) -> Parsed:
   parse_single(s, 0, B.empty(), True{}, True{})
+
+# Fused preparation validates characters and unit duplicates while constructing
+# the board and search-local occupancy. Public parse81 retains its old contract.
+def prepared_reason(ok: Bool, +start: U32, bad: U32, b: Array<U32>) -> Parsed:
+  match ok:
+    case True{}:
+      ParsedBoard{Array.set(U32, b, 108, start)}
+    case False{}:
+      ParseError{V.kind(bad)}
+
+def prepared_end(length_ok: Bool, good: Bool, +start: U32, r: Array<U32> & U32) -> Parsed:
+  match length_ok good:
+    case False{} _:
+      ParseError{"length"}
+    case True{} False{}:
+      ParseError{"character"}
+    case True{} True{}:
+      (b, +bad) = r
+      prepared_reason(U32.is_eq(bad, 27), start, bad, b)
+
+def prepared_used(+unit: U32, +bit: U32, +bad: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  (b, +used) = r
+  (Array.set(U32, b, (81 + unit : U32), U32.or(used, bit)), U32.min(bad, Bool.pick(U32, U32.is_ne(U32.and(used, bit), 0), unit, 27)))
+
+def prepared_unit(+unit: U32, +bit: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  (b, bad) = r
+  prepared_used(unit, bit, bad, Array.get(U32, b, (81 + unit : U32)))
+
+def prepared_row_used(+unit: U32, +bit: U32, empty: U32, +bad: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  (b, +used) = r
+  (Array.set(U32, b, (81 + unit : U32), U32.or(U32.and(used, U32.not(empty)), bit)), U32.min(bad, Bool.pick(U32, U32.is_ne(U32.and(used, bit), 0), unit, 27)))
+
+def prepared_row(+pos: U32, +bit: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  (b, bad) = r
+  +unit = M.div9(pos)
+  prepared_row_used(unit, bit, B.bit((10 + M.rem9(pos) : U32)), bad, Array.get(U32, b, (81 + unit : U32)))
+
+def prepared_set(+pos: U32, digit: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  (b, bad) = r
+  (Array.set(U32, b, pos, digit), bad)
+
+def prepared_store(+pos: U32, digit: U32, r: Array<U32> & U32) -> Array<U32> & U32:
+  match digit:
+    case 0:
+      prepared_set(pos, 0, r)
+    case +d:
+      +bit = B.bit(d)
+      prepared_set(pos, d, prepared_unit((18 + B.box_of(pos) : U32), bit, prepared_unit((9 + M.rem9(pos) : U32), bit, prepared_row(pos, bit, r))))
+
+def prepared_scan(s: String, +pos: U32, +good: Bool, +start: U32, r: Array<U32> & U32) -> Parsed:
+  match s:
+    case SNil{}:
+      prepared_end(U32.is_eq(pos, 81), good, start, r)
+    case SCon{+h, tail}:
+      match pos:
+        case 81:
+          ParseError{"length"}
+        case +p:
+          +d = Char.to_u32(h)
+          +numeric = ((d >= 48 : U32) && (d <= 57 : U32))
+          +valid = numeric || Char.is_eq(h, '.')
+          +v = Bool.pick(U32, numeric, (d - 48 : U32), 0)
+          prepared_scan(tail, (p + 1 : U32), good && valid, U32.min(start, Bool.pick(U32, U32.is_eq(v, 0), p, 81)), prepared_store(p, v, r))
+
+def prepare81(s: String) -> Parsed:
+  prepared_scan(s, 0, True{}, 81, (C.empty_rows(B.empty()), 27))

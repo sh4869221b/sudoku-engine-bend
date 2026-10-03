@@ -1,0 +1,42 @@
+{
+  "measurement": "qa/cloud-20261003/results/62-versus52-block2.json",
+  "statistic": "median baseline wall_ms / median candidate wall_ms",
+  "resampling": "paired by rep;warmups excluded;percentile bootstrap",
+  "bootstrap_samples": 5000,
+  "seed": 20261003,
+  "cases": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "paired_repetitions": 21,
+      "baseline_median_ms": 37.346214,
+      "candidate_median_ms": 33.593007,
+      "speedup": 1.1117258422266278,
+      "paired_bootstrap_95_ci": [
+        1.078356907711295,
+        1.164493925881551
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "paired_repetitions": 21,
+      "baseline_median_ms": 9.830748,
+      "candidate_median_ms": 9.605485,
+      "speedup": 1.0234514967229662,
+      "paired_bootstrap_95_ci": [
+        0.9103920101495907,
+        1.1474469113358885
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "paired_repetitions": 21,
+      "baseline_median_ms": 11.18072,
+      "candidate_median_ms": 10.59575,
+      "speedup": 1.0552079843333413,
+      "paired_bootstrap_95_ci": [
+        0.94082446207728,
+        1.2172918682402856
+      ]
+    }
+  ]
+}

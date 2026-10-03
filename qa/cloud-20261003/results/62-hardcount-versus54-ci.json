@@ -1,0 +1,42 @@
+{
+  "measurement": "qa/cloud-20261003/results/62-confirm.json",
+  "statistic": "median baseline wall_ms / median candidate wall_ms",
+  "resampling": "paired by rep;warmups excluded;percentile bootstrap",
+  "bootstrap_samples": 5000,
+  "seed": 20261003,
+  "cases": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "paired_repetitions": 21,
+      "baseline_median_ms": 38.029786,
+      "candidate_median_ms": 33.387479,
+      "speedup": 1.139043352150068,
+      "paired_bootstrap_95_ci": [
+        1.1126281193515264,
+        1.1590508663260166
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "paired_repetitions": 21,
+      "baseline_median_ms": 10.853564,
+      "candidate_median_ms": 10.244403,
+      "speedup": 1.0594628110588777,
+      "paired_bootstrap_95_ci": [
+        0.9852091917898973,
+        1.2518346872883785
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "paired_repetitions": 21,
+      "baseline_median_ms": 11.736368,
+      "candidate_median_ms": 10.252065,
+      "speedup": 1.1447808807298823,
+      "paired_bootstrap_95_ci": [
+        0.966674470190254,
+        1.2499402320797945
+      ]
+    }
+  ]
+}

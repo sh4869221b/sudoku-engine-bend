@@ -1,0 +1,67 @@
+[
+  {
+    "name": "generate100_clues36",
+    "args": [
+      "generate",
+      "--seed",
+      "1",
+      "--count",
+      "100",
+      "--clues",
+      "36"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_easy-10000_solve_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/easy-10000.txt",
+      "solve"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_mixed-1000_solve_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/mixed-1000.txt",
+      "solve"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_hard-100_count_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_rate-300_rate_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/rate-300.txt",
+      "rate"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "bench_easy-10000_t1",
+    "args": [
+      "bench",
+      "@CORPORA@/easy-10000.txt"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "bench_mixed-1000_t1",
+    "args": [
+      "bench",
+      "@CORPORA@/mixed-1000.txt"
+    ],
+    "threads": 1
+  }
+]

@@ -1,0 +1,21 @@
+START 1 single-pass occupancy initialization
+{'number': 1, 'idea': 'single-pass occupancy initialization', 'accepted': False, 'status': 'BUILD FAILED'}
+START 2 bounded digit bit lookup
+{"number": 2, "idea": "bounded digit bit lookup", "accepted": false, "screen_speedup": 0.8519303076401983, "cases": {"generate100_clues36": 0.7541559469262796, "batch_easy-10000_solve_t1": 0.892023719291544, "batch_mixed-1000_solve_t1": 0.8656468974903074, "batch_hard-100_count_t1": 0.9248953320276863, "batch_rate-300_rate_t1": 0.9257212818659873, "bench_easy-10000_t1": 0.7315084531612605, "bench_mixed-1000_t1": 0.7887584895121568}, "status": "TESTED"}
+START 3 least-bit digit decoding
+{'number': 3, 'idea': 'least-bit digit decoding', 'accepted': False, 'status': 'BUILD FAILED'}
+START 4 branch-specific unit indexing
+{'number': 4, 'idea': 'branch-specific unit indexing', 'accepted': False, 'status': 'BUILD FAILED'}
+START 5 validation stop after first error
+{'number': 5, 'idea': 'validation stop after first error', 'accepted': False, 'status': 'BUILD FAILED'}
+START 6 single unsigned parser range check
+{"number": 6, "idea": "single unsigned parser range check", "accepted": false, "screen_speedup": 0.9985786709595835, "cases": {"generate100_clues36": 1.0035406461060172, "batch_easy-10000_solve_t1": 0.9922884986691913, "batch_mixed-1000_solve_t1": 0.990529459748166, "batch_hard-100_count_t1": 1.0022190613864423, "batch_rate-300_rate_t1": 0.9906870552462532, "bench_easy-10000_t1": 1.0079843961931407, "bench_mixed-1000_t1": 1.0061363835512611}, "status": "TESTED"}
+START 7 reverse board rendering accumulator
+{'number': 7, 'idea': 'reverse board rendering accumulator', 'accepted': False, 'status': 'BUILD FAILED'}
+START 8 remove redundant unit read
+{"number": 8, "idea": "remove redundant unit read", "accepted": false, "screen_speedup": 1.007712110764413, "cases": {"generate100_clues36": 0.9904984210988337, "batch_easy-10000_solve_t1": 1.014949691059311, "batch_mixed-1000_solve_t1": 1.0020717989762427, "batch_hard-100_count_t1": 1.0115263443489984, "batch_rate-300_rate_t1": 1.0028384768533154, "bench_easy-10000_t1": 1.001671140485629, "bench_mixed-1000_t1": 1.0051380576300362}, "status": "TESTED"}
+START 9 singleton candidate count fast path
+{'number': 9, 'idea': 'singleton candidate count fast path', 'accepted': False, 'status': 'BUILD FAILED'}
+START 10 specialized blank occupancy update
+{'number': 10, 'idea': 'specialized blank occupancy update', 'accepted': False, 'status': 'BUILD FAILED'}
+DONE TEN SCREENS

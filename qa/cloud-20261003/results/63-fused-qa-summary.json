@@ -1,0 +1,32 @@
+{
+  "trial": 63,
+  "result": "PASS",
+  "source": "qa/fused-bench-validation.bend",
+  "source_sha256": "70c18409ee701545ca5a06bb3df6918c87462afa60af5e7523cc46941d225991",
+  "total_pairs": 16609,
+  "threads": 1,
+  "exclusive_cpu_lock": "/tmp/bend-cloud-cpu.lock",
+  "build_command": "source ./toolchain-env.sh; \"$BEND\" qa/fused-bench-validation.bend -o /tmp/fused-bench-validation63",
+  "run_command": "/tmp/fused-bench-validation63 --threads 1",
+  "run_exit_code": 0,
+  "build_log": "qa/cloud-20261003/results/63-fused-qa-build.log",
+  "run_log": "qa/cloud-20261003/results/63-fused-qa-run.log",
+  "coverage": {
+    "generated_complete_with_partial_clues_and_incomplete_solutions": 2048,
+    "bounded_1_to_9_partial_0_to_9_shift_alias_0_to_41_and_full_width_random_pairs": 8192,
+    "all81_positions_times24_invalid_values_times2_original_variants": 3888,
+    "all81_positions_times9_legal_solution_replacements": 729,
+    "all81_positions_times12_original_clue_values": 972,
+    "isolated_unit_family_failures_rows27_columns27_boxes9": 63,
+    "poisoned_padding_pairs512_and_all47_padding_words_times3_variants": 653,
+    "generated_36_clue_puzzles_solved_using_public_solver": 64
+  },
+  "oracle": [
+    "Independent value equality and list-membership uniqueness test over all27 units; range1..9 checked for every logical cell read; no production masks, caches, unit index helper, or arithmetic shortcuts.",
+    "Independent original-clue comparison; candidate B.Stats compared exactly including both solved and failed counts.",
+    "Untouched B.direct_checked(B.clues(...)) compared to independent oracle.",
+    "Public V.validate and Board.full compared to independent grid-only oracle.",
+    "Known accept/reject assertions prevent shared false-negative/false-positive agreement; unit-family fixtures verify each family separately.",
+    "Original and solution padding81..127 independently poisoned with1022, full-width all-ones, and PRNG words."
+  ]
+}

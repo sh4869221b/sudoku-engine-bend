@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "seeds_checked": 4,
+  "covered_techniques": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "fixtures": 2
+}

@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "comparisons": 288,
+  "accepted_job_counts": [
+    0,
+    1,
+    1023,
+    1024,
+    1025,
+    2047,
+    2048,
+    2049
+  ],
+  "threads": [
+    1,
+    8,
+    16
+  ],
+  "modes": [
+    "solve",
+    "check",
+    "count",
+    "rate"
+  ],
+  "scope": "Exact stdout/stderr/exit and physical indices across fixed1024 chunk boundaries, empty/comment skips, EOF/LF/CRLF, one-CR-only normalization, malformed lengths/characters/duplicates, Unicode and NUL",
+  "base_sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92",
+  "candidate_sha256": "95698986979af2a1b3c20fc828add3117bc2c4fdf761de7e173aca96693d56cb"
+}

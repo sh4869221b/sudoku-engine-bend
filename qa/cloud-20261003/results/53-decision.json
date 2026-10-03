@@ -1,0 +1,58 @@
+{
+  "trial": 53,
+  "status": "REJECTED_BUILD_RESOURCE_FAILURE",
+  "worktree": "/workspace/scratch/b81277eea609/sudoku-bend-fixedlines-cloud",
+  "base_git_head": "d3fb4a9a0775e4b8d87c536398ed225667ae4683",
+  "incremental_baseline": "cloud-accepted42",
+  "baseline_sha256": "db3a36cf79736091a1ad723879c73426c1df031e929c92a911fe5029a96675ac",
+  "attempts": [
+    {
+      "name": "53-flat",
+      "design": "Ordered overlapping prefix patterns for exact81-character lines, with earlier-LF/EOF guards and an early nonempty-accumulator clause. Common lines construct forward text once.",
+      "source_patch": "53-flat-change.patch",
+      "build_log": "53-flat-build.log",
+      "exit_code": 137,
+      "output": "Killed",
+      "stage": "main.bend --check-only; no verdict"
+    },
+    {
+      "name": "53-nested",
+      "design": "Genuinely nested81-character matcher. Each earlier LF/EOF ends exactly one physical line; long-line fallback consumes81 characters into the reversed accumulator, keeping long lines linear. Common lines construct forward text once.",
+      "source_patch": "53-nested-change.patch",
+      "build_log": "53-nested-build.log",
+      "exit_code": 137,
+      "output": "Killed",
+      "stage": "main.bend --check-only; no verdict"
+    },
+    {
+      "name": "53-flat81-prototype",
+      "design": "Tiny standalone single81-character pattern probe, queued before the instruction to stop81-wide forms.",
+      "source": "53-flat81-prototype.bend",
+      "build_log": "53-flat81-prototype.log",
+      "exit_code": 130,
+      "status": "CANCELLED on parent instruction; no result"
+    },
+    {
+      "name": "53b",
+      "design": "Exactly eight structurally unrolled steps of the original reversed-accumulator scan. Every LF/EOF has its original behavior; each full chunk recurses on its structural tail after eight chars.",
+      "source_patch": "53b-change.patch",
+      "build_log": "53b-build.log",
+      "exit_code": 137,
+      "output": "Killed",
+      "stage": "main.bend --check-only; no verdict"
+    }
+  ],
+  "validation": {
+    "small_structural_ordering_prototype": "PASS before production attempts",
+    "main_build": "FAIL: no candidate binary produced",
+    "exact_job_oracle": "NOT RUN: build failure",
+    "full_cli_1931_differential": "NOT RUN: build failure",
+    "file_129_differential": "NOT RUN: build failure",
+    "screen_7case9rep": "NOT RUN: build failure",
+    "full_35case21rep": "NOT RUN: build failure",
+    "bootstrap_5000": "NOT RUN: no timing samples"
+  },
+  "prepared_oracle": "Independent untouched text_jobs versus new fast_text_jobs, exact full Job/index/String equality.4096random text inputs, all lengths0..260,164interior LF cases, CR/LF/EOF/comments/NUL/Unicode/extremeChar values,100000-character lines. This oracle was prepared, not executed.",
+  "decision_reason": "Stop after two81-wide failures and the requested bounded8-wide fallback also failed. Exit137 indicates forced termination; the logs do not establish a precise cause. No correctness or speed claim is made, and no source is adopted.",
+  "constraints": "All compiler work used exclusive flock /tmp/bend-cloud-cpu.lock and the fixed absolute toolchain. No unsafe, mutual recursion, fake fuel, runtime/FFI/toolchain/flag changes, main-tree source changes, remote push, or merge."
+}

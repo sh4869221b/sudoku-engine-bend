@@ -5,7 +5,8 @@ Usage: BEND=bend python3 qa/empty_search_state.py [PATH_TO_BEND_BASELINE]
 With no argument, check against the committed golden observation hash. Supplying
 an explicit baseline additionally compiles the same driver against that source
 and requires exact byte equality. The golden is never rewritten by this script.
-No timing claims are made.
+The golden combines production terminal/fuel outcomes and legacy S transition
+traces; it is not a full adaptive snapshot-stack trace. No timing claims are made.
 """
 import difflib
 import gzip
@@ -70,6 +71,9 @@ summary = {
     'hard_additional_fuels': [500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 199999, 200000],
     'observed_fields': ['state tag', 'depth', 'found', 'board cells 0..80', 'active frame words'],
     'production_runs': sum(' run ' in line for line in lines),
+    'production_run_scope': 'S.run dispatches to adaptive F.prepared; terminal/fuel outcomes and logical answer boards, not live adaptive stacks',
+    'legacy_trace_scope': 'Retained S.selected/S.backtrack reference transitions; not the adaptive F transition state',
+    'adaptive_snapshot_trace_claimed': False,
     'direct_transition_states': sum(' trace ' in line for line in lines),
     'searching_states': sum(' searching ' in line for line in lines),
     'backtracking_states': sum(' backtracking ' in line for line in lines),

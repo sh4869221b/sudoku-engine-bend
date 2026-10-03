@@ -13,3 +13,6 @@ def finish(state: S.SearchState) -> T.SolveResult:
 
 def solve(fuel: Nat, board: Array<U32>) -> T.SolveResult:
   finish(S.run(fuel, 1, board))
+
+def solve_prepared(fuel: Nat, board: Array<U32>) -> T.SolveResult:
+  finish(S.run_prepared(fuel, 1, board))

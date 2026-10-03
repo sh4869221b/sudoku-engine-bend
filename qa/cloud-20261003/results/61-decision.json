@@ -1,0 +1,19 @@
+{
+  "trial": 61,
+  "status": "TESTED",
+  "accepted": false,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 211.45968399999998,
+    "candidate_sum_median_ms": 219.246268,
+    "primary_speedup": 0.9644847592115,
+    "paired_bootstrap_95_ci": [
+      0.9468728025747138,
+      0.9858048471681009
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "correctness": "12288packetroundtrips,4096cached/1024prepared/891swap/MRV/activation cases,24000activecalls,1931CLI,6060fuelpass",
+  "reason": "Singleprescribedvariant0.96448CI0.94687-0.98580;packing/branch costs outweighsavedboxread;no variant tuning."
+}

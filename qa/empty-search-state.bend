@@ -54,8 +54,9 @@ def inspect(state: S.SearchState) -> S.SearchState & String:
     case S.SearchFuel{}:
       (S.SearchFuel{}, "fuel")
 
-# The production transition functions are called directly, but expose the live
-# state at a fuel boundary instead of replacing it with SearchFuel.
+# These retained legacy S.selected/S.backtrack transitions expose reference
+# states at fuel boundaries. Production now uses adaptive F through S.run;
+# run_samples below checks production terminal/fuel outcomes separately.
 def advance(n: Nat, +limit: U32, state: S.SearchState) -> S.SearchState:
   match n state:
     case 0n state:

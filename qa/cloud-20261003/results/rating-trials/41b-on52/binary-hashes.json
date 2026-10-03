@@ -1,0 +1,10 @@
+{
+  "baseline": {
+    "path": "/workspace/scratch/b81277eea609/cloud-trial52",
+    "sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92"
+  },
+  "candidate": {
+    "path": "/workspace/scratch/b81277eea609/sudoku-bend-rating-joint-on52-cloud/bin/bend-sudoku",
+    "sha256": "8d598913f7ab44185dad9981b947049da41a3fa69bc175bd1089a6c333482ff4"
+  }
+}

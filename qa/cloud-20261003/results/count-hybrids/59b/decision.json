@@ -1,0 +1,53 @@
+{
+  "trial": "59b",
+  "status": "REJECTED",
+  "reason": "No significant aggregate gain, no recovery in any hard100count median; direct52comparison not run.",
+  "aggregate": {
+    "cases": 35,
+    "baseline_sum_median_ms": 447.09491,
+    "candidate_sum_median_ms": 453.218372,
+    "primary_speedup": 0.9864889369489197,
+    "paired_bootstrap_95_ci": [
+      0.976346938351677,
+      1.0043978062761119
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "hardcount": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "speedup": 0.9332323658881319,
+      "paired_bootstrap_95_ci": [
+        0.900429608066407,
+        1.0137538637335124
+      ],
+      "pairs": 21,
+      "baseline_median_ms": 38.978557,
+      "candidate_median_ms": 41.767258
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "speedup": 0.989378771572316,
+      "paired_bootstrap_95_ci": [
+        0.9024485739183146,
+        1.097701616858835
+      ],
+      "pairs": 21,
+      "baseline_median_ms": 10.536131,
+      "candidate_median_ms": 10.649239
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "speedup": 0.9422970663713125,
+      "paired_bootstrap_95_ci": [
+        0.8595054662698698,
+        1.082500865041442
+      ],
+      "pairs": 21,
+      "baseline_median_ms": 10.63636,
+      "candidate_median_ms": 11.287693
+    }
+  ],
+  "correctness": "6060exactfuel,1931CLI,scalar/row MRV and active invariants PASS"
+}

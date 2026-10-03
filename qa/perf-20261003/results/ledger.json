@@ -1,0 +1,192 @@
+[
+  {
+    "number": 1,
+    "idea": "single-pass occupancy initialization",
+    "accepted": false,
+    "screen_speedup": 1.001103109006266,
+    "cases": {
+      "generate100_clues36": 1.0142476343119546,
+      "batch_easy-10000_solve_t1": 0.9994020340976646,
+      "batch_mixed-1000_solve_t1": 1.000960066289969,
+      "batch_hard-100_count_t1": 0.9997257968932894,
+      "batch_rate-300_rate_t1": 0.9910182612377161,
+      "bench_easy-10000_t1": 1.0086498080732877,
+      "bench_mixed-1000_t1": 1.0127901674391016
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 2,
+    "idea": "bounded digit bit lookup",
+    "accepted": false,
+    "screen_speedup": 0.8419583061962296,
+    "cases": {
+      "generate100_clues36": 0.7581842619611798,
+      "batch_easy-10000_solve_t1": 0.8593725315310483,
+      "batch_mixed-1000_solve_t1": 0.8683948489097139,
+      "batch_hard-100_count_t1": 0.9263026691250001,
+      "batch_rate-300_rate_t1": 0.9229242967128934,
+      "bench_easy-10000_t1": 0.7301141427460998,
+      "bench_mixed-1000_t1": 0.7884430406828571
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 3,
+    "idea": "least-bit digit decoding",
+    "accepted": false,
+    "screen_speedup": 0.9914666102080025,
+    "cases": {
+      "generate100_clues36": 0.9849315242062231,
+      "batch_easy-10000_solve_t1": 0.9886578460753691,
+      "batch_mixed-1000_solve_t1": 0.9845753890607354,
+      "batch_hard-100_count_t1": 0.9930586266484568,
+      "batch_rate-300_rate_t1": 1.0059631909573505,
+      "bench_easy-10000_t1": 0.9859834402084969,
+      "bench_mixed-1000_t1": 0.9853683678238586
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 4,
+    "idea": "branch-specific unit indexing",
+    "accepted": false,
+    "screen_speedup": 1.000246772054707,
+    "cases": {
+      "generate100_clues36": 1.002273209105336,
+      "batch_easy-10000_solve_t1": 1.0004319096485599,
+      "batch_mixed-1000_solve_t1": 0.9969342340324759,
+      "batch_hard-100_count_t1": 1.0006340296899507,
+      "batch_rate-300_rate_t1": 1.0107014282849225,
+      "bench_easy-10000_t1": 0.9936581790468304,
+      "bench_mixed-1000_t1": 0.9940508582782646
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 5,
+    "idea": "validation stop after first error",
+    "accepted": false,
+    "screen_speedup": 0.9950695551273816,
+    "cases": {
+      "generate100_clues36": 1.005832917090533,
+      "batch_easy-10000_solve_t1": 0.9960786691459368,
+      "batch_mixed-1000_solve_t1": 1.006289011942592,
+      "batch_hard-100_count_t1": 1.0011482331585893,
+      "batch_rate-300_rate_t1": 0.971945148432267,
+      "bench_easy-10000_t1": 1.0013746788665547,
+      "bench_mixed-1000_t1": 1.0010189556852056
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 6,
+    "idea": "single unsigned parser range check",
+    "accepted": false,
+    "screen_speedup": 0.9985786709595835,
+    "cases": {
+      "generate100_clues36": 1.0035406461060172,
+      "batch_easy-10000_solve_t1": 0.9922884986691913,
+      "batch_mixed-1000_solve_t1": 0.990529459748166,
+      "batch_hard-100_count_t1": 1.0022190613864423,
+      "batch_rate-300_rate_t1": 0.9906870552462532,
+      "bench_easy-10000_t1": 1.0079843961931407,
+      "bench_mixed-1000_t1": 1.0061363835512611
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 7,
+    "idea": "reverse board rendering accumulator",
+    "accepted": false,
+    "screen_speedup": 0.9996931278013903,
+    "cases": {
+      "generate100_clues36": 1.0032900034990164,
+      "batch_easy-10000_solve_t1": 0.9975831457932798,
+      "batch_mixed-1000_solve_t1": 0.9894478715547051,
+      "batch_hard-100_count_t1": 1.0035331523170077,
+      "batch_rate-300_rate_t1": 1.0053079399132259,
+      "bench_easy-10000_t1": 0.996168218610092,
+      "bench_mixed-1000_t1": 0.9985211628431747
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 8,
+    "idea": "remove redundant unit read",
+    "accepted": false,
+    "screen_speedup": 1.007712110764413,
+    "cases": {
+      "generate100_clues36": 0.9904984210988337,
+      "batch_easy-10000_solve_t1": 1.014949691059311,
+      "batch_mixed-1000_solve_t1": 1.0020717989762427,
+      "batch_hard-100_count_t1": 1.0115263443489984,
+      "batch_rate-300_rate_t1": 1.0028384768533154,
+      "bench_easy-10000_t1": 1.001671140485629,
+      "bench_mixed-1000_t1": 1.0051380576300362
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 9,
+    "idea": "singleton candidate count fast path",
+    "accepted": false,
+    "screen_speedup": 1.0018817004096106,
+    "cases": {
+      "generate100_clues36": 1.018226165959501,
+      "batch_easy-10000_solve_t1": 1.0021190364878845,
+      "batch_mixed-1000_solve_t1": 0.9978371805254449,
+      "batch_hard-100_count_t1": 0.9963070109143756,
+      "batch_rate-300_rate_t1": 1.0085655465882855,
+      "bench_easy-10000_t1": 1.0028208548153206,
+      "bench_mixed-1000_t1": 0.9912471522876845
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  },
+  {
+    "number": 10,
+    "idea": "specialized blank occupancy update",
+    "accepted": false,
+    "screen_speedup": 1.0055039144983795,
+    "cases": {
+      "generate100_clues36": 0.9894743998301541,
+      "batch_easy-10000_solve_t1": 0.9932917933584673,
+      "batch_mixed-1000_solve_t1": 1.005838225511068,
+      "batch_hard-100_count_t1": 1.002579539237263,
+      "batch_rate-300_rate_t1": 1.0569476245677532,
+      "bench_easy-10000_t1": 0.98933456607968,
+      "bench_mixed-1000_t1": 1.0033580507472677
+    },
+    "status": "TESTED",
+    "decision": "REJECTED",
+    "reason": "Screening aggregate failed predeclared >=3% improvement criterion",
+    "cumulative_speedup": 1.0
+  }
+]

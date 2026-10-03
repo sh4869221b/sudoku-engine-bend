@@ -1,0 +1,17 @@
+{
+  "base_commit": "6bf2bb8fc89904d9df5d00ddf3c08bd60b339cc6",
+  "legacy_source_commit": "e62c7e2",
+  "accepted54_adaptivesearch_unchanged": true,
+  "legacy_adaptive_bodies_exact_after_aliases": true,
+  "files": {
+    "sudoku/adaptivesearch.bend": "ce17c12e083a893d45660af9072c5639fe63c5a7ba3079dc453c306affc1bade",
+    "sudoku/countsearch.bend": "a5aecbf27f263253d2a6e45eb641908857df9451781bb9d68c4a83317f9a2cd7",
+    "sudoku/countcandidates.bend": "00ffda2ac62b412d5bf2b7480c01d0ac709d4935983722cafa86d081e30d12f1",
+    "sudoku/search.bend": "d1a763d9f390b44f8185124b67b9ea2f404a282ebe2859b68a3fe0fbf54baca0",
+    "sudoku/candidates.bend": "7a260b5d40eb4b7917043949f23545bc20225ee12e5ee14a5ad55f041b74b6de",
+    "sudoku/queuedcandidates.bend": "1ad0569e40772867d037bad35b9009a7073d8dac01cac0d0bc5b7c772eab3acd",
+    "sudoku/parser.bend": "9147caacedb1e033badd28e5fd0c0e5ba5fd8724c66950a00e4dd11dcbb63cd9",
+    "toolchain.lock.json": "122b9961724e2ce6e2e7de6b4d2f68a71865a1d42d04d9e6d0593a9c236ac99d"
+  },
+  "binary_sha256": "23d70c1b14ca7cd0fecd1f5009fdd40f6fcf303045ad0ad3d53b36d9bfad3426"
+}

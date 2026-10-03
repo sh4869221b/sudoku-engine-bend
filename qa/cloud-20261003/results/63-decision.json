@@ -1,0 +1,185 @@
+{
+  "trial": 63,
+  "status": "REJECTED",
+  "accepted": false,
+  "decision_time_utc": "2026-10-03T17:48:00Z",
+  "source_head": "ef7580a932e1afaecb5979cedc3b984221639d5c",
+  "production_change": [
+    "sudoku/bench.bend"
+  ],
+  "reason": "Meaningful targeted easy10000 BENCH t1 improvement, but full35-case aggregate95% interval crosses1. No verified net gain; retain accepted62. No rerun or second variant.",
+  "correctness": {
+    "focused_fused_validation_pairs": 16609,
+    "cli_differential_comparisons": 1931,
+    "existing_bench_direct_generated_cases": 100,
+    "all_passed": true,
+    "scope": "Independent equality/list27-unit oracle, old clues/direct_checked, public validate/full, all81positions malformed and legaldigits, clue mismatches, isolated unit families, Latin invalidboxes, poisonedpadding, generated puzzles/solutions",
+    "full_release_gates": "Not run for rejected candidate; no release/adoption claim"
+  },
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 215.47790999999998,
+    "candidate_sum_median_ms": 212.578376,
+    "primary_speedup": 1.0136398351260336,
+    "paired_bootstrap_95_ci": [
+      1.0017825045748354,
+      1.041533386082667
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "full_confirmation": {
+    "cases": 35,
+    "baseline_sum_median_ms": 437.065379,
+    "candidate_sum_median_ms": 433.90441599999997,
+    "primary_speedup": 1.0072849293149393,
+    "paired_bootstrap_95_ci": [
+      0.9936791056095065,
+      1.0216244899322011
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "benchmark_and_hard_count_tradeoffs": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "baseline_median_ms": 35.805968,
+      "candidate_median_ms": 34.8597,
+      "speedup": 1.0271450414088477,
+      "paired_bootstrap_95_ci": [
+        0.9552443393518263,
+        1.0908453481800764
+      ]
+    },
+    {
+      "case": "bench_easy-10000_t1",
+      "baseline_median_ms": 61.355578,
+      "candidate_median_ms": 58.24008,
+      "speedup": 1.053494054266409,
+      "paired_bootstrap_95_ci": [
+        1.0114534448174133,
+        1.127197078025992
+      ],
+      "internal_ms": {
+        "baseline": 30,
+        "candidate": 25
+      }
+    },
+    {
+      "case": "bench_mixed-1000_t1",
+      "baseline_median_ms": 9.796178,
+      "candidate_median_ms": 9.731958,
+      "speedup": 1.006598877635929,
+      "paired_bootstrap_95_ci": [
+        0.9765039059971281,
+        1.0812244668080235
+      ],
+      "internal_ms": {
+        "baseline": 5,
+        "candidate": 5
+      }
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "baseline_median_ms": 10.452769,
+      "candidate_median_ms": 10.912378,
+      "speedup": 0.9578818658957745,
+      "paired_bootstrap_95_ci": [
+        0.8655206958556604,
+        1.1356814325102282
+      ]
+    },
+    {
+      "case": "bench_easy-10000_t8",
+      "baseline_median_ms": 30.359659,
+      "candidate_median_ms": 29.411368,
+      "speedup": 1.032242328884532,
+      "paired_bootstrap_95_ci": [
+        0.9911677291886638,
+        1.064066104893585
+      ],
+      "internal_ms": {
+        "baseline": 6,
+        "candidate": 5
+      }
+    },
+    {
+      "case": "bench_mixed-1000_t8",
+      "baseline_median_ms": 5.864467,
+      "candidate_median_ms": 6.035339,
+      "speedup": 0.9716880857893816,
+      "paired_bootstrap_95_ci": [
+        0.9276049005652641,
+        1.0647437290604105
+      ],
+      "internal_ms": {
+        "baseline": 2,
+        "candidate": 2
+      }
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "baseline_median_ms": 10.397909,
+      "candidate_median_ms": 9.99985,
+      "speedup": 1.0398064970974565,
+      "paired_bootstrap_95_ci": [
+        0.9067060752258957,
+        1.127761573200908
+      ]
+    },
+    {
+      "case": "bench_easy-10000_t16",
+      "baseline_median_ms": 32.347781,
+      "candidate_median_ms": 31.848002,
+      "speedup": 1.015692632774891,
+      "paired_bootstrap_95_ci": [
+        0.9399967483310151,
+        1.0459378301223368
+      ],
+      "internal_ms": {
+        "baseline": 7,
+        "candidate": 6
+      }
+    },
+    {
+      "case": "bench_mixed-1000_t16",
+      "baseline_median_ms": 6.524634,
+      "candidate_median_ms": 6.696007,
+      "speedup": 0.974406687448206,
+      "paired_bootstrap_95_ci": [
+        0.9306429579759731,
+        1.1211894633971315
+      ],
+      "internal_ms": {
+        "baseline": 2,
+        "candidate": 2
+      }
+    }
+  ],
+  "reproduction": {
+    "build": "BEND_TOOLCHAIN_DIR=/workspace/scratch/b81277eea609/sudoku-engine-bend-cloud/.toolchains ./build.sh",
+    "locking": "All compilation, tests, measurements and bootstrap analysis exclusive flock /tmp/bend-cloud-cpu.lock",
+    "compiler_flags": "Unchanged default lockedBend2.0.34/Clang19.1.7/Lean4.34.1",
+    "measurements": "Fixed original7case9rep screen; original35case21rep confirmation;2warmups each;serial randomized pairs;5000pairedbootstrap",
+    "no_changes": "No runtime/compiler/flags/FFI/unsafe/search/fuel/main.bend/originalcase/corpus changes; no push/merge"
+  },
+  "binary_sha256": {
+    "baseline62": "9ed5b3446c426fd561586d35e4481c72f852a1cca66bd2d12e33f78358753a44",
+    "trial63": "710c9810627e88c965b2cc567f6853218331691e8a619e1c078330aa9168434c"
+  },
+  "artifact_sha256": {
+    "63-production.patch": "3c7b64f55adaf594d84636d85beafc15f449299a4b3d2084fcca35a75a494631",
+    "63-fused-qa.patch": "0d00d4333811d71748373ce736d48479e051d669f0df43423658710b8eb4054d",
+    "63-screen.json": "8dc0c6b9d58dc979a4c9fc33534e045df7cf71dd15708d77efd764fce1e63481",
+    "63-screen.json.raw.json.gz": "161497382ec5c0b1680879974bd5c60c700fe1d40a72ecf217f9aab04a11dea9",
+    "63-confirm.json": "5888458a0713662e2de658744c9041657cdc8e0dee5546d3cef3ce1d628ae8a9",
+    "63-confirm.json.raw.json.gz": "9729190a707e6d3d66870c78dee1a6b0e0721b2766e5d574703c168ea08cd649",
+    "63-differential.json": "04d827ad0ef77def874fefe222c021e99e49cc0413fe3e900f4fb522a55480db",
+    "63-differential.json.raw.json.gz": "e4f16d1a54d6dca304b3208212b7e63f9448b40bbf29c99f9f914e580c653f7f",
+    "63-fused-qa-summary.json": "9b6718ad82434093fa08f7da2d790b9516f0f89f8c579ae2af67f531b92ed073"
+  },
+  "baseline_case_files_sha256": {
+    "qa/perf-20261003/screen-cases.json": "4083835d18fa5fe569b4d96485155f78012590888f903a5227f0a3dc06e18f30",
+    "qa/perf-20261001/cases.json": "80d46a8914c09984447f152d65f8c616d5a7f711ed8a1f0914ea680084588898"
+  }
+}

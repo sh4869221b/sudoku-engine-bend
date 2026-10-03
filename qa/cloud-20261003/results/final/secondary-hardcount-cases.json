@@ -1,0 +1,29 @@
+[
+  {
+    "name": "batch_hard-100_count_t1",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 1
+  },
+  {
+    "name": "batch_hard-100_count_t8",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 8
+  },
+  {
+    "name": "batch_hard-100_count_t16",
+    "args": [
+      "batch",
+      "@CORPORA@/hard-100.txt",
+      "count"
+    ],
+    "threads": 16
+  }
+]

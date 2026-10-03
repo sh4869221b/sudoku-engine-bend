@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "observations": 6060,
+  "sha256": "9e91f20cab655505fb2ebf74a1d838062567c76476018342c8aa5ac60cb2b592",
+  "golden_baseline_commit": "648cd0cf65e7e3cc48c2f063dddc377f947481f2",
+  "verification": "committed baseline golden hash",
+  "baseline": null,
+  "candidate": "/workspace/scratch/b81277eea609/sudoku-bend-singleton-cloud",
+  "limits": [
+    1,
+    2
+  ],
+  "all_fuel_0_through_300": [
+    "easy",
+    "empty",
+    "contradiction",
+    "complete",
+    "hard"
+  ],
+  "hard_additional_fuels": [
+    500,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    50000,
+    100000,
+    199999,
+    200000
+  ],
+  "observed_fields": [
+    "state tag",
+    "depth",
+    "found",
+    "board cells 0..80",
+    "active frame words"
+  ],
+  "production_runs": 3030,
+  "direct_transition_states": 3030,
+  "searching_states": 630,
+  "backtracking_states": 375,
+  "completed_states": 4050,
+  "fuel_exhaustion_states": 1005
+}

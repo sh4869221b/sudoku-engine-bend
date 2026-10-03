@@ -1,0 +1,10 @@
+{
+  "trial": 55,
+  "baseline": "verified trial54 on accepted52",
+  "fixed_trigger": 24,
+  "condition": "Only an inactive forced(singleton) selection that visited at least24 empty cells activatesQ before that placement. Firstguess activation remains unchanged.",
+  "counter": "Derived from existing row-scan fuel:90-remainingFuel-selectedRow. No added per-cell counter or persistent history.",
+  "rationale": "At least24 currently empty cells were encountered before placement;this establishes substantial remaining work to amortize one-time candidate encoding. Threshold fixed before any candidate timing;no puzzle identity or threshold tuning.",
+  "correctness": "Exact firstphysicalzero/singleton/MRV choice,ascendingdigits and one search fuel operation per transition;independent visitcounter/active-cache trace oracles plus1931CLI/6060fuel",
+  "performance": "Paired serial7case9rep screen;35case21rep if promising;shared CPU lock. Compare55 to54, not initial baseline."
+}

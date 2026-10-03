@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "goal_5x": false,
+  "stop_reason": "ten distinct implemented structural trials",
+  "structural_trials": 10,
+  "earlier_micro_trials": 10,
+  "accepted": [
+    2,
+    3,
+    8
+  ],
+  "branch": "perf/structural-optimization",
+  "source_commit": "a4d9e31",
+  "baseline_commit": "343bf98cd6d2b128882bc4dcd8300df0cd2b55c6",
+  "measurement": {
+    "cases": 35,
+    "baseline_sum_median_ms": 1089.050064,
+    "candidate_sum_median_ms": 771.15181,
+    "primary_speedup": 1.4122382258300088,
+    "paired_bootstrap_95_ci": [
+      1.403851059796957,
+      1.419874054112224
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "full_verify": "PASS including benchmark",
+  "differential": {
+    "status": "PASS",
+    "comparisons": 1931,
+    "distinct_puzzles": 347,
+    "scope": "all7 CLI commands, exact stdout/stderr/exit except bench timing, seeds/boundaries, threads1/8/16 ordered batch, independent solved-grid validation and rating oracle",
+    "base_sha256": "ba0d2e27c6ab81219f20fbb2cdb67389453b7d22b6ce4440bb887bf4c9979720",
+    "candidate_sha256": "d71295bb003303e7bb37bc8c8097835fc3874b0d66af70f7492e98e4b7c4ae0e"
+  },
+  "limitations": [
+    "Bun not installed; JS file-IO lanes unavailable, native/Bend seven and Node five verified"
+  ],
+  "remote_publish": false
+}

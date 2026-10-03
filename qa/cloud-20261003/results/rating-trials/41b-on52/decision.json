@@ -1,0 +1,34 @@
+{
+  "trial": "41b-on52",
+  "idea": "Direct prepared rating initialization plus tracked missing-support count on accepted52",
+  "accepted": false,
+  "decision": "REJECTED_PERFORMANCE_DEFINITIVE",
+  "no_additional_blocks": true,
+  "predeclared_rule": "Require pooled paired-bootstrap95% CI entirely above1 and primary point speedup at least1.01, with no material substantial-case regressions; otherwise reject. Positive result is reported to parent for explicit integration decision.",
+  "reason": "Both requirements fail: pooled95%CI crosses1 and primary point speedup is below1.01. All63 paired observations/case were retained.",
+  "baseline_sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92",
+  "candidate_sha256": "8d598913f7ab44185dad9981b947049da41a3fa69bc175bd1089a6c333482ff4",
+  "correctness": {
+    "status": "PASS",
+    "comparisons": 1931,
+    "distinct_puzzles": 347,
+    "scope": "all7 CLI commands, exact stdout/stderr/exit except bench timing, seeds/boundaries, threads1/8/16 ordered batch, independent solved-grid validation and rating oracle",
+    "base_sha256": "0d97a5061a52f45f0101efc8d4023e87b7af5f1024ffdff2dac15936c8afea92",
+    "candidate_sha256": "8d598913f7ab44185dad9981b947049da41a3fa69bc175bd1089a6c333482ff4"
+  },
+  "pooled_measurement": {
+    "cases": 35,
+    "baseline_sum_median_ms": 483.20477900000003,
+    "candidate_sum_median_ms": 479.905779,
+    "primary_speedup": 1.0068742660421266,
+    "paired_bootstrap_95_ci": [
+      0.9992843970286407,
+      1.0132281552599947
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "record_validation": "pooled-record-validation.json",
+  "full_verification_gate": "NOT_RUN_FOR_THIS_ISOLATED_COMPOSITION",
+  "decided_at": "2026-10-03T16:22:39.185016+00:00"
+}

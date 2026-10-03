@@ -1,0 +1,7 @@
+{
+  "trial": 62,
+  "hypothesis": "Combined active kernel recovers54 hardcount regressions without55 activation trigger overhead",
+  "scope": "Exact54 C/F/parser and activation policy; only Q tableurgency,shift/mask indexing,branchfree selfvisits change",
+  "baseline": "cloud-trial54; direct52 comparison if positive",
+  "predeclared_measurement": "Full35-case21 paired randomized repetitions,serialCPU lock. Existing all local correctness oracles,1931CLI,6060fuel. Full gates on selectedfinalsource."
+}

@@ -1,0 +1,12 @@
+{
+  "cases": 35,
+  "baseline_sum_median_ms": 485.702406,
+  "candidate_sum_median_ms": 475.689397,
+  "primary_speedup": 1.0210494685463842,
+  "paired_bootstrap_95_ci": [
+    1.0155507262116388,
+    1.0253725839071348
+  ],
+  "bootstrap_samples": 5000,
+  "seed": 20261003
+}

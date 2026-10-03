@@ -1,0 +1,187 @@
+[
+  {
+    "number": 1,
+    "idea": "incremental packed candidates with decision-only snapshots",
+    "status": "TESTED",
+    "accepted": false,
+    "reason": "end-to-end slowdown; peer updates and snapshot costs exceed saved candidate recomputation",
+    "screen_speedup": 0.825770218745013,
+    "differential_comparisons": 1931
+  },
+  {
+    "number": 2,
+    "idea": "fused parsing validation and search occupancy preparation",
+    "status": "CONFIRMED",
+    "accepted": true,
+    "screen_speedup": 1.1222531174487695,
+    "differential_comparisons": 1931,
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1067.501319,
+      "candidate_sum_median_ms": 923.077453,
+      "primary_speedup": 1.1564590983461058,
+      "paired_bootstrap_95_ci": [
+        1.1486957628226564,
+        1.1628690016684018
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "35-case gain with CI above1; full gates and1931 independent comparisons pass"
+  },
+  {
+    "number": 3,
+    "idea": "persistent unit-digit rating support index and direct naked-single lookup",
+    "status": "CONFIRMED",
+    "accepted": true,
+    "screen_speedup": 1.1159221239647772,
+    "differential_comparisons": 1931,
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1069.545846,
+      "candidate_sum_median_ms": 841.066004,
+      "primary_speedup": 1.271655067394687,
+      "paired_bootstrap_95_ci": [
+        1.2642016623439787,
+        1.3161229270207655
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "rating screen2.276x incremental; same action/fuel sequences, independent index oracle, full gates and35-case cumulative confirmation pass"
+  },
+  {
+    "number": 4,
+    "idea": "hidden-single unit propagation before DFS branching",
+    "status": "TESTED",
+    "accepted": false,
+    "screen_speedup": 1.2920598852548109,
+    "hard_count_speedup": 6.054,
+    "reason": "violates resolved exact NS/MRV search order; multiple-solution first answers differ. Independent grid checks pass changed individual answers, CLI exact comparison fails. No test rewritten to claim compatibility."
+  },
+  {
+    "number": 5,
+    "idea": "fused rating cell edits and support synchronization in one traversal",
+    "status": "TESTED",
+    "accepted": false,
+    "screen_speedup": 1.0043642930206946,
+    "screen_ci": [
+      0.9886782118172289,
+      1.0085246865924484
+    ],
+    "differential_comparisons": 1931,
+    "reason": "index oracle and CLI differential pass; aggregate gain0.44% is below reproducible meaningful threshold and CI includes slowdown"
+  },
+  {
+    "number": 6,
+    "idea": "reuse cached occupancy across generator clue removals and uniqueness searches",
+    "status": "TESTED",
+    "accepted": false,
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 536.478752,
+      "candidate_sum_median_ms": 539.586723,
+      "primary_speedup": 0.9942400899289733,
+      "paired_bootstrap_95_ci": [
+        0.9872348490543437,
+        1.001196703282182
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "differential_comparisons": 1931,
+    "reason": "27-unit reinitialization removed correctly, but end-to-end screen0.994x; generator1.024x too small to establish meaningful overall effect"
+  },
+  {
+    "number": 7,
+    "idea": "compact immutable initial-empty-position domain for MRV scans",
+    "status": "TESTED",
+    "accepted": false,
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 539.3135169999999,
+      "candidate_sum_median_ms": 819.494054,
+      "primary_speedup": 0.6581054668640707,
+      "paired_bootstrap_95_ci": [
+        0.6545719441449162,
+        0.662680643712664
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "differential_comparisons": 1931,
+    "reason": "list traversal and duplication cost exceed saved fixed-cell reads; exact CLI compatibility passes but screen slows"
+  },
+  {
+    "number": 8,
+    "idea": "parallel output rope followed by one linear flatten",
+    "status": "CONFIRMED",
+    "accepted": true,
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 576.937691,
+      "candidate_sum_median_ms": 507.618932,
+      "primary_speedup": 1.1365566857935867,
+      "paired_bootstrap_95_ci": [
+        1.1069140759551785,
+        1.1663003923941382
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "differential_comparisons": 1931,
+    "confirmation": {
+      "cases": 35,
+      "baseline_sum_median_ms": 1112.125051,
+      "candidate_sum_median_ms": 786.659462,
+      "primary_speedup": 1.4137312327910447,
+      "paired_bootstrap_95_ci": [
+        1.4066622421544537,
+        1.4281730244126243
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "reason": "material incremental batch improvement; unchanged generic four-mode sequential equality proven using stronger tail induction and String associativity; all gates pass"
+  },
+  {
+    "number": 9,
+    "idea": "incremental count of missing unit-digit supports instead of243-entry contradiction scan",
+    "status": "TESTED",
+    "accepted": false,
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 502.602932,
+      "candidate_sum_median_ms": 504.307074,
+      "primary_speedup": 0.9966208247160142,
+      "paired_bootstrap_95_ci": [
+        0.9812343466788229,
+        1.0192535948522556
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "differential_comparisons": 1931,
+    "reason": "every index and deficit count verified after actions; update255 access cost offsets saved missing scan; aggregate0.997x and rating1.002x below noise"
+  },
+  {
+    "number": 10,
+    "idea": "delay persistent rating support index until naked-single propagation stalls",
+    "status": "TESTED",
+    "accepted": false,
+    "screen": {
+      "cases": 7,
+      "baseline_sum_median_ms": 497.354322,
+      "candidate_sum_median_ms": 507.68197200000003,
+      "primary_speedup": 0.9796572449494031,
+      "paired_bootstrap_95_ci": [
+        0.9652716684383136,
+        0.988915100739503
+      ],
+      "bootstrap_samples": 5000,
+      "seed": 20261003
+    },
+    "differential_comparisons": 1931,
+    "reason": "NS/HS/LC/NP and fuel oracles pass; rate workload1.125x but full incremental screen0.980x withCI below1; net regression therefore rejected"
+  }
+]

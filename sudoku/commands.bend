@@ -6,6 +6,7 @@ import ./solver.bend as S
 import ./counter.bend as K
 import ./types.bend as T
 import ./difficulty.bend as D
+import ./arrayrating.bend as A
 
 type Reply is Data:
   Reply{code: U32, out: String, err: String}
@@ -49,7 +50,7 @@ def run(mode: U32, batch: Bool, fuel: Nat, ratefuel: Nat, b: Array<U32>) -> Repl
     case 3:
       counted(batch, K.count2(fuel, b))
     case 4:
-      rated(batch, D.rate(ratefuel, b))
+      rated(batch, A.rate(ratefuel, b))
     case _:
       Reply{1, "", "unknown mode"}
 
@@ -74,10 +75,51 @@ def parsed(mode: U32, batch: Bool, fuel: Nat, ratefuel: Nat, result: P.Parsed) -
     case P.ParsedBoard{b}:
       validated(mode, batch, fuel, ratefuel, V.validate(b))
 
+def run_prepared(mode: U32, batch: Bool, fuel: Nat, ratefuel: Nat, b: Array<U32>) -> Reply:
+  match mode:
+    case 1:
+      solved(batch, S.solve_prepared(fuel, b))
+    case 2:
+      Reply{0, "valid", ""}
+    case 3:
+      counted(batch, K.count2_prepared(fuel, b))
+    case 4:
+      rated(batch, A.rate(ratefuel, b))
+    case _:
+      Reply{1, "", "unknown mode"}
+
+def parsed_prepared(mode: U32, batch: Bool, fuel: Nat, ratefuel: Nat, result: P.Parsed) -> Reply:
+  match result:
+    case P.ParseError{reason}:
+      invalid(mode, batch, reason)
+    case P.ParsedBoard{b}:
+      run_prepared(mode, batch, fuel, ratefuel, b)
+
 def eval(mode: U32, batch: Bool, fuel: Nat, ratefuel: Nat, puzzle: String) -> Reply:
-  parsed(mode, batch, fuel, ratefuel, P.parse81(puzzle))
+  parsed_prepared(mode, batch, fuel, ratefuel, P.prepare81(puzzle))
 
 def only_out(reply: Reply) -> String:
   match reply:
     case Reply{code, out, err}:
       out
+
+# The batch solve leaf writes its suffix while rendering the board. Public
+# Reply/eval formatting remains the oracle for all paths and other modes.
+def solved_tail(result: T.SolveResult, tail: String) -> String:
+  match result:
+    case T.Solved{b}:
+      "solved:" ++ B.show_tail(b, tail)
+    case T.Unsolved{}:
+      "unsolved" ++ tail
+    case T.OutOfFuel{}:
+      "error:fuel" ++ tail
+
+def prepared_solve_tail(parsed: P.Parsed, tail: String) -> String:
+  match parsed:
+    case P.ParseError{reason}:
+      "error:" ++ reason ++ tail
+    case P.ParsedBoard{b}:
+      solved_tail(S.solve_prepared(T.solve_fuel(), b), tail)
+
+def batch_solve_tail(puzzle: String, tail: String) -> String:
+  prepared_solve_tail(P.prepare81(puzzle), tail)

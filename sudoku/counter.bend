@@ -43,3 +43,6 @@ def show(count: T.Count) -> String:
       "2"
     case T.CountFuel{}:
       "fuel"
+
+def count2_prepared(fuel: Nat, board: Array<U32>) -> T.Count:
+  finish(S.run_prepared(fuel, 2, board))

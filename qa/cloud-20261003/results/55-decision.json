@@ -1,0 +1,19 @@
+{
+  "trial": 55,
+  "status": "TESTED",
+  "accepted": false,
+  "screen": {
+    "cases": 7,
+    "baseline_sum_median_ms": 219.417733,
+    "candidate_sum_median_ms": 230.124253,
+    "primary_speedup": 0.9534750472389366,
+    "paired_bootstrap_95_ci": [
+      0.9224468066885921,
+      0.9679400946680946
+    ],
+    "bootstrap_samples": 5000,
+    "seed": 20261003
+  },
+  "reason": "Fixed24-visit trigger correct but0.95348screen CI0.92245-0.96794;easyBENCH0.9107. Threshold not tuned.",
+  "correctness": "4096 independent exact workcounts/choices;23/24activationboundary;24000 new-path invariant calls;1024domain ties;1931CLI;6060fuel"
+}
