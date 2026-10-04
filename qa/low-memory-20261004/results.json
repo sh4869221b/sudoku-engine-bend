@@ -1,0 +1,376 @@
+{
+  "status": "PASS",
+  "date_utc": "2026-10-04",
+  "published_base_commit": "0447c51a9da1afb5bc9c4af343e943e4c2ddc5b0",
+  "command": "./verify.sh --low-memory",
+  "execution_mode": "low-memory",
+  "compiler_gc_hint_bytes": "67108864",
+  "compiler_gc_hint_is_memory_cap": false,
+  "full_verification": {
+    "exit_code": 0,
+    "wall_seconds": 591.273,
+    "resource_observation": {
+      "exit_code": 0,
+      "wall_seconds": 591.72,
+      "largest_child_maxrss_kib": 1001392
+    },
+    "resource_note": "largest_child_maxrss_kib is the largest individual descendant maximum RSS reported by getrusage, not simultaneous process-tree RSS or an enforced limit",
+    "log_sha256": "3e634f64d9e9531e08e4c824609c2776d21ad7df791d7f80ce94e0b57453bf03",
+    "proof": "PASS: unsafe/foreign precheck, no-scope-diagnostic export and locked Lean-backed kernel",
+    "cli_cases": 216,
+    "adaptive_traces": 20,
+    "adaptive_transitions": 239111,
+    "adaptive_comparisons": 239131,
+    "mutation": "Both original mutants detected with original 60-second build/check and 30-second execution deadlines",
+    "lanes": "All 7 native/Bend and 5 Node-compatible commands; original Bun file-I/O exclusions retained"
+  },
+  "focused_regressions": {
+    "status": "PASS",
+    "count": 40,
+    "command": "python3 -m unittest discover -s qa -p 'test_low_memory.py' -v",
+    "independently_reviewed_and_rerun": true,
+    "log_sha256": "5ff3614b1c84077b3cdc627e088d13599916572bac47d39ba9f0cd886d3f98fc"
+  },
+  "real_toolchain_smoke": {
+    "status": "PASS",
+    "cases": [
+      {
+        "case": "valid proof.bend",
+        "exit_code": 0,
+        "stdout": "ALL PROOFS CHECK\n",
+        "stderr": ""
+      },
+      {
+        "case": "unsafe proof.bend",
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "SOME PROOFS FAIL\nError: 1 def relies on unsafe or foreign code:\n- main\n"
+      },
+      {
+        "case": "wrong proof.bend",
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "SOME PROOFS FAIL\nError:\n- expected : 0\n- observed : 1\nLocation: wrong\n2 | def wrong() -> {0 == 1 : U32}:\n3>|   {==}\n  |   ^^^^\n4 | \n"
+      },
+      {
+        "case": "PROOF symlink without imported laws",
+        "exit_code": 1
+      },
+      {
+        "case": "same native output and byte-identical binary with source/output paths containing spaces",
+        "sha256": {
+          "default": "241575330ecc7d12244b3799f2c690bc8f50748c8e7c66d2a6a87d2b518f94fa",
+          "low-memory": "241575330ecc7d12244b3799f2c690bc8f50748c8e7c66d2a6a87d2b518f94fa"
+        }
+      },
+      {
+        "case": "existing native output protected",
+        "exit_code": 1
+      }
+    ]
+  },
+  "smoke_optimized_python": "Refused with exit 2; no evidence file created",
+  "production_binary_sha256": "147112785c0dee0ca00a0bbae0cbe56bb2f26b641883919785f9c169567d8bc2",
+  "production_binary_byte_identical_to_verified_default_build": true,
+  "benchmark": {
+    "status": "PASS",
+    "execution_mode": "low-memory",
+    "compiler_gc_hint_bytes": "67108864",
+    "Bend": "2.0.35",
+    "Clang": "19.1.7",
+    "toolchain_metadata_source": "project lock; binary identity recorded separately where available",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "machine": "x86_64",
+    "logical_cpus": 9,
+    "solve_fuel": 200000,
+    "digging_fuel": 20000,
+    "corpus": {
+      "seed_start": 1,
+      "count": 10000,
+      "clues": 36,
+      "symmetry": false,
+      "minimal": false,
+      "sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e",
+      "stderr": ""
+    },
+    "timed_scope": "batch solve plus result validation and original-clue preservation; corpus preparation and tree construction excluded",
+    "warmup": 1,
+    "repetitions": 3,
+    "records": [
+      {
+        "threads": 1,
+        "N": 1,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "2cd894a005a4fdac8e94380985e6c8fb48005050680cb2c016fa7e624ce17ede"
+      },
+      {
+        "threads": 1,
+        "N": 10,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "758d72b9f717849d18494d22954fde65fa5aad03116b04dca0004395a8e23631"
+      },
+      {
+        "threads": 1,
+        "N": 100,
+        "status": "success",
+        "raw_ms": [
+          0,
+          1,
+          1
+        ],
+        "median_ms": 1,
+        "corpus_sha256": "74c4d9c09ba5cdc627e9084da51c030060f2da275bcc3aae35d64acfbb44ae3c"
+      },
+      {
+        "threads": 1,
+        "N": 1000,
+        "status": "success",
+        "raw_ms": [
+          3,
+          3,
+          3
+        ],
+        "median_ms": 3,
+        "corpus_sha256": "17cb5c2744f6e11955530153ec989efd34977caadc7c8753a93cc7d9e66cfc74"
+      },
+      {
+        "threads": 1,
+        "N": 10000,
+        "status": "success",
+        "raw_ms": [
+          30,
+          30,
+          33
+        ],
+        "median_ms": 30,
+        "corpus_sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e"
+      },
+      {
+        "threads": 8,
+        "N": 1,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "2cd894a005a4fdac8e94380985e6c8fb48005050680cb2c016fa7e624ce17ede"
+      },
+      {
+        "threads": 8,
+        "N": 10,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "758d72b9f717849d18494d22954fde65fa5aad03116b04dca0004395a8e23631"
+      },
+      {
+        "threads": 8,
+        "N": 100,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "74c4d9c09ba5cdc627e9084da51c030060f2da275bcc3aae35d64acfbb44ae3c"
+      },
+      {
+        "threads": 8,
+        "N": 1000,
+        "status": "success",
+        "raw_ms": [
+          1,
+          1,
+          0
+        ],
+        "median_ms": 1,
+        "corpus_sha256": "17cb5c2744f6e11955530153ec989efd34977caadc7c8753a93cc7d9e66cfc74"
+      },
+      {
+        "threads": 8,
+        "N": 10000,
+        "status": "success",
+        "raw_ms": [
+          5,
+          5,
+          4
+        ],
+        "median_ms": 5,
+        "corpus_sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e"
+      },
+      {
+        "threads": 16,
+        "N": 1,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "2cd894a005a4fdac8e94380985e6c8fb48005050680cb2c016fa7e624ce17ede"
+      },
+      {
+        "threads": 16,
+        "N": 10,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "758d72b9f717849d18494d22954fde65fa5aad03116b04dca0004395a8e23631"
+      },
+      {
+        "threads": 16,
+        "N": 100,
+        "status": "success",
+        "raw_ms": [
+          0,
+          0,
+          0
+        ],
+        "median_ms": 0,
+        "corpus_sha256": "74c4d9c09ba5cdc627e9084da51c030060f2da275bcc3aae35d64acfbb44ae3c"
+      },
+      {
+        "threads": 16,
+        "N": 1000,
+        "status": "success",
+        "raw_ms": [
+          1,
+          0,
+          1
+        ],
+        "median_ms": 1,
+        "corpus_sha256": "17cb5c2744f6e11955530153ec989efd34977caadc7c8753a93cc7d9e66cfc74"
+      },
+      {
+        "threads": 16,
+        "N": 10000,
+        "status": "success",
+        "raw_ms": [
+          5,
+          4,
+          5
+        ],
+        "median_ms": 5,
+        "corpus_sha256": "a9b4c292e95289d0d547c6b44ac81b27024bc12f31284690375c93dae8a8831e"
+      }
+    ],
+    "wall_seconds": 1.386
+  },
+  "toolchain": {
+    "lock_sha256": "1cdb3c628ce6bb32c357cdb014a4e17f57d217ae9f8ef8a79de5ec6664b0d2c8",
+    "lean_version": "4.34.1",
+    "versions": {
+      "bend": "bend 2.0.35",
+      "clang": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/scratch/b81277eea609/bend-compiler-upgrade-tools/clang19/usr/lib/llvm-19/bin",
+      "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+    },
+    "file_sha256": {
+      "bend": "af967c7c37aced4491e0f4344e3bb9de837c2c89b7519f7e0b8c71935be1840a",
+      "clang": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a",
+      "lean": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550",
+      "leanc": "68a45f8329e2d79133cdcc7b1fa494e37844282d7b5f8908ce1deda7cfdf161a",
+      "kernel": "11b035790cd7da9752d14076e91300f659869003a4cc42f551ae4d1d42cb5a84",
+      "kernel_source": "e15042434e73aab07ab05cea4b77b5619082c00a6d4924ea2d4a2cdec05facce"
+    }
+  },
+  "unchanged_source_and_gate_files": {
+    "LAWS.bend": "e178bf5760166839b48d2503582c8cd6da2478d7bff745b41d36c19c371a0ee9",
+    "PROOF.bend": "1771361e23d4b48a444aefe8df4c308671b4f9ffe089991fdf233980e33904e4",
+    "main.bend": "3b3e6e956d0b3b7998fd9c09a5bed7e04f1f8c747825d483a51df1b82b9168a3",
+    "qa/adaptive-trace.bend": "581b0cc94a228a9a43cf4971e86b45de2f2849cf301ace726ac785051c0b5a95",
+    "qa/arithmetic.bend": "65d0e40be331450cc434399f0a77e2de5ffcff6b450990e321ee74a3b3d540eb",
+    "qa/array-techniques.bend": "9738b457e80f8ff20b052392249ffce6d1ce98525b3b0677e948444bae48ba55",
+    "qa/bench-direct.bend": "c7ae2676f93d9d343bce0d2617c4e64c67ddb1636f6e7ba8602fc46e99b34445",
+    "qa/bitmap-arithmetic.bend": "151d598616bb1be49332d0236f521c5be2712606400d5057d2d5c3e64aece882",
+    "qa/candidate-digits.bend": "294bbccc6d37423ef9d23325055d611bb67cdd5cdfe09ace83e65ae63dae3e9b",
+    "qa/empty-search-state.bend": "9149ca1b91cd934ba046f96c5d891d00afd4cf43f753b17ff5009fd61f56e0e7",
+    "qa/fuel_cli.bend": "e1e77d4c0d2ddbcc47209142cddb17b6ed55d70113bdded3dedf5a802e84464e",
+    "qa/optimization.bend": "ecd31c73435b95aa794f4360f7b400ccb1cb73c48526ecb196c6e1eb0aef1466",
+    "qa/orderstat.bend": "3ebef58c26753456d3dbbb7c63e71f396bea8f4d687ff2b29968e749a1d7a8d1",
+    "qa/output-tail.bend": "c0c67049a453bf6f323e69a0dd4bb63bd48eae05b1a307a7d51fc3c8a8b4038f",
+    "qa/peer-equivalence.bend": "c41f6a011cfb301fb1a1b24422afc0d5d769da3aa6905f392ea52e7fd2d4e762",
+    "qa/peer-reference.bend": "df04a1daf15edd9e701c5d14003824ed8d4dd47104cbc34a5dc8895964ed7541",
+    "qa/queued-candidates.bend": "38224d28381536171482133c570c654b49dbd8ab7526cad54042cf6f4ee253de",
+    "qa/rating-array.bend": "4ee187b5e8d4384d9592df814a22489cd9da6d867f9495d8cc09fc85d0f9b577",
+    "qa/rating-cache.bend": "0cab29e99d335ee09edf04abceb39d022f4e3010f6d1f402e238c0b2f8afcb15",
+    "qa/rating-index.bend": "958b05b9c8bc17fda0a67755086cf5eb96a0c22acbabc18e58e84e63c765a9ab",
+    "qa/row-bitmap.bend": "d37b50ecd4f6122a3c8fa326a84466e7c67e626d29873496dffb4d2a2b420561",
+    "qa/row-reference-candidates.bend": "cc23614f990713580ac329a1cc9325fab1d3fa367b21fa65e1de24ffc3158e68",
+    "qa/row-reference-parser.bend": "86a5029539b5714bf6db1d49da6b3f633bf7e48ddffb2c00224db73504568ef5",
+    "qa/run.bend": "51561dfa0649c0246d66216430820f53c3cb9c882dcc16da6c4da1ba0ad1fa37",
+    "qa/runtime.bend": "c1f8a534be4612da28b561cd81a19526a6b3168f1b636117071539c3729fd104",
+    "qa/singleton-predicate.bend": "698ff42ce6e4217011dd4917e44de8d8cfbd8f9eaadc8d049cdf205b7f2e0ef8",
+    "qa/validation-reason.bend": "4d8a9ff2ba876a0d3f9163400dfd22afc6bee30fc5ca9b487b38c05f97859de1",
+    "qa/validation-reference.bend": "7803905e9d7d6fabb215d538d49a3802c734a1c50e8f6e47d902d9594640f22e",
+    "qa_run.bend": "43c8611713e806e7e5deca325713ff72b2eb6b0428a0cbc30460abaa12595e32",
+    "sudoku/adaptivesearch.bend": "ce17c12e083a893d45660af9072c5639fe63c5a7ba3079dc453c306affc1bade",
+    "sudoku/arithmetic.bend": "3b253ea2d9ba182788350713157f6ab6ab432d352c05376710f58639888a99c6",
+    "sudoku/arrayrating.bend": "2e4931437093a90e6fa7d0024e744e2f95721ab152554d514394f015e061bafe",
+    "sudoku/arraytechniques.bend": "26c1f59f701df606ce8b43150fa6231d019e885ceb6cb2f7e9fbaf1afa6b3186",
+    "sudoku/batch.bend": "f984c6f07ff922c6989ad123999e83e40c522480acb7e198f18d85f222a9a3ca",
+    "sudoku/bench.bend": "3779c1df786900ae59fe44ddcc7dcd55b6634c217ede55ef170934f927a71354",
+    "sudoku/board.bend": "d444cc124118866d7bbb01f28018da2ae7327bf132db4dfb8c043184c5bedf31",
+    "sudoku/candidates.bend": "7a260b5d40eb4b7917043949f23545bc20225ee12e5ee14a5ad55f041b74b6de",
+    "sudoku/cliargs.bend": "a6d13a1157d5983a0587f1e8b35ec9a225fdb1d254f412257926c91c262c059d",
+    "sudoku/commands.bend": "042c96a169370958e04581a0f3db09a939d20279fec2d425a91412fa1c9473e4",
+    "sudoku/counter.bend": "538996c92c60f99444e705c231876f28a2cf37a722d3966fdb641b328964170c",
+    "sudoku/difficulty.bend": "8484955b46d3a6c8d56fc952c8f57ba1f295fb116aea97b98e53c77cd64ed6b9",
+    "sudoku/generator.bend": "981bf05ff11f46534a5cce3da3aefb3ab3e33d896c383491f17ec20082c0fba0",
+    "sudoku/orderstat.bend": "6c34d77df499e39435d09c6c64a1d137f1d1e22308d5ac7acadda407e412b554",
+    "sudoku/parser.bend": "9147caacedb1e033badd28e5fd0c0e5ba5fd8724c66950a00e4dd11dcbb63cd9",
+    "sudoku/prng.bend": "c3b266259d877e9a480781fbbc543411cf4ed313d76bd2e63868e12cef823c84",
+    "sudoku/properties.bend": "f8097e6cd2cfe2f892c21f6a24feeaa81b097f059cb0de0d7199f50d4c597ab7",
+    "sudoku/queuedcandidates.bend": "78268e7645fa9d9483797c99437874dbba4b743fd2924bf52eda488cee9e0b7f",
+    "sudoku/ratingindex.bend": "098d7059b031f86f11e397196bcdc2de1fadf48ae8e78b3a016045f1fa12d113",
+    "sudoku/search.bend": "d8130ef52e2da58cdde9c63fbc775ae52f1503acf1744991b3f8ffef1c42f394",
+    "sudoku/solver.bend": "5a08ebbe3bbda7ae233001e3e9f81936d5041f478a8424d888098cd0f2659382",
+    "sudoku/types.bend": "ea048c099c5817bf6039dd15ccd30088d2649b94ce6a9d7c5023d715d531aa4c",
+    "sudoku/validate.bend": "55d4473e927044f6b90a52f6f4e08e25e30c531ae503b67311d776b3c15ccb50",
+    "build.sh": "a9b953b65afa6a3516345f77f480c311ec224231a78d3124e8983ccd3c8bd188",
+    "verify.sh": "a9ce6963b104234658011118a2f76423e029ca05c94bb9eac1a7e022694928cb",
+    "qa/verify_gates.sh": "2c3a2d467c833e72b0f12e29217c9441cba20aff31d3e7f95570e2d719ba9198",
+    "qa/mutation.py": "ad77dd2fa0f0a417997b86ca969d7ad3a5a205b9db0167af78c8246af041a23b",
+    "toolchain-env.sh": "ce79394ab19d1cda449e760a611cc63f0d03197ac8406e0f444e830a138b0cd5"
+  },
+  "executed_code_matches_final_files": {
+    "qa/low_memory.py": "9f406248a56df5512aebc249720df257bcbf6d0fe8210a688868ef1595d31db6",
+    "qa/verify_isolated.py": "b39a228d2955e14e8dd9b2b9206cff6d9d90b5e7499fc2fa961006e0c019663d",
+    "qa/benchmark.py": "965b449dd3fc1b22a0035ed671cb98f5b5303c167cbf6951fea7c88d9a5d12da",
+    "qa/toolchain.py": "260250849fc019b47c324551c8df9f8e0c74579374d9c1e381822b7e2e17bacb",
+    "qa/verify_gates.sh": "2c3a2d467c833e72b0f12e29217c9441cba20aff31d3e7f95570e2d719ba9198",
+    "qa/mutation.py": "ad77dd2fa0f0a417997b86ca969d7ad3a5a205b9db0167af78c8246af041a23b",
+    "build.sh": "a9b953b65afa6a3516345f77f480c311ec224231a78d3124e8983ccd3c8bd188",
+    "verify.sh": "a9ce6963b104234658011118a2f76423e029ca05c94bb9eac1a7e022694928cb",
+    "toolchain-env.sh": "ce79394ab19d1cda449e760a611cc63f0d03197ac8406e0f444e830a138b0cd5",
+    "toolchain.lock.json": "1cdb3c628ce6bb32c357cdb014a4e17f57d217ae9f8ef8a79de5ec6664b0d2c8"
+  },
+  "limitations": [
+    "Not a fixed-memory guarantee; individual compiler phases still require substantial memory.",
+    "Ordinary integrated verification was not rerun; prior FAIL137 evidence remains failed.",
+    "Existing Node file-I/O exclusions and finite-test/proof scope remain unchanged."
+  ]
+}

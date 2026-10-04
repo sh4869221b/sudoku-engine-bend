@@ -144,6 +144,8 @@ def main():
         install(args.lean_version)
     elif args.command == 'env':
         env = environment(selected())
+        if os.environ.get('BEND_LOW_MEMORY') == '1':
+            env['BEND'] = str(ROOT / 'qa/low_memory.py')
         for key in ('BEND_TOOLCHAIN_DIR', 'BEND', 'CC', 'BENDTT', 'BEND_NO_TELEMETRY', 'PATH', 'LD_LIBRARY_PATH'):
             print('export ' + key + '=' + shlex.quote(env[key]))
     else:

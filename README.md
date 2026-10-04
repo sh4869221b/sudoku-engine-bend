@@ -37,6 +37,42 @@ correctness, proof and lane gates while explicitly omitting timing measurements.
 See the [stable-toolchain validation](.omo/evidence/stable-toolchains-20261001/REPORT.md)
 and [.omo/evidence/contracts.md](.omo/evidence/contracts.md) for CLI and proof scope.
 
+## Low-memory verification
+
+```sh
+./verify.sh --low-memory
+# Optional: omit timing only; all correctness/proof/lane gates still run.
+./verify.sh --low-memory --skip-benchmark
+# Fast adapter safety regressions (no toolchain installation needed):
+python3 -m unittest discover -s qa -p 'test_low_memory.py' -v
+```
+
+This opt-in mode releases Bend before launching Clang for **every** native
+build, including nested mutation tests. Proof verification checks a private
+snapshot of the local import closure for unsafe/foreign promises, exports it
+without scope diagnostics, exits Bend, and runs the same locked, unmodified
+Lean-backed BendTT kernel. Only its exact successful kernel verdict is accepted.
+The compiler, native `-std=c11 -O3 … -lpthread -lm` flags, all original gates,
+mutation timeouts, and benchmark workload are unchanged. Ordinary `./verify.sh`
+continues to use the upstream integrated compiler/verdict path.
+
+The mode supplies `BUN_JSC_forceRAMSize=67108864` when no value is already set.
+This is a compiler GC scheduling hint, **not a memory limit**. Process separation
+reduces overlapping toolchain heaps; individual compiler phases can still use
+about 1 GiB, and execution can still fail under resource pressure. It does not
+reduce the Sudoku runtime's memory or change its solver algorithms.
+
+Each run stays isolated under `.verification/`. Its summary and benchmark JSON
+record `execution_mode` and the actual GC hint; failed earlier runs remain failed.
+The summary distinguishes a completed benchmark from one never reached. The
+adapter is private to this verification flow, not a general replacement for
+Bend: sequential native builds support this project's Linux CPU lane without
+X11/ALSA/GPU, require fresh output paths, and refuse existing files, directories
+or symlinks. Proof snapshots support Base and contained relative `.bend` imports;
+symlink/noncanonical proof entrypoints, unsupported imports and unexpected
+diagnostics fail closed. The adapter refuses unreviewed future compiler pins. Check-only,
+JavaScript export and interpreter lanes still use the pinned Bend directly.
+
 ## 2026-10-04 compiler upgrade
 
 Bend is updated to 2.0.35 with unchanged production/proof code. The fixed 35-case
