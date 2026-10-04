@@ -1,0 +1,154 @@
+{
+  "status": "PASS",
+  "seed": 35347849531903,
+  "seed_hex": "0x20261003d1ff",
+  "cases": 944,
+  "distinct_puzzles": 914,
+  "case_categories": {
+    "valid": 768,
+    "duplicate": 96,
+    "unsatisfiable": 32,
+    "malformed": 48
+  },
+  "clue_distribution": {
+    "0": 48,
+    "1": 48,
+    "4": 48,
+    "8": 48,
+    "12": 48,
+    "16": 48,
+    "20": 48,
+    "24": 48,
+    "28": 48,
+    "32": 48,
+    "40": 48,
+    "48": 48,
+    "60": 48,
+    "72": 48,
+    "80": 48,
+    "81": 48
+  },
+  "unique_completed_grids": 768,
+  "cases_sha256": "7c18a5d023119f91adef4c237e54c0bdbc5e8dce8a44d56243cca8d00c2bfcbc",
+  "binary_sha256": {
+    "baseline": "9ed5b3446c426fd561586d35e4481c72f852a1cca66bd2d12e33f78358753a44",
+    "candidate": "9f907f07117d8426c27cde0c58dea0386617f4a3b72b6aefffbb37475ceee5eb"
+  },
+  "script_sha256": "708cbe21ce6b276cbb73429b29660c41a61ad0be40c139c4737942f7f21915b0",
+  "checks": {
+    "standalone_comparisons": 2832,
+    "standalone_baseline_exit_0": 2368,
+    "successful_solutions_checked": 6144,
+    "standalone_candidate_exit_0": 2368,
+    "independent_count_results_checked": 1598,
+    "independent_check_verdicts": 1888,
+    "count_results_not_oracle_checked": 2,
+    "standalone_baseline_exit_2": 432,
+    "standalone_candidate_exit_2": 432,
+    "standalone_baseline_exit_3": 32,
+    "standalone_candidate_exit_3": 32,
+    "batch_comparisons": 9,
+    "batch_order_checks": 18
+  },
+  "oracle_status": {
+    "known": 799,
+    "unknown": 1,
+    "invalid": 144
+  },
+  "oracle_known_counts": {
+    "2": 513,
+    "1": 254,
+    "0": 32
+  },
+  "oracle_nodes_total": 140040,
+  "oracle_nodes_max": 50001,
+  "oracle_by_clue_count": {
+    "0": {
+      "known": 48
+    },
+    "1": {
+      "known": 48
+    },
+    "4": {
+      "known": 48
+    },
+    "8": {
+      "known": 48
+    },
+    "12": {
+      "known": 48
+    },
+    "16": {
+      "known": 48
+    },
+    "20": {
+      "known": 47,
+      "unknown": 1
+    },
+    "24": {
+      "known": 48
+    },
+    "28": {
+      "known": 48
+    },
+    "32": {
+      "known": 48
+    },
+    "40": {
+      "known": 48
+    },
+    "48": {
+      "known": 48
+    },
+    "60": {
+      "known": 48
+    },
+    "72": {
+      "known": 48
+    },
+    "80": {
+      "known": 48
+    },
+    "81": {
+      "known": 48
+    }
+  },
+  "oracle_unknown_cases": {
+    "valid-03-20": {
+      "status": "unknown",
+      "count": null,
+      "solutions_found_lower_bound": 0,
+      "reason": "node_budget",
+      "nodes": 50001,
+      "seconds": 0.17773781000141753
+    }
+  },
+  "production_fuel_cases": [],
+  "limits": {
+    "oracle_node_budget": 50000,
+    "oracle_seconds_budget": 0.25,
+    "oracle_time_check_interval_nodes": 128,
+    "standalone_timeout": 20.0,
+    "batch_timeout": 120.0,
+    "scope": "Finite seeded differential/independent correctness suite; no exhaustiveness claim or performance inference. All count unknowns, production fuel exits, and process timeouts remain explicitly recorded."
+  },
+  "artifacts": {
+    "cases": {
+      "path": "/workspace/scratch/b81277eea609/bend-compiler-upgrade-evidence/comparison/randomized.json.cases.json",
+      "sha256": "deba155063e8623b77f79f48e22ac0dd2da7b401bc756fd4aff36e4981e3c3b6"
+    },
+    "oracle": {
+      "path": "/workspace/scratch/b81277eea609/bend-compiler-upgrade-evidence/comparison/randomized.json.oracle.json",
+      "sha256": "7f3535ff5412c96a24f4e7a1b94a94b0ce7f0e50e2311bea6ca437e536f0fb44"
+    },
+    "batch": {
+      "path": "/workspace/scratch/b81277eea609/bend-compiler-upgrade-evidence/comparison/randomized.json.batch.txt",
+      "sha256": "6be0fb02a2a4a161db438db06dd8de100155b0bfcd3101dd59ac19977a1eec6e"
+    },
+    "raw": {
+      "path": "/workspace/scratch/b81277eea609/bend-compiler-upgrade-evidence/comparison/randomized.json.raw.json.gz",
+      "sha256": "6eb5e407f2baeb2849c008f8e7c03ad57e0eeabf05f4ff98a3205f0e063317f2"
+    }
+  },
+  "failures": []
+}

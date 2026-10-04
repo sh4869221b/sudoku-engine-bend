@@ -1,0 +1,42 @@
+{
+  "measurement": "/workspace/scratch/b81277eea609/bend-compiler-upgrade-evidence/comparison/pooled.json",
+  "statistic": "median baseline wall_ms / median candidate wall_ms",
+  "resampling": "paired by rep;warmups excluded;percentile bootstrap",
+  "bootstrap_samples": 5000,
+  "seed": 20261003,
+  "cases": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 32.8909855,
+      "candidate_median_ms": 34.193560500000004,
+      "speedup": 0.9619058389663748,
+      "paired_bootstrap_95_ci": [
+        0.9529599445321356,
+        0.975347612535741
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 9.249380500000001,
+      "candidate_median_ms": 8.765819,
+      "speedup": 1.0551644404247909,
+      "paired_bootstrap_95_ci": [
+        1.0040005048973895,
+        1.1551988104147406
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 9.934678,
+      "candidate_median_ms": 7.757852,
+      "speedup": 1.2805964846970528,
+      "paired_bootstrap_95_ci": [
+        1.2016226406795618,
+        1.3233790237244305
+      ]
+    }
+  ]
+}

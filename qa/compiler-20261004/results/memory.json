@@ -1,0 +1,83 @@
+{
+  "method": "tiny C launcher fork/exec/wait4; avoids Python inherited pre-exec RSS; no affinity change; two warmups plus seven randomized serial samples",
+  "summary": [
+    {
+      "case": "generate100_clues36",
+      "baseline": {
+        "median_kib": 1220,
+        "min_kib": 1208,
+        "max_kib": 1252
+      },
+      "candidate": {
+        "median_kib": 1220,
+        "min_kib": 1208,
+        "max_kib": 1232
+      }
+    },
+    {
+      "case": "batch_easy-10000_solve_t1",
+      "baseline": {
+        "median_kib": 23324,
+        "min_kib": 23304,
+        "max_kib": 23340
+      },
+      "candidate": {
+        "median_kib": 23296,
+        "min_kib": 23288,
+        "max_kib": 23348
+      }
+    },
+    {
+      "case": "batch_rate-300_rate_t1",
+      "baseline": {
+        "median_kib": 1884,
+        "min_kib": 1864,
+        "max_kib": 1912
+      },
+      "candidate": {
+        "median_kib": 1928,
+        "min_kib": 1856,
+        "max_kib": 1928
+      }
+    },
+    {
+      "case": "bench_easy-10000_t1",
+      "baseline": {
+        "median_kib": 25680,
+        "min_kib": 25656,
+        "max_kib": 25740
+      },
+      "candidate": {
+        "median_kib": 25660,
+        "min_kib": 25656,
+        "max_kib": 25720
+      }
+    },
+    {
+      "case": "batch_easy-10000_solve_t8",
+      "baseline": {
+        "median_kib": 23640,
+        "min_kib": 23400,
+        "max_kib": 23792
+      },
+      "candidate": {
+        "median_kib": 23536,
+        "min_kib": 23360,
+        "max_kib": 23800
+      }
+    },
+    {
+      "case": "batch_rate-300_rate_t8",
+      "baseline": {
+        "median_kib": 3564,
+        "min_kib": 3076,
+        "max_kib": 3704
+      },
+      "candidate": {
+        "median_kib": 3572,
+        "min_kib": 3020,
+        "max_kib": 3784
+      }
+    }
+  ]
+}

@@ -1,0 +1,370 @@
+{
+  "status": "PASS",
+  "comparisons": 60,
+  "records": [
+    {
+      "size": 127,
+      "threads": 3,
+      "command": "solve",
+      "stdout_normalized_sha256": "f203cc4ecdae7b929e674f2051c0460fa18b166071b609157feba8802979d7d2"
+    },
+    {
+      "size": 127,
+      "threads": 3,
+      "command": "check",
+      "stdout_normalized_sha256": "9ac3b80eb0e9284128cdae0393d6e60084773b33144e554839a07a129583cb5a"
+    },
+    {
+      "size": 127,
+      "threads": 3,
+      "command": "count",
+      "stdout_normalized_sha256": "bb930cd8f049a287a1e7690276eb15f107c3a13c5e8133e2c9e21e88c2a4b965"
+    },
+    {
+      "size": 127,
+      "threads": 3,
+      "command": "rate",
+      "stdout_normalized_sha256": "2a9dbddd2f3e6f3fae4d8083e06e77ccbe687690838826fe8b52b53244a7f115"
+    },
+    {
+      "size": 127,
+      "threads": 3,
+      "command": "bench",
+      "stdout_normalized_sha256": "a34c2c6ae8de2989c0dd00fccd485a31ff457070ae7ffec2e3d4d57b739df1e2"
+    },
+    {
+      "size": 127,
+      "threads": 5,
+      "command": "solve",
+      "stdout_normalized_sha256": "f203cc4ecdae7b929e674f2051c0460fa18b166071b609157feba8802979d7d2"
+    },
+    {
+      "size": 127,
+      "threads": 5,
+      "command": "check",
+      "stdout_normalized_sha256": "9ac3b80eb0e9284128cdae0393d6e60084773b33144e554839a07a129583cb5a"
+    },
+    {
+      "size": 127,
+      "threads": 5,
+      "command": "count",
+      "stdout_normalized_sha256": "bb930cd8f049a287a1e7690276eb15f107c3a13c5e8133e2c9e21e88c2a4b965"
+    },
+    {
+      "size": 127,
+      "threads": 5,
+      "command": "rate",
+      "stdout_normalized_sha256": "2a9dbddd2f3e6f3fae4d8083e06e77ccbe687690838826fe8b52b53244a7f115"
+    },
+    {
+      "size": 127,
+      "threads": 5,
+      "command": "bench",
+      "stdout_normalized_sha256": "a34c2c6ae8de2989c0dd00fccd485a31ff457070ae7ffec2e3d4d57b739df1e2"
+    },
+    {
+      "size": 128,
+      "threads": 3,
+      "command": "solve",
+      "stdout_normalized_sha256": "3fcc3df71cd258eb1eae8018892357a6c1104b6a1f5e29b5c125a7e0123c4582"
+    },
+    {
+      "size": 128,
+      "threads": 3,
+      "command": "check",
+      "stdout_normalized_sha256": "f0262b7faf6a48401bcf7cfb7c17df5f3ab2d121b206f0259ae00b8ded378ace"
+    },
+    {
+      "size": 128,
+      "threads": 3,
+      "command": "count",
+      "stdout_normalized_sha256": "e536c460b532c64e947277cce7b53e6f6a54237d26144b899ddaba4a048c4f61"
+    },
+    {
+      "size": 128,
+      "threads": 3,
+      "command": "rate",
+      "stdout_normalized_sha256": "c955c55881e624a7bb2e588bda33899644006b59256f98a1885d78430f0bef45"
+    },
+    {
+      "size": 128,
+      "threads": 3,
+      "command": "bench",
+      "stdout_normalized_sha256": "43f0cecdbf0264577032a174a6126cbd67f71001270933d0b6eea4dbd5342e21"
+    },
+    {
+      "size": 128,
+      "threads": 5,
+      "command": "solve",
+      "stdout_normalized_sha256": "3fcc3df71cd258eb1eae8018892357a6c1104b6a1f5e29b5c125a7e0123c4582"
+    },
+    {
+      "size": 128,
+      "threads": 5,
+      "command": "check",
+      "stdout_normalized_sha256": "f0262b7faf6a48401bcf7cfb7c17df5f3ab2d121b206f0259ae00b8ded378ace"
+    },
+    {
+      "size": 128,
+      "threads": 5,
+      "command": "count",
+      "stdout_normalized_sha256": "e536c460b532c64e947277cce7b53e6f6a54237d26144b899ddaba4a048c4f61"
+    },
+    {
+      "size": 128,
+      "threads": 5,
+      "command": "rate",
+      "stdout_normalized_sha256": "c955c55881e624a7bb2e588bda33899644006b59256f98a1885d78430f0bef45"
+    },
+    {
+      "size": 128,
+      "threads": 5,
+      "command": "bench",
+      "stdout_normalized_sha256": "43f0cecdbf0264577032a174a6126cbd67f71001270933d0b6eea4dbd5342e21"
+    },
+    {
+      "size": 129,
+      "threads": 3,
+      "command": "solve",
+      "stdout_normalized_sha256": "d7e405ea474b85dd9c974a595d0960cc07e86412cf897b7f00c399455749c3a2"
+    },
+    {
+      "size": 129,
+      "threads": 3,
+      "command": "check",
+      "stdout_normalized_sha256": "e106afaadbdbe757b2964b6fb3ba721188e0cf20fe8d63f70d1f37522ae75886"
+    },
+    {
+      "size": 129,
+      "threads": 3,
+      "command": "count",
+      "stdout_normalized_sha256": "1b5a3cc6bdbf457e26a16cc1b77ac02046007cf9d7a39220ff36494384c45cdd"
+    },
+    {
+      "size": 129,
+      "threads": 3,
+      "command": "rate",
+      "stdout_normalized_sha256": "b05729f69bbf6cb17d3d5a86280c1b65a0451d90cb6207615e617c0c8701c5c0"
+    },
+    {
+      "size": 129,
+      "threads": 3,
+      "command": "bench",
+      "stdout_normalized_sha256": "7d19e45eda825a0c7dd7d51fc53478c6cf4e9e65c50a7096a3c5dedea31755fb"
+    },
+    {
+      "size": 129,
+      "threads": 5,
+      "command": "solve",
+      "stdout_normalized_sha256": "d7e405ea474b85dd9c974a595d0960cc07e86412cf897b7f00c399455749c3a2"
+    },
+    {
+      "size": 129,
+      "threads": 5,
+      "command": "check",
+      "stdout_normalized_sha256": "e106afaadbdbe757b2964b6fb3ba721188e0cf20fe8d63f70d1f37522ae75886"
+    },
+    {
+      "size": 129,
+      "threads": 5,
+      "command": "count",
+      "stdout_normalized_sha256": "1b5a3cc6bdbf457e26a16cc1b77ac02046007cf9d7a39220ff36494384c45cdd"
+    },
+    {
+      "size": 129,
+      "threads": 5,
+      "command": "rate",
+      "stdout_normalized_sha256": "b05729f69bbf6cb17d3d5a86280c1b65a0451d90cb6207615e617c0c8701c5c0"
+    },
+    {
+      "size": 129,
+      "threads": 5,
+      "command": "bench",
+      "stdout_normalized_sha256": "7d19e45eda825a0c7dd7d51fc53478c6cf4e9e65c50a7096a3c5dedea31755fb"
+    },
+    {
+      "size": 255,
+      "threads": 3,
+      "command": "solve",
+      "stdout_normalized_sha256": "e9992d335e715fc6d2cf55ada24c418f773e0a0d38f59033c6c8681b61673404"
+    },
+    {
+      "size": 255,
+      "threads": 3,
+      "command": "check",
+      "stdout_normalized_sha256": "9ba3b43b322743ddea5746abc806c816eca7163aa45892ddd2fc675252cea7e9"
+    },
+    {
+      "size": 255,
+      "threads": 3,
+      "command": "count",
+      "stdout_normalized_sha256": "693ddeaca1cdffd9f603ac2f6c28674b515a29e34d965dc537c9c1dc41bd5aa1"
+    },
+    {
+      "size": 255,
+      "threads": 3,
+      "command": "rate",
+      "stdout_normalized_sha256": "764bf7ccf6ca71a35a044d166cb2e28221533a7c826bd8c4a18f9ff5b0126432"
+    },
+    {
+      "size": 255,
+      "threads": 3,
+      "command": "bench",
+      "stdout_normalized_sha256": "90b8ee61e6c5458c08a5f1e8fffc406e2955367054f49afda91692426ef38298"
+    },
+    {
+      "size": 255,
+      "threads": 5,
+      "command": "solve",
+      "stdout_normalized_sha256": "e9992d335e715fc6d2cf55ada24c418f773e0a0d38f59033c6c8681b61673404"
+    },
+    {
+      "size": 255,
+      "threads": 5,
+      "command": "check",
+      "stdout_normalized_sha256": "9ba3b43b322743ddea5746abc806c816eca7163aa45892ddd2fc675252cea7e9"
+    },
+    {
+      "size": 255,
+      "threads": 5,
+      "command": "count",
+      "stdout_normalized_sha256": "693ddeaca1cdffd9f603ac2f6c28674b515a29e34d965dc537c9c1dc41bd5aa1"
+    },
+    {
+      "size": 255,
+      "threads": 5,
+      "command": "rate",
+      "stdout_normalized_sha256": "764bf7ccf6ca71a35a044d166cb2e28221533a7c826bd8c4a18f9ff5b0126432"
+    },
+    {
+      "size": 255,
+      "threads": 5,
+      "command": "bench",
+      "stdout_normalized_sha256": "90b8ee61e6c5458c08a5f1e8fffc406e2955367054f49afda91692426ef38298"
+    },
+    {
+      "size": 256,
+      "threads": 3,
+      "command": "solve",
+      "stdout_normalized_sha256": "f2a4738e492ce3a84444a57494917253c0cc82ffd9328b41bcb68aac2d2f4086"
+    },
+    {
+      "size": 256,
+      "threads": 3,
+      "command": "check",
+      "stdout_normalized_sha256": "0794c0ccee0e0e3779290171f02eafe5d04b051cce6656334835f8adbe032dfe"
+    },
+    {
+      "size": 256,
+      "threads": 3,
+      "command": "count",
+      "stdout_normalized_sha256": "c0a745c9387aa8d170213341b49beca2360a44c794b6cdba3e91e5bc3e716563"
+    },
+    {
+      "size": 256,
+      "threads": 3,
+      "command": "rate",
+      "stdout_normalized_sha256": "562531d63fc4a9dab6d921e4de4812c2c3353e91cb3941a114bcd46494b7630f"
+    },
+    {
+      "size": 256,
+      "threads": 3,
+      "command": "bench",
+      "stdout_normalized_sha256": "51ad3443c95ba3b7fa3c8925fdedde0c3d5fccf9d58b9b49ebfa1f5f589001a0"
+    },
+    {
+      "size": 256,
+      "threads": 5,
+      "command": "solve",
+      "stdout_normalized_sha256": "f2a4738e492ce3a84444a57494917253c0cc82ffd9328b41bcb68aac2d2f4086"
+    },
+    {
+      "size": 256,
+      "threads": 5,
+      "command": "check",
+      "stdout_normalized_sha256": "0794c0ccee0e0e3779290171f02eafe5d04b051cce6656334835f8adbe032dfe"
+    },
+    {
+      "size": 256,
+      "threads": 5,
+      "command": "count",
+      "stdout_normalized_sha256": "c0a745c9387aa8d170213341b49beca2360a44c794b6cdba3e91e5bc3e716563"
+    },
+    {
+      "size": 256,
+      "threads": 5,
+      "command": "rate",
+      "stdout_normalized_sha256": "562531d63fc4a9dab6d921e4de4812c2c3353e91cb3941a114bcd46494b7630f"
+    },
+    {
+      "size": 256,
+      "threads": 5,
+      "command": "bench",
+      "stdout_normalized_sha256": "51ad3443c95ba3b7fa3c8925fdedde0c3d5fccf9d58b9b49ebfa1f5f589001a0"
+    },
+    {
+      "size": 257,
+      "threads": 3,
+      "command": "solve",
+      "stdout_normalized_sha256": "7c670304cedf509cd51771e03b56b217887166f9926d40d5fb183b350c93753c"
+    },
+    {
+      "size": 257,
+      "threads": 3,
+      "command": "check",
+      "stdout_normalized_sha256": "c1f3517e8b78f0a49f40319278d304a08797a89ed95b97a99a966bbe9b40eb61"
+    },
+    {
+      "size": 257,
+      "threads": 3,
+      "command": "count",
+      "stdout_normalized_sha256": "1008213145012558ab169585f207b5ee88628ca379474161969cf10528784433"
+    },
+    {
+      "size": 257,
+      "threads": 3,
+      "command": "rate",
+      "stdout_normalized_sha256": "e271f015eb75f9bf6aeb98baeff6416775d9be8bf47b61f35c5065fec32abdd9"
+    },
+    {
+      "size": 257,
+      "threads": 3,
+      "command": "bench",
+      "stdout_normalized_sha256": "2cd44ef22b0682865b428eb619de5e0478104f4596f8f0fcf723b66c809085ed"
+    },
+    {
+      "size": 257,
+      "threads": 5,
+      "command": "solve",
+      "stdout_normalized_sha256": "7c670304cedf509cd51771e03b56b217887166f9926d40d5fb183b350c93753c"
+    },
+    {
+      "size": 257,
+      "threads": 5,
+      "command": "check",
+      "stdout_normalized_sha256": "c1f3517e8b78f0a49f40319278d304a08797a89ed95b97a99a966bbe9b40eb61"
+    },
+    {
+      "size": 257,
+      "threads": 5,
+      "command": "count",
+      "stdout_normalized_sha256": "1008213145012558ab169585f207b5ee88628ca379474161969cf10528784433"
+    },
+    {
+      "size": 257,
+      "threads": 5,
+      "command": "rate",
+      "stdout_normalized_sha256": "e271f015eb75f9bf6aeb98baeff6416775d9be8bf47b61f35c5065fec32abdd9"
+    },
+    {
+      "size": 257,
+      "threads": 5,
+      "command": "bench",
+      "stdout_normalized_sha256": "2cd44ef22b0682865b428eb619de5e0478104f4596f8f0fcf723b66c809085ed"
+    }
+  ],
+  "binaries": {
+    "base": "9ed5b3446c426fd561586d35e4481c72f852a1cca66bd2d12e33f78358753a44",
+    "candidate": "9f907f07117d8426c27cde0c58dea0386617f4a3b72b6aefffbb37475ceee5eb"
+  }
+}

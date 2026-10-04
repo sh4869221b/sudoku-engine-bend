@@ -11,8 +11,8 @@ Seven-command, standard-library-only Sudoku engine: solve, check, count, rate, g
 bin/bend-sudoku --threads 1 generate --seed 42 --clues 32
 ```
 
-The Linux x86_64 setup downloads checksum-locked official Bend **2.0.34**
-(latest stable on 2026-10-01) and Lean **4.34.1**, and preserves the compatible
+The Linux x86_64 setup downloads checksum-locked official Bend **2.0.35**
+(latest stable on 2026-10-04) and Lean **4.34.1**, and preserves the compatible
 Clang **19.1.7** backend. It builds the unmodified release's BendTT kernel with
 Lean. [toolchain.lock.json](toolchain.lock.json) records versions, release URLs,
 archive hashes and the Bend executable/kernel-source hashes. Nothing is installed
@@ -36,6 +36,13 @@ and fixtures are never overwritten. `./verify.sh --skip-benchmark` runs all
 correctness, proof and lane gates while explicitly omitting timing measurements.
 See the [stable-toolchain validation](.omo/evidence/stable-toolchains-20261001/REPORT.md)
 and [.omo/evidence/contracts.md](.omo/evidence/contracts.md) for CLI and proof scope.
+
+## 2026-10-04 compiler upgrade
+
+Bend is updated to 2.0.35 with unchanged production/proof code. The fixed 35-case
+same-source comparison is 1.0399x faster overall (95% CI 1.0343–1.0456), with a
+single-thread hard-count regression. See the [compiler upgrade report](qa/compiler-20261004/REPORT.md)
+for verification, compiler-memory recovery, per-case results and reproduction.
 
 ## 2026-10-03 cloud optimization
 
