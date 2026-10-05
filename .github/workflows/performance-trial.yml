@@ -16,7 +16,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
-      BEND_PERF_WORK: ${{ runner.temp }}/sudoku-performance
       BEND_NO_TELEMETRY: '1'
       BUN_JSC_forceRAMSize: '67108864'
     steps:
@@ -31,7 +30,9 @@ jobs:
       - name: Install checksum-locked toolchain
         run: ./setup.sh
       - name: Verify and compare
-        run: bash qa/perf-20261005/locked-compare.sh
+        run: |
+          export BEND_PERF_WORK="$RUNNER_TEMP/sudoku-performance"
+          bash qa/perf-20261005/locked-compare.sh
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
