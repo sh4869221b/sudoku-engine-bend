@@ -1,0 +1,5 @@
+{
+  "bend": "bend 2.0.35",
+  "clang": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /home/runner/work/sudoku-engine-bend/sudoku-engine-bend/.toolchains/clang19/usr/lib/llvm-19/bin",
+  "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+}

@@ -176,23 +176,9 @@ def supported(+bad: Bool, +full: Bool, +first: U32, +digit: U32, +tech: U32, +st
   (support, missing) = r
   ready(bad || missing, full, first, digit, tech, steps, score, cells, support)
 
-def scanned_hidden(+tech: U32, +steps: U32, +score: U32, cells: Array<U32>, r: Array<U32> & Bool & D.Action) -> ArrayState:
-  match r:
-    case Tuple{support, Tuple{True{}, next}}:
-      ArrayFinished{D.Rated{2, tech, steps, score}}
-    case Tuple{support, Tuple{False{}, next}}:
-      hidden(tech, steps, score, cells, (support, next))
-
-def scanned_choose(+bad: Bool, +full: Bool, +first: U32, +digit: U32, +tech: U32, +steps: U32, +score: U32, cells: Array<U32>, support: Array<U32>) -> ArrayState:
-  match bad full first:
-    case False{} False{} 81:
-      scanned_hidden(tech, steps, score, cells, I.missing_hidden(243n, 0, (support, (False{}, D.NoAction{}))))
-    case _ _ _:
-      supported(bad, full, first, digit, tech, steps, score, cells, I.missing(243n, 0, Array.get(U32, support, 0), False{}))
-
 def scanned(+tech: U32, +steps: U32, +score: U32, support: Array<U32>, r: Array<U32> & Bool & Bool & U32 & U32) -> ArrayState:
   (cells, (bad, (full, (first, digit)))) = r
-  scanned_choose(bad, full, first, digit, tech, steps, score, cells, support)
+  supported(bad, full, first, digit, tech, steps, score, cells, I.missing(243n, 0, Array.get(U32, support, 0), False{}))
 
 def loop(+fuel: Nat, state: ArrayState) -> D.RateResult:
   match fuel state:

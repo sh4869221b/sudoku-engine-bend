@@ -45,37 +45,8 @@ def encode_go(+n: Nat, +pos: U32, b: Array<U32>) -> Array<U32>:
     case 1n+k:
       encode_go(k, (pos + 1 : U32), encoded(pos, Array.get(U32, b, pos)))
 
-# Full encoding starts with zero flags and visits each cell exactly once.
-# A nonurgent cell therefore needs no read or write of its flag word. Keep
-# encoded/encode_go unchanged for callers that supply existing flag words.
-def encode_fresh_flag(+urgent: Bool, b: Array<U32>, +pos: U32) -> Array<U32>:
-  match urgent:
-    case True{}:
-      flag(b, pos, True{})
-    case False{}:
-      b
-
-def encode_fresh_mask(+pos: U32, r: Array<U32> & U32) -> Array<U32>:
-  (b, +mask) = r
-  encode_fresh_flag(zero_or_single(mask), Array.set(U32, b, pos, mask), pos)
-
-def encode_fresh_cell(+pos: U32, r: Array<U32> & U32) -> Array<U32>:
-  (b, digit) = r
-  match digit:
-    case 0:
-      encode_fresh_mask(pos, C.cached_at(b, pos))
-    case d:
-      Array.set(U32, b, pos, U32.shln(d, 10n))
-
-def encode_fresh_go(+n: Nat, +pos: U32, b: Array<U32>) -> Array<U32>:
-  match n:
-    case 0n:
-      b
-    case 1n+k:
-      encode_fresh_go(k, (pos + 1 : U32), encode_fresh_cell(pos, Array.get(U32, b, pos)))
-
 def encode(b: Array<U32>) -> Array<U32>:
-  encode_fresh_go(81n, 0, Array.set(U32, Array.set(U32, Array.set(U32, b, 109, 0), 110, 0), 111, 0))
+  encode_go(81n, 0, Array.set(U32, Array.set(U32, Array.set(U32, b, 109, 0), 110, 0), 111, 0))
 
 def decoded(+pos: U32, r: Array<U32> & U32) -> Array<U32>:
   (b, word) = r

@@ -1,0 +1,1 @@
+PASS encode flags: all128 words versus frozen encoder;256 valid partial,256 arbitrary digit,128 wide cached boards;stale flags;urgent boundaries31/32/63/64/80;complete/empty/all-zero candidates

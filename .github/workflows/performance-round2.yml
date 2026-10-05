@@ -1,20 +1,21 @@
-name: Locked performance trial
+name: Locked performance screening
 
 on:
   push:
     branches: [perf/optimization-20261005]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: locked-performance-trial-${{ github.ref }}
+  group: locked-performance-round2-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  compare:
+  screen:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 180
     env:
       BEND_NO_TELEMETRY: '1'
       BUN_JSC_forceRAMSize: '67108864'
@@ -29,19 +30,16 @@ jobs:
           sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
       - name: Install checksum-locked toolchain
         run: ./setup.sh
-      - name: Verify and compare
+      - name: Build, screen, and conditionally verify
         run: |
-          export BEND_PERF_WORK="$RUNNER_TEMP/sudoku-performance"
-          bash qa/perf-20261005/locked-compare.sh
+          export BEND_PERF_WORK="$RUNNER_TEMP/sudoku-round2"
+          python3 qa/perf-20261005/round2.py
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: locked-performance-${{ github.sha }}
-          path: |
-            ${{ runner.temp }}/sudoku-performance/results
-            .verification/*/summary.json
-            .verification/*/verify.log
+          name: locked-round2-${{ github.sha }}
+          path: ${{ runner.temp }}/sudoku-round2/results
           retention-days: 14
           include-hidden-files: true
           if-no-files-found: warn

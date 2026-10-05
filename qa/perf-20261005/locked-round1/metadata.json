@@ -1,0 +1,9 @@
+{
+  "run_id": 37300725140,
+  "run_url": "https://github.com/sh4869221b/sudoku-engine-bend/actions/runs/37300725140",
+  "candidate_commit": "bbb66c9ca9010dd582bb4eac40472c624a2e160e",
+  "artifact_id": 11342830280,
+  "artifact_zip_sha256": "b510e140f9da5e51adae0bc590c9a064c6d409cf0c653404864c39e3f0066a5e",
+  "decision": "reject all production changes; no demonstrated individual improvement; combined significantly slower",
+  "speedup_definition": "sum of baseline case medians / sum of candidate case medians"
+}

@@ -1,0 +1,12 @@
+PASS fused scan all 11-bit support words against separate scans and all 256 retained entries
+PASS fused first hidden order with later missing support at every index
+PASS missing support globally outranks an earlier hidden single
+PASS array every NS edit cell and support index versus untouched reference
+PASS array every HS edit cell and support index versus untouched reference
+PASS array every LC/NP edit cell and support index versus untouched reference
+PASS array synthetic NP everyfuel0..23 versus untouched list state
+PASS array NS-only everyfuel0..63 versus unmodified list oracle
+PASS array HS everyfuel0..63 versus unmodified list oracle
+PASS array LC/NP everyfuel0..31 versus unmodified list oracle
+PASS array empty-board guess/fuel boundary
+PASS array completed-board/fuel boundary

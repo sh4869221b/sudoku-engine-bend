@@ -125,27 +125,6 @@ def hidden(+n: Nat, +index: U32, r: Array<U32> & D.Action) -> Array<U32> & D.Act
     case 1n+k Tuple{cache, D.NoAction{}}:
       hidden(k, (index + 1 : U32), hidden_cell(index, Array.get(U32, cache, index)))
 
-# Continue checking every entry for missing support while retaining the first
-# hidden single. Missing support has priority over any placement action.
-def missing_hidden_found(+bad: Bool, r: Array<U32> & D.Action) -> Array<U32> & Bool & D.Action:
-  (cache, found) = r
-  (cache, (bad, found))
-
-def missing_hidden_entry(+index: U32, +bad: Bool, r: Array<U32> & U32, action: D.Action) -> Array<U32> & Bool & D.Action:
-  match r action:
-    case Tuple{cache, +word} D.NoAction{}:
-      missing_hidden_found(bad || U32.is_eq(word, 0), hidden_cell(index, (cache, word)))
-    case Tuple{cache, word} other:
-      (cache, (bad || U32.is_eq(word, 0), other))
-
-def missing_hidden(+n: Nat, +index: U32, r: Array<U32> & Bool & D.Action) -> Array<U32> & Bool & D.Action:
-  match n:
-    case 0n:
-      r
-    case 1n+k:
-      (cache, (bad, action)) = r
-      missing_hidden(k, (index + 1 : U32), missing_hidden_entry(index, bad, Array.get(U32, cache, index), action))
-
 def positions(+unit: U32, ds: List<&2, U32>) -> List<&2, U32>:
   match ds:
     case Nil{}:

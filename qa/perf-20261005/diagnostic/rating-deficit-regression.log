@@ -1,0 +1,10 @@
+PASS scalar deficit every 11-bit old word zero/restore/fixed transitions with fresh243 count and all256 words
+PASS scalar deficit every NS edit cell and support index versus untouched reference
+PASS scalar deficit every HS edit cell and support index versus untouched reference
+PASS scalar deficit every LC/NP edit cell and support index versus untouched reference
+PASS scalar deficit synthetic NP everyfuel0..23 versus untouched list state
+PASS scalar deficit NS-only everyfuel0..63 versus unmodified list oracle
+PASS scalar deficit HS everyfuel0..63 versus unmodified list oracle
+PASS scalar deficit LC/NP everyfuel0..31 versus unmodified list oracle
+PASS scalar deficit empty-board guess/fuel boundary
+PASS scalar deficit completed-board/fuel boundary

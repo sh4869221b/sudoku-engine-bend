@@ -1,0 +1,119 @@
+{
+  "expected_candidates": [
+    "flags-terminal",
+    "refreshskip",
+    "rating-fused-tail",
+    "rating-mask-iterator",
+    "rating-combinedfixedupdate",
+    "allcombined"
+  ],
+  "candidates": [
+    {
+      "name": "flags-terminal",
+      "files": [
+        "sudoku/queuedcandidates.bend",
+        "qa/flags-terminal.bend"
+      ],
+      "oracles": [
+        "qa/flags-terminal.bend"
+      ],
+      "affected_cases": [
+        "generate100_clues36",
+        "batch_mixed-1000_solve_t1",
+        "batch_hard-100_count_t1",
+        "batch_hard-100_count_t8"
+      ]
+    },
+    {
+      "name": "refreshskip",
+      "files": [
+        "sudoku/candidates.bend",
+        "sudoku/queuedcandidates.bend",
+        "qa/refresh-fixed.bend",
+        "qa/refresh-reference.bend"
+      ],
+      "oracles": [
+        "qa/refresh-fixed.bend"
+      ],
+      "affected_cases": [
+        "generate100_clues36",
+        "batch_mixed-1000_solve_t1",
+        "batch_hard-100_count_t1",
+        "batch_hard-100_count_t8",
+        "batch_easy-10000_solve_t1",
+        "bench_easy-10000_t1"
+      ]
+    },
+    {
+      "name": "rating-fused-tail",
+      "files": [
+        "sudoku/arrayrating.bend",
+        "sudoku/ratingindex.bend",
+        "qa/rating-fused.bend"
+      ],
+      "oracles": [
+        "qa/rating-fused.bend"
+      ],
+      "affected_cases": [
+        "batch_rate-300_rate_t1"
+      ]
+    },
+    {
+      "name": "rating-mask-iterator",
+      "files": [
+        "sudoku/arrayrating.bend",
+        "sudoku/ratingindex.bend",
+        "qa/rating-listfree.bend"
+      ],
+      "oracles": [
+        "qa/rating-listfree.bend"
+      ],
+      "affected_cases": [
+        "batch_rate-300_rate_t1"
+      ]
+    },
+    {
+      "name": "rating-combinedfixedupdate",
+      "files": [
+        "sudoku/arrayrating.bend",
+        "qa/rating-combine.bend"
+      ],
+      "oracles": [
+        "qa/rating-combine.bend"
+      ],
+      "affected_cases": [
+        "batch_rate-300_rate_t1"
+      ]
+    },
+    {
+      "name": "allcombined",
+      "files": [
+        "sudoku/candidates.bend",
+        "sudoku/queuedcandidates.bend",
+        "qa/flags-terminal.bend",
+        "qa/refresh-fixed.bend",
+        "qa/refresh-reference.bend",
+        "sudoku/arrayrating.bend",
+        "sudoku/ratingindex.bend",
+        "qa/rating-fused.bend",
+        "qa/rating-listfree.bend",
+        "qa/rating-combine.bend",
+        "qa/rating-all.bend"
+      ],
+      "oracles": [
+        "qa/flags-terminal.bend",
+        "qa/refresh-fixed.bend",
+        "qa/rating-all.bend"
+      ],
+      "affected_cases": [
+        "generate100_clues36",
+        "batch_mixed-1000_solve_t1",
+        "batch_hard-100_count_t1",
+        "batch_hard-100_count_t8",
+        "batch_rate-300_rate_t1",
+        "batch_easy-10000_solve_t1",
+        "bench_easy-10000_t1"
+      ]
+    }
+  ]
+}

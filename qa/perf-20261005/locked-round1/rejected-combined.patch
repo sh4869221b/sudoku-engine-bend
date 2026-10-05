@@ -1,0 +1,182 @@
+diff --git a/qa/verify_gates.sh b/qa/verify_gates.sh
+index 0e9569e..d20583f 100755
+--- a/qa/verify_gates.sh
++++ b/qa/verify_gates.sh
+@@ -15,6 +15,10 @@ python3 qa/generate_count_table.py --check
+ ./bin/qa-row-bitmap --threads 1
+ "$BEND" qa/queued-candidates.bend -o bin/qa-queued-candidates
+ ./bin/qa-queued-candidates --threads 1
++"$BEND" qa/encode-flags.bend -o bin/qa-encode-flags
++./bin/qa-encode-flags --threads 1
++"$BEND" qa/parser-local.bend -o bin/qa-parser-local
++./bin/qa-parser-local --threads 1
+ BEND="$BEND" python3 qa/adaptive_trace.py --lock-held
+ "$BEND" qa/singleton-predicate.bend -o bin/qa-singleton-predicate
+ ./bin/qa-singleton-predicate --threads 1
+@@ -36,6 +40,8 @@ BEND="$BEND" python3 qa/adaptive_trace.py --lock-held
+ ./bin/qa-rating-index --threads 1
+ "$BEND" qa/rating-array.bend -o bin/qa-rating-array
+ ./bin/qa-rating-array --threads 1
++"$BEND" qa/rating-fused.bend -o bin/qa-rating-fused
++./bin/qa-rating-fused --threads 1
+ "$BEND" qa/array-techniques.bend -o bin/qa-array-techniques
+ ./bin/qa-array-techniques --threads 1
+ "$BEND" qa/candidate-digits.bend -o bin/qa-candidate-digits
+diff --git a/sudoku/arrayrating.bend b/sudoku/arrayrating.bend
+index 555377d..2206e9b 100644
+--- a/sudoku/arrayrating.bend
++++ b/sudoku/arrayrating.bend
+@@ -176,9 +176,23 @@ def supported(+bad: Bool, +full: Bool, +first: U32, +digit: U32, +tech: U32, +st
+   (support, missing) = r
+   ready(bad || missing, full, first, digit, tech, steps, score, cells, support)
+ 
++def scanned_hidden(+tech: U32, +steps: U32, +score: U32, cells: Array<U32>, r: Array<U32> & Bool & D.Action) -> ArrayState:
++  match r:
++    case Tuple{support, Tuple{True{}, next}}:
++      ArrayFinished{D.Rated{2, tech, steps, score}}
++    case Tuple{support, Tuple{False{}, next}}:
++      hidden(tech, steps, score, cells, (support, next))
++
++def scanned_choose(+bad: Bool, +full: Bool, +first: U32, +digit: U32, +tech: U32, +steps: U32, +score: U32, cells: Array<U32>, support: Array<U32>) -> ArrayState:
++  match bad full first:
++    case False{} False{} 81:
++      scanned_hidden(tech, steps, score, cells, I.missing_hidden(243n, 0, (support, (False{}, D.NoAction{}))))
++    case _ _ _:
++      supported(bad, full, first, digit, tech, steps, score, cells, I.missing(243n, 0, Array.get(U32, support, 0), False{}))
++
+ def scanned(+tech: U32, +steps: U32, +score: U32, support: Array<U32>, r: Array<U32> & Bool & Bool & U32 & U32) -> ArrayState:
+   (cells, (bad, (full, (first, digit)))) = r
+-  supported(bad, full, first, digit, tech, steps, score, cells, I.missing(243n, 0, Array.get(U32, support, 0), False{}))
++  scanned_choose(bad, full, first, digit, tech, steps, score, cells, support)
+ 
+ def loop(+fuel: Nat, state: ArrayState) -> D.RateResult:
+   match fuel state:
+diff --git a/sudoku/parser.bend b/sudoku/parser.bend
+index 23cfc33..7caa512 100644
+--- a/sudoku/parser.bend
++++ b/sudoku/parser.bend
+@@ -107,7 +107,36 @@ def prepared_store(+pos: U32, digit: U32, r: Array<U32> & U32) -> Array<U32> & U
+       +bit = B.bit(d)
+       prepared_set(pos, d, prepared_unit((18 + B.box_of(pos) : U32), bit, prepared_unit((9 + M.rem9(pos) : U32), bit, prepared_row(pos, bit, r))))
+ 
+-def prepared_scan(s: String, +pos: U32, +good: Bool, +start: U32, r: Array<U32> & U32) -> Parsed:
++def row_digit(+pos: U32, +digit: U32, +word: U32, r: Array<U32> & U32) -> Array<U32> & U32:
++  (b, +bad) = r
++  +bit = B.bit(digit)
++  (b, U32.min(bad, Bool.pick(U32, U32.is_ne(U32.and(word, bit), 0), M.div9(pos), 27)))
++
++def row_store(+pos: U32, +col: U32, digit: U32, +word: U32, r: Array<U32> & U32) -> Array<U32> & U32:
++  match digit:
++    case 0:
++      prepared_set(pos, 0, r)
++    case +d:
++      +bit = B.bit(d)
++      prepared_set(pos, d, prepared_unit((18 + B.box_of(pos) : U32), bit, prepared_unit((9 + col : U32), bit, row_digit(pos, d, word, r))))
++
++def row_word(+col: U32, digit: U32, word: U32) -> U32:
++  match digit:
++    case 0:
++      word
++    case +d:
++      U32.or(U32.and(word, U32.not(B.bit((10 + col : U32)))), B.bit(d))
++
++def row_flush(last: Bool, +pos: U32, word: U32, r: Array<U32> & U32) -> Array<U32> & U32:
++  match last:
++    case False{}:
++      r
++    case True{}:
++      (b, bad) = r
++      (Array.set(U32, b, (81 + M.div9(pos) : U32), word), bad)
++
++# Carry the current row's occupancy in a scalar and flush it once per row.
++def prepared_scan(s: String, +pos: U32, +col: U32, +good: Bool, +start: U32, +word: U32, r: Array<U32> & U32) -> Parsed:
+   match s:
+     case SNil{}:
+       prepared_end(U32.is_eq(pos, 81), good, start, r)
+@@ -120,7 +149,9 @@ def prepared_scan(s: String, +pos: U32, +good: Bool, +start: U32, r: Array<U32>
+           +numeric = ((d >= 48 : U32) && (d <= 57 : U32))
+           +valid = numeric || Char.is_eq(h, '.')
+           +v = Bool.pick(U32, numeric, (d - 48 : U32), 0)
+-          prepared_scan(tail, (p + 1 : U32), good && valid, U32.min(start, Bool.pick(U32, U32.is_eq(v, 0), p, 81)), prepared_store(p, v, r))
++          +last = U32.is_eq(col, 8)
++          +next = row_word(col, v, word)
++          prepared_scan(tail, (p + 1 : U32), Bool.pick(U32, last, 0, (col + 1 : U32)), good && valid, U32.min(start, Bool.pick(U32, U32.is_eq(v, 0), p, 81)), Bool.pick(U32, last, 523264, next), row_flush(last, p, next, row_store(p, col, v, word, r)))
+ 
+ def prepare81(s: String) -> Parsed:
+-  prepared_scan(s, 0, True{}, 81, (C.empty_rows(B.empty()), 27))
++  prepared_scan(s, 0, 0, True{}, 81, 523264, (B.empty(), 27))
+diff --git a/sudoku/queuedcandidates.bend b/sudoku/queuedcandidates.bend
+index b757bc9..4718615 100644
+--- a/sudoku/queuedcandidates.bend
++++ b/sudoku/queuedcandidates.bend
+@@ -45,8 +45,37 @@ def encode_go(+n: Nat, +pos: U32, b: Array<U32>) -> Array<U32>:
+     case 1n+k:
+       encode_go(k, (pos + 1 : U32), encoded(pos, Array.get(U32, b, pos)))
+ 
++# Full encoding starts with zero flags and visits each cell exactly once.
++# A nonurgent cell therefore needs no read or write of its flag word. Keep
++# encoded/encode_go unchanged for callers that supply existing flag words.
++def encode_fresh_flag(+urgent: Bool, b: Array<U32>, +pos: U32) -> Array<U32>:
++  match urgent:
++    case True{}:
++      flag(b, pos, True{})
++    case False{}:
++      b
++
++def encode_fresh_mask(+pos: U32, r: Array<U32> & U32) -> Array<U32>:
++  (b, +mask) = r
++  encode_fresh_flag(zero_or_single(mask), Array.set(U32, b, pos, mask), pos)
++
++def encode_fresh_cell(+pos: U32, r: Array<U32> & U32) -> Array<U32>:
++  (b, digit) = r
++  match digit:
++    case 0:
++      encode_fresh_mask(pos, C.cached_at(b, pos))
++    case d:
++      Array.set(U32, b, pos, U32.shln(d, 10n))
++
++def encode_fresh_go(+n: Nat, +pos: U32, b: Array<U32>) -> Array<U32>:
++  match n:
++    case 0n:
++      b
++    case 1n+k:
++      encode_fresh_go(k, (pos + 1 : U32), encode_fresh_cell(pos, Array.get(U32, b, pos)))
++
+ def encode(b: Array<U32>) -> Array<U32>:
+-  encode_go(81n, 0, Array.set(U32, Array.set(U32, Array.set(U32, b, 109, 0), 110, 0), 111, 0))
++  encode_fresh_go(81n, 0, Array.set(U32, Array.set(U32, Array.set(U32, b, 109, 0), 110, 0), 111, 0))
+ 
+ def decoded(+pos: U32, r: Array<U32> & U32) -> Array<U32>:
+   (b, word) = r
+diff --git a/sudoku/ratingindex.bend b/sudoku/ratingindex.bend
+index 7e26d91..3db8fc9 100644
+--- a/sudoku/ratingindex.bend
++++ b/sudoku/ratingindex.bend
+@@ -125,6 +125,27 @@ def hidden(+n: Nat, +index: U32, r: Array<U32> & D.Action) -> Array<U32> & D.Act
+     case 1n+k Tuple{cache, D.NoAction{}}:
+       hidden(k, (index + 1 : U32), hidden_cell(index, Array.get(U32, cache, index)))
+ 
++# Continue checking every entry for missing support while retaining the first
++# hidden single. Missing support has priority over any placement action.
++def missing_hidden_found(+bad: Bool, r: Array<U32> & D.Action) -> Array<U32> & Bool & D.Action:
++  (cache, found) = r
++  (cache, (bad, found))
++
++def missing_hidden_entry(+index: U32, +bad: Bool, r: Array<U32> & U32, action: D.Action) -> Array<U32> & Bool & D.Action:
++  match r action:
++    case Tuple{cache, +word} D.NoAction{}:
++      missing_hidden_found(bad || U32.is_eq(word, 0), hidden_cell(index, (cache, word)))
++    case Tuple{cache, word} other:
++      (cache, (bad || U32.is_eq(word, 0), other))
++
++def missing_hidden(+n: Nat, +index: U32, r: Array<U32> & Bool & D.Action) -> Array<U32> & Bool & D.Action:
++  match n:
++    case 0n:
++      r
++    case 1n+k:
++      (cache, (bad, action)) = r
++      missing_hidden(k, (index + 1 : U32), missing_hidden_entry(index, bad, Array.get(U32, cache, index), action))
++
+ def positions(+unit: U32, ds: List<&2, U32>) -> List<&2, U32>:
+   match ds:
+     case Nil{}:

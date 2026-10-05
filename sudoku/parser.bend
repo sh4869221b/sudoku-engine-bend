@@ -107,36 +107,7 @@ def prepared_store(+pos: U32, digit: U32, r: Array<U32> & U32) -> Array<U32> & U
       +bit = B.bit(d)
       prepared_set(pos, d, prepared_unit((18 + B.box_of(pos) : U32), bit, prepared_unit((9 + M.rem9(pos) : U32), bit, prepared_row(pos, bit, r))))
 
-def row_digit(+pos: U32, +digit: U32, +word: U32, r: Array<U32> & U32) -> Array<U32> & U32:
-  (b, +bad) = r
-  +bit = B.bit(digit)
-  (b, U32.min(bad, Bool.pick(U32, U32.is_ne(U32.and(word, bit), 0), M.div9(pos), 27)))
-
-def row_store(+pos: U32, +col: U32, digit: U32, +word: U32, r: Array<U32> & U32) -> Array<U32> & U32:
-  match digit:
-    case 0:
-      prepared_set(pos, 0, r)
-    case +d:
-      +bit = B.bit(d)
-      prepared_set(pos, d, prepared_unit((18 + B.box_of(pos) : U32), bit, prepared_unit((9 + col : U32), bit, row_digit(pos, d, word, r))))
-
-def row_word(+col: U32, digit: U32, word: U32) -> U32:
-  match digit:
-    case 0:
-      word
-    case +d:
-      U32.or(U32.and(word, U32.not(B.bit((10 + col : U32)))), B.bit(d))
-
-def row_flush(last: Bool, +pos: U32, word: U32, r: Array<U32> & U32) -> Array<U32> & U32:
-  match last:
-    case False{}:
-      r
-    case True{}:
-      (b, bad) = r
-      (Array.set(U32, b, (81 + M.div9(pos) : U32), word), bad)
-
-# Carry the current row's occupancy in a scalar and flush it once per row.
-def prepared_scan(s: String, +pos: U32, +col: U32, +good: Bool, +start: U32, +word: U32, r: Array<U32> & U32) -> Parsed:
+def prepared_scan(s: String, +pos: U32, +good: Bool, +start: U32, r: Array<U32> & U32) -> Parsed:
   match s:
     case SNil{}:
       prepared_end(U32.is_eq(pos, 81), good, start, r)
@@ -149,9 +120,7 @@ def prepared_scan(s: String, +pos: U32, +col: U32, +good: Bool, +start: U32, +wo
           +numeric = ((d >= 48 : U32) && (d <= 57 : U32))
           +valid = numeric || Char.is_eq(h, '.')
           +v = Bool.pick(U32, numeric, (d - 48 : U32), 0)
-          +last = U32.is_eq(col, 8)
-          +next = row_word(col, v, word)
-          prepared_scan(tail, (p + 1 : U32), Bool.pick(U32, last, 0, (col + 1 : U32)), good && valid, U32.min(start, Bool.pick(U32, U32.is_eq(v, 0), p, 81)), Bool.pick(U32, last, 523264, next), row_flush(last, p, next, row_store(p, col, v, word, r)))
+          prepared_scan(tail, (p + 1 : U32), good && valid, U32.min(start, Bool.pick(U32, U32.is_eq(v, 0), p, 81)), prepared_store(p, v, r))
 
 def prepare81(s: String) -> Parsed:
-  prepared_scan(s, 0, 0, True{}, 81, 523264, (B.empty(), 27))
+  prepared_scan(s, 0, True{}, 81, (C.empty_rows(B.empty()), 27))
