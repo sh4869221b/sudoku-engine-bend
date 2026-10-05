@@ -1,0 +1,46 @@
+name: Locked performance trial
+
+on:
+  push:
+    branches: [perf/optimization-20261005]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: locked-performance-trial-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      BEND_PERF_WORK: ${{ runner.temp }}/sudoku-performance
+      BEND_NO_TELEMETRY: '1'
+      BUN_JSC_forceRAMSize: '67108864'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Install host libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
+      - name: Install checksum-locked toolchain
+        run: ./setup.sh
+      - name: Verify and compare
+        run: bash qa/perf-20261005/locked-compare.sh
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: locked-performance-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/sudoku-performance/results
+            .verification/*/summary.json
+            .verification/*/verify.log
+          retention-days: 14
+          include-hidden-files: true
+          if-no-files-found: warn

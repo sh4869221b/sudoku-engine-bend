@@ -15,6 +15,10 @@ python3 qa/generate_count_table.py --check
 ./bin/qa-row-bitmap --threads 1
 "$BEND" qa/queued-candidates.bend -o bin/qa-queued-candidates
 ./bin/qa-queued-candidates --threads 1
+"$BEND" qa/encode-flags.bend -o bin/qa-encode-flags
+./bin/qa-encode-flags --threads 1
+"$BEND" qa/parser-local.bend -o bin/qa-parser-local
+./bin/qa-parser-local --threads 1
 BEND="$BEND" python3 qa/adaptive_trace.py --lock-held
 "$BEND" qa/singleton-predicate.bend -o bin/qa-singleton-predicate
 ./bin/qa-singleton-predicate --threads 1
@@ -36,6 +40,8 @@ BEND="$BEND" python3 qa/adaptive_trace.py --lock-held
 ./bin/qa-rating-index --threads 1
 "$BEND" qa/rating-array.bend -o bin/qa-rating-array
 ./bin/qa-rating-array --threads 1
+"$BEND" qa/rating-fused.bend -o bin/qa-rating-fused
+./bin/qa-rating-fused --threads 1
 "$BEND" qa/array-techniques.bend -o bin/qa-array-techniques
 ./bin/qa-array-techniques --threads 1
 "$BEND" qa/candidate-digits.bend -o bin/qa-candidate-digits
