@@ -1,0 +1,84 @@
+{
+  "baseline": {
+    "status": "PASS",
+    "command": "./verify.sh --low-memory --skip-benchmark",
+    "wall_seconds": 515.578,
+    "execution_mode": "low-memory",
+    "compiler_gc_hint_bytes": "67108864",
+    "timing_stage_separate": true,
+    "original_benchmark_records": 15,
+    "original_benchmark_status": "PASS",
+    "native_and_bend_lanes": 7,
+    "node_compatible_lanes": 5,
+    "bun_file_io_lanes": "not tested; Bun not installed"
+  },
+  "candidate": {
+    "status": "PASS",
+    "command": "./verify.sh --low-memory --skip-benchmark",
+    "wall_seconds": 498.278,
+    "execution_mode": "low-memory",
+    "compiler_gc_hint_bytes": "67108864",
+    "timing_stage_separate": true,
+    "original_benchmark_records": 15,
+    "original_benchmark_status": "PASS",
+    "native_and_bend_lanes": 7,
+    "node_compatible_lanes": 5,
+    "bun_file_io_lanes": "not tested; Bun not installed"
+  },
+  "cli": {
+    "status": "PASS",
+    "comparisons": 1931,
+    "distinct_puzzles": 347,
+    "scope": "all7 CLI commands, exact stdout/stderr/exit except bench timing, seeds/boundaries, threads1/8/16 ordered batch, independent solved-grid validation and rating oracle"
+  },
+  "file": {
+    "status": "PASS",
+    "comparisons": 129,
+    "random_and_edge_lines": 928,
+    "scope": "exact physical LF/CRLF/EOF, indices, skip rules, length/character/unit error precedence, threads1/8/16, NUL/invalid byte/Unicode"
+  },
+  "randomized": {
+    "status": "PASS",
+    "cases": 944,
+    "distinct_puzzles": 914,
+    "checks": {
+      "standalone_comparisons": 2832,
+      "standalone_baseline_exit_0": 2368,
+      "successful_solutions_checked": 6144,
+      "standalone_candidate_exit_0": 2368,
+      "independent_count_results_checked": 1598,
+      "independent_check_verdicts": 1888,
+      "count_results_not_oracle_checked": 2,
+      "standalone_baseline_exit_2": 432,
+      "standalone_candidate_exit_2": 432,
+      "standalone_baseline_exit_3": 32,
+      "standalone_candidate_exit_3": 32,
+      "batch_comparisons": 9,
+      "batch_order_checks": 18
+    },
+    "oracle_status": {
+      "known": 799,
+      "unknown": 1,
+      "invalid": 144
+    }
+  },
+  "scheduler": {
+    "status": "PASS",
+    "comparisons": 60
+  },
+  "upgrade_smoke": {
+    "status": "PASS",
+    "cases": 14
+  },
+  "adapter_unit": {
+    "status": "PASS",
+    "tests": 41
+  },
+  "upgrade_harness_unit": {
+    "status": "PASS",
+    "tests": 10
+  },
+  "production_and_original_proof_gate_files_unchanged": 56,
+  "formal_scope": "Existing finite/scoped laws and structural properties; not an exhaustive proof of the entire solver.",
+  "ordinary_large_build_and_full_integrated_verdict": "Not rerun; low-memory staged pipeline verified with unmodified new kernel and same C flags; ordinary small smoke verdict/native runs passed."
+}

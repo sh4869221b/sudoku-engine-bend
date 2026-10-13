@@ -1,24 +1,24 @@
 {
   "schema_version": 1,
-  "verified_at_utc": "2026-10-04",
+  "verified_at_utc": "2026-10-13",
   "platform": "linux-x86_64",
   "bend": {
-    "version": "2.0.35",
+    "version": "2.0.37",
     "classification": "latest official stable",
-    "released_at_utc": "2026-10-03",
-    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.35",
-    "source_commit": "79df8d9c40722ee9507a1e253f283b51025f9d6c",
-    "url": "https://github.com/bendlang/bend/releases/download/v2.0.35/bend-2.0.35-linux-x64.tar.gz",
-    "sha256": "63039d1a119f716767ac5a7d8fe0717cfacf219c6c253c35192148e0dade722f",
-    "binary_sha256": "af967c7c37aced4491e0f4344e3bb9de837c2c89b7519f7e0b8c71935be1840a",
-    "kernel_source_sha256": "e15042434e73aab07ab05cea4b77b5619082c00a6d4924ea2d4a2cdec05facce"
+    "released_at_utc": "2026-10-13",
+    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.37",
+    "source_commit": "4ff8545f19b09b7d2b8ca2303668100eac8efd66",
+    "url": "https://github.com/bendlang/bend/releases/download/v2.0.37/bend-2.0.37-linux-x64.tar.gz",
+    "sha256": "84c32465a39bc9ac315eade23f470cb8db03153dc860f89564fcfec153c3e445",
+    "binary_sha256": "1467b81f7f6524e2549dbb8a6e7b5777cbd9fedd8c59c911f9ada87ac4e88383",
+    "kernel_source_sha256": "83cdd36e66dcd2cabcc3d10556c9c874f8d823956feab88f8bb5a81473d51be3"
   },
   "lean": {
     "default_version": "4.34.1",
     "versions": {
       "4.34.1": {
         "version": "4.34.1",
-        "classification": "latest official stable proof-kernel compiler",
+        "classification": "preserved pinned proof-kernel compiler for compiler-only comparison",
         "released_at_utc": "2026-09-24",
         "release_url": "https://github.com/leanprover/lean4/releases/tag/v4.34.1",
         "url": "https://github.com/leanprover/lean4/releases/download/v4.34.1/lean-4.34.1-linux.tar.zst",
@@ -40,10 +40,22 @@
     "source_url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/",
     "host_dependencies": "Debian-compatible glibc, C development headers/linker, libstdc++, libffi8, libedit2, libz3-4, zlib, libzstd, libxml2, libtinfo6; no system installation is performed",
     "packages": [
-      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/clang-19_19.1.7-3+b1_amd64.deb", "sha256": "bbb74458d782b7792b61b0eed92746df5e6d033778c045cf8c2b3835b7c4efc4"},
-      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-cpp19_19.1.7-3+b1_amd64.deb", "sha256": "a7d2b6df51050834f6ea5c0d5e34869c2298b0bcdaa91eff17ba3db2cd545c47"},
-      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-common-19-dev_19.1.7-3+b1_amd64.deb", "sha256": "4018e40e2d4144fe38c45822e68cca63c1bf6c7872c3073ebb262ad4b2f9b8bc"},
-      {"url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libllvm19_19.1.7-3+b1_amd64.deb", "sha256": "db0d614d61345ca710fb73e75105f1ec6e38898fa7b3aa99fa7eb7d8b0a11d57"}
+      {
+        "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/clang-19_19.1.7-3+b1_amd64.deb",
+        "sha256": "bbb74458d782b7792b61b0eed92746df5e6d033778c045cf8c2b3835b7c4efc4"
+      },
+      {
+        "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-cpp19_19.1.7-3+b1_amd64.deb",
+        "sha256": "a7d2b6df51050834f6ea5c0d5e34869c2298b0bcdaa91eff17ba3db2cd545c47"
+      },
+      {
+        "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libclang-common-19-dev_19.1.7-3+b1_amd64.deb",
+        "sha256": "4018e40e2d4144fe38c45822e68cca63c1bf6c7872c3073ebb262ad4b2f9b8bc"
+      },
+      {
+        "url": "https://deb.debian.org/debian/pool/main/l/llvm-toolchain-19/libllvm19_19.1.7-3+b1_amd64.deb",
+        "sha256": "db0d614d61345ca710fb73e75105f1ec6e38898fa7b3aa99fa7eb7d8b0a11d57"
+      }
     ]
   }
 }

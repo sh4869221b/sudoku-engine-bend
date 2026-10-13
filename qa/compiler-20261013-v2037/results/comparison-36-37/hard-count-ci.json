@@ -1,0 +1,42 @@
+{
+  "measurement": "/workspace/scratch/b81277eea609/sudoku-bend-2036/evidence37/comparison-36-37/pooled.json",
+  "statistic": "median baseline wall_ms / median candidate wall_ms",
+  "resampling": "paired by rep;warmups excluded;percentile bootstrap",
+  "bootstrap_samples": 5000,
+  "seed": 20261003,
+  "cases": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 43.750001499999996,
+      "candidate_median_ms": 40.296334,
+      "speedup": 1.0857067419582138,
+      "paired_bootstrap_95_ci": [
+        1.0266320922782184,
+        1.1363318306890755
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 10.6654165,
+      "candidate_median_ms": 9.9298955,
+      "speedup": 1.074071373661485,
+      "paired_bootstrap_95_ci": [
+        0.9724804281992817,
+        1.137861496011472
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 9.799223999999999,
+      "candidate_median_ms": 9.005507,
+      "speedup": 1.088136847819895,
+      "paired_bootstrap_95_ci": [
+        0.9880393630489116,
+        1.1832187786298998
+      ]
+    }
+  ]
+}

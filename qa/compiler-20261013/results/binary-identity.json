@@ -1,0 +1,23 @@
+{
+  "source_commit": "06b49c06e07b447f2a077183515570695592a3b4",
+  "release_commit": "ae1101ca7d15364f9274fa6b1367d175884a7da7",
+  "production_source_unchanged": true,
+  "binaries": {
+    "baseline": {
+      "sha256": "147112785c0dee0ca00a0bbae0cbe56bb2f26b641883919785f9c169567d8bc2",
+      "bytes": 1394120,
+      "bend_version": "2.0.35",
+      "clang_version": "19.1.7",
+      "lean_version": "4.34.1",
+      "same_as_binary_tested_in_full_gates": true
+    },
+    "candidate": {
+      "sha256": "d42bfff854cc290cfc9e29db70c6d0d26e0c732896482963e9da2811fe9cf7fc",
+      "bytes": 865672,
+      "bend_version": "2.0.36",
+      "clang_version": "19.1.7",
+      "lean_version": "4.34.1",
+      "same_as_binary_tested_in_full_gates": true
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "measurement": "case-summary.json (pooled raw samples in delivery archive)",
+  "statistic": "median baseline wall_ms / median candidate wall_ms",
+  "resampling": "paired by rep;warmups excluded;percentile bootstrap",
+  "bootstrap_samples": 5000,
+  "seed": 20261003,
+  "cases": [
+    {
+      "case": "batch_hard-100_count_t1",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 40.3077095,
+      "candidate_median_ms": 40.8793815,
+      "speedup": 0.9860156396935702,
+      "paired_bootstrap_95_ci": [
+        0.9135213088362931,
+        1.0270717019871858
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t8",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 9.403674500000001,
+      "candidate_median_ms": 9.8021765,
+      "speedup": 0.9593455596315779,
+      "paired_bootstrap_95_ci": [
+        0.9202416401026339,
+        1.040170032488759
+      ]
+    },
+    {
+      "case": "batch_hard-100_count_t16",
+      "paired_repetitions": 42,
+      "baseline_median_ms": 8.194961500000002,
+      "candidate_median_ms": 8.6411595,
+      "speedup": 0.9483636426338388,
+      "paired_bootstrap_95_ci": [
+        0.9109862882392674,
+        0.9751202482074277
+      ]
+    }
+  ]
+}

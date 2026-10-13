@@ -11,9 +11,9 @@ Seven-command, standard-library-only Sudoku engine: solve, check, count, rate, g
 bin/bend-sudoku --threads 1 generate --seed 42 --clues 32
 ```
 
-The Linux x86_64 setup downloads checksum-locked official Bend **2.0.35**
-(latest stable on 2026-10-04) and Lean **4.34.1**, and preserves the compatible
-Clang **19.1.7** backend. It builds the unmodified release's BendTT kernel with
+The Linux x86_64 setup downloads checksum-locked official Bend **2.0.37**
+(stable release published 2026-10-13 10:13:41 UTC), preserves Lean **4.34.1**, and preserves the
+compatible Clang **19.1.7** backend. It builds the unmodified release's BendTT kernel with
 Lean. [toolchain.lock.json](toolchain.lock.json) records versions, release URLs,
 archive hashes and the Bend executable/kernel-source hashes. Nothing is installed
 system-wide; tools live in ignored `.toolchains/`.
@@ -27,8 +27,7 @@ Build and verification check the installed lock and tool versions, then select
 explicit tool paths. Ambient `BEND`, `CC` and `BENDTT` cannot silently select
 another compiler. Set `BEND_TOOLCHAIN_DIR` to reuse an installation made by this
 lockfile. For the earlier upstream-matched proof compiler, explicitly run
-`./setup.sh --lean-version 4.34.0`; this is a compatibility fallback, not the
-latest stable selection. Running `./setup.sh` restores the default 4.34.1.
+`./setup.sh --lean-version 4.34.0`; this is an explicit compatibility fallback to the preserved 4.34.1 selection. Running `./setup.sh` restores the default 4.34.1.
 
 Verification runs the existing gates in a fresh `.verification/<run>/work/`
 copy and writes its log, summary and evidence there. Historical committed results
@@ -72,6 +71,27 @@ or symlinks. Proof snapshots support Base and contained relative `.bend` imports
 symlink/noncanonical proof entrypoints, unsupported imports and unexpected
 diagnostics fail closed. The adapter refuses unreviewed future compiler pins. Check-only,
 JavaScript export and interpreter lanes still use the pinned Bend directly.
+
+## 2026-10-13 current compiler upgrade
+
+The current target is **Bend 2.0.37**, preserving production/proof code, Lean
+4.34.1 and Clang 19.1.7. This release predates the update request; the initial
+2.0.36 selection relied on a stale web `/releases/latest` redirect. The explicit
+release and GitHub release API identify 2.0.37. See the [current Japanese report](qa/compiler-20261013-v2037/REPORT.ja.md)
+for verification and comparisons against both 2.0.35 and 2.0.36.
+
+## 2026-10-13 intermediate 2.0.36 checkpoint
+
+The following measurements remain valid for 2.0.36. The archived report’s
+claim that 2.0.36 was latest is superseded by the 2.0.37 report above.
+
+Bend is updated to 2.0.36 with unchanged production/proof code, Lean 4.34.1
+and Clang 19.1.7. Both versions pass the existing low-memory verification gates.
+The same-host fixed 35-case comparison measured 1.01249x overall speedup
+(95% paired-bootstrap CI 1.00076–1.02545), with a 5.44% hard-count regression
+at 16 threads on the nine-CPU allocation. Native file size falls by 37.91%;
+RSS is broadly similar. See the [Japanese upgrade and comparison report](qa/compiler-20261013/REPORT.ja.md)
+for all cases, verification, reproduction and limitations.
 
 ## 2026-10-04 compiler upgrade
 

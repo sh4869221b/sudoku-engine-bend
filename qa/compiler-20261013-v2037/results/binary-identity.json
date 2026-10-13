@@ -1,0 +1,29 @@
+{
+  "source_commit": "06b49c06e07b447f2a077183515570695592a3b4",
+  "release_commit": "4ff8545f19b09b7d2b8ca2303668100eac8efd66",
+  "production_proof_gate_files_unchanged": 56,
+  "baseline_blobs_reverified": 819,
+  "binaries": {
+    "2.0.35": {
+      "sha256": "147112785c0dee0ca00a0bbae0cbe56bb2f26b641883919785f9c169567d8bc2",
+      "bytes": 1394120,
+      "clang_version": "19.1.7",
+      "lean_version": "4.34.1",
+      "same_as_binary_tested_in_full_gates": true
+    },
+    "2.0.36": {
+      "sha256": "d42bfff854cc290cfc9e29db70c6d0d26e0c732896482963e9da2811fe9cf7fc",
+      "bytes": 865672,
+      "clang_version": "19.1.7",
+      "lean_version": "4.34.1",
+      "same_as_binary_tested_in_full_gates": true
+    },
+    "2.0.37": {
+      "sha256": "4cffba4f3a652ed9224dd1b7342ff42147641237338d0e0f6de10306a1a4c63d",
+      "bytes": 342048,
+      "clang_version": "19.1.7",
+      "lean_version": "4.34.1",
+      "same_as_binary_tested_in_full_gates": true
+    }
+  }
+}

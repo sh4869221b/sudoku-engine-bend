@@ -1,0 +1,18 @@
+{
+  "default": {
+    "status": "PASS",
+    "exit_code": 0,
+    "execution_mode": "default",
+    "wall_seconds": 349.703,
+    "compiler_gc_hint_bytes": null,
+    "benchmark": "NOT RUN (explicit --skip-benchmark)"
+  },
+  "low-memory": {
+    "status": "PASS",
+    "exit_code": 0,
+    "execution_mode": "low-memory",
+    "wall_seconds": 462.961,
+    "compiler_gc_hint_bytes": "67108864",
+    "benchmark": "NOT RUN (explicit --skip-benchmark)"
+  }
+}

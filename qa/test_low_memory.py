@@ -547,15 +547,41 @@ class DispatchTests(AdapterCase):
                 self.assertEqual(action.call_args.args[0], alias)
                 self.assertNotEqual(action.call_args.args[0], alias.resolve())
 
-    def test_future_source_or_version_pin_is_rejected_before_toolchain_selection(self):
-        for replacement in ({'source_commit': 'unreviewed commit'}, {'version': '2.0.36'}):
-            with self.subTest(replacement=replacement), \
+    def test_exact_reviewed_source_and_version_pair_is_accepted(self):
+        reviewed = {'version': '2.0.37',
+                    'source_commit': '4ff8545f19b09b7d2b8ca2303668100eac8efd66'}
+        with mock.patch.dict(toolchain.LOCK['bend'], reviewed), \
+                mock.patch.object(toolchain, 'selected', return_value='locked') as selected, \
+                mock.patch.object(toolchain, 'environment', return_value=self.env) as environment, \
+                mock.patch.object(low_memory.os, 'execve') as execute:
+            low_memory.main(['version'])
+        selected.assert_called_once_with()
+        environment.assert_called_once_with('locked')
+        execute.assert_called_once_with(self.env['BEND'], [self.env['BEND'], 'version'], self.env)
+
+    def test_old_future_and_mismatched_pins_fail_before_toolchain_selection(self):
+        old_source = 'ae1101ca7d15364f9274fa6b1367d175884a7da7'
+        reviewed_source = '4ff8545f19b09b7d2b8ca2303668100eac8efd66'
+        rejected = (
+            ('2.0.35', '79df8d9c40722ee9507a1e253f283b51025f9d6c'),
+            ('2.0.36', old_source),              # Retired source/version pair.
+            ('2.0.36', reviewed_source),         # New source, old version.
+            ('2.0.37', old_source),              # New version, old source.
+            ('2.0.37', 'unreviewed commit'),     # Same version, unknown source.
+            ('2.0.38', reviewed_source),         # Future version, reviewed source.
+            ('2.0.38', 'unreviewed commit'),     # Unreviewed future pair.
+        )
+        for version, source in rejected:
+            replacement = {'version': version, 'source_commit': source}
+            with self.subTest(**replacement), \
                     mock.patch.dict(toolchain.LOCK['bend'], replacement), \
                     mock.patch.object(toolchain, 'selected') as selected, \
+                    mock.patch.object(toolchain, 'environment') as environment, \
                     mock.patch.object(low_memory.os, 'execve') as execute:
-                with self.assertRaisesRegex(RuntimeError, 'reviewed Bend 2.0.35 source pin'):
+                with self.assertRaisesRegex(RuntimeError, r'reviewed Bend 2\.0\.37 source pin'):
                     low_memory.main(['version'])
                 selected.assert_not_called()
+                environment.assert_not_called()
                 execute.assert_not_called()
 
     def test_non_linux_dispatch_fails_before_toolchain_selection(self):
