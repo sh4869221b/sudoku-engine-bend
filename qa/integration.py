@@ -5,7 +5,7 @@ ROOT=pathlib.Path(__file__).resolve().parents[1]
 BIN=ROOT/'bin/bend-sudoku'
 checks=[]
 def run(*args, code=0):
- p=subprocess.run([str(BIN),'--threads','1',*args],capture_output=True,text=True,timeout=120)
+ p=subprocess.run([str(BIN),'+RTS','--threads','1','-RTS',*args],capture_output=True,text=True,timeout=120)
  assert p.returncode==code,(args,p.returncode,p.stdout,p.stderr)
  return p.stdout.strip(),p.stderr
 

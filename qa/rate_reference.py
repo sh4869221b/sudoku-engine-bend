@@ -51,7 +51,7 @@ def reference(s):
  score=sum({1:1,2:2,3:5,4:10}[t] for t in trace)
  return dict(status=status,tech=max(trace,default=0),steps=len(trace),score=score,trace=trace)
 def run(*args):
- p=subprocess.run([str(ROOT/'bin/bend-sudoku'),'--threads','1',*args],text=True,capture_output=True,timeout=90)
+ p=subprocess.run([str(ROOT/'bin/bend-sudoku'),'+RTS','--threads','1','-RTS',*args],text=True,capture_output=True,timeout=90)
  assert p.returncode==0,(args,p.returncode,p.stderr)
  return p.stdout.strip()
 if __name__=='__main__':

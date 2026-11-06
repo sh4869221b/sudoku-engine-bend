@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+import sys
+from pathlib import Path as _Path
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
+from runtime_args import native_command
+
 import argparse,gzip,json,pathlib,random,statistics,subprocess,tempfile
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--candidate',required=True);p.add_argument('--corpora',required=True);p.add_argument('--out',required=True);a=p.parse_args();root=pathlib.Path(__file__).resolve().parents[1]/'perf-20261001';raw=[];rng=random.Random(20261001)
 cases=json.loads((root/'cases.json').read_text().replace('@CORPORA@',str(pathlib.Path(a.corpora).resolve())));cases=[c for c in cases if c['name'] in ['batch_rate-300_rate_t1','batch_rate-300_rate_t8','bench_easy-10000_t1','generate100_clues36','batch_easy-10000_solve_t1','batch_easy-10000_solve_t8']]
@@ -8,7 +13,7 @@ with tempfile.TemporaryDirectory() as td:
   for rep in range(9):
    engines=['baseline','candidate'];rng.shuffle(engines)
    for engine in engines:
-    binary=pathlib.Path(a.base if engine=='baseline' else a.candidate).resolve();p=subprocess.run([str(helper),str(metric),str(binary),'--threads',str(case['threads']),'--',*case['args']],capture_output=True,timeout=120);assert p.returncode==0,(case,p.stderr)
+    binary=pathlib.Path(a.base if engine=='baseline' else a.candidate).resolve();p=subprocess.run([str(helper),str(metric),*native_command(binary, case['threads'], case['args'])],capture_output=True,timeout=120);assert p.returncode==0,(case,p.stderr)
     r=json.loads(metric.read_text());r.update(case=case['name'],engine=engine,rep=rep,warmup=rep<2);raw.append(r)
 summary=[]
 for c in cases:

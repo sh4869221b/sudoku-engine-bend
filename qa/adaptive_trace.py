@@ -160,7 +160,7 @@ def main():
                                       output / 'check.log', env, 180)
         built, build_seconds = call([bend, 'qa/adaptive-trace.bend', '-o', str(binary)],
                                     output / 'build.log', env, 180)
-        actual, run_seconds = call([str(binary), '--threads', '1', str(args.budget)],
+        actual, run_seconds = call([str(binary), '+RTS', '--threads', '1', '-RTS', str(args.budget)],
                                    output / 'run.log', env, 180)
         after = fingerprint()
         (output / 'source-hashes-after.json').write_text(json.dumps(after, indent=2) + '\n')

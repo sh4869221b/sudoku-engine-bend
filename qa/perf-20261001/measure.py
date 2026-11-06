@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """Serial randomized paired end-to-end CLI samples with child-specific usage."""
+import sys
+from pathlib import Path as _Path
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
+from runtime_args import native_command
+
 import argparse, gzip, hashlib, json, os, pathlib, platform, random, re, statistics, subprocess, tempfile, time
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--candidate',required=True);p.add_argument('--cases',required=True);p.add_argument('--corpora',default='.');p.add_argument('--out',required=True);p.add_argument('--reps',type=int,default=9);a=p.parse_args()
 cases=json.loads(pathlib.Path(a.cases).read_text().replace('@CORPORA@',str(pathlib.Path(a.corpora).resolve()))); bins={'baseline':str(pathlib.Path(a.base).resolve()),'candidate':str(pathlib.Path(a.candidate).resolve())};raw=[];rng=random.Random(20261001);expected={}
 out=pathlib.Path(a.out);out.parent.mkdir(parents=True,exist_ok=True)
 def run(binary,args,threads):
  with tempfile.TemporaryFile() as stdout,tempfile.TemporaryFile() as stderr:
-  started=time.perf_counter_ns(); child=subprocess.Popen([binary,'--threads',str(threads),'--',*args],stdout=stdout,stderr=stderr,env=dict(os.environ,BEND_NO_TELEMETRY='1'))
+  started=time.perf_counter_ns(); child=subprocess.Popen(native_command(binary, threads, args),stdout=stdout,stderr=stderr,env=dict(os.environ,BEND_NO_TELEMETRY='1'))
   _,status,usage=os.wait4(child.pid,0);child.returncode=os.waitstatus_to_exitcode(status);wall=(time.perf_counter_ns()-started)/1e6
   stdout.seek(0);stderr.seek(0);so=stdout.read();se=stderr.read()
   normalized=re.sub(rb'total_ms=\d+ per_ms=\S+',b'total_ms=<time> per_ms=<time>',so) if args[0]=='bench' else so
@@ -32,5 +37,5 @@ for c in cases:
    xs=[r[k] for r in rs];q=statistics.quantiles(xs,n=4);stats[k]={'median':statistics.median(xs),'p25':q[0],'p75':q[2],'min':min(xs),'max':max(xs)}
   row[engine]=stats
  row['speedup']=row['baseline']['wall_ms']['median']/row['candidate']['wall_ms']['median'];summary.append(row)
-meta={'platform':platform.platform(),'cpu':next(x.split(':',1)[1].strip() for x in pathlib.Path('/proc/cpuinfo').read_text().splitlines() if x.startswith('model name')),'affinity':sorted(os.sched_getaffinity(0)),'cpus':os.cpu_count(),'warmups':2,'repetitions':a.reps,'order':'seed20261001 randomized per repetition; serial processes','binaries':{k:{'path':v,'sha256':hashlib.sha256(pathlib.Path(v).read_bytes()).hexdigest()} for k,v in bins.items()},'cases':cases,'clock':'perf_counter_ns; wait4 child user/system CPU and peak RSS; fresh process including parsing/output; bench internal recorded separately'}
+meta={'legacy_runtime_binary':os.environ.get('BEND_LEGACY_BINARY'),'BENDRTS':os.environ.get('BENDRTS'),'platform':platform.platform(),'cpu':next(x.split(':',1)[1].strip() for x in pathlib.Path('/proc/cpuinfo').read_text().splitlines() if x.startswith('model name')),'affinity':sorted(os.sched_getaffinity(0)),'cpus':os.cpu_count(),'warmups':2,'repetitions':a.reps,'order':'seed20261001 randomized per repetition; serial processes','binaries':{k:{'path':v,'sha256':hashlib.sha256(pathlib.Path(v).read_bytes()).hexdigest()} for k,v in bins.items()},'cases':cases,'clock':'perf_counter_ns; wait4 child user/system CPU and peak RSS; fresh process including parsing/output; bench internal recorded separately'}
 out.write_text(json.dumps({'metadata':meta,'summary':summary},indent=2)+'\n');print(json.dumps(summary,indent=2))

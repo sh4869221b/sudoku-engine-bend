@@ -2,7 +2,7 @@
 import pathlib,subprocess,json
 ROOT=pathlib.Path(__file__).resolve().parents[1];logs=[]
 for mode in ('solve','count','rate','generate'):
- p=subprocess.run([str(ROOT/'bin/qa-fuel'),'--threads','1',mode],capture_output=True,text=True,timeout=30)
+ p=subprocess.run([str(ROOT/'bin/qa-fuel'),'+RTS','--threads','1','-RTS',mode],capture_output=True,text=True,timeout=30)
  assert p.returncode==4,(mode,p.returncode,p.stdout,p.stderr)
  assert len(p.stdout.splitlines())==(1 if mode=='generate' else 0)
  assert 'fuel' in p.stderr

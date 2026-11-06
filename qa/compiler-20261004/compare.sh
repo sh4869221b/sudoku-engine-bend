@@ -1,5 +1,5 @@
 #!/bin/sh
-# Compare identical production source built by Bend 2.0.34 and 2.0.35.
+# Compare the frozen workload with explicitly selected native runtime ABIs.
 # Run after full normal or documented equivalent staged verification passes.
 set -eu
 if [ "$#" -ne 4 ]; then

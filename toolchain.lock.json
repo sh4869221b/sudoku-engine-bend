@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "verified_at_utc": "2026-10-13",
+  "verified_at_utc": "2026-11-06",
   "platform": "linux-x86_64",
   "bend": {
-    "version": "2.0.37",
+    "version": "2.0.40",
     "classification": "latest official stable",
-    "released_at_utc": "2026-10-13",
-    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.37",
-    "source_commit": "4ff8545f19b09b7d2b8ca2303668100eac8efd66",
-    "url": "https://github.com/bendlang/bend/releases/download/v2.0.37/bend-2.0.37-linux-x64.tar.gz",
-    "sha256": "84c32465a39bc9ac315eade23f470cb8db03153dc860f89564fcfec153c3e445",
-    "binary_sha256": "1467b81f7f6524e2549dbb8a6e7b5777cbd9fedd8c59c911f9ada87ac4e88383",
-    "kernel_source_sha256": "83cdd36e66dcd2cabcc3d10556c9c874f8d823956feab88f8bb5a81473d51be3"
+    "released_at_utc": "2026-11-06",
+    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.40",
+    "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+    "url": "https://github.com/bendlang/bend/releases/download/v2.0.40/bend-2.0.40-linux-x64.tar.gz",
+    "sha256": "c9ff8d67bd903fb6ad9a26b43d8a62c01021de82a44d55ce4a3dcd4732113d6b",
+    "binary_sha256": "983e306459db3e3a1bc6b8452f964440301d4ec4fb2d8fe4d399b14e5edc3bd4",
+    "kernel_source_sha256": "776bfba6f08e9cbebb26fb3d43fa892b80d1d74b0a57698db4bc5d6b5db5b567"
   },
   "lean": {
     "default_version": "4.34.1",

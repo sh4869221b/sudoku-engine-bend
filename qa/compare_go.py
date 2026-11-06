@@ -1,5 +1,6 @@
 """Same-host alternating native CLI comparison; Python standard library only."""
 import pathlib,subprocess,time,json,statistics,os,hashlib,platform,re
+from runtime_args import native_command
 REPO=pathlib.Path(__file__).resolve().parents[1]
 R=pathlib.Path(os.environ.get('COMPARE_OUTPUT',str(REPO/'.omo/evidence/optimization-run')))
 R.mkdir(parents=True,exist_ok=True)
@@ -10,7 +11,7 @@ corpus=json.loads((REPO/'qa/compare-go-corpus.json').read_text())
 ENV=dict(os.environ,BEND_NO_TELEMETRY='1',GOTOOLCHAIN='local')
 raw=[]
 def run(engine,args,threads):
- env=dict(ENV,GOMAXPROCS=str(threads));t=time.perf_counter_ns();p=subprocess.run([BINS[engine],'--threads',str(threads),'--',*args],env=env,capture_output=True,text=True,timeout=120)
+ env=dict(ENV,GOMAXPROCS=str(threads));command=native_command(BINS[engine],threads,args) if engine=='bend' else [BINS[engine],'--threads',str(threads),'--',*args];t=time.perf_counter_ns();p=subprocess.run(command,env=env,capture_output=True,text=True,timeout=120)
  return {'wall_ms':(time.perf_counter_ns()-t)/1e6,'code':p.returncode,'stdout':p.stdout,'stderr':p.stderr}
 def measure(name,args,threads=1,reps=11):
  expected={}

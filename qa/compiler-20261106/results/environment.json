@@ -1,0 +1,45 @@
+{
+  "baseline_commit": "42ed83aeb51c502d15d57e10088a8e3a7d830c4e",
+  "source_invariants": {
+    "unchanged_engine_and_proof_files": {
+      "sudoku/board.bend": "d444cc124118866d7bbb01f28018da2ae7327bf132db4dfb8c043184c5bedf31",
+      "sudoku/arraytechniques.bend": "26c1f59f701df606ce8b43150fa6231d019e885ceb6cb2f7e9fbaf1afa6b3186",
+      "sudoku/validate.bend": "55d4473e927044f6b90a52f6f4e08e25e30c531ae503b67311d776b3c15ccb50",
+      "sudoku/generator.bend": "981bf05ff11f46534a5cce3da3aefb3ab3e33d896c383491f17ec20082c0fba0",
+      "sudoku/arithmetic.bend": "3b253ea2d9ba182788350713157f6ab6ab432d352c05376710f58639888a99c6",
+      "sudoku/cliargs.bend": "a6d13a1157d5983a0587f1e8b35ec9a225fdb1d254f412257926c91c262c059d",
+      "sudoku/types.bend": "ea048c099c5817bf6039dd15ccd30088d2649b94ce6a9d7c5023d715d531aa4c",
+      "sudoku/queuedcandidates.bend": "78268e7645fa9d9483797c99437874dbba4b743fd2924bf52eda488cee9e0b7f",
+      "sudoku/bench.bend": "3779c1df786900ae59fe44ddcc7dcd55b6634c217ede55ef170934f927a71354",
+      "sudoku/prng.bend": "c3b266259d877e9a480781fbbc543411cf4ed313d76bd2e63868e12cef823c84",
+      "sudoku/counter.bend": "538996c92c60f99444e705c231876f28a2cf37a722d3966fdb641b328964170c",
+      "sudoku/parser.bend": "9147caacedb1e033badd28e5fd0c0e5ba5fd8724c66950a00e4dd11dcbb63cd9",
+      "sudoku/candidates.bend": "7a260b5d40eb4b7917043949f23545bc20225ee12e5ee14a5ad55f041b74b6de",
+      "sudoku/commands.bend": "042c96a169370958e04581a0f3db09a939d20279fec2d425a91412fa1c9473e4",
+      "sudoku/arrayrating.bend": "2e4931437093a90e6fa7d0024e744e2f95721ab152554d514394f015e061bafe",
+      "sudoku/difficulty.bend": "8484955b46d3a6c8d56fc952c8f57ba1f295fb116aea97b98e53c77cd64ed6b9",
+      "sudoku/solver.bend": "5a08ebbe3bbda7ae233001e3e9f81936d5041f478a8424d888098cd0f2659382",
+      "sudoku/adaptivesearch.bend": "ce17c12e083a893d45660af9072c5639fe63c5a7ba3079dc453c306affc1bade",
+      "sudoku/batch.bend": "f984c6f07ff922c6989ad123999e83e40c522480acb7e198f18d85f222a9a3ca",
+      "sudoku/properties.bend": "f8097e6cd2cfe2f892c21f6a24feeaa81b097f059cb0de0d7199f50d4c597ab7",
+      "sudoku/orderstat.bend": "6c34d77df499e39435d09c6c64a1d137f1d1e22308d5ac7acadda407e412b554",
+      "sudoku/search.bend": "d8130ef52e2da58cdde9c63fbc775ae52f1503acf1744991b3f8ffef1c42f394",
+      "sudoku/ratingindex.bend": "098d7059b031f86f11e397196bcdc2de1fadf48ae8e78b3a016045f1fa12d113",
+      "PROOF.bend": "1771361e23d4b48a444aefe8df4c308671b4f9ffe089991fdf233980e33904e4",
+      "LAWS.bend": "e178bf5760166839b48d2503582c8cd6da2478d7bff745b41d36c19c371a0ee9"
+    },
+    "main_change": "runtime help sentence only"
+  },
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "cpu": "AMD EPYC 7763 64-Core Processor",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "cpu_quota": "400000 100000",
+  "memory_limit_bytes": "17179869184"
+}

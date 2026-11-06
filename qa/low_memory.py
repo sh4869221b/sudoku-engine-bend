@@ -18,11 +18,11 @@ import tempfile
 import toolchain
 
 # Re-review upstream CLI/kernel semantics before supporting another release.
-# 2.0.37 clears compiler memos and forces GC before Clang, but retains its
+# 2.0.40 forces GC before Clang, but retains its
 # process and checked book. Separate processes still bound peak overlap.
-# In 2.0.37, explicit BENDTT still bypasses the automatic kernel build's
+# In 2.0.40, explicit BENDTT still bypasses the automatic kernel build's
 # Lean 4.34.0 check. The selected kernel must be rebuilt from this release.
-SUPPORTED_SOURCE = '4ff8545f19b09b7d2b8ca2303668100eac8efd66'
+SUPPORTED_SOURCE = '624dd9f4607cd29b0871a9b96d413bfb11e92f52'
 LIBC = ctypes.CDLL(None, use_errno=True)  # Load before fork, not in preexec_fn.
 
 
@@ -163,8 +163,8 @@ def main(args=None):
     if sys.platform != 'linux':
         raise RuntimeError('Low-memory mode requires Linux')
     # Never trust ambient BEND/CC/BENDTT, including direct adapter invocation.
-    if toolchain.LOCK['bend']['source_commit'] != SUPPORTED_SOURCE or toolchain.LOCK['bend']['version'] != '2.0.37':
-        raise RuntimeError('Low-memory adapter requires the reviewed Bend 2.0.37 source pin')
+    if toolchain.LOCK['bend']['source_commit'] != SUPPORTED_SOURCE or toolchain.LOCK['bend']['version'] != '2.0.40':
+        raise RuntimeError('Low-memory adapter requires the reviewed Bend 2.0.40 source pin')
     env = toolchain.environment(toolchain.selected())
     if len(args) == 2 and args[1] == '--verdict':
         proof_verdict(pathlib.Path(args[0]).absolute(), env)
