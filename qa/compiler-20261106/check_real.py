@@ -136,8 +136,10 @@ def check_proof(record, expected):
     elif expected == 'unsafe-kind':
         require('Error: 4 defs rely on unsafe or foreign code:' in diagnostic,
                 'Missing datatype-kind unsafe dependency diagnostic')
-        names = set(re.findall(r'(?m)^- (D|use|Zero|P)\s*$', diagnostic))
-        require(names == {'D', 'use', 'Zero', 'P'}, 'Unsafe datatype-kind dependency list differs')
+        groups = re.findall(r'(?m)^defs that depend on @unsafe: ([^\n]+)$', diagnostic)
+        names = groups[0].split(', ') if len(groups) == 1 else []
+        require(len(names) == 4 and set(names) == {'D', 'use', 'Zero', 'P'},
+                'Unsafe datatype-kind dependency list differs')
     else:
         raise CheckFailure(f'Unknown proof expectation: {expected}')
 

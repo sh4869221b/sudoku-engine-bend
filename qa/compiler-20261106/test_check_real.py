@@ -138,10 +138,12 @@ class HarnessTests(unittest.TestCase):
             CHECK.check_proof({'exit_code': 0, 'stdout': CHECK.VERDICT, 'stderr': 'warning'}, 'valid')
 
     def test_unsafe_kind_requires_expected_dependency_diagnostic(self):
-        error = 'SOME PROOFS FAIL\nError: 4 defs rely on unsafe or foreign code:\n- D\n- use\n- Zero\n- P\n'
+        error = 'SOME PROOFS FAIL\nError: 4 defs rely on unsafe or foreign code:\ndefs that depend on @unsafe: D, use, Zero, P\n'
         record = {'exit_code': 1, 'stdout': '', 'stderr': error}
         CHECK.check_proof(record, 'unsafe-kind')
-        for altered in (error.replace('- Zero\n', ''), error.replace('4 defs', '1 def'), 'syntax error'):
+        for altered in (error.replace(', Zero', ''), error.replace('Zero', 'D'),
+                        error.replace('Zero', 'Unknown'), error.replace('@unsafe', 'foreign'),
+                        error.replace('4 defs', '1 def'), 'syntax error'):
             with self.subTest(altered=altered), self.assertRaises(CHECK.CheckFailure):
                 CHECK.check_proof(dict(record, stderr=altered), 'unsafe-kind')
 

@@ -35,7 +35,7 @@ for (const [label,n] of [['BigInt',5n],['negative',-1],['fraction',1.5],
                         ['infinity',Infinity],['NaN',NaN],['above bound',2**53+2]]) {
   let error = null;
   try { lib.echo_nat(n); } catch (caught) { error = String(caught); }
-  check(error === 'bend: a Nat past the largest immediate 2^48-1', 'rejected '+label);
+  check(error === 'bend: expected a Nat host number: an integer from 0 to 2^53', 'rejected '+label);
   results.push({case:'rejected host value', label, error});
 }
 console.log(JSON.stringify({status:'PASS', cases:results}));
@@ -57,7 +57,7 @@ EXPECTED_CASES = {
 }
 HOST_ACCEPTED = (0, 5, 2**48-1, 2**48, 2**53-1, 2**53)
 HOST_REJECTED = ('BigInt', 'negative', 'fraction', 'infinity', 'NaN', 'above bound')
-NAT_ERROR = 'bend: a Nat past the largest immediate 2^48-1'
+NAT_ERROR = 'bend: expected a Nat host number: an integer from 0 to 2^53'
 
 
 def check_success(record):
