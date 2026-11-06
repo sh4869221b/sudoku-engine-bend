@@ -12,6 +12,6 @@ test_required_output_before_work (__main__.self_test.<locals>.AcceptanceTests.te
 test_timeout_marks_record_failed_and_stops_process_group (__main__.self_test.<locals>.AcceptanceTests.test_timeout_marks_record_failed_and_stops_process_group) ... ok
 
 ----------------------------------------------------------------------
-Ran 12 tests in 0.015s
+Ran 12 tests in 0.016s
 
 OK

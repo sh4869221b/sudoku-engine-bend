@@ -82,6 +82,9 @@ compiler adapter have been migrated. Lean 4.34.1, Clang 19.1.7 and Sudoku
 algorithms remain unchanged. GitHub Actions runs the locked ordinary and
 low-memory correctness/proof/lane gates and compiler boundary checks.
 
+The same-host fixed 35-case comparison measured 524.8168 → 537.7896 ms
+(+2.47% elapsed time; speedup 0.97588, paired 95% CI 0.96736–0.98684).
+Both ordinary and low-memory local correctness/proof gates pass.
 See the [upgrade and benchmark report](qa/compiler-20261106/REPORT.ja.md)
 and [reproduction instructions](qa/compiler-20261106/README.md) for measured
 results and the exact verification scope.

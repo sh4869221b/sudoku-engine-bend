@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "execution_mode": "default",
+  "wall_seconds": 425.238,
+  "compiler_gc_hint_bytes": null,
+  "benchmark": "NOT RUN (explicit --skip-benchmark)",
+  "toolchain": {
+    "lock_sha256": "61c3487e847cf049f8319bd7578b776bf822c99938a639778e7db1384355ddf1",
+    "lean_version": "4.34.1",
+    "versions": {
+      "bend": "bend 2.0.37",
+      "clang": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/sudoku-engine-bend/.toolchains/clang19/usr/lib/llvm-19/bin",
+      "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+    },
+    "files": {
+      "bend": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "sha256": "1467b81f7f6524e2549dbb8a6e7b5777cbd9fedd8c59c911f9ada87ac4e88383"
+      },
+      "clang": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/clang19/usr/bin/clang-19",
+        "sha256": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a"
+      },
+      "lean": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/lean-4.34.1-linux/bin/lean",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      },
+      "leanc": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/lean-4.34.1-linux/bin/leanc",
+        "sha256": "68a45f8329e2d79133cdcc7b1fa494e37844282d7b5f8908ce1deda7cfdf161a"
+      },
+      "kernel": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/kernel-4.34.1/bendtt",
+        "sha256": "063abafdd6c1204f633868825d5a3fd5d5316b98c622d1d2ba5a27e08c906f7e"
+      },
+      "kernel_source": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/bend/bend2/bendtt.lean",
+        "sha256": "83cdd36e66dcd2cabcc3d10556c9c874f8d823956feab88f8bb5a81473d51be3"
+      }
+    }
+  },
+  "work": "/workspace/sudoku-baseline37/.verification/20261106T023926Z-ib8uiw04/work",
+  "log": "/workspace/sudoku-baseline37/.verification/20261106T023926Z-ib8uiw04/verify.log"
+}

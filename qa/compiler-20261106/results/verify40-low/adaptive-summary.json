@@ -1,0 +1,475 @@
+{
+  "status": "PASS",
+  "test": "direct adaptive versus scalar-selected legacy transition oracle",
+  "budget_per_trace": 200000,
+  "trace_count": 20,
+  "completed_traces": 20,
+  "capped_incomplete_traces": [],
+  "totals": {
+    "steps": 239111,
+    "comparisons": 239131,
+    "forward": 119844,
+    "backward": 119267,
+    "active_forward": 119700
+  },
+  "observed_fields": [
+    "phase",
+    "depth",
+    "found",
+    "logical board cells 0..80",
+    "active frame words with only adaptive guess marker bit21 removed",
+    "legacy frame old-value fields equal zero"
+  ],
+  "adaptive_path": "F.selection, F.selected, F.backtrack; snapshots remain untouched in the live state; cloned working views use F.finish; SnapshotDone views are not decoded again",
+  "legacy_path": "S.selected with C.scalar_start(Array.get(board,108)); S.backtrack independently restores every placement",
+  "counting": "steps counts actual transitions; comparisons includes the initial state and the endpoint after each transition; terminal traces stop immediately rather than padding completed states",
+  "limitations": [
+    "Finite named fixtures, not an exhaustive proof.",
+    "Snapshot stack contents are not separately inspected; their restore behavior is checked by logical board/frame equality after every backtracking transition.",
+    "Inherited 6060 golden observations are complementary and are not included in these totals."
+  ],
+  "source_hashes": {
+    "qa/adaptive-trace.bend": "581b0cc94a228a9a43cf4971e86b45de2f2849cf301ace726ac785051c0b5a95",
+    "qa/adaptive_trace.py": "3db2f217b73589212c97ba21597b7760408628f73c6221a89dc7050d96e8a1f0",
+    "toolchain.lock.json": "f6a179ca2e9c649bca8d1d9e23f0023ea38112e995ffa57a05c13541bbdbfda1",
+    "sudoku/adaptivesearch.bend": "ce17c12e083a893d45660af9072c5639fe63c5a7ba3079dc453c306affc1bade",
+    "sudoku/arithmetic.bend": "3b253ea2d9ba182788350713157f6ab6ab432d352c05376710f58639888a99c6",
+    "sudoku/arrayrating.bend": "2e4931437093a90e6fa7d0024e744e2f95721ab152554d514394f015e061bafe",
+    "sudoku/arraytechniques.bend": "26c1f59f701df606ce8b43150fa6231d019e885ceb6cb2f7e9fbaf1afa6b3186",
+    "sudoku/batch.bend": "f984c6f07ff922c6989ad123999e83e40c522480acb7e198f18d85f222a9a3ca",
+    "sudoku/bench.bend": "3779c1df786900ae59fe44ddcc7dcd55b6634c217ede55ef170934f927a71354",
+    "sudoku/board.bend": "d444cc124118866d7bbb01f28018da2ae7327bf132db4dfb8c043184c5bedf31",
+    "sudoku/candidates.bend": "7a260b5d40eb4b7917043949f23545bc20225ee12e5ee14a5ad55f041b74b6de",
+    "sudoku/cliargs.bend": "a6d13a1157d5983a0587f1e8b35ec9a225fdb1d254f412257926c91c262c059d",
+    "sudoku/commands.bend": "042c96a169370958e04581a0f3db09a939d20279fec2d425a91412fa1c9473e4",
+    "sudoku/counter.bend": "538996c92c60f99444e705c231876f28a2cf37a722d3966fdb641b328964170c",
+    "sudoku/difficulty.bend": "8484955b46d3a6c8d56fc952c8f57ba1f295fb116aea97b98e53c77cd64ed6b9",
+    "sudoku/generator.bend": "981bf05ff11f46534a5cce3da3aefb3ab3e33d896c383491f17ec20082c0fba0",
+    "sudoku/orderstat.bend": "6c34d77df499e39435d09c6c64a1d137f1d1e22308d5ac7acadda407e412b554",
+    "sudoku/parser.bend": "9147caacedb1e033badd28e5fd0c0e5ba5fd8724c66950a00e4dd11dcbb63cd9",
+    "sudoku/prng.bend": "c3b266259d877e9a480781fbbc543411cf4ed313d76bd2e63868e12cef823c84",
+    "sudoku/properties.bend": "f8097e6cd2cfe2f892c21f6a24feeaa81b097f059cb0de0d7199f50d4c597ab7",
+    "sudoku/queuedcandidates.bend": "78268e7645fa9d9483797c99437874dbba4b743fd2924bf52eda488cee9e0b7f",
+    "sudoku/ratingindex.bend": "098d7059b031f86f11e397196bcdc2de1fadf48ae8e78b3a016045f1fa12d113",
+    "sudoku/search.bend": "d8130ef52e2da58cdde9c63fbc775ae52f1503acf1744991b3f8ffef1c42f394",
+    "sudoku/solver.bend": "5a08ebbe3bbda7ae233001e3e9f81936d5041f478a8424d888098cd0f2659382",
+    "sudoku/types.bend": "ea048c099c5817bf6039dd15ccd30088d2649b94ce6a9d7c5023d715d531aa4c",
+    "sudoku/validate.bend": "55d4473e927044f6b90a52f6f4e08e25e30c531ae503b67311d776b3c15ccb50"
+  },
+  "source_hashes_unchanged": true,
+  "output_sha256": "bcdd8b60575ac52f823de274c30903a31c98a4a8b2489ca69a0f82189f6f4ba9",
+  "timings_seconds": {
+    "check": 3.9593407260000504,
+    "build": 11.10194298600004,
+    "run": 0.131669775999967
+  },
+  "traces": [
+    {
+      "fixture": "easy",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 52,
+      "comparisons": 53,
+      "forward": 52,
+      "backward": 0,
+      "active_forward": 0,
+      "found": 1
+    },
+    {
+      "fixture": "easy",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 104,
+      "comparisons": 105,
+      "forward": 52,
+      "backward": 52,
+      "active_forward": 0,
+      "found": 1
+    },
+    {
+      "fixture": "empty",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 82,
+      "comparisons": 83,
+      "forward": 82,
+      "backward": 0,
+      "active_forward": 81,
+      "found": 1
+    },
+    {
+      "fixture": "empty",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 102,
+      "comparisons": 103,
+      "forward": 92,
+      "backward": 10,
+      "active_forward": 91,
+      "found": 2
+    },
+    {
+      "fixture": "complete",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 1,
+      "comparisons": 2,
+      "forward": 1,
+      "backward": 0,
+      "active_forward": 0,
+      "found": 1
+    },
+    {
+      "fixture": "complete",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 2,
+      "comparisons": 3,
+      "forward": 1,
+      "backward": 1,
+      "active_forward": 0,
+      "found": 1
+    },
+    {
+      "fixture": "contradiction",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 24,
+      "comparisons": 25,
+      "forward": 12,
+      "backward": 12,
+      "active_forward": 0,
+      "found": 0
+    },
+    {
+      "fixture": "contradiction",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 24,
+      "comparisons": 25,
+      "forward": 12,
+      "backward": 12,
+      "active_forward": 0,
+      "found": 0
+    },
+    {
+      "fixture": "hard",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 27561,
+      "comparisons": 27562,
+      "forward": 13811,
+      "backward": 13750,
+      "active_forward": 13810,
+      "found": 1
+    },
+    {
+      "fixture": "hard",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 49762,
+      "comparisons": 49763,
+      "forward": 24881,
+      "backward": 24881,
+      "active_forward": 24880,
+      "found": 1
+    },
+    {
+      "fixture": "hard-ai-escargot",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 381,
+      "comparisons": 382,
+      "forward": 220,
+      "backward": 161,
+      "active_forward": 219,
+      "found": 1
+    },
+    {
+      "fixture": "hard-ai-escargot",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 4850,
+      "comparisons": 4851,
+      "forward": 2425,
+      "backward": 2425,
+      "active_forward": 2424,
+      "found": 1
+    },
+    {
+      "fixture": "hard-seed-42",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 3549,
+      "comparisons": 3550,
+      "forward": 1805,
+      "backward": 1744,
+      "active_forward": 1804,
+      "found": 1
+    },
+    {
+      "fixture": "hard-seed-42",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 31544,
+      "comparisons": 31545,
+      "forward": 15772,
+      "backward": 15772,
+      "active_forward": 15771,
+      "found": 1
+    },
+    {
+      "fixture": "hard-seed-20261003",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 30397,
+      "comparisons": 30398,
+      "forward": 15229,
+      "backward": 15168,
+      "active_forward": 15228,
+      "found": 1
+    },
+    {
+      "fixture": "hard-seed-20261003",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 55234,
+      "comparisons": 55235,
+      "forward": 27617,
+      "backward": 27617,
+      "active_forward": 27616,
+      "found": 1
+    },
+    {
+      "fixture": "hard-ai-escargot-seed-42",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 2131,
+      "comparisons": 2132,
+      "forward": 1095,
+      "backward": 1036,
+      "active_forward": 1094,
+      "found": 1
+    },
+    {
+      "fixture": "hard-ai-escargot-seed-42",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 8550,
+      "comparisons": 8551,
+      "forward": 4275,
+      "backward": 4275,
+      "active_forward": 4274,
+      "found": 1
+    },
+    {
+      "fixture": "hard-ai-escargot-seed-20261003",
+      "limit": 1,
+      "outcome": "completed",
+      "steps": 10217,
+      "comparisons": 10218,
+      "forward": 5138,
+      "backward": 5079,
+      "active_forward": 5137,
+      "found": 1
+    },
+    {
+      "fixture": "hard-ai-escargot-seed-20261003",
+      "limit": 2,
+      "outcome": "completed",
+      "steps": 14544,
+      "comparisons": 14545,
+      "forward": 7272,
+      "backward": 7272,
+      "active_forward": 7271,
+      "found": 1
+    }
+  ],
+  "transformation_method": "LCG state=(1664525*state+1013904223) modulo 2^32; descending Fisher-Yates j=state modulo (i+1); digit shuffle, band shuffle, per-band row shuffle, stack shuffle, per-stack column shuffle in that order. Maps use zero-based source rows/columns.",
+  "fixtures": [
+    {
+      "name": "easy",
+      "grid": "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+    },
+    {
+      "name": "empty",
+      "grid": "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "complete",
+      "grid": "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+    },
+    {
+      "name": "contradiction",
+      "grid": "123400089456789123080023056204007091060801234891234560345078012000912340019305678"
+    },
+    {
+      "name": "hard",
+      "grid": "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+    },
+    {
+      "name": "hard-ai-escargot",
+      "grid": "100007090030020008009600500005300900010080002600004000300000010040000007007000300"
+    },
+    {
+      "name": "hard-seed-42",
+      "grid": "080000300400900000906000040002400070000050000010003000000200060000008105090005800",
+      "base": "hard",
+      "seed": 42,
+      "digit_map": [
+        0,
+        8,
+        7,
+        3,
+        6,
+        9,
+        1,
+        4,
+        5,
+        2
+      ],
+      "source_rows": [
+        5,
+        3,
+        4,
+        2,
+        0,
+        1,
+        8,
+        6,
+        7
+      ],
+      "source_columns": [
+        5,
+        3,
+        4,
+        1,
+        0,
+        2,
+        7,
+        6,
+        8
+      ]
+    },
+    {
+      "name": "hard-seed-20261003",
+      "grid": "020009000600050100500670000010000008000008091000030500080004020300000700006000000",
+      "base": "hard",
+      "seed": 20261003,
+      "digit_map": [
+        0,
+        5,
+        4,
+        3,
+        9,
+        1,
+        7,
+        8,
+        6,
+        2
+      ],
+      "source_rows": [
+        8,
+        7,
+        6,
+        3,
+        4,
+        5,
+        2,
+        1,
+        0
+      ],
+      "source_columns": [
+        2,
+        1,
+        0,
+        8,
+        7,
+        6,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "name": "hard-ai-escargot-seed-42",
+      "grid": "600010000030009020005800007010002090400080200007300005000004030000030800000600004",
+      "base": "hard-ai-escargot",
+      "seed": 42,
+      "digit_map": [
+        0,
+        8,
+        7,
+        3,
+        6,
+        9,
+        1,
+        4,
+        5,
+        2
+      ],
+      "source_rows": [
+        5,
+        3,
+        4,
+        2,
+        0,
+        1,
+        8,
+        6,
+        7
+      ],
+      "source_columns": [
+        5,
+        3,
+        4,
+        1,
+        0,
+        2,
+        7,
+        6,
+        8
+      ]
+    },
+    {
+      "name": "hard-ai-escargot-seed-20261003",
+      "grid": "800003000090800000003050000100002300050400060007000009200001700030600040005020008",
+      "base": "hard-ai-escargot",
+      "seed": 20261003,
+      "digit_map": [
+        0,
+        5,
+        4,
+        3,
+        9,
+        1,
+        7,
+        8,
+        6,
+        2
+      ],
+      "source_rows": [
+        8,
+        7,
+        6,
+        3,
+        4,
+        5,
+        2,
+        1,
+        0
+      ],
+      "source_columns": [
+        2,
+        1,
+        0,
+        8,
+        7,
+        6,
+        3,
+        4,
+        5
+      ]
+    }
+  ]
+}

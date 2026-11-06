@@ -1,0 +1,2317 @@
+{
+  "status": "PASS",
+  "cases": 216,
+  "results": [
+    {
+      "args": [],
+      "code": 1,
+      "stdout": "",
+      "stderr": "missing command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "nonsense"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "unknown command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "nonsense",
+        "bad"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "unknown command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected exactly one puzzle\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected exactly one puzzle\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        ""
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        ""
+      ],
+      "code": 2,
+      "stdout": "invalid length\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        ""
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        ""
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid length\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid length\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "0000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "x00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "x00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid character\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "x00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "x00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "\uff1000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "\uff1000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid character\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "\uff1000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "\uff1000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "0000000000000000000000000000000000000000 0000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "0000000000000000000000000000000000000000 0000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid character\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "0000000000000000000000000000000000000000 0000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "0000000000000000000000000000000000000000 0000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid character\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000\n"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000\n"
+      ],
+      "code": 2,
+      "stdout": "invalid length\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000\n"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000\n"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "110000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid row:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "110000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid row:0\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "110000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid row:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "110000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid row:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "100000000100000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid col:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "100000000100000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid col:0\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "100000000100000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid col:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "100000000100000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid col:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "100000000010000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid box:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "100000000010000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid box:0\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "100000000010000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid box:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "100000000010000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid box:0\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "53..7....6..195....98....6.8...6...34..8.3..17...2...6.6....28....419..5....8..79"
+      ],
+      "code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "531070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 3,
+      "stdout": "unsolved\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+      ],
+      "code": 0,
+      "stdout": "812753649943682175675491283154237896369845721287169534521974368438526917796318452\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "531070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "2\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Hard\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "123456780000000009000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 3,
+      "stdout": "",
+      "stderr": "contradiction\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--count",
+        "0"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "numeric value out of range\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--count",
+        "-1"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        ""
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "4294967296"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "abc"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--clues",
+        "82"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "numeric value out of range\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--clues",
+        "-1"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--difficulty",
+        "invalid"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "missing option value\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--foo"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "unknown option\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--symmetry",
+        "--symmetry"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "duplicate option\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--clues",
+        "32",
+        "--clues",
+        "32"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "duplicate option\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "1",
+        "--seed",
+        "1"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "duplicate option\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--clues",
+        "81",
+        "--minimal"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "--clues, --difficulty and --minimal are mutually exclusive\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--minimal",
+        "--clues",
+        "81"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "--clues, --difficulty and --minimal are mutually exclusive\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--difficulty",
+        "easy",
+        "--minimal"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "--clues, --difficulty and --minimal are mutually exclusive\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--minimal",
+        "--difficulty",
+        "hard"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "--clues, --difficulty and --minimal are mutually exclusive\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--difficulty",
+        "easy",
+        "--clues",
+        "32"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "--clues, --difficulty and --minimal are mutually exclusive\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--clues",
+        "32",
+        "--difficulty",
+        "easy"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "--clues, --difficulty and --minimal are mutually exclusive\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "2",
+        "--clues",
+        "0",
+        "--symmetry"
+      ],
+      "code": 0,
+      "stdout": "004035000003600001007200080000400100230000046009002000010003800700004200000980600\n000138000020400003803090640005000209008020400209000100056010702300009060000645000\n",
+      "stderr": "TargetUnmet index=1 seed=42 target=0 reached=26\nTargetUnmet index=2 seed=43 target=0 reached=31\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "004035000003600001007200080000400100230000046009002000010003800700004200000980600"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000138000020400003803090640005000209008020400209000100056010702300009060000645000"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "2",
+        "--clues",
+        "1",
+        "--symmetry"
+      ],
+      "code": 0,
+      "stdout": "004035000003600001007200080000400100230000046009002000010003800700004200000980600\n000138000020400003803090640005000209008020400209000100056010702300009060000645000\n",
+      "stderr": "TargetUnmet index=1 seed=42 target=1 reached=26\nTargetUnmet index=2 seed=43 target=1 reached=31\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "004035000003600001007200080000400100230000046009002000010003800700004200000980600"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000138000020400003803090640005000209008020400209000100056010702300009060000645000"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "2",
+        "--clues",
+        "17",
+        "--symmetry"
+      ],
+      "code": 0,
+      "stdout": "004035000003600001007200080000400100230000046009002000010003800700004200000980600\n000138000020400003803090640005000209008020400209000100056010702300009060000645000\n",
+      "stderr": "TargetUnmet index=1 seed=42 target=17 reached=26\nTargetUnmet index=2 seed=43 target=17 reached=31\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "004035000003600001007200080000400100230000046009002000010003800700004200000980600"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000138000020400003803090640005000209008020400209000100056010702300009060000645000"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "2",
+        "--clues",
+        "32",
+        "--symmetry"
+      ],
+      "code": 0,
+      "stdout": "004035000003600401007200380000400130230000046049002000016003800708004200000980600\n000138000020400003803090640005300209008020400209004100056010702300009060000645000\n",
+      "stderr": "TargetUnmet index=2 seed=43 target=32 reached=33\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "004035000003600401007200380000400130230000046049002000016003800708004200000980600"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000138000020400003803090640005300209008020400209004100056010702300009060000645000"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "2",
+        "--clues",
+        "80",
+        "--symmetry"
+      ],
+      "code": 0,
+      "stdout": "124835769583679421967241385875496132231708946649312578416523897798164253352987614\n564138927927456813813792645645381279138907456279564138456813792381279564792645381\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "124835769583679421967241385875496132231708946649312578416523897798164253352987614"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "564138927927456813813792645645381279138907456279564138456813792381279564792645381"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "2",
+        "--clues",
+        "81",
+        "--symmetry"
+      ],
+      "code": 0,
+      "stdout": "124835769583679421967241385875496132231758946649312578416523897798164253352987614\n564138927927456813813792645645381279138927456279564138456813792381279564792645381\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "124835769583679421967241385875496132231758946649312578416523897798164253352987614"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "564138927927456813813792645645381279138927456279564138456813792381279564792645381"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--difficulty",
+        "easy"
+      ],
+      "code": 0,
+      "stdout": "024030060003079001007041080000490032231000006600002070016000097708100250350900600\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--difficulty",
+        "medium"
+      ],
+      "code": 0,
+      "stdout": "024000000003079001007001080000090032231000006600002070016000097708100250350900600\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--difficulty",
+        "hard"
+      ],
+      "code": 0,
+      "stdout": "024000000003079001007001080000090030031000006600002070006000097708100250300900600\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n4 valid\n5 valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n4 valid\n5 valid\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n4 valid\n5 valid\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n4 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n5 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n4 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n5 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n4 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n5 label:Easy tech:None steps:0 score:0 status:ok\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n6 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n7 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n8 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n9 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n10 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n11 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n12 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n13 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n14 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n15 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n16 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n17 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n18 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n19 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n20 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n21 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n22 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n23 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n24 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n25 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n26 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n27 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n28 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n29 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n30 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n31 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n32 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n33 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n34 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n35 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n36 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n37 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n38 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n39 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n40 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n41 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n42 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n43 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n44 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n45 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n46 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n47 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n48 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n49 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n50 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n51 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n52 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n53 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n54 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n55 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n56 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n57 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n58 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n59 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n60 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n61 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n62 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n63 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n64 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n65 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n66 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n67 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n68 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n69 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n70 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n71 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n72 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n73 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n74 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n75 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n76 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n77 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n78 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n79 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n80 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n81 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n82 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n83 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n84 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n85 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n86 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n87 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n88 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n89 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n90 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n91 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n92 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n93 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n94 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n95 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n96 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n97 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n98 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n99 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n100 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n6 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n7 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n8 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n9 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n10 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n11 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n12 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n13 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n14 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n15 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n16 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n17 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n18 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n19 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n20 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n21 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n22 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n23 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n24 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n25 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n26 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n27 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n28 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n29 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n30 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n31 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n32 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n33 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n34 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n35 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n36 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n37 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n38 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n39 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n40 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n41 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n42 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n43 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n44 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n45 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n46 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n47 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n48 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n49 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n50 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n51 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n52 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n53 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n54 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n55 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n56 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n57 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n58 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n59 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n60 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n61 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n62 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n63 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n64 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n65 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n66 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n67 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n68 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n69 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n70 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n71 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n72 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n73 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n74 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n75 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n76 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n77 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n78 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n79 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n80 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n81 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n82 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n83 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n84 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n85 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n86 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n87 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n88 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n89 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n90 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n91 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n92 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n93 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n94 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n95 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n96 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n97 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n98 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n99 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n100 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "1 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n2 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n6 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n7 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n8 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n9 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n10 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n11 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n12 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n13 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n14 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n15 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n16 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n17 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n18 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n19 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n20 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n21 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n22 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n23 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n24 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n25 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n26 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n27 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n28 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n29 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n30 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n31 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n32 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n33 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n34 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n35 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n36 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n37 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n38 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n39 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n40 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n41 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n42 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n43 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n44 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n45 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n46 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n47 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n48 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n49 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n50 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n51 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n52 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n53 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n54 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n55 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n56 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n57 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n58 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n59 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n60 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n61 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n62 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n63 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n64 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n65 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n66 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n67 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n68 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n69 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n70 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n71 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n72 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n73 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n74 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n75 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n76 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n77 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n78 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n79 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n80 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n81 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n82 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n83 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n84 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n85 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n86 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n87 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n88 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n89 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n90 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n91 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n92 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n93 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n94 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n95 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n96 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n97 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n98 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n99 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n100 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n4 valid\n5 valid\n6 valid\n7 valid\n8 valid\n9 valid\n10 valid\n11 valid\n12 valid\n13 valid\n14 valid\n15 valid\n16 valid\n17 valid\n18 valid\n19 valid\n20 valid\n21 valid\n22 valid\n23 valid\n24 valid\n25 valid\n26 valid\n27 valid\n28 valid\n29 valid\n30 valid\n31 valid\n32 valid\n33 valid\n34 valid\n35 valid\n36 valid\n37 valid\n38 valid\n39 valid\n40 valid\n41 valid\n42 valid\n43 valid\n44 valid\n45 valid\n46 valid\n47 valid\n48 valid\n49 valid\n50 valid\n51 valid\n52 valid\n53 valid\n54 valid\n55 valid\n56 valid\n57 valid\n58 valid\n59 valid\n60 valid\n61 valid\n62 valid\n63 valid\n64 valid\n65 valid\n66 valid\n67 valid\n68 valid\n69 valid\n70 valid\n71 valid\n72 valid\n73 valid\n74 valid\n75 valid\n76 valid\n77 valid\n78 valid\n79 valid\n80 valid\n81 valid\n82 valid\n83 valid\n84 valid\n85 valid\n86 valid\n87 valid\n88 valid\n89 valid\n90 valid\n91 valid\n92 valid\n93 valid\n94 valid\n95 valid\n96 valid\n97 valid\n98 valid\n99 valid\n100 valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n4 valid\n5 valid\n6 valid\n7 valid\n8 valid\n9 valid\n10 valid\n11 valid\n12 valid\n13 valid\n14 valid\n15 valid\n16 valid\n17 valid\n18 valid\n19 valid\n20 valid\n21 valid\n22 valid\n23 valid\n24 valid\n25 valid\n26 valid\n27 valid\n28 valid\n29 valid\n30 valid\n31 valid\n32 valid\n33 valid\n34 valid\n35 valid\n36 valid\n37 valid\n38 valid\n39 valid\n40 valid\n41 valid\n42 valid\n43 valid\n44 valid\n45 valid\n46 valid\n47 valid\n48 valid\n49 valid\n50 valid\n51 valid\n52 valid\n53 valid\n54 valid\n55 valid\n56 valid\n57 valid\n58 valid\n59 valid\n60 valid\n61 valid\n62 valid\n63 valid\n64 valid\n65 valid\n66 valid\n67 valid\n68 valid\n69 valid\n70 valid\n71 valid\n72 valid\n73 valid\n74 valid\n75 valid\n76 valid\n77 valid\n78 valid\n79 valid\n80 valid\n81 valid\n82 valid\n83 valid\n84 valid\n85 valid\n86 valid\n87 valid\n88 valid\n89 valid\n90 valid\n91 valid\n92 valid\n93 valid\n94 valid\n95 valid\n96 valid\n97 valid\n98 valid\n99 valid\n100 valid\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "1 valid\n2 valid\n3 valid\n4 valid\n5 valid\n6 valid\n7 valid\n8 valid\n9 valid\n10 valid\n11 valid\n12 valid\n13 valid\n14 valid\n15 valid\n16 valid\n17 valid\n18 valid\n19 valid\n20 valid\n21 valid\n22 valid\n23 valid\n24 valid\n25 valid\n26 valid\n27 valid\n28 valid\n29 valid\n30 valid\n31 valid\n32 valid\n33 valid\n34 valid\n35 valid\n36 valid\n37 valid\n38 valid\n39 valid\n40 valid\n41 valid\n42 valid\n43 valid\n44 valid\n45 valid\n46 valid\n47 valid\n48 valid\n49 valid\n50 valid\n51 valid\n52 valid\n53 valid\n54 valid\n55 valid\n56 valid\n57 valid\n58 valid\n59 valid\n60 valid\n61 valid\n62 valid\n63 valid\n64 valid\n65 valid\n66 valid\n67 valid\n68 valid\n69 valid\n70 valid\n71 valid\n72 valid\n73 valid\n74 valid\n75 valid\n76 valid\n77 valid\n78 valid\n79 valid\n80 valid\n81 valid\n82 valid\n83 valid\n84 valid\n85 valid\n86 valid\n87 valid\n88 valid\n89 valid\n90 valid\n91 valid\n92 valid\n93 valid\n94 valid\n95 valid\n96 valid\n97 valid\n98 valid\n99 valid\n100 valid\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n6 count:1\n7 count:1\n8 count:1\n9 count:1\n10 count:1\n11 count:1\n12 count:1\n13 count:1\n14 count:1\n15 count:1\n16 count:1\n17 count:1\n18 count:1\n19 count:1\n20 count:1\n21 count:1\n22 count:1\n23 count:1\n24 count:1\n25 count:1\n26 count:1\n27 count:1\n28 count:1\n29 count:1\n30 count:1\n31 count:1\n32 count:1\n33 count:1\n34 count:1\n35 count:1\n36 count:1\n37 count:1\n38 count:1\n39 count:1\n40 count:1\n41 count:1\n42 count:1\n43 count:1\n44 count:1\n45 count:1\n46 count:1\n47 count:1\n48 count:1\n49 count:1\n50 count:1\n51 count:1\n52 count:1\n53 count:1\n54 count:1\n55 count:1\n56 count:1\n57 count:1\n58 count:1\n59 count:1\n60 count:1\n61 count:1\n62 count:1\n63 count:1\n64 count:1\n65 count:1\n66 count:1\n67 count:1\n68 count:1\n69 count:1\n70 count:1\n71 count:1\n72 count:1\n73 count:1\n74 count:1\n75 count:1\n76 count:1\n77 count:1\n78 count:1\n79 count:1\n80 count:1\n81 count:1\n82 count:1\n83 count:1\n84 count:1\n85 count:1\n86 count:1\n87 count:1\n88 count:1\n89 count:1\n90 count:1\n91 count:1\n92 count:1\n93 count:1\n94 count:1\n95 count:1\n96 count:1\n97 count:1\n98 count:1\n99 count:1\n100 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n6 count:1\n7 count:1\n8 count:1\n9 count:1\n10 count:1\n11 count:1\n12 count:1\n13 count:1\n14 count:1\n15 count:1\n16 count:1\n17 count:1\n18 count:1\n19 count:1\n20 count:1\n21 count:1\n22 count:1\n23 count:1\n24 count:1\n25 count:1\n26 count:1\n27 count:1\n28 count:1\n29 count:1\n30 count:1\n31 count:1\n32 count:1\n33 count:1\n34 count:1\n35 count:1\n36 count:1\n37 count:1\n38 count:1\n39 count:1\n40 count:1\n41 count:1\n42 count:1\n43 count:1\n44 count:1\n45 count:1\n46 count:1\n47 count:1\n48 count:1\n49 count:1\n50 count:1\n51 count:1\n52 count:1\n53 count:1\n54 count:1\n55 count:1\n56 count:1\n57 count:1\n58 count:1\n59 count:1\n60 count:1\n61 count:1\n62 count:1\n63 count:1\n64 count:1\n65 count:1\n66 count:1\n67 count:1\n68 count:1\n69 count:1\n70 count:1\n71 count:1\n72 count:1\n73 count:1\n74 count:1\n75 count:1\n76 count:1\n77 count:1\n78 count:1\n79 count:1\n80 count:1\n81 count:1\n82 count:1\n83 count:1\n84 count:1\n85 count:1\n86 count:1\n87 count:1\n88 count:1\n89 count:1\n90 count:1\n91 count:1\n92 count:1\n93 count:1\n94 count:1\n95 count:1\n96 count:1\n97 count:1\n98 count:1\n99 count:1\n100 count:1\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n6 count:1\n7 count:1\n8 count:1\n9 count:1\n10 count:1\n11 count:1\n12 count:1\n13 count:1\n14 count:1\n15 count:1\n16 count:1\n17 count:1\n18 count:1\n19 count:1\n20 count:1\n21 count:1\n22 count:1\n23 count:1\n24 count:1\n25 count:1\n26 count:1\n27 count:1\n28 count:1\n29 count:1\n30 count:1\n31 count:1\n32 count:1\n33 count:1\n34 count:1\n35 count:1\n36 count:1\n37 count:1\n38 count:1\n39 count:1\n40 count:1\n41 count:1\n42 count:1\n43 count:1\n44 count:1\n45 count:1\n46 count:1\n47 count:1\n48 count:1\n49 count:1\n50 count:1\n51 count:1\n52 count:1\n53 count:1\n54 count:1\n55 count:1\n56 count:1\n57 count:1\n58 count:1\n59 count:1\n60 count:1\n61 count:1\n62 count:1\n63 count:1\n64 count:1\n65 count:1\n66 count:1\n67 count:1\n68 count:1\n69 count:1\n70 count:1\n71 count:1\n72 count:1\n73 count:1\n74 count:1\n75 count:1\n76 count:1\n77 count:1\n78 count:1\n79 count:1\n80 count:1\n81 count:1\n82 count:1\n83 count:1\n84 count:1\n85 count:1\n86 count:1\n87 count:1\n88 count:1\n89 count:1\n90 count:1\n91 count:1\n92 count:1\n93 count:1\n94 count:1\n95 count:1\n96 count:1\n97 count:1\n98 count:1\n99 count:1\n100 count:1\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n4 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n5 label:Easy tech:None steps:0 score:0 status:ok\n6 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n7 label:Easy tech:None steps:0 score:0 status:ok\n8 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n9 label:Easy tech:None steps:0 score:0 status:ok\n10 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n11 label:Easy tech:None steps:0 score:0 status:ok\n12 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n13 label:Easy tech:None steps:0 score:0 status:ok\n14 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n15 label:Easy tech:None steps:0 score:0 status:ok\n16 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n17 label:Easy tech:None steps:0 score:0 status:ok\n18 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n19 label:Easy tech:None steps:0 score:0 status:ok\n20 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n21 label:Easy tech:None steps:0 score:0 status:ok\n22 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n23 label:Easy tech:None steps:0 score:0 status:ok\n24 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n25 label:Easy tech:None steps:0 score:0 status:ok\n26 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n27 label:Easy tech:None steps:0 score:0 status:ok\n28 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n29 label:Easy tech:None steps:0 score:0 status:ok\n30 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n31 label:Easy tech:None steps:0 score:0 status:ok\n32 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n33 label:Easy tech:None steps:0 score:0 status:ok\n34 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n35 label:Easy tech:None steps:0 score:0 status:ok\n36 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n37 label:Easy tech:None steps:0 score:0 status:ok\n38 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n39 label:Easy tech:None steps:0 score:0 status:ok\n40 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n41 label:Easy tech:None steps:0 score:0 status:ok\n42 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n43 label:Easy tech:None steps:0 score:0 status:ok\n44 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n45 label:Easy tech:None steps:0 score:0 status:ok\n46 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n47 label:Easy tech:None steps:0 score:0 status:ok\n48 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n49 label:Easy tech:None steps:0 score:0 status:ok\n50 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n51 label:Easy tech:None steps:0 score:0 status:ok\n52 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n53 label:Easy tech:None steps:0 score:0 status:ok\n54 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n55 label:Easy tech:None steps:0 score:0 status:ok\n56 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n57 label:Easy tech:None steps:0 score:0 status:ok\n58 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n59 label:Easy tech:None steps:0 score:0 status:ok\n60 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n61 label:Easy tech:None steps:0 score:0 status:ok\n62 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n63 label:Easy tech:None steps:0 score:0 status:ok\n64 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n65 label:Easy tech:None steps:0 score:0 status:ok\n66 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n67 label:Easy tech:None steps:0 score:0 status:ok\n68 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n69 label:Easy tech:None steps:0 score:0 status:ok\n70 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n71 label:Easy tech:None steps:0 score:0 status:ok\n72 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n73 label:Easy tech:None steps:0 score:0 status:ok\n74 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n75 label:Easy tech:None steps:0 score:0 status:ok\n76 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n77 label:Easy tech:None steps:0 score:0 status:ok\n78 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n79 label:Easy tech:None steps:0 score:0 status:ok\n80 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n81 label:Easy tech:None steps:0 score:0 status:ok\n82 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n83 label:Easy tech:None steps:0 score:0 status:ok\n84 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n85 label:Easy tech:None steps:0 score:0 status:ok\n86 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n87 label:Easy tech:None steps:0 score:0 status:ok\n88 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n89 label:Easy tech:None steps:0 score:0 status:ok\n90 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n91 label:Easy tech:None steps:0 score:0 status:ok\n92 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n93 label:Easy tech:None steps:0 score:0 status:ok\n94 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n95 label:Easy tech:None steps:0 score:0 status:ok\n96 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n97 label:Easy tech:None steps:0 score:0 status:ok\n98 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n99 label:Easy tech:None steps:0 score:0 status:ok\n100 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n4 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n5 label:Easy tech:None steps:0 score:0 status:ok\n6 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n7 label:Easy tech:None steps:0 score:0 status:ok\n8 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n9 label:Easy tech:None steps:0 score:0 status:ok\n10 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n11 label:Easy tech:None steps:0 score:0 status:ok\n12 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n13 label:Easy tech:None steps:0 score:0 status:ok\n14 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n15 label:Easy tech:None steps:0 score:0 status:ok\n16 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n17 label:Easy tech:None steps:0 score:0 status:ok\n18 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n19 label:Easy tech:None steps:0 score:0 status:ok\n20 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n21 label:Easy tech:None steps:0 score:0 status:ok\n22 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n23 label:Easy tech:None steps:0 score:0 status:ok\n24 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n25 label:Easy tech:None steps:0 score:0 status:ok\n26 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n27 label:Easy tech:None steps:0 score:0 status:ok\n28 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n29 label:Easy tech:None steps:0 score:0 status:ok\n30 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n31 label:Easy tech:None steps:0 score:0 status:ok\n32 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n33 label:Easy tech:None steps:0 score:0 status:ok\n34 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n35 label:Easy tech:None steps:0 score:0 status:ok\n36 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n37 label:Easy tech:None steps:0 score:0 status:ok\n38 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n39 label:Easy tech:None steps:0 score:0 status:ok\n40 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n41 label:Easy tech:None steps:0 score:0 status:ok\n42 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n43 label:Easy tech:None steps:0 score:0 status:ok\n44 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n45 label:Easy tech:None steps:0 score:0 status:ok\n46 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n47 label:Easy tech:None steps:0 score:0 status:ok\n48 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n49 label:Easy tech:None steps:0 score:0 status:ok\n50 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n51 label:Easy tech:None steps:0 score:0 status:ok\n52 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n53 label:Easy tech:None steps:0 score:0 status:ok\n54 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n55 label:Easy tech:None steps:0 score:0 status:ok\n56 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n57 label:Easy tech:None steps:0 score:0 status:ok\n58 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n59 label:Easy tech:None steps:0 score:0 status:ok\n60 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n61 label:Easy tech:None steps:0 score:0 status:ok\n62 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n63 label:Easy tech:None steps:0 score:0 status:ok\n64 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n65 label:Easy tech:None steps:0 score:0 status:ok\n66 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n67 label:Easy tech:None steps:0 score:0 status:ok\n68 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n69 label:Easy tech:None steps:0 score:0 status:ok\n70 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n71 label:Easy tech:None steps:0 score:0 status:ok\n72 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n73 label:Easy tech:None steps:0 score:0 status:ok\n74 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n75 label:Easy tech:None steps:0 score:0 status:ok\n76 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n77 label:Easy tech:None steps:0 score:0 status:ok\n78 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n79 label:Easy tech:None steps:0 score:0 status:ok\n80 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n81 label:Easy tech:None steps:0 score:0 status:ok\n82 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n83 label:Easy tech:None steps:0 score:0 status:ok\n84 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n85 label:Easy tech:None steps:0 score:0 status:ok\n86 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n87 label:Easy tech:None steps:0 score:0 status:ok\n88 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n89 label:Easy tech:None steps:0 score:0 status:ok\n90 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n91 label:Easy tech:None steps:0 score:0 status:ok\n92 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n93 label:Easy tech:None steps:0 score:0 status:ok\n94 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n95 label:Easy tech:None steps:0 score:0 status:ok\n96 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n97 label:Easy tech:None steps:0 score:0 status:ok\n98 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n99 label:Easy tech:None steps:0 score:0 status:ok\n100 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n",
+      "stderr": "",
+      "threads": 8
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "1 label:Easy tech:None steps:0 score:0 status:ok\n2 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n3 label:Easy tech:None steps:0 score:0 status:ok\n4 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n5 label:Easy tech:None steps:0 score:0 status:ok\n6 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n7 label:Easy tech:None steps:0 score:0 status:ok\n8 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n9 label:Easy tech:None steps:0 score:0 status:ok\n10 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n11 label:Easy tech:None steps:0 score:0 status:ok\n12 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n13 label:Easy tech:None steps:0 score:0 status:ok\n14 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n15 label:Easy tech:None steps:0 score:0 status:ok\n16 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n17 label:Easy tech:None steps:0 score:0 status:ok\n18 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n19 label:Easy tech:None steps:0 score:0 status:ok\n20 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n21 label:Easy tech:None steps:0 score:0 status:ok\n22 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n23 label:Easy tech:None steps:0 score:0 status:ok\n24 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n25 label:Easy tech:None steps:0 score:0 status:ok\n26 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n27 label:Easy tech:None steps:0 score:0 status:ok\n28 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n29 label:Easy tech:None steps:0 score:0 status:ok\n30 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n31 label:Easy tech:None steps:0 score:0 status:ok\n32 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n33 label:Easy tech:None steps:0 score:0 status:ok\n34 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n35 label:Easy tech:None steps:0 score:0 status:ok\n36 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n37 label:Easy tech:None steps:0 score:0 status:ok\n38 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n39 label:Easy tech:None steps:0 score:0 status:ok\n40 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n41 label:Easy tech:None steps:0 score:0 status:ok\n42 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n43 label:Easy tech:None steps:0 score:0 status:ok\n44 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n45 label:Easy tech:None steps:0 score:0 status:ok\n46 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n47 label:Easy tech:None steps:0 score:0 status:ok\n48 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n49 label:Easy tech:None steps:0 score:0 status:ok\n50 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n51 label:Easy tech:None steps:0 score:0 status:ok\n52 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n53 label:Easy tech:None steps:0 score:0 status:ok\n54 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n55 label:Easy tech:None steps:0 score:0 status:ok\n56 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n57 label:Easy tech:None steps:0 score:0 status:ok\n58 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n59 label:Easy tech:None steps:0 score:0 status:ok\n60 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n61 label:Easy tech:None steps:0 score:0 status:ok\n62 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n63 label:Easy tech:None steps:0 score:0 status:ok\n64 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n65 label:Easy tech:None steps:0 score:0 status:ok\n66 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n67 label:Easy tech:None steps:0 score:0 status:ok\n68 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n69 label:Easy tech:None steps:0 score:0 status:ok\n70 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n71 label:Easy tech:None steps:0 score:0 status:ok\n72 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n73 label:Easy tech:None steps:0 score:0 status:ok\n74 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n75 label:Easy tech:None steps:0 score:0 status:ok\n76 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n77 label:Easy tech:None steps:0 score:0 status:ok\n78 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n79 label:Easy tech:None steps:0 score:0 status:ok\n80 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n81 label:Easy tech:None steps:0 score:0 status:ok\n82 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n83 label:Easy tech:None steps:0 score:0 status:ok\n84 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n85 label:Easy tech:None steps:0 score:0 status:ok\n86 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n87 label:Easy tech:None steps:0 score:0 status:ok\n88 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n89 label:Easy tech:None steps:0 score:0 status:ok\n90 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n91 label:Easy tech:None steps:0 score:0 status:ok\n92 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n93 label:Easy tech:None steps:0 score:0 status:ok\n94 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n95 label:Easy tech:None steps:0 score:0 status:ok\n96 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n97 label:Easy tech:None steps:0 score:0 status:ok\n98 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n99 label:Easy tech:None steps:0 score:0 status:ok\n100 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n",
+      "stderr": "",
+      "threads": 16
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "3 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n4 error:length\n5 solved:534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "check"
+      ],
+      "code": 0,
+      "stdout": "3 valid\n4 error:length\n5 valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "3 count:1\n4 error:length\n5 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "rate"
+      ],
+      "code": 0,
+      "stdout": "3 label:Easy tech:None steps:0 score:0 status:ok\n4 error:length\n5 label:Medium tech:NakedSingle steps:51 score:51 status:ok\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "solve"
+      ],
+      "code": 0,
+      "stdout": "",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 error:length\n2 error:length\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "generate",
+        "--seed",
+        "42",
+        "--count",
+        "5",
+        "--clues",
+        "1"
+      ],
+      "code": 0,
+      "stdout": "024000000000079001007001080000090030031000006600002070006000097708100250300000000\n004030900027000800010002045600380000008000000079060130000000002080079500000005000\n002000000000507000896040700000601000057200003000000029700000030000054070040002001\n200000038300000000400000100000002046000400380600050900008090007006800009021007000\n006009000000310004000402900100020000030500870000070300064700000003046500000000009\n",
+      "stderr": "TargetUnmet index=1 seed=42 target=1 reached=25\nTargetUnmet index=2 seed=43 target=1 reached=25\nTargetUnmet index=3 seed=44 target=1 reached=24\nTargetUnmet index=4 seed=45 target=1 reached=24\nTargetUnmet index=5 seed=46 target=1 reached=24\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "count"
+      ],
+      "code": 0,
+      "stdout": "1 count:1\n2 count:1\n3 count:1\n4 count:1\n5 count:1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "/tmp/tmpkdwn97nw/input.txt"
+      ],
+      "code": 0,
+      "stdout": "N=1 mode=cpu threads=runtime total_ms=0 per_ms=0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "/tmp/tmpkdwn97nw/input.txt",
+        "--generate",
+        "10"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "bench expects exactly one file or --generate N\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "/tmp/tmpkdwn97nw/input.txt"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid benchmark input\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "/tmp/tmpkdwn97nw/input.txt"
+      ],
+      "code": 2,
+      "stdout": "",
+      "stderr": "invalid benchmark input\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "--generate",
+        "3"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "bench --generate requires 1,10,100,1000 or 10000\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "--generate",
+        "abc"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "invalid benchmark count\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "--generate",
+        "10"
+      ],
+      "code": 0,
+      "stdout": "N=10 mode=cpu threads=runtime total_ms=0 per_ms=0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "--generate",
+        "100"
+      ],
+      "code": 0,
+      "stdout": "N=100 mode=cpu threads=runtime total_ms=0 per_ms=0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/missing/input",
+        "solve"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "file open failed\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "bench",
+        "/missing/input"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "file open failed\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "batch",
+        "/missing/input",
+        "nope"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "unknown batch mode\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags --threads N precede --; use -- before application arguments if needed.\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Medium\nMax technique: NakedSingle\nSteps: 51\nScore: 51\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "800000000003600000070090200050007000000045700000100030001000068008500010090000400"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Hard\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "x00000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid character\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "110000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 2,
+      "stdout": "invalid row:0\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Medium\nMax technique: NakedSingle\nSteps: 51\nScore: 51\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "2\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Hard\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "034678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "034678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "034678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Easy\nMax technique: NakedSingle\nSteps: 1\nScore: 1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "034678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "000005601008100070000400000000900000005002700800000540000020103590000000080740090"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "000005601008100070000400000000900000005002700800000540000020103590000000080740090"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "000005601008100070000400000000900000005002700800000540000020103590000000080740090"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Hard\nMax technique: HiddenSingle\nSteps: 58\nScore: 78\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "300620000008740090000009006004000802050000740000400000700903000062000500009060400"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "300620000008740090000009006004000802050000740000400000700903000062000500009060400"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "300620000008740090000009006004000802050000740000400000700903000062000500009060400"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Hard\nMax technique: LockedCandidates\nSteps: 57\nScore: 80\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "200090500000000200015000080309010007000602000020000000030005000700800410050006890"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "200090500000000200015000080309010007000602000020000000030005000700800410050006890"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "200090500000000200015000080309010007000602000020000000030005000700800410050006890"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Hard\nMax technique: NakedPair\nSteps: 64\nScore: 109\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "rate",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "Difficulty: Medium\nMax technique: NakedSingle\nSteps: 51\nScore: 51\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "123456780000000009000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "123456780000000009000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 0,
+      "stdout": "0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "123456780000000009000000000000000000000000000000000000000000000000000000000000000"
+      ],
+      "code": 3,
+      "stdout": "unsolved\n",
+      "stderr": "\n",
+      "threads": 1
+    },
+    {
+      "args": [
+        "check",
+        "531070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "count",
+        "531070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 0,
+      "stdout": "0\n",
+      "stderr": "",
+      "threads": 1
+    },
+    {
+      "args": [
+        "solve",
+        "531070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "code": 3,
+      "stdout": "unsolved\n",
+      "stderr": "\n",
+      "threads": 1
+    }
+  ]
+}

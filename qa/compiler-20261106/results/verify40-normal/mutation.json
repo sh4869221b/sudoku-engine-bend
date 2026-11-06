@@ -1,0 +1,15 @@
+[
+  {
+    "mutation": "count2 always CountOne",
+    "detected": true,
+    "exit": 1,
+    "stdout": "PASS mirror all81\nPASS set/get128 four values\nPASS 20 peers all81\nPASS actual candidates bounded easy81\nPASS actual candidates bounded empty81\nPASS solve preserves known easy solution\nPASS unique count\n",
+    "stderr": "FAIL empty multiple count\n"
+  },
+  {
+    "mutation": "false law mirror(0)=0 noncentral",
+    "detected": true,
+    "exit": 1,
+    "output": "SOME PROOFS FAIL\nError:\n- expected : False{}\n- observed : True{}\nLocation: L.mirror_involute_all81\n101 | def L.mirror_involute_all81():\n102>|   {==}\n    |   ^^^^\n103 | \nNote: the left side of the equality is the expected, the right side is the observed.\n"
+  }
+]

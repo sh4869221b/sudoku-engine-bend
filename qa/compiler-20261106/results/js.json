@@ -1,0 +1,691 @@
+{
+  "schema_version": 1,
+  "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+  "status": "PASS",
+  "started_at_utc": "2026-11-06T02:48:58.726681+00:00",
+  "cases": [
+    {
+      "case": "Node version",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--version"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "v24.19.0\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.005899
+    },
+    {
+      "case": "compile Nat host module",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/nat_host.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/nat_host.mjs"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.274558
+    },
+    {
+      "case": "compile Sudoku JavaScript",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/main.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 4.622508
+    },
+    {
+      "case": "Nat host boundary",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/host_test.mjs"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "{\"status\":\"PASS\",\"cases\":[{\"case\":\"Nat result\",\"type\":\"number\",\"value\":5},{\"case\":\"accepted Number\",\"input\":0,\"value\":0,\"type\":\"number\"},{\"case\":\"accepted Number\",\"input\":5,\"value\":5,\"type\":\"number\"},{\"case\":\"accepted Number\",\"input\":281474976710655,\"value\":281474976710655,\"type\":\"number\"},{\"case\":\"accepted Number\",\"input\":281474976710656,\"value\":281474976710656,\"type\":\"number\"},{\"case\":\"accepted Number\",\"input\":9007199254740991,\"value\":9007199254740991,\"type\":\"number\"},{\"case\":\"accepted Number\",\"input\":9007199254740992,\"value\":9007199254740992,\"type\":\"number\"},{\"case\":\"rejected host value\",\"label\":\"BigInt\",\"error\":\"bend: expected a Nat host number: an integer from 0 to 2^53\"},{\"case\":\"rejected host value\",\"label\":\"negative\",\"error\":\"bend: expected a Nat host number: an integer from 0 to 2^53\"},{\"case\":\"rejected host value\",\"label\":\"fraction\",\"error\":\"bend: expected a Nat host number: an integer from 0 to 2^53\"},{\"case\":\"rejected host value\",\"label\":\"infinity\",\"error\":\"bend: expected a Nat host number: an integer from 0 to 2^53\"},{\"case\":\"rejected host value\",\"label\":\"NaN\",\"error\":\"bend: expected a Nat host number: an integer from 0 to 2^53\"},{\"case\":\"rejected host value\",\"label\":\"above bound\",\"error\":\"bend: expected a Nat host number: an integer from 0 to 2^53\"}]}\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.033249
+    },
+    {
+      "case": "CLI 0: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "solve",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001324
+    },
+    {
+      "case": "CLI 0: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "solve",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.042499
+    },
+    {
+      "case": "CLI 1: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "check",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001385
+    },
+    {
+      "case": "CLI 1: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "check",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "valid\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.039243
+    },
+    {
+      "case": "CLI 2: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "count",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001525
+    },
+    {
+      "case": "CLI 2: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "count",
+        "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.037012
+    },
+    {
+      "case": "CLI 3: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "rate",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001427
+    },
+    {
+      "case": "CLI 3: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "rate",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.053619
+    },
+    {
+      "case": "CLI 4: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "solve",
+        "bad"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "timed_out": false,
+      "wall_seconds": 0.005266
+    },
+    {
+      "case": "CLI 4: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "solve",
+        "bad"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "invalid length\n",
+      "timed_out": false,
+      "wall_seconds": 0.030864
+    },
+    {
+      "case": "CLI 5: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "nonsense"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "unknown command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags use +RTS --threads N -RTS before application arguments.\n",
+      "timed_out": false,
+      "wall_seconds": 0.001407
+    },
+    {
+      "case": "CLI 5: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "nonsense"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "unknown command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags use +RTS --threads N -RTS before application arguments.\n",
+      "timed_out": false,
+      "wall_seconds": 0.045479
+    },
+    {
+      "case": "CLI 6: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "4294967296"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags use +RTS --threads N -RTS before application arguments.\n",
+      "timed_out": false,
+      "wall_seconds": 0.003805
+    },
+    {
+      "case": "CLI 6: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "4294967296"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "expected unsigned decimal integer or easy|medium|hard profile\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags use +RTS --threads N -RTS before application arguments.\n",
+      "timed_out": false,
+      "wall_seconds": 0.043758
+    },
+    {
+      "case": "CLI 7: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "0",
+        "--clues",
+        "50"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "070285631008160070136400000610900008905032710800000549064529183592010460080746295\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001407
+    },
+    {
+      "case": "CLI 7: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "0",
+        "--clues",
+        "50"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "070285631008160070136400000610900008905032710800000549064529183592010460080746295\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.069628
+    },
+    {
+      "case": "CLI 8: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "0",
+        "--clues",
+        "81"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "479285631258163974136497852617954328945832716823671549764529183592318467381746295\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001411
+    },
+    {
+      "case": "CLI 8: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "0",
+        "--clues",
+        "81"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "479285631258163974136497852617954328945832716823671549764529183592318467381746295\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.060685
+    },
+    {
+      "case": "CLI 9: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "42",
+        "--clues",
+        "50"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "024830760003079021007041385000490132231008046600012078016503097708100253350900604\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001892
+    },
+    {
+      "case": "CLI 9: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "42",
+        "--clues",
+        "50"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "024830760003079021007041385000490132231008046600012078016503097708100253350900604\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.065453
+    },
+    {
+      "case": "CLI 10: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "42",
+        "--clues",
+        "81"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "124835769583679421967241385875496132231758946649312578416523897798164253352987614\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.002445
+    },
+    {
+      "case": "CLI 10: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "42",
+        "--clues",
+        "81"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "124835769583679421967241385875496132231758946649312578416523897798164253352987614\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.046971
+    },
+    {
+      "case": "CLI 11: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "4294967295",
+        "--clues",
+        "50"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "683500002097038014010927806970000040000092368830004729009080451368410297451079003\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.006447
+    },
+    {
+      "case": "CLI 11: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "4294967295",
+        "--clues",
+        "50"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "683500002097038014010927806970000040000092368830004729009080451368410297451079003\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.080885
+    },
+    {
+      "case": "CLI 12: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "generate",
+        "--seed",
+        "4294967295",
+        "--clues",
+        "81"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "683541972297638514514927836972863145145792368836154729729386451368415297451279683\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001736
+    },
+    {
+      "case": "CLI 12: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "generate",
+        "--seed",
+        "4294967295",
+        "--clues",
+        "81"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "683541972297638514514927836972863145145792368836154729729386451368415297451279683\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.055466
+    },
+    {
+      "case": "IO.now generated bench: native",
+      "command": [
+        "/workspace/sudoku-engine-bend/bin/bend-sudoku",
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "bench",
+        "--generate",
+        "10"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "N=10 mode=cpu threads=runtime total_ms=0 per_ms=0\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.003273
+    },
+    {
+      "case": "IO.now generated bench: node",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm/bend-sudoku.js",
+        "bench",
+        "--generate",
+        "10"
+      ],
+      "timeout_seconds": 120,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "N=10 mode=cpu threads=runtime total_ms=3 per_ms=0.3\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.126827
+    }
+  ],
+  "python_optimization": 0,
+  "work": "/workspace/sudoku-engine-bend/.verification/upgrade-js-rerun-work-gho6qjsm",
+  "native_sha256": "cc23e86c6ba5c2d2e3b6fc9c291621ab751a70c9473c76eb1c1dea38735e1719",
+  "toolchain": {
+    "version": "2.0.40",
+    "classification": "latest official stable",
+    "released_at_utc": "2026-11-06",
+    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.40",
+    "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+    "url": "https://github.com/bendlang/bend/releases/download/v2.0.40/bend-2.0.40-linux-x64.tar.gz",
+    "sha256": "c9ff8d67bd903fb6ad9a26b43d8a62c01021de82a44d55ce4a3dcd4732113d6b",
+    "binary_sha256": "983e306459db3e3a1bc6b8452f964440301d4ec4fb2d8fe4d399b14e5edc3bd4",
+    "kernel_source_sha256": "776bfba6f08e9cbebb26fb3d43fa892b80d1d74b0a57698db4bc5d6b5db5b567"
+  },
+  "host_boundary": {
+    "status": "PASS",
+    "cases": [
+      {
+        "case": "Nat result",
+        "type": "number",
+        "value": 5
+      },
+      {
+        "case": "accepted Number",
+        "input": 0,
+        "value": 0,
+        "type": "number"
+      },
+      {
+        "case": "accepted Number",
+        "input": 5,
+        "value": 5,
+        "type": "number"
+      },
+      {
+        "case": "accepted Number",
+        "input": 281474976710655,
+        "value": 281474976710655,
+        "type": "number"
+      },
+      {
+        "case": "accepted Number",
+        "input": 281474976710656,
+        "value": 281474976710656,
+        "type": "number"
+      },
+      {
+        "case": "accepted Number",
+        "input": 9007199254740991,
+        "value": 9007199254740991,
+        "type": "number"
+      },
+      {
+        "case": "accepted Number",
+        "input": 9007199254740992,
+        "value": 9007199254740992,
+        "type": "number"
+      },
+      {
+        "case": "rejected host value",
+        "label": "BigInt",
+        "error": "bend: expected a Nat host number: an integer from 0 to 2^53"
+      },
+      {
+        "case": "rejected host value",
+        "label": "negative",
+        "error": "bend: expected a Nat host number: an integer from 0 to 2^53"
+      },
+      {
+        "case": "rejected host value",
+        "label": "fraction",
+        "error": "bend: expected a Nat host number: an integer from 0 to 2^53"
+      },
+      {
+        "case": "rejected host value",
+        "label": "infinity",
+        "error": "bend: expected a Nat host number: an integer from 0 to 2^53"
+      },
+      {
+        "case": "rejected host value",
+        "label": "NaN",
+        "error": "bend: expected a Nat host number: an integer from 0 to 2^53"
+      },
+      {
+        "case": "rejected host value",
+        "label": "above bound",
+        "error": "bend: expected a Nat host number: an integer from 0 to 2^53"
+      }
+    ]
+  },
+  "cli_comparisons": 13,
+  "generated_board_exact_comparisons": 6,
+  "generated_bench_checks": 2,
+  "javascript_sha256": "c3f9a91f9c416a5f1fce93d2223a2a846b8de89442e9912ed358b73bf04e27dd",
+  "finished_at_utc": "2026-11-06T02:49:04.890055+00:00"
+}

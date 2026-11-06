@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "seed": 0,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 0,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "seed": 1,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 1,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "seed": 42,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 42,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "minimal": true,
+      "pair_minimal": false
+    },
+    {
+      "minimal": true,
+      "pair_minimal": true
+    }
+  ],
+  "seconds": 0.173
+}

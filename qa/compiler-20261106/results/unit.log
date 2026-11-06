@@ -44,6 +44,6 @@ test_current_runtime_preserves_application_arguments (test_runtime_args.RuntimeA
 test_only_explicit_baseline_uses_old_runtime (test_runtime_args.RuntimeArguments.test_only_explicit_baseline_uses_old_runtime) ... ok
 
 ----------------------------------------------------------------------
-Ran 44 tests in 1.224s
+Ran 44 tests in 1.123s
 
 OK

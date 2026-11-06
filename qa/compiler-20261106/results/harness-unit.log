@@ -12,6 +12,6 @@ test_unsafe_kind_requires_expected_dependency_diagnostic (test_check_real.Harnes
 test_upstream_fixture_bodies_match_exact_git_blobs (test_check_real.HarnessTests.test_upstream_fixture_bodies_match_exact_git_blobs) ... ok
 
 ----------------------------------------------------------------------
-Ran 12 tests in 0.214s
+Ran 12 tests in 0.313s
 
 OK
