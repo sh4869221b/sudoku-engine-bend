@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "started_at_utc": "2026-11-06T02:48:19.811265+00:00",
+  "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+  "python_optimization": 0,
+  "cases": [
+    {
+      "case": "valid proof.bend: ordinary verdict",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/valid proof.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "ALL PROOFS CHECK\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.452652,
+      "expected": "valid"
+    },
+    {
+      "case": "valid proof.bend: low-memory verdict",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/sudoku-engine-bend/qa/low_memory.py",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/valid proof.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "ALL PROOFS CHECK\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.974291,
+      "expected": "valid"
+    },
+    {
+      "case": "false proof.bend: ordinary verdict",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/false proof.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "SOME PROOFS FAIL\nError:\n- expected : 0\n- observed : 1\nLocation: wrong\n2 | def wrong() -> {0 == 1 : U32}:\n3>|   {==}\n  |   ^^^^\n4 | \nNote: the left side of the equality is the expected, the right side is the observed.\n",
+      "timed_out": false,
+      "wall_seconds": 0.220316,
+      "expected": "false"
+    },
+    {
+      "case": "false proof.bend: low-memory verdict",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/sudoku-engine-bend/qa/low_memory.py",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/false proof.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "SOME PROOFS FAIL\nError:\n- expected : 0\n- observed : 1\nLocation: wrong\n2 | def wrong() -> {0 == 1 : U32}:\n3>|   {==}\n  |   ^^^^\n4 | \nNote: the left side of the equality is the expected, the right side is the observed.\n",
+      "timed_out": false,
+      "wall_seconds": 0.757155,
+      "expected": "false"
+    },
+    {
+      "case": "unsafe_kind.bend: ordinary verdict",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/unsafe_kind.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "SOME PROOFS FAIL\nError: 4 defs rely on unsafe or foreign code:\ndefs that depend on @unsafe: D, use, Zero, P\n",
+      "timed_out": false,
+      "wall_seconds": 0.360223,
+      "expected": "unsafe-kind"
+    },
+    {
+      "case": "unsafe_kind.bend: low-memory verdict",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/sudoku-engine-bend/qa/low_memory.py",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/unsafe_kind.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "SOME PROOFS FAIL\nError: 4 defs rely on unsafe or foreign code:\ndefs that depend on @unsafe: D, use, Zero, P\n",
+      "timed_out": false,
+      "wall_seconds": 0.500335,
+      "expected": "unsafe-kind"
+    },
+    {
+      "case": "dependent_pair.bend: ordinary verdict",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/dependent_pair.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "ALL PROOFS CHECK\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.070145,
+      "expected": "valid"
+    },
+    {
+      "case": "dependent_pair.bend: low-memory verdict",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/sudoku-engine-bend/qa/low_memory.py",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/dependent_pair.bend",
+        "--verdict"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "ALL PROOFS CHECK\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.420994,
+      "expected": "valid"
+    },
+    {
+      "case": "tiny native build: ordinary",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/native source.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/ordinary native/tiny native"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.772144
+    },
+    {
+      "case": "tiny native run: ordinary",
+      "command": [
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/ordinary native/tiny native"
+      ],
+      "timeout_seconds": 10,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.00128
+    },
+    {
+      "case": "tiny native build: low-memory",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/sudoku-engine-bend/qa/low_memory.py",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/native source.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/low-memory native/tiny native"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 1.157964
+    },
+    {
+      "case": "tiny native run: low-memory",
+      "command": [
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/low-memory native/tiny native"
+      ],
+      "timeout_seconds": 10,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.001792
+    },
+    {
+      "case": "byte-identical ordinary and low-memory native binaries",
+      "status": "PASS",
+      "sha256": {
+        "ordinary": "d749f1d09713a44cef346e80db0637322dec53442872e19dbaa06edc55c9bba1",
+        "low-memory": "d749f1d09713a44cef346e80db0637322dec53442872e19dbaa06edc55c9bba1"
+      }
+    },
+    {
+      "case": "existing adapter native output remains protected",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "/workspace/sudoku-engine-bend/qa/low_memory.py",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/proof fixtures/native source.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/low-memory native/tiny native"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "Low-memory compiler error: Refusing to overwrite existing native output: /workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg/low-memory native/tiny native\n",
+      "timed_out": false,
+      "wall_seconds": 0.304361
+    }
+  ],
+  "work": "/workspace/sudoku-engine-bend/.verification/upgrade-kernel-rerun-work-rghenjeg",
+  "toolchain": {
+    "bend": {
+      "version": "2.0.40",
+      "classification": "latest official stable",
+      "released_at_utc": "2026-11-06",
+      "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.40",
+      "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+      "url": "https://github.com/bendlang/bend/releases/download/v2.0.40/bend-2.0.40-linux-x64.tar.gz",
+      "sha256": "c9ff8d67bd903fb6ad9a26b43d8a62c01021de82a44d55ce4a3dcd4732113d6b",
+      "binary_sha256": "983e306459db3e3a1bc6b8452f964440301d4ec4fb2d8fe4d399b14e5edc3bd4",
+      "kernel_source_sha256": "776bfba6f08e9cbebb26fb3d43fa892b80d1d74b0a57698db4bc5d6b5db5b567"
+    },
+    "lean_version": "4.34.1",
+    "clang_version": "19.1.7",
+    "installed": {
+      "lock_sha256": "f6a179ca2e9c649bca8d1d9e23f0023ea38112e995ffa57a05c13541bbdbfda1",
+      "lean_version": "4.34.1",
+      "versions": {
+        "bend": "bend 2.0.40",
+        "clang": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/sudoku-engine-bend/.toolchains/clang19/usr/lib/llvm-19/bin",
+        "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+      },
+      "files": {
+        "bend": {
+          "path": "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+          "sha256": "983e306459db3e3a1bc6b8452f964440301d4ec4fb2d8fe4d399b14e5edc3bd4"
+        },
+        "clang": {
+          "path": "/workspace/sudoku-engine-bend/.toolchains/clang19/usr/bin/clang-19",
+          "sha256": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a"
+        },
+        "lean": {
+          "path": "/workspace/sudoku-engine-bend/.toolchains/lean-4.34.1-linux/bin/lean",
+          "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+        },
+        "leanc": {
+          "path": "/workspace/sudoku-engine-bend/.toolchains/lean-4.34.1-linux/bin/leanc",
+          "sha256": "68a45f8329e2d79133cdcc7b1fa494e37844282d7b5f8908ce1deda7cfdf161a"
+        },
+        "kernel": {
+          "path": "/workspace/sudoku-engine-bend/.toolchains/kernel-4.34.1/bendtt",
+          "sha256": "261ac96e4feaa56ea5f668ac9d960ac25c10dcd7fe962003717f6365bde131ed"
+        },
+        "kernel_source": {
+          "path": "/workspace/sudoku-engine-bend/.toolchains/bend/bend2/bendtt.lean",
+          "sha256": "776bfba6f08e9cbebb26fb3d43fa892b80d1d74b0a57698db4bc5d6b5db5b567"
+        }
+      }
+    }
+  },
+  "compiler_gc_hint_bytes": "67108864",
+  "compiler_gc_hint_is_memory_limit": false,
+  "fixtures": {
+    "UPSTREAM-LICENSE": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+    "dependent_pair.bend": "a8927bb934ccbee05124de4326f3918cb2f772623acfca815147ec0319ca2cb0",
+    "false proof.bend": "95f4cc27c0586a16832354d059a368860ac9a7d7e2e275c19dff92a539bbad92",
+    "native source.bend": "ed3c2abc6d026762312ad60f43a5216a0585c9c51da5fd204ef879c980d41519",
+    "unsafe_kind.bend": "3ac45c2f8c9b88827929c11794f8dc5a0bed1db7ace76cb50d6b2f7c58b73fad",
+    "valid proof.bend": "1cb70b6566f31cceb5e78fc43e0b774127e0cf34af98d53691d05180b8688309"
+  },
+  "native_sha256": {
+    "ordinary": "d749f1d09713a44cef346e80db0637322dec53442872e19dbaa06edc55c9bba1",
+    "low-memory": "d749f1d09713a44cef346e80db0637322dec53442872e19dbaa06edc55c9bba1"
+  },
+  "finished_at_utc": "2026-11-06T02:48:26.163481+00:00"
+}

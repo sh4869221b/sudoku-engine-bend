@@ -39,7 +39,7 @@ with tempfile.TemporaryDirectory(prefix='empty-state-', dir=root / 'qa') as td:
                                capture_output=True, text=True, timeout=180)
         if built.returncode:
             raise RuntimeError(f'{name} build failed\n{built.stdout}\n{built.stderr}')
-        actual = subprocess.run([str(binary), '--threads', '1'], env=env,
+        actual = subprocess.run([str(binary), '+RTS', '--threads', '1', '-RTS'], env=env,
                                 capture_output=True, text=True, timeout=180)
         if actual.returncode:
             raise RuntimeError(f'{name} execution failed\n{actual.stderr}')

@@ -1,0 +1,244 @@
+ALL PROOFS CHECK
+Use --verdict for mathematical validity.
+ALL PROOFS CHECK
+ALL PROOFS CHECK
+Use --verdict for mathematical validity.
+PASS mirror all81
+PASS set/get128 four values
+PASS 20 peers all81
+PASS actual candidates bounded easy81
+PASS actual candidates bounded empty81
+PASS solve preserves known easy solution
+PASS unique count
+PASS empty multiple count
+PASS invalid parse exit2
+PASS solve fuel0
+PASS count fuel0
+PASS dig fuel0
+PASS rate fuel0
+PASS rate complete
+PASS rate requires guess
+PASS rate51 singles independently counted blanks
+PASS score24
+PASS score25
+PASS score59
+PASS score60
+PASS contradiction has no label
+PASS naked single real placement
+PASS hidden single row digit1
+PASS locked candidates pointing/claiming
+PASS naked pair actual elimination
+PASS one two-mask cell is not a pair
+PASS unit digit with no placement contradiction
+PASS zero candidate contradiction
+PASS 100 complete seeded transformations valid
+PASS batch solve equals sequential3
+PASS batch check equals sequential3
+PASS batch count equals sequential3
+PASS batch rate equals sequential3
+PASS count table Zero+Zero
+PASS count table Zero+One
+PASS count table Zero+Many
+PASS count table Zero+Fuel
+PASS count table One+Zero
+PASS count table One+One
+PASS count table One+Many
+PASS count table One+Fuel
+PASS count table Many+Zero
+PASS count table Many+One
+PASS count table Many+Many
+PASS count table Many+Fuel
+PASS count table Fuel+Zero
+PASS count table Fuel+One
+PASS count table Fuel+Many
+PASS count table Fuel+Fuel
+RESULT: all assertions passed
+PASS mask count equals reference low10-bit popcount for4096masks
+PASS popcount upperbits ignored
+PASS cached/public candidates equal100seededboards x81cells
+PASS all1024 generated lookup entries match independent ten-bit sums
+PASS packed row empties:4096 cached valid/arbitrary/wide boards,1024 prepared boards,891 all-position swaps;independent81-cell bitmap rebuild,low occupancy/start/padding,exact MRV,activation masks versus frozen52
+PASS adaptive candidate masks,81 urgency bits,exact MRV choices during24000 trace steps (active forward states checked);1024arbitrary domain tie cases;32 trailing-bit indices
+PASS easy limit=1 completed steps=52 comparisons=53 forward=52 backward=0 active_forward=0 found=1
+PASS easy limit=2 completed steps=104 comparisons=105 forward=52 backward=52 active_forward=0 found=1
+PASS empty limit=1 completed steps=82 comparisons=83 forward=82 backward=0 active_forward=81 found=1
+PASS empty limit=2 completed steps=102 comparisons=103 forward=92 backward=10 active_forward=91 found=2
+PASS complete limit=1 completed steps=1 comparisons=2 forward=1 backward=0 active_forward=0 found=1
+PASS complete limit=2 completed steps=2 comparisons=3 forward=1 backward=1 active_forward=0 found=1
+PASS contradiction limit=1 completed steps=24 comparisons=25 forward=12 backward=12 active_forward=0 found=0
+PASS contradiction limit=2 completed steps=24 comparisons=25 forward=12 backward=12 active_forward=0 found=0
+PASS hard limit=1 completed steps=27561 comparisons=27562 forward=13811 backward=13750 active_forward=13810 found=1
+PASS hard limit=2 completed steps=49762 comparisons=49763 forward=24881 backward=24881 active_forward=24880 found=1
+PASS hard-ai-escargot limit=1 completed steps=381 comparisons=382 forward=220 backward=161 active_forward=219 found=1
+PASS hard-ai-escargot limit=2 completed steps=4850 comparisons=4851 forward=2425 backward=2425 active_forward=2424 found=1
+PASS hard-seed-42 limit=1 completed steps=3549 comparisons=3550 forward=1805 backward=1744 active_forward=1804 found=1
+PASS hard-seed-42 limit=2 completed steps=31544 comparisons=31545 forward=15772 backward=15772 active_forward=15771 found=1
+PASS hard-seed-20261003 limit=1 completed steps=30397 comparisons=30398 forward=15229 backward=15168 active_forward=15228 found=1
+PASS hard-seed-20261003 limit=2 completed steps=55234 comparisons=55235 forward=27617 backward=27617 active_forward=27616 found=1
+PASS hard-ai-escargot-seed-42 limit=1 completed steps=2131 comparisons=2132 forward=1095 backward=1036 active_forward=1094 found=1
+PASS hard-ai-escargot-seed-42 limit=2 completed steps=8550 comparisons=8551 forward=4275 backward=4275 active_forward=4274 found=1
+PASS hard-ai-escargot-seed-20261003 limit=1 completed steps=10217 comparisons=10218 forward=5138 backward=5079 active_forward=5137 found=1
+PASS hard-ai-escargot-seed-20261003 limit=2 completed steps=14544 comparisons=14545 forward=7272 backward=7272 active_forward=7271 found=1
+{
+  "status": "PASS",
+  "trace_count": 20,
+  "completed_traces": 20,
+  "capped_incomplete_traces": [],
+  "totals": {
+    "steps": 239111,
+    "comparisons": 239131,
+    "forward": 119844,
+    "backward": 119267,
+    "active_forward": 119700
+  }
+}
+Direct adaptive trace evidence: /workspace/sudoku-baseline37/.verification/20261106T023926Z-ib8uiw04/work/.omo/evidence/adaptive-trace
+PASS singleton predicate:all1024 low masks,4096 upper values,all32 power boundaries and65536 full-width random values versus old identity and independent32-bit count
+PASS bitmap arithmetic:4096 low,4096 upper,4096 sign-boundary values and65536 full-width random values versus original unsigned /32,%32
+PASS bitmap index:2916 placements,all81 positions,all9 digits,forced/guess modes,two seeds,all128 words versus frozen20-peer reference
+PASS validation reason priority:2048random bounded/full-width boards,81valid complete-grid edits and edge grids versus untouched reference
+PASS suffix board rendering1024wide/generated arrays;100generated batch solves/edges;all4mode/index limits/fuel/unsolved formatting
+PASS Fenwick ordinal shuffle equals unchanged list shuffle; lengths0..81,1000seeds and UInt upper boundaries
+PASS Nat/U32 div/rem3/9/27:4096consecutive,65536full-width random and high boundaries
+PASS hidden-single action order matches reference
+PASS locked/pair action order matches reference
+PASS pair ordering including bit0 and upper-bit malformed masks
+PASS ladder exact action order on82 malformed/partial states
+PASS initialization matches public reference on1000 malformed/partial states
+PASS coverage matches public missing_go on1000 malformed/partial cell states
+PASS one-cell array rate semantics
+PASS short invalid-digit array rate semantics
+PASS hidden-single trace everyfuel0..63
+PASS locked/pair trace everyfuel0..23
+PASS empty-board guess/fuel boundary
+PASS indexed hidden-single action order and every support entry after actions
+PASS indexed locked/pair action order and every support entry after actions
+PASS indexed hidden trace fuel0..63 versus unmodified list oracle
+PASS indexed locked/pair trace fuel0..23 versus unmodified list oracle
+PASS indexed empty-board guess/fuel boundary
+PASS array every NS edit cell and support index versus untouched reference
+PASS array every HS edit cell and support index versus untouched reference
+PASS array every LC/NP edit cell and support index versus untouched reference
+PASS array synthetic NP everyfuel0..23 versus untouched list state
+PASS array NS-only everyfuel0..63 versus unmodified list oracle
+PASS array HS everyfuel0..63 versus unmodified list oracle
+PASS array LC/NP everyfuel0..31 versus unmodified list oracle
+PASS array empty-board guess/fuel boundary
+PASS array completed-board/fuel boundary
+PASS packed LC/NP action order on60NS states
+PASS packed LC/NP action order on60HS states
+PASS packed LC/NP action order on60advanced states
+PASS packed synthetic naked-pair action order
+PASS packed LC/NP versus untouched list reference256random mask states
+PASS set-bit digit iterator equals unchanged9-digit scanner for8192 masks
+PASS set-bit digit iterator ignores bit0 and all upperbits
+PASS direct BENCH board validation equals string/reparse path; 100 generated boards and edge cases
+candidate: 6060 state/fuel observations
+{
+  "status": "PASS",
+  "observations": 6060,
+  "sha256": "9e91f20cab655505fb2ebf74a1d838062567c76476018342c8aa5ac60cb2b592",
+  "golden_baseline_commit": "648cd0cf65e7e3cc48c2f063dddc377f947481f2",
+  "verification": "committed baseline golden hash",
+  "baseline": null,
+  "candidate": "/workspace/sudoku-baseline37/.verification/20261106T023926Z-ib8uiw04/work",
+  "limits": [
+    1,
+    2
+  ],
+  "all_fuel_0_through_300": [
+    "easy",
+    "empty",
+    "contradiction",
+    "complete",
+    "hard"
+  ],
+  "hard_additional_fuels": [
+    500,
+    1000,
+    2000,
+    5000,
+    10000,
+    20000,
+    50000,
+    100000,
+    199999,
+    200000
+  ],
+  "observed_fields": [
+    "state tag",
+    "depth",
+    "found",
+    "board cells 0..80",
+    "active frame words"
+  ],
+  "production_runs": 3030,
+  "production_run_scope": "S.run dispatches to adaptive F.prepared; terminal/fuel outcomes and logical answer boards, not live adaptive stacks",
+  "legacy_trace_scope": "Retained S.selected/S.backtrack reference transitions; not the adaptive F transition state",
+  "adaptive_snapshot_trace_claimed": false,
+  "direct_transition_states": 3030,
+  "searching_states": 630,
+  "backtracking_states": 375,
+  "completed_states": 4050,
+  "fuel_exhaustion_states": 1005
+}
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "seed": 0,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 0,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "seed": 1,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 1,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "seed": 42,
+      "symmetry": false,
+      "puzzles": 2
+    },
+    {
+      "seed": 42,
+      "symmetry": true,
+      "puzzles": 2
+    },
+    {
+      "minimal": true,
+      "pair_minimal": false
+    },
+    {
+      "minimal": true,
+      "pair_minimal": true
+    }
+  ],
+  "seconds": 0.173
+}
+{
+  "status": "PASS",
+  "seeds_checked": 4,
+  "covered_techniques": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "fixtures": 2
+}
+{"status": "PASS", "cases": 216, "evidence": ".omo/evidence/cli-results.json"}
+PASS production handlers fuel exit4 and generation valid-prefix
+PASS counter and noncentral mirror-law mutants detected; original source unchanged
+PASS all7 native/Bend and5 Node-compatible commands; JS file IO requires Bun (not installed)
+NOT RUN: timing benchmark (explicit --skip-benchmark)

@@ -9,7 +9,7 @@ ZERO='0'*81
 CONTRA='123456780'+'000000009'+'0'*63
 UNSOL=EASY[:2]+'1'+EASY[3:]
 def run(*args,code=0,out=None,threads=1):
- p=subprocess.run([str(BIN),'--threads',str(threads),*args],capture_output=True,text=True,timeout=120)
+ p=subprocess.run([str(BIN),'+RTS','--threads',str(threads),'-RTS',*args],capture_output=True,text=True,timeout=120)
  assert p.returncode==code,(args,p.returncode,p.stdout,p.stderr)
  if out is not None:assert p.stdout.rstrip('\n')==out,(args,p.stdout,out)
  results.append({'args':list(args),'code':p.returncode,'stdout':p.stdout,'stderr':p.stderr,'threads':threads})

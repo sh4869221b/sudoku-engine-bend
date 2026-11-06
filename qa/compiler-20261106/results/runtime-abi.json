@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "case": "current ABI",
+      "args": [
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "check",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "exit": 0,
+      "stdout": "valid\n",
+      "stderr": ""
+    },
+    {
+      "case": "legacy flags are application args",
+      "args": [
+        "--threads",
+        "1",
+        "--",
+        "check",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "unknown command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags use +RTS --threads N -RTS before application arguments.\n"
+    },
+    {
+      "case": "application -- is preserved",
+      "args": [
+        "+RTS",
+        "--threads",
+        "1",
+        "-RTS",
+        "--",
+        "check",
+        "534678912672195348198342567859761423426853791713924856961537284287419635345286179"
+      ],
+      "exit": 1,
+      "stdout": "",
+      "stderr": "unknown command\nbend-sudoku solve|check|count|rate <81-character puzzle>\nbend-sudoku generate [--seed N] [--count K] [--clues N | --difficulty easy|medium|hard | --minimal] [--symmetry]\nbend-sudoku batch <file> solve|check|count|rate\nbend-sudoku bench <file> | --generate N\nUse 0 or . for blanks. No embedded whitespace.\n--difficulty is only a clue-count preset: easy=36, medium=32, hard=28. It does not guarantee a rate label.\n--minimal is strict per-clue minimality without symmetry, or pair-minimality with --symmetry. It conflicts with --clues/--difficulty.\nExact clue targets never undershoot. TargetUnmet is a stderr warning, exit 0.\nGeneration fuel failure exits 4: already printed puzzles are valid; the failed puzzle and all later puzzles are omitted.\nBatch skips empty/# lines, preserves physical indices, and exits 0 even for per-line errors or no jobs.\nExit: 0 success, 1 usage/read error, 2 invalid puzzle, 3 no solution/contradiction, 4 fuel.\nRuntime flags use +RTS --threads N -RTS before application arguments.\n"
+    }
+  ]
+}

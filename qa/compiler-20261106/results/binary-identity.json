@@ -1,0 +1,10 @@
+{
+  "baseline": {
+    "sha256": "4cffba4f3a652ed9224dd1b7342ff42147641237338d0e0f6de10306a1a4c63d",
+    "bytes": 342048
+  },
+  "candidate": {
+    "sha256": "cc23e86c6ba5c2d2e3b6fc9c291621ab751a70c9473c76eb1c1dea38735e1719",
+    "bytes": 287520
+  }
+}

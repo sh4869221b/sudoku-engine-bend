@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "execution_mode": "low-memory",
+  "wall_seconds": 474.135,
+  "compiler_gc_hint_bytes": "67108864",
+  "benchmark": "NOT RUN (explicit --skip-benchmark)",
+  "toolchain": {
+    "lock_sha256": "f6a179ca2e9c649bca8d1d9e23f0023ea38112e995ffa57a05c13541bbdbfda1",
+    "lean_version": "4.34.1",
+    "versions": {
+      "bend": "bend 2.0.40",
+      "clang": "Debian clang version 19.1.7 (3+b1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /workspace/sudoku-engine-bend/.toolchains/clang19/usr/lib/llvm-19/bin",
+      "lean": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)"
+    },
+    "files": {
+      "bend": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "sha256": "983e306459db3e3a1bc6b8452f964440301d4ec4fb2d8fe4d399b14e5edc3bd4"
+      },
+      "clang": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/clang19/usr/bin/clang-19",
+        "sha256": "0a3c55936ac43954fbe4914e6e73b577ca9e35e75d89ef13d3e28c187f41ca1a"
+      },
+      "lean": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/lean-4.34.1-linux/bin/lean",
+        "sha256": "e8baaa71855a616dc351028f3ad2200051b0671f423a1696a100e809302d5550"
+      },
+      "leanc": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/lean-4.34.1-linux/bin/leanc",
+        "sha256": "68a45f8329e2d79133cdcc7b1fa494e37844282d7b5f8908ce1deda7cfdf161a"
+      },
+      "kernel": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/kernel-4.34.1/bendtt",
+        "sha256": "261ac96e4feaa56ea5f668ac9d960ac25c10dcd7fe962003717f6365bde131ed"
+      },
+      "kernel_source": {
+        "path": "/workspace/sudoku-engine-bend/.toolchains/bend/bend2/bendtt.lean",
+        "sha256": "776bfba6f08e9cbebb26fb3d43fa892b80d1d74b0a57698db4bc5d6b5db5b567"
+      }
+    }
+  },
+  "work": "/workspace/sudoku-engine-bend/.verification/20261106T024534Z-9yk373e9/work",
+  "log": "/workspace/sudoku-engine-bend/.verification/20261106T024534Z-9yk373e9/verify.log"
+}

@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """Old/new output regression for the 2.0.35 CPU scheduler at odd thread counts."""
+import sys
+from pathlib import Path as _Path
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
+from runtime_args import native_command
+
 import argparse
 import hashlib
 import json
@@ -26,7 +31,7 @@ with tempfile.TemporaryDirectory() as td:
                 args = ['bench', str(batch)] if command == 'bench' else ['batch', str(batch), command]
                 results = []
                 for binary in (a.base, a.candidate):
-                    r = subprocess.run([str(binary.resolve()), '--threads', str(threads), '--', *args],
+                    r = subprocess.run(native_command(binary, threads, args),
                                        capture_output=True, timeout=120)
                     stdout = re.sub(rb'total_ms=\d+ per_ms=\S+', b'total_ms=<time> per_ms=<time>', r.stdout) if command == 'bench' else r.stdout
                     results.append((r.returncode, stdout, r.stderr))

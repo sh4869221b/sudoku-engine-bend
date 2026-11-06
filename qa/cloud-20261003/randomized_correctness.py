@@ -11,6 +11,11 @@ Without --lock-held this script acquires the same advisory lock itself.
 No production module, reference solver, performance input, or package is imported.
 """
 
+import sys
+from pathlib import Path as _Path
+sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
+from runtime_args import native_command
+
 import argparse
 import base64
 from collections import Counter
@@ -243,7 +248,7 @@ def archive_output(data):
 
 
 def run(binary, args, threads, timeout):
-    command = [str(binary), "--threads", str(threads), "--", *args]
+    command = native_command(binary, threads, args)
     start = time.monotonic()
     try:
         result = subprocess.run(command, capture_output=True, timeout=timeout)

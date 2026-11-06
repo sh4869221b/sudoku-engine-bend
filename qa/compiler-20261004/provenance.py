@@ -17,6 +17,7 @@ CORPUS_LINES = {
     'verification.txt': 56,
 }
 PIPELINE = (
+    'qa/runtime_args.py', 'qa/compiler-20261106/compare.sh',
     'build.sh', 'verify.sh', 'toolchain-env.sh', 'toolchain.lock.json',
     'qa/verify_gates.sh', 'qa/perf-20261001/cases.json',
     'qa/perf-20261001/corpus-manifest.json',

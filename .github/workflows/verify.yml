@@ -1,0 +1,33 @@
+name: Verify locked Bend
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Python regressions
+        run: |
+          python3 -m unittest discover -s qa -p 'test_*.py' -v
+          python3 -m unittest discover -s qa/compiler-20261106 -p 'test_*.py' -v
+          python3 qa/compiler-20261106/check_js.py --self-test
+      - name: Native prerequisites
+        run: sudo apt-get update && sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
+      - name: Install checksum-locked toolchain
+        run: ./setup.sh
+      - name: Verify ordinary compiler path
+        run: ./verify.sh --skip-benchmark
+      - name: Verify sequential compiler path
+        run: ./verify.sh --low-memory --skip-benchmark
+      - name: Compiler boundary checks
+        run: |
+          ./build.sh
+          mkdir -p .verification/upgrade
+          python3 qa/compiler-20261106/check_real.py --out .verification/upgrade/kernel.json
+          python3 qa/compiler-20261106/check_js.py --out .verification/upgrade/js.json

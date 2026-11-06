@@ -1,0 +1,15 @@
+{
+  "tag_name": "v2.0.40",
+  "target_commitish": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+  "published_at": "2026-11-06T02:06:29Z",
+  "html_url": "https://github.com/bendlang/bend/releases/tag/v2.0.40",
+  "draft": false,
+  "prerelease": false,
+  "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+  "asset": {
+    "name": "bend-2.0.40-linux-x64.tar.gz",
+    "browser_download_url": "https://github.com/bendlang/bend/releases/download/v2.0.40/bend-2.0.40-linux-x64.tar.gz",
+    "digest": "sha256:c9ff8d67bd903fb6ad9a26b43d8a62c01021de82a44d55ce4a3dcd4732113d6b",
+    "size": 36219422
+  }
+}

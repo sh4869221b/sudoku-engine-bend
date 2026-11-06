@@ -1,0 +1,26 @@
+[
+  {
+    "mode": "solve",
+    "code": 4,
+    "stdout": "",
+    "stderr": "fuel\n"
+  },
+  {
+    "mode": "count",
+    "code": 4,
+    "stdout": "",
+    "stderr": "fuel\n"
+  },
+  {
+    "mode": "rate",
+    "code": 4,
+    "stdout": "",
+    "stderr": "fuel\n"
+  },
+  {
+    "mode": "generate",
+    "code": 4,
+    "stdout": "534678912672195348198342567859761423426853791713924856961537284287419635345286179\n",
+    "stderr": "generate index=2 seed=43 fuel; valid completed prefix retained; repeating the same seed repeats the failure\n"
+  }
+]

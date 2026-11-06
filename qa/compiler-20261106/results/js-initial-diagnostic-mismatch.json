@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+  "status": "FAIL",
+  "started_at_utc": "2026-11-06T02:48:26.209727+00:00",
+  "cases": [
+    {
+      "case": "Node version",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "--version"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "v24.19.0\n",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.00481
+    },
+    {
+      "case": "compile Nat host module",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/nat_host.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/nat_host.mjs"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 0.210803
+    },
+    {
+      "case": "compile Sudoku JavaScript",
+      "command": [
+        "/workspace/sudoku-engine-bend/.toolchains/bend/bin/bend",
+        "/workspace/sudoku-engine-bend/main.bend",
+        "-o",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/bend-sudoku.js"
+      ],
+      "timeout_seconds": 60,
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "timed_out": false,
+      "wall_seconds": 4.030094
+    },
+    {
+      "case": "Nat host boundary",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "/workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/host_test.mjs"
+      ],
+      "timeout_seconds": 60,
+      "status": "FAIL",
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "file:///workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/host_test.mjs:4\nfunction check(ok, label) { if (!ok) throw new Error(label); }\n                                           ^\n\nError: rejected BigInt\n    at check (file:///workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/host_test.mjs:4:44)\n    at file:///workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0/host_test.mjs:16:3\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)\n\nNode.js v24.19.0\n",
+      "timed_out": false,
+      "wall_seconds": 0.032339,
+      "error": "CheckFailure: Command must succeed without stderr"
+    }
+  ],
+  "python_optimization": 0,
+  "work": "/workspace/sudoku-engine-bend/.verification/upgrade-js-work-6_rs3od0",
+  "native_sha256": "cc23e86c6ba5c2d2e3b6fc9c291621ab751a70c9473c76eb1c1dea38735e1719",
+  "toolchain": {
+    "version": "2.0.40",
+    "classification": "latest official stable",
+    "released_at_utc": "2026-11-06",
+    "release_url": "https://github.com/bendlang/bend/releases/tag/v2.0.40",
+    "source_commit": "624dd9f4607cd29b0871a9b96d413bfb11e92f52",
+    "url": "https://github.com/bendlang/bend/releases/download/v2.0.40/bend-2.0.40-linux-x64.tar.gz",
+    "sha256": "c9ff8d67bd903fb6ad9a26b43d8a62c01021de82a44d55ce4a3dcd4732113d6b",
+    "binary_sha256": "983e306459db3e3a1bc6b8452f964440301d4ec4fb2d8fe4d399b14e5edc3bd4",
+    "kernel_source_sha256": "776bfba6f08e9cbebb26fb3d43fa892b80d1d74b0a57698db4bc5d6b5db5b567"
+  },
+  "error": "CheckFailure: Command must succeed without stderr",
+  "finished_at_utc": "2026-11-06T02:48:30.737169+00:00"
+}
