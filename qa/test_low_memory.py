@@ -289,16 +289,61 @@ class ProcessLifecycleTests(AdapterCase):
             except (FileNotFoundError, ProcessLookupError):
                 pass
         self.addCleanup(clean_up_our_child)
+        self.assert_child_exited(proc)
+
+    def assert_child_exited(self, proc):
         deadline = time.monotonic() + 3
         while time.monotonic() < deadline:
             try:
                 state = (proc / 'stat').read_text().rsplit(')', 1)[1].split()[0]
-            except FileNotFoundError:
+            except (FileNotFoundError, ProcessLookupError):
+                # The child can disappear while its proc entry is being read.
                 return
             if state == 'Z':  # Dead; awaiting this container's PID 1 reaper.
                 return
             time.sleep(0.01)
         self.fail('adapter timeout left its active child running')
+
+    def test_exit_poll_accepts_disappearance_after_a_live_sample(self):
+        for error in (FileNotFoundError(2, 'No such file'),
+                      ProcessLookupError(3, 'No such process')):
+            with self.subTest(error=type(error).__name__), \
+                    mock.patch.object(pathlib.Path, 'read_text',
+                                      side_effect=['123 (child) S 1', error]) as read, \
+                    mock.patch.object(time, 'monotonic', side_effect=[0, 0, 1]), \
+                    mock.patch.object(time, 'sleep') as sleep:
+                self.assert_child_exited(pathlib.Path('/proc/123'))
+                self.assertEqual(read.call_count, 2)
+                sleep.assert_called_once_with(0.01)
+
+    def test_exit_poll_accepts_zombie_without_waiting(self):
+        with mock.patch.object(pathlib.Path, 'read_text', return_value='123 (child) Z 1'), \
+                mock.patch.object(time, 'monotonic', side_effect=[0, 0]), \
+                mock.patch.object(time, 'sleep') as sleep:
+            self.assert_child_exited(pathlib.Path('/proc/123'))
+        sleep.assert_not_called()
+
+    def test_exit_poll_rejects_a_child_still_alive_at_deadline(self):
+        for state in ('R', 'S', 'D'):
+            with self.subTest(state=state), \
+                    mock.patch.object(pathlib.Path, 'read_text',
+                                      return_value=f'123 (child) {state} 1') as read, \
+                    mock.patch.object(time, 'monotonic', side_effect=[0, 0, 4]), \
+                    mock.patch.object(time, 'sleep') as sleep:
+                with self.assertRaisesRegex(self.failureException, 'left its active child running'):
+                    self.assert_child_exited(pathlib.Path('/proc/123'))
+                read.assert_called_once_with()
+                sleep.assert_called_once_with(0.01)
+
+    def test_exit_poll_propagates_other_read_errors(self):
+        for error in (PermissionError(13, 'Permission denied'), OSError(5, 'Input/output error')):
+            with self.subTest(error=type(error).__name__), \
+                    mock.patch.object(pathlib.Path, 'read_text', side_effect=error), \
+                    mock.patch.object(time, 'monotonic', return_value=0), \
+                    mock.patch.object(time, 'sleep') as sleep:
+                with self.assertRaises(type(error)):
+                    self.assert_child_exited(pathlib.Path('/proc/123'))
+                sleep.assert_not_called()
 
 
 class ProofTests(AdapterCase):
