@@ -15,18 +15,7 @@ def run(*args,code=0,out=None,threads=1):
  results.append({'args':list(args),'code':p.returncode,'stdout':p.stdout,'stderr':p.stderr,'threads':threads})
  return p
 
-def fixture(group,slug,puzzle,**expected):
- d=ROOT/'fixtures'/group;d.mkdir(parents=True,exist_ok=True);(d/(slug+'.txt')).write_text(puzzle+'\n')
- for command,value in expected.items():(d/(slug+'.'+command+'.expected')).write_text(str(value)+'\n')
-fixture('complete','complete',SOL,solve=SOL,check='valid',count=1,rate='Easy')
-fixture('one_empty','one_empty','0'+SOL[1:],solve=SOL,check='valid',count=1,rate='Easy')
-fixture('easy','easy',EASY,solve=SOL,check='valid',count=1,rate='Medium')
-fixture('hard','hard',HARD,check='valid',count=1,rate='Hard')
-fixture('invalid','rowdup','11'+'0'*79,check='invalid')
-fixture('invalid','badchar','x'+'0'*80,check='invalid')
-fixture('unsolvable','unsolvable',UNSOL,solve='unsolved',check='valid',count=0)
-fixture('unsolvable','candidate_contradiction',CONTRA,solve='unsolved',check='valid',count=0)
-fixture('multi_solution','multi',ZERO,check='valid',count=2,rate='Hard')
+# Fixtures are committed review inputs; never regenerate them during verification.
 run(code=1);run('nonsense',code=1);run('nonsense','bad',code=1);run('solve',code=1);run('solve',EASY,EASY,code=1)
 for puzzle in ['',ZERO[:-1],ZERO+'0','x'+ZERO[1:],'０'+ZERO[1:],ZERO[:40]+' '+ZERO[41:],ZERO+'\n']:
  for mode in ('solve','check','count','rate'):run(mode,puzzle,code=2)
