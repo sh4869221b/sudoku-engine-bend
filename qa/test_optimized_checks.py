@@ -11,6 +11,7 @@ from unittest.mock import patch
 if __package__:
     from . import lanes
 else:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
     import lanes
 
 QA = Path(__file__).resolve().parent
@@ -84,10 +85,17 @@ class OptimizedChecks(unittest.TestCase):
                 shutil.copyfile(QA.parent / path, root / path)
             env = dict(os.environ, PYTHONOPTIMIZE='2')
             env.pop('PYTHONPATH', None)
-            for entry in (['qa/generate_count_table.py'], ['-m', 'qa.generate_count_table']):
+            env.pop('PYTHONSAFEPATH', None)
+            cases = (
+                (['qa/generate_count_table.py'], env),
+                (['-m', 'qa.generate_count_table'], env),
+                (['-I', '-OO', 'qa/generate_count_table.py'], env),
+                (['qa/generate_count_table.py'], dict(env, PYTHONSAFEPATH='1')),
+            )
+            for entry, case_env in cases:
                 with self.subTest(entry=entry):
                     result = subprocess.run([sys.executable, *entry, '--check'], cwd=root,
-                                            env=env, capture_output=True, text=True, timeout=30)
+                                            env=case_env, capture_output=True, text=True, timeout=30)
                     self.assertEqual(result.returncode, 0, result.stderr)
                     self.assertIn('PASS all1024', result.stdout)
                     self.assertEqual(result.stderr, '')
@@ -98,7 +106,8 @@ class OptimizedChecks(unittest.TestCase):
             ('1e999', '', 'invalid per_ms'),
             ('-1', '', 'unexpected bench output'),
             ('-1e-999', '', 'unexpected bench output'),
-            ('0', 'unexpected noise\n', 'unexpected stderr'),
+            ('7', '', 'per_ms does not match total_ms / N'),
+            ('0.0001', 'unexpected noise\n', 'unexpected stderr'),
         ):
             with self.subTest(value=value, stderr=stderr):
                 text = f'N=10000 mode=cpu threads=runtime total_ms=1 per_ms={value}\n'
@@ -109,3 +118,7 @@ class OptimizedChecks(unittest.TestCase):
                         lanes.run_case(checks, 'js', ['node'], ['bench', '--generate', '10000'],
                                        bench_n=10000)
                 self.assertEqual(checks, [])
+
+
+if __name__ == '__main__':
+    unittest.main()

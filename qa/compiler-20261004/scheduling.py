@@ -4,13 +4,12 @@ import sys
 from pathlib import Path as _Path
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 from runtime_args import native_command
-from checks import require
+from checks import normalized_bench, require
 
 import argparse
 import hashlib
 import json
 import pathlib
-import re
 import subprocess
 import tempfile
 
@@ -34,7 +33,9 @@ with tempfile.TemporaryDirectory() as td:
                 for binary in (a.base, a.candidate):
                     r = subprocess.run(native_command(binary, threads, args),
                                        capture_output=True, timeout=120)
-                    stdout = re.sub(rb'total_ms=\d+ per_ms=\S+', b'total_ms=<time> per_ms=<time>', r.stdout) if command == 'bench' else r.stdout
+                    stdout = r.stdout
+                    if command == 'bench' and r.returncode == 0:
+                        stdout, _ = normalized_bench(stdout, r.stderr, expected_n=size)
                     results.append((r.returncode, stdout, r.stderr))
                 require(results[0] == results[1], ('scheduler comparison mismatch', size, threads, command, results))
                 require(results[1][0] == 0, (size, threads, command, results[1]))

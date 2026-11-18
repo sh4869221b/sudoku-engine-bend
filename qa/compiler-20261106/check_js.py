@@ -7,7 +7,6 @@ Run --self-test for Python-only acceptance/recording regressions (no compiler).
 """
 import argparse
 import json
-import math
 import os
 import pathlib
 import re
@@ -15,7 +14,11 @@ import shutil
 import sys
 import tempfile
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from check_real import ROOT, SOURCE_COMMIT, Recorder, require, sha256, utc_now
+
+sys.path.insert(0, str(ROOT / 'qa'))
+from checks import bench_timing
 
 SOLVED = '534678912672195348198342567859761423426853791713924856961537284287419635345286179'
 EASY = '530070000600195000098000060800060003400803001700020006060000280000419005000080079'
@@ -120,11 +123,10 @@ def check_cli(record, args, expected_exit, reference=None):
 
 def check_bench(record):
     check_success(record)
-    match = re.fullmatch(r'N=10 mode=cpu threads=runtime total_ms=([0-9]+) per_ms=([0-9.e+-]+)\n',
-                         record['stdout'])
-    require(match is not None, 'Unexpected generated bench output')
-    elapsed = float(match[2])
-    require(math.isfinite(elapsed) and elapsed >= 0, 'Invalid elapsed time')
+    try:
+        bench_timing(record['stdout'], record['stderr'], expected_n=10)
+    except AssertionError as exc:
+        require(False, exc.args[0])
 
 
 def check_complete(result):
@@ -143,7 +145,6 @@ def check_complete(result):
 
 
 def run_checks(result, checkpoint):
-    sys.path.insert(0, str(ROOT / 'qa'))
     import toolchain
     require(toolchain.LOCK['bend']['version'] == '2.0.40'
             and toolchain.LOCK['bend']['source_commit'] == SOURCE_COMMIT,
@@ -419,12 +420,12 @@ def self_test():
                 with self.subTest(text=text), self.assertRaises(RuntimeError):
                     check_generated_board(text, clues)
 
-        def test_bench_rejects_nonfinite_negative_or_malformed_time(self):
+        def test_bench_rejects_invalid_or_inconsistent_time(self):
             prefix = 'N=10 mode=cpu threads=runtime total_ms=12 per_ms='
-            for value in ('0', '1.2', '1e-3'):
+            for value in ('1.2', '12e-1'):
                 check_bench(record(prefix + value + '\n'))
-            for value in ('1e999', '-1', 'nan', 'inf', '1..2', '1e'):
-                with self.subTest(value=value), self.assertRaises((RuntimeError, ValueError)):
+            for value in ('0', '1e-3', '1e999', '-1', 'nan', 'inf', '1..2', '1e'):
+                with self.subTest(value=value), self.assertRaises(RuntimeError):
                     check_bench(record(prefix + value + '\n'))
             with self.assertRaises(RuntimeError):
                 check_bench(record((prefix + '1\n').replace('N=10', 'N=1')))

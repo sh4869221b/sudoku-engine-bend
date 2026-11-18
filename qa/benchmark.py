@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Fixed-corpus native CPU scaling; warm-up + 3 measured repetitions per size/thread."""
 import subprocess,pathlib,tempfile,hashlib,json,statistics,re,os,platform,time
+import sys
+
 if __package__:
-    from .checks import require
+    from .checks import bench_timing, require
 else:
-    from checks import require
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    from checks import bench_timing, require
 ROOT=pathlib.Path(__file__).resolve().parents[1];BIN=ROOT/'bin/bend-sudoku';start=time.monotonic()
 gen=subprocess.run([str(BIN),'+RTS','--threads','1','-RTS','generate','--seed','1','--count','10000','--clues','36'],capture_output=True,text=True,check=True,timeout=180)
 lines=gen.stdout.splitlines()
@@ -23,9 +26,8 @@ with tempfile.TemporaryDirectory() as td:
    for rep in range(4):
     p=subprocess.run([str(BIN),'+RTS','--threads',str(threads),'-RTS','bench',str(files[n])],capture_output=True,text=True,timeout=180)
     require(p.returncode==0, (threads,n,p.returncode,p.stderr))
-    m=re.fullmatch(r'N=(\d+) mode=cpu threads=runtime total_ms=(\d+) per_ms=([0-9.e+-]+)\n',p.stdout)
-    require(m and int(m[1])==n, (threads,n,p.stdout))
-    if rep:samples.append(int(m[2]))
+    _,total=bench_timing(p.stdout,p.stderr,expected_n=n)
+    if rep:samples.append(total)
    records.append({'threads':threads,'N':n,'status':'success','raw_ms':samples,'median_ms':statistics.median(samples),'corpus_sha256':hashlib.sha256(files[n].read_bytes()).hexdigest()})
 model='unavailable'
 try:model=next(x.split(':',1)[1].strip() for x in pathlib.Path('/proc/cpuinfo').read_text().splitlines() if x.startswith('model name'))

@@ -14,10 +14,13 @@ import os
 from pathlib import Path
 import re
 import subprocess
+import sys
 import time
+
 if __package__:
     from .checks import require
 else:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
     from checks import require
 
 ROOT = Path(__file__).resolve().parents[1]

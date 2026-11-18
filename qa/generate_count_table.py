@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Check/reproduce the finite low-ten-bit cardinality lookup (no runtime dependency)."""
 import argparse,pathlib
+import sys
+
 if __package__:
     from .checks import require
 else:
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     from checks import require
 p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');a=p.parse_args()
 text='def count_index(index: U32) -> U32:\n  match index:\n'

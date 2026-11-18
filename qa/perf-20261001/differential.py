@@ -4,9 +4,9 @@ import sys
 from pathlib import Path as _Path
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 from runtime_args import native_command
-from checks import require
+from checks import normalized_bench, require
 
-import argparse,gzip,hashlib,importlib.util,json,pathlib,random,re,subprocess,tempfile
+import argparse,gzip,hashlib,importlib.util,json,pathlib,random,subprocess,tempfile
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--candidate',required=True);p.add_argument('--repo',required=True);p.add_argument('--corpora',required=True);p.add_argument('--out',required=True);a=p.parse_args();records=[]
 base=pathlib.Path(a.base).resolve();candidate=pathlib.Path(a.candidate).resolve();repo=pathlib.Path(a.repo).resolve();corpora=pathlib.Path(a.corpora).resolve()
 spec=importlib.util.spec_from_file_location('rating_reference',repo/'qa/rate_reference.py');ref=importlib.util.module_from_spec(spec);spec.loader.exec_module(ref)
@@ -20,8 +20,11 @@ def check(args,threads=1):
   # new runtime ABI. All other bytes and exit codes remain exact comparisons.
   old=b'Runtime flags --threads N precede --; use -- before application arguments if needed.'
   new=b'Runtime flags use +RTS --threads N -RTS before application arguments.'
-  r=(r[0],r[1].replace(old,new),r[2].replace(old,new))
-  return (r[0],re.sub(rb'total_ms=\d+ per_ms=\S+',b'total_ms=<time> per_ms=<time>',r[1]),r[2]) if args and args[0]=='bench' else r
+  code,stdout,stderr=r
+  if args and args[0]=='bench' and code==0:
+   expected_n=int(args[2]) if len(args)==3 and args[1]=='--generate' else None
+   stdout,_=normalized_bench(stdout,stderr,expected_n=expected_n)
+  return code,stdout.replace(old,new),stderr.replace(old,new)
  require(norm(results[0])==norm(results[1]), ('CLI differential mismatch', args, threads, results))
  r=results[1];records.append({'args':args,'threads':threads,'exit':r[0],'stdout':r[1].decode(errors='replace'),'stderr':r[2].decode(errors='replace')});return r
 def valid_solution(puzzle,solution):

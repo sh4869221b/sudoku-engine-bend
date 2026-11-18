@@ -1,9 +1,14 @@
 import os
 from pathlib import Path
+import sys
 import unittest
 from unittest.mock import patch
 
-from runtime_args import native_command
+if __package__:
+    from .runtime_args import native_command
+else:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from runtime_args import native_command
 
 
 class RuntimeArguments(unittest.TestCase):

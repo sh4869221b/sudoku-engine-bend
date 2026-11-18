@@ -4,7 +4,7 @@ import sys
 from pathlib import Path as _Path
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 from runtime_args import native_command
-from checks import require
+from checks import bench_timing, require
 
 import argparse,gzip,hashlib,json,pathlib,random,subprocess,tempfile
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--candidate',required=True);p.add_argument('--out',required=True);a=p.parse_args();rng=random.Random(20261003);records=[]
@@ -13,6 +13,10 @@ def run(binary,args,threads):
  return (r.returncode,r.stdout,r.stderr)
 def check(args,threads):
  lhs=run(a.base,args,threads);rhs=run(a.candidate,args,threads)
+ if args[0]=='bench':
+  for code,stdout,stderr in (lhs,rhs):
+   if code==0:
+    bench_timing(stdout,stderr)
  require(lhs==rhs, ('file differential mismatch',args,threads,lhs,rhs))
  records.append(dict(args=args,threads=threads,exit=rhs[0],stdout=rhs[1].decode(errors='replace'),stderr=rhs[2].decode(errors='replace')))
 sol=b'534678912672195348198342567859761423426853791713924856961537284287419635345286179'

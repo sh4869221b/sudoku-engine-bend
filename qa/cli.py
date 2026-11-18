@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """Deterministic stdout/stderr/exit contracts and fixture gates; standard library only."""
 import json,pathlib,subprocess,tempfile,re,os
+import sys
+
 if __package__:
-    from .checks import require
+    from .checks import bench_timing, require
 else:
-    from checks import require
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    from checks import bench_timing, require
 ROOT=pathlib.Path(__file__).resolve().parents[1]; BIN=ROOT/'bin/bend-sudoku';results=[]
 SOL='534678912672195348198342567859761423426853791713924856961537284287419635345286179'
 EASY='530070000600195000098000060800060003400803001700020006060000280000419005000080079'
@@ -12,11 +15,13 @@ HARD='80000000000360000007009020005000700000004570000010003000100006800850001009
 ZERO='0'*81
 CONTRA='123456780'+'000000009'+'0'*63
 UNSOL=EASY[:2]+'1'+EASY[3:]
-def run(*args,code=0,out=None,threads=1):
+def run(*args,code=0,out=None,threads=1,bench_n=None):
  p=subprocess.run([str(BIN),'+RTS','--threads',str(threads),'-RTS',*args],capture_output=True,text=True,timeout=120)
  require(p.returncode==code, (args,p.returncode,p.stdout,p.stderr))
  if out is not None:
   require(p.stdout.rstrip('\n')==out, (args,p.stdout,out))
+ if bench_n is not None:
+  bench_timing(p.stdout,p.stderr,expected_n=bench_n)
  results.append({'args':list(args),'code':p.returncode,'stdout':p.stdout,'stderr':p.stderr,'threads':threads})
  return p
 
@@ -72,14 +77,13 @@ with tempfile.TemporaryDirectory() as td:
  lines=run('batch',str(path),'count').stdout.splitlines()
  require(lines==[f'{i} count:1' for i in range(1,6)], ('wrong generated puzzle counts', lines))
  path.write_text(SOL+'\n')
- p=run('bench',str(path))
- require(re.fullmatch(r'N=1 mode=cpu threads=runtime total_ms=\d+ per_ms=[0-9.e+-]+\n',p.stdout),
-         ('wrong benchmark output', p.stdout))
+ run('bench',str(path),bench_n=1)
  run('bench',str(path),'--generate','10',code=1)
  path.write_text('bad\n');run('bench',str(path),code=2)
  path.write_text('');run('bench',str(path),code=2)
  run('bench','--generate','3',code=1);run('bench','--generate','abc',code=1)
- run('bench','--generate','10');run('bench','--generate','100')
+ for n in (10,100):
+  run('bench','--generate',str(n),bench_n=n)
 run('batch','/missing/input','solve',code=1);run('bench','/missing/input',code=1);run('batch','/missing/input','nope',code=1)
 # Each source fixture's command-specific output is checked, never auto-updated on mismatch.
 for exp in sorted((ROOT/'fixtures').rglob('*.expected')):

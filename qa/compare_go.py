@@ -1,10 +1,13 @@
 """Same-host alternating native CLI comparison; Python standard library only."""
-import pathlib,subprocess,time,json,statistics,os,hashlib,platform,re
+import pathlib,subprocess,time,json,statistics,os,hashlib,platform
+import sys
+
 if __package__:
-    from .checks import require
+    from .checks import bench_timing, require
     from .runtime_args import native_command
 else:
-    from checks import require
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    from checks import bench_timing, require
     from runtime_args import native_command
 REPO=pathlib.Path(__file__).resolve().parents[1]
 R=pathlib.Path(os.environ.get('COMPARE_OUTPUT',str(REPO/'.omo/evidence/optimization-run')))
@@ -18,13 +21,15 @@ raw=[]
 def run(engine,args,threads):
  env=dict(ENV,GOMAXPROCS=str(threads));command=native_command(BINS[engine],threads,args) if engine=='bend' else [BINS[engine],'--threads',str(threads),'--',*args];t=time.perf_counter_ns();p=subprocess.run(command,env=env,capture_output=True,text=True,timeout=120)
  return {'wall_ms':(time.perf_counter_ns()-t)/1e6,'code':p.returncode,'stdout':p.stdout,'stderr':p.stderr}
-def measure(name,args,threads=1,reps=11):
+def measure(name,args,threads=1,reps=11,bench_n=None):
  expected={}
  for rep in range(reps+2):
   for engine in (['bend','go'] if rep%2==0 else ['go','bend']):
    r=run(engine,args,threads);r.update(case=name,engine=engine,threads=threads,rep=rep,warmup=rep<2)
    if args[0]=='bench':
-    m=re.search(r'total_ms=(\d+)',r['stdout']);require(r['code']==0 and m, r);r['kernel_ms']=int(m[1])
+    require(r['code']==0, r)
+    _,r['kernel_ms']=bench_timing(r['stdout'],r['stderr'],expected_n=bench_n,
+                                 threads=threads if engine=='go' else None)
    else:
     if engine in expected:require(r['code']==expected[engine]['code'] and r['stdout']==expected[engine]['stdout'] and r['stderr']==expected[engine]['stderr'], r)
     expected[engine]=r
@@ -42,8 +47,8 @@ p=run('go',['generate','--seed','1','--count','100','--clues','36'],1);require(p
 base=p['stdout'].splitlines();batch=R/'batch-10000.txt';batch.write_text('\n'.join(base*100)+'\n')
 mix=R/'batch-mixed-1000.txt';mixbase=[corpus[x] for x in ['new_easy','original_medium','original_hard','new_complete']];mix.write_text('\n'.join(mixbase*250)+'\n')
 for threads in [1,8,16]:
- for name,path in [('easy10000',batch),('mixed1000',mix)]:
-  measure('bench_'+name,['bench',str(path)],threads,reps=7)
+ for name,path,n in [('easy10000',batch,10000),('mixed1000',mix,1000)]:
+  measure('bench_'+name,['bench',str(path)],threads,reps=7,bench_n=n)
   measure('batch_solve_'+name,['batch',str(path),'solve'],threads,reps=7)
 summary=[]
 for case,threads in dict.fromkeys((r['case'],r['threads']) for r in raw):

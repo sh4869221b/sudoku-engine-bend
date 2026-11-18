@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import pathlib,subprocess,json
+import sys
+
 if __package__:
     from .checks import require
 else:
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
     from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1];logs=[]
 for mode in ('solve','count','rate','generate'):

@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """Check CLI contracts across native, Bend and Node execution."""
 import json
-import math
 import os
 from pathlib import Path
-import re
 import subprocess
+import sys
 import tempfile
 
 if __package__:
-    from .checks import require
+    from .checks import bench_timing, require
 else:
-    from checks import require
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from checks import bench_timing, require
 
 ROOT = Path(__file__).resolve().parents[1]
 BEND = os.environ.get('BEND', 'bend')
@@ -27,21 +27,15 @@ def run_case(checks, lane, prefix, args, expected=None, *, bench_n=None, code=0,
             (lane, args, 'unexpected exit code', result.returncode, result.stdout, result.stderr))
     require(result.stderr == stderr, (lane, args, 'unexpected stderr', result.stderr, stderr))
     # The Bend checker can emit a verdict before running the program.
+    stdout = result.stdout
     if lane == 'bend':
-        out = '\n'.join(line for line in result.stdout.splitlines()
-                        if line not in CHECKER_VERDICTS)
-    else:
-        out = result.stdout.removesuffix('\n')
+        stdout = ''.join(line for line in stdout.splitlines(keepends=True)
+                         if line.removesuffix('\n') not in CHECKER_VERDICTS)
     if expected is not None:
+        out = stdout.removesuffix('\n')
         require(out == expected, (lane, args, 'unexpected stdout', out[:200], expected[:200]))
     if bench_n is not None:
-        decimal = r'\+?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?'
-        pattern = rf'N={bench_n} mode=cpu threads=runtime total_ms=[0-9]+ per_ms=({decimal})'
-        match = re.fullmatch(pattern, out)
-        require(match is not None, (lane, args, 'unexpected bench output', out))
-        per_ms = float(match[1])
-        require(math.isfinite(per_ms) and per_ms >= 0,
-                (lane, args, 'invalid per_ms', match[1]))
+        bench_timing(stdout, result.stderr, expected_n=bench_n)
     checks.append({'lane': lane, 'command': args[0], 'exit': result.returncode,
                    'stdout': result.stdout, 'stderr': result.stderr})
 
@@ -60,11 +54,12 @@ def main():
             (['solve', SOLVED], SOLVED), (['check', SOLVED], 'valid'),
             (['count', SOLVED], '1'), (['generate', '--seed', '42', '--clues', '81'], None),
             (['rate', SOLVED], 'Difficulty: Easy\nMax technique: None\nSteps: 0\nScore: 0'),
-            (['batch', str(one), 'count'], '1 count:1'), (['bench', str(one)], None),
+            (['batch', str(one), 'count'], '1 count:1'),
         ]
         for lane, prefix in lanes.items():
             for args, expected in cases:
                 run_case(checks, lane, prefix, args, expected)
+            run_case(checks, lane, prefix, ['bench', str(one)], bench_n=1)
 
         large = Path(td) / 'large.txt'
         large.write_text('# comment\r\n\r\n' + (SOLVED + '\r\n') * (LARGE_N - 1) + SOLVED)
