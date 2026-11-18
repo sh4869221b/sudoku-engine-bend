@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """Check CLI contracts across native, Bend and Node execution."""
 import json
+import math
 import os
 from pathlib import Path
 import re
 import subprocess
 import tempfile
 
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 
 ROOT = Path(__file__).resolve().parents[1]
 BEND = os.environ.get('BEND', 'bend')
@@ -16,11 +20,12 @@ LARGE_N = 10_000
 CHECKER_VERDICTS = ('ALL PROOFS CHECK', 'Use --verdict for mathematical validity.')
 
 
-def run_case(checks, lane, prefix, args, expected=None, *, bench_n=None):
+def run_case(checks, lane, prefix, args, expected=None, *, bench_n=None, code=0, stderr=''):
     result = subprocess.run(prefix + args, capture_output=True, text=True,
                             timeout=60, env=dict(os.environ, BEND_NO_TELEMETRY='1'))
-    require(result.returncode == 0,
+    require(result.returncode == code,
             (lane, args, 'unexpected exit code', result.returncode, result.stdout, result.stderr))
+    require(result.stderr == stderr, (lane, args, 'unexpected stderr', result.stderr, stderr))
     # The Bend checker can emit a verdict before running the program.
     if lane == 'bend':
         out = '\n'.join(line for line in result.stdout.splitlines()
@@ -30,8 +35,13 @@ def run_case(checks, lane, prefix, args, expected=None, *, bench_n=None):
     if expected is not None:
         require(out == expected, (lane, args, 'unexpected stdout', out[:200], expected[:200]))
     if bench_n is not None:
-        pattern = rf'N={bench_n} mode=cpu threads=runtime total_ms=[0-9]+ per_ms=[0-9.e+-]+'
-        require(re.fullmatch(pattern, out), (lane, args, 'unexpected bench output', out))
+        decimal = r'\+?(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?'
+        pattern = rf'N={bench_n} mode=cpu threads=runtime total_ms=[0-9]+ per_ms=({decimal})'
+        match = re.fullmatch(pattern, out)
+        require(match is not None, (lane, args, 'unexpected bench output', out))
+        per_ms = float(match[1])
+        require(math.isfinite(per_ms) and per_ms >= 0,
+                (lane, args, 'invalid per_ms', match[1]))
     checks.append({'lane': lane, 'command': args[0], 'exit': result.returncode,
                    'stdout': result.stdout, 'stderr': result.stderr})
 
@@ -64,6 +74,14 @@ def main():
             run_case(checks, lane, prefix, ['batch', str(large), 'count'], counts)
             run_case(checks, lane, prefix, ['bench', str(large)], bench_n=LARGE_N)
             run_case(checks, lane, prefix, ['bench', '--generate', str(LARGE_N)], bench_n=LARGE_N)
+
+        count_probe = {
+            'native': [str(ROOT / 'bin/qa-bench-count'), '+RTS', '--threads', '1', '-RTS'],
+            'js': ['node', str(ROOT / 'bin/qa-bench-count.js')],
+        }
+        for lane, prefix in count_probe.items():
+            run_case(checks, lane, prefix, ['bench-count'], '', code=4,
+                     stderr='benchmark failed: solved=1 failed=0 expected=10000\n')
 
     (ROOT / '.omo/evidence/lanes.json').write_text(
         json.dumps({'status': 'PASS', 'checks': checks}, indent=2))

@@ -4,6 +4,7 @@ import sys
 from pathlib import Path as _Path
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 from runtime_args import native_command
+from checks import require
 
 import argparse, gzip, hashlib, json, os, pathlib, platform, random, re, statistics, subprocess, tempfile, time
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--candidate',required=True);p.add_argument('--cases',required=True);p.add_argument('--corpora',default='.');p.add_argument('--out',required=True);p.add_argument('--reps',type=int,default=9);a=p.parse_args()
@@ -23,7 +24,8 @@ for case in cases:
   for label in order:
    r=run(bins[label],case['args'],case.get('threads',1));r.update(case=case['name'],threads=case.get('threads',1),engine=label,rep=rep,warmup=rep<2)
    sig=tuple(r[k] for k in ['exit','stdout_normalized_sha256','stderr_sha256']);key=case['name']
-   if key in expected:assert expected[key]==sig,(case,r,expected[key])
+   if key in expected:
+    require(expected[key]==sig, ('paired output mismatch', case,r,expected[key]))
    else:expected[key]=sig
    raw.append(r)
  with gzip.open(str(out)+'.raw.json.gz','wt') as f:json.dump(raw,f)

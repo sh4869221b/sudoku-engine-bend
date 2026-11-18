@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Deterministic stdout/stderr/exit contracts and fixture gates; standard library only."""
 import json,pathlib,subprocess,tempfile,re,os
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1]; BIN=ROOT/'bin/bend-sudoku';results=[]
 SOL='534678912672195348198342567859761423426853791713924856961537284287419635345286179'
 EASY='530070000600195000098000060800060003400803001700020006060000280000419005000080079'

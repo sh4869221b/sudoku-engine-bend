@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import pathlib,subprocess,json
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1];logs=[]
 for mode in ('solve','count','rate','generate'):
  p=subprocess.run([str(ROOT/'bin/qa-fuel'),'+RTS','--threads','1','-RTS',mode],capture_output=True,text=True,timeout=30)

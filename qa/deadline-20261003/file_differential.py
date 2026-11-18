@@ -4,6 +4,7 @@ import sys
 from pathlib import Path as _Path
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 from runtime_args import native_command
+from checks import require
 
 import argparse,gzip,hashlib,json,pathlib,random,subprocess,tempfile
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--candidate',required=True);p.add_argument('--out',required=True);a=p.parse_args();rng=random.Random(20261003);records=[]
@@ -12,7 +13,7 @@ def run(binary,args,threads):
  return (r.returncode,r.stdout,r.stderr)
 def check(args,threads):
  lhs=run(a.base,args,threads);rhs=run(a.candidate,args,threads)
- assert lhs==rhs,(args,threads,lhs,rhs)
+ require(lhs==rhs, ('file differential mismatch',args,threads,lhs,rhs))
  records.append(dict(args=args,threads=threads,exit=rhs[0],stdout=rhs[1].decode(errors='replace'),stderr=rhs[2].decode(errors='replace')))
 sol=b'534678912672195348198342567859761423426853791713924856961537284287419635345286179'
 lines=[b'',b'\r',b'\r\r',b'#',b'#comment',b' #',sol,b'.'*81,b'x'+b'0'*80,b'0'*80,b'0'*82,b'\0'+b'0'*80,b'\xff'+b'0'*80,'０'.encode()+b'0'*80,'\ufeff#'.encode(),sol+b'\r',sol+b'\r\r']

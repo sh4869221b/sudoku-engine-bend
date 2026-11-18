@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Check/reproduce the finite low-ten-bit cardinality lookup (no runtime dependency)."""
 import argparse,pathlib
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 p=argparse.ArgumentParser();p.add_argument('--check',action='store_true');a=p.parse_args()
 text='def count_index(index: U32) -> U32:\n  match index:\n'
 text+=''.join(f'    case {i}:\n      {sum((i >> bit) & 1 for bit in range(10))}\n' for i in range(1024))

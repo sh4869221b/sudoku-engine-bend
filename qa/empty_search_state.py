@@ -17,7 +17,10 @@ import pathlib
 import subprocess
 import sys
 import tempfile
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 
 root = pathlib.Path(__file__).resolve().parents[1]
 baseline = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else None

@@ -15,7 +15,10 @@ from pathlib import Path
 import re
 import subprocess
 import time
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_NAMES = {

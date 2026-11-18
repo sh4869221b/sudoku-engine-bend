@@ -8,7 +8,9 @@ for name in ['batch_hard-100_count_t1','batch_hard-100_count_t8','batch_hard-100
  pairs={}
  for r in raw:
   if r['case']==name and not r['warmup']:pairs.setdefault(r['rep'],{})[r['engine']]=r['wall_ms']
- items=list(pairs.values());assert items and all(set(x)=={'baseline','candidate'} for x in items)
+ items=list(pairs.values())
+ if not items or any(set(x)!={'baseline','candidate'} for x in items):
+  raise AssertionError(f'Missing paired observations for {name}')
  rng=random.Random(20261003);ratios=[]
  for _ in range(5000):
   sample=rng.choices(items,k=len(items));ratios.append(statistics.median(x['baseline'] for x in sample)/statistics.median(x['candidate'] for x in sample))

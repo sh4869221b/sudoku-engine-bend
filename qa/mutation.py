@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import pathlib,tempfile,subprocess,os,json
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1];BEND=os.environ.get('BEND','bend');logs=[]
 with tempfile.TemporaryDirectory() as td:
  p=pathlib.Path(td)

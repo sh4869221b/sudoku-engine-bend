@@ -1,7 +1,11 @@
 """Same-host alternating native CLI comparison; Python standard library only."""
 import pathlib,subprocess,time,json,statistics,os,hashlib,platform,re
-from runtime_args import native_command
-from checks import require
+if __package__:
+    from .checks import require
+    from .runtime_args import native_command
+else:
+    from checks import require
+    from runtime_args import native_command
 REPO=pathlib.Path(__file__).resolve().parents[1]
 R=pathlib.Path(os.environ.get('COMPARE_OUTPUT',str(REPO/'.omo/evidence/optimization-run')))
 R.mkdir(parents=True,exist_ok=True)

@@ -143,11 +143,18 @@ def generate(n: Nat, +index: U32) -> Maybe<&2, List<&2, B.Job>>:
 def allowed_n(+n: U32) -> Bool:
   U32.is_eq(n, 1) || U32.is_eq(n, 10) || U32.is_eq(n, 100) || U32.is_eq(n, 1000) || U32.is_eq(n, 10000)
 
+def report_solved(ok: Bool, +n: U32, +solved: U32, start: Nat, finish: Nat) -> IO(Unit):
+  match ok:
+    case True{}:
+      +elapsed = Nat.sub(finish, start)
+      IO.print("N=" ++ U32.show(solved) ++ " mode=cpu threads=runtime total_ms=" ++ Nat.show(elapsed) ++ " per_ms=" ++ F32.show(F32.div(F32.from_nat(elapsed), U32.to_f32(solved))))
+    case False{}:
+      IO.die(Unit, 4, "benchmark failed: solved=" ++ U32.show(solved) ++ " failed=0 expected=" ++ U32.show(n))
+
 def report(+n: U32, start: Nat, finish: Nat, stats: Stats) -> IO(Unit):
   match stats:
-    case Stats{solved, 0}:
-      +elapsed = Nat.sub(finish, start)
-      IO.print("N=" ++ U32.show(n) ++ " mode=cpu threads=runtime total_ms=" ++ Nat.show(elapsed) ++ " per_ms=" ++ F32.show(F32.div(F32.from_nat(elapsed), U32.to_f32(n))))
+    case Stats{+solved, 0}:
+      report_solved(U32.is_eq(solved, n), n, solved, start, finish)
     case Stats{solved, failed}:
       IO.die(Unit, 4, "benchmark failed: solved=" ++ U32.show(solved) ++ " failed=" ++ U32.show(failed))
 

@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Independent black-box Sudoku invariants. Standard Python only."""
 import subprocess, pathlib, tempfile, json, time
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 BIN=ROOT/'bin/bend-sudoku'
 checks=[]

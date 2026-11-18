@@ -52,6 +52,8 @@ python3 qa/cli.py
 python3 qa/fuel.py
 BEND="$BEND" python3 qa/mutation.py
 "$BEND" main.bend -o bin/bend-sudoku.js
+"$BEND" qa/bench-count.bend -o bin/qa-bench-count
+"$BEND" qa/bench-count.bend -o bin/qa-bench-count.js
 BEND="$BEND" python3 qa/lanes.py
 if [ "${BEND_SKIP_BENCHMARK:-0}" != 1 ]; then
   python3 qa/benchmark.py

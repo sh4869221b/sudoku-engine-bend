@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Fixed-corpus native CPU scaling; warm-up + 3 measured repetitions per size/thread."""
 import subprocess,pathlib,tempfile,hashlib,json,statistics,re,os,platform,time
-from checks import require
+if __package__:
+    from .checks import require
+else:
+    from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1];BIN=ROOT/'bin/bend-sudoku';start=time.monotonic()
 gen=subprocess.run([str(BIN),'+RTS','--threads','1','-RTS','generate','--seed','1','--count','10000','--clues','36'],capture_output=True,text=True,check=True,timeout=180)
 lines=gen.stdout.splitlines()
