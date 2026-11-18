@@ -15,7 +15,11 @@ import subprocess
 import sys
 import tempfile
 
-import toolchain
+if __package__:
+    from . import toolchain
+else:
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    import toolchain
 
 # Re-review upstream CLI/kernel semantics before supporting another release.
 # 2.0.40 forces GC before Clang, but retains its

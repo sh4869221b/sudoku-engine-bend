@@ -2,9 +2,12 @@
 """Pool every paired observation from predeclared independent final blocks."""
 import argparse,gzip,json,pathlib,statistics
 p=argparse.ArgumentParser();p.add_argument('inputs',nargs='+');p.add_argument('--out',required=True);a=p.parse_args();datasets=[json.loads(pathlib.Path(x).read_text()) for x in a.inputs];raw=[]
+expected_hashes={k:v['sha256'] for k,v in datasets[0]['metadata']['binaries'].items()}
 for block,(path,d) in enumerate(zip(a.inputs,datasets)):
- assert d['metadata']['cases']==datasets[0]['metadata']['cases']
- assert {k:v['sha256'] for k,v in d['metadata']['binaries'].items()}=={k:v['sha256'] for k,v in datasets[0]['metadata']['binaries'].items()}
+ if d['metadata']['cases']!=datasets[0]['metadata']['cases']:
+  raise AssertionError(f'Case list differs in {path}')
+ if {k:v['sha256'] for k,v in d['metadata']['binaries'].items()}!=expected_hashes:
+  raise AssertionError(f'Binary hashes differ in {path}')
  for r in json.loads(gzip.open(path+'.raw.json.gz','rt').read()):
   r.update(block=block,block_rep=r['rep'],rep=block*10000+r['rep']);raw.append(r)
 summary=[]

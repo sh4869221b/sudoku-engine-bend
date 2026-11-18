@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """Independent black-box Sudoku invariants. Standard Python only."""
 import subprocess, pathlib, tempfile, json, time
+import sys
+
+if __package__:
+    from .checks import require
+else:
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 BIN=ROOT/'bin/bend-sudoku'
 checks=[]
 def run(*args, code=0):
  p=subprocess.run([str(BIN),'+RTS','--threads','1','-RTS',*args],capture_output=True,text=True,timeout=120)
- assert p.returncode==code,(args,p.returncode,p.stdout,p.stderr)
+ require(p.returncode==code, (args,p.returncode,p.stdout,p.stderr))
  return p.stdout.strip(),p.stderr
 
 def count(s,cap=2):
@@ -34,36 +41,45 @@ def count(s,cap=2):
  return dfs(cap)
 
 def valid(s):
- assert len(s)==81 and set(s)<=set('0123456789'),repr(s)
- assert count(s)==1,('not unique',s)
+ require(len(s)==81 and set(s)<=set('0123456789'), repr(s))
+ require(count(s)==1, ('not unique',s))
 
 def minimal(s,sym):
  for i,c in enumerate(s):
   if c=='0' or (sym and i>40):continue
   b=list(s);b[i]='0'
   if sym:b[80-i]='0'
-  assert count(''.join(b))==2,('not minimal',i,s)
+  require(count(''.join(b))==2, ('not minimal',i,s))
 
 start=time.monotonic()
 for seed in (0,1,42):
  for sym in (False,True):
   args=['generate','--seed',str(seed),'--count','2','--clues','32']+(['--symmetry'] if sym else [])
-  out,err=run(*args);again,_=run(*args);assert out==again
-  lines=out.splitlines();assert len(lines)==2
+  out,err=run(*args);again,_=run(*args)
+  require(out==again, ('nondeterministic generation', args, out, again))
+  lines=out.splitlines()
+  require(len(lines)==2, ('expected two puzzles', args, lines))
   for s in lines:
-   valid(s);n=sum(c!='0' for c in s);assert n>=32
-   if n!=32:assert 'TargetUnmet' in err
-   if sym:assert all((s[i]=='0')==(s[80-i]=='0') for i in range(81))
-   solution,_=run('solve',s);assert len(solution)==81 and '0' not in solution;valid(solution)
-   assert all(a=='0' or a==b for a,b in zip(s,solution))
-   assert run('count',s)[0]=='1';assert run('check',s)[0]=='valid'
+   valid(s)
+   n=sum(c!='0' for c in s)
+   require(n>=32, ('clue count below target', n, s))
+   if n!=32:
+    require('TargetUnmet' in err, ('missing TargetUnmet', args, err))
+   if sym:
+    require(all((s[i]=='0')==(s[80-i]=='0') for i in range(81)), ('asymmetric pattern', s))
+   solution,_=run('solve',s)
+   require(len(solution)==81 and '0' not in solution, ('incomplete solution', solution))
+   valid(solution)
+   require(all(a=='0' or a==b for a,b in zip(s,solution)), ('solution changed clues', s, solution))
+   require(run('count',s)[0]=='1', ('expected one solution', s))
+   require(run('check',s)[0]=='valid', ('expected a valid puzzle', s))
   checks.append({'seed':seed,'symmetry':sym,'puzzles':2})
 for sym in (False,True):
  s,_=run('generate','--seed','42','--minimal',*(['--symmetry'] if sym else []))
  valid(s);minimal(s,sym);checks.append({'minimal':True,'pair_minimal':sym})
-assert run('count','0'*81)[0]=='2'
-assert run('solve','0'*80,code=2)[0]==''
-assert run('solve','11'+'0'*79,code=2)[0]==''
+require(run('count','0'*81)[0]=='2', 'Expected the capped solution count for an empty board')
+require(run('solve','0'*80,code=2)[0]=='', 'Unexpected solution output for a short board')
+require(run('solve','11'+'0'*79,code=2)[0]=='', 'Unexpected solution output for duplicate clues')
 run('generate','--clues','32','--difficulty','easy',code=1)
 run('generate','--minimal','--clues','32',code=1)
 print(json.dumps({'status':'PASS','checks':checks,'seconds':round(time.monotonic()-start,3)},indent=2))

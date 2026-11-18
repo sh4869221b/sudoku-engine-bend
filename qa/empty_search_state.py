@@ -18,6 +18,12 @@ import subprocess
 import sys
 import tempfile
 
+if __package__:
+    from .checks import require
+else:
+    sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+    from checks import require
+
 root = pathlib.Path(__file__).resolve().parents[1]
 baseline = pathlib.Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else None
 golden = json.loads((root / 'qa/empty-search-state-golden.json').read_text())
@@ -43,7 +49,7 @@ with tempfile.TemporaryDirectory(prefix='empty-state-', dir=root / 'qa') as td:
                                 capture_output=True, text=True, timeout=180)
         if actual.returncode:
             raise RuntimeError(f'{name} execution failed\n{actual.stderr}')
-        assert actual.stderr == '', (name, actual.stderr)
+        require(actual.stderr == '', (name, actual.stderr))
         outputs[name] = actual.stdout
         (evidence / f'empty-search-state-{name}.txt.gz').write_bytes(
             gzip.compress(actual.stdout.encode(), mtime=0))
@@ -57,7 +63,7 @@ actual_hash = hashlib.sha256(outputs['candidate'].encode()).hexdigest()
 if actual_hash != golden['sha256']:
     raise SystemExit(f"FAIL golden search-state hash: {actual_hash} != {golden['sha256']}")
 lines = outputs['candidate'].splitlines()
-assert len(lines) == golden['observations'], 'golden observation count mismatch'
+require(len(lines) == golden['observations'], 'golden observation count mismatch')
 summary = {
     'status': 'PASS',
     'observations': len(lines),

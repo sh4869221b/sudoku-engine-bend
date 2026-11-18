@@ -2,6 +2,7 @@
 import pathlib
 import runpy
 import shutil
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -16,7 +17,8 @@ class FixturePreservationTest(unittest.TestCase):
             root = pathlib.Path(td)
             (root / 'qa').mkdir()
             script = root / 'qa/cli.py'
-            shutil.copy2(ROOT / 'qa/cli.py', script)
+            for name in ('cli.py', 'checks.py'):
+                shutil.copy2(ROOT / 'qa' / name, script.parent / name)
             shutil.copytree(ROOT / 'fixtures', root / 'fixtures')
             # A reviewed change must reach the fixture gate unchanged, even if it
             # differs from the smoke-test constants at the start of the script.
@@ -26,7 +28,8 @@ class FixturePreservationTest(unittest.TestCase):
                       for p in (root / 'fixtures').rglob('*') if p.is_file()}
             # Stop at the native process boundary: this regression needs no Bend
             # installation and does not claim to test Sudoku solver correctness.
-            with mock.patch('subprocess.run', side_effect=RuntimeError('native boundary')):
+            with mock.patch.object(sys, 'path', [str(script.parent), *sys.path]), \
+                    mock.patch('subprocess.run', side_effect=RuntimeError('native boundary')):
                 with self.assertRaisesRegex(RuntimeError, 'native boundary'):
                     runpy.run_path(str(script), run_name='__main__')
             after = {p.relative_to(root): p.read_bytes()

@@ -15,6 +15,7 @@ import sys
 from pathlib import Path as _Path
 sys.path.insert(0, str(_Path(__file__).resolve().parents[1]))
 from runtime_args import native_command
+from checks import require
 
 import argparse
 import base64
@@ -118,7 +119,7 @@ def generate_cases():
             puzzle = "".join(full[i] if i in keep else
                              ("0" if blank_style == 0 else "." if blank_style == 1
                               else rng.choice("0.")) for i in range(81))
-            assert valid_solution(puzzle, full)
+            require(valid_solution(puzzle, full), ('invalid generated solution', repeat, clues))
             cases.append(dict(id=f"valid-{repeat:02d}-{clues:02d}", kind="valid",
                               clues=clues, puzzle=puzzle, completed_grid=full,
                               completed_grid_sha256=sha(full.encode())))
@@ -285,14 +286,16 @@ def main(args):
     out.parent.mkdir(parents=True, exist_ok=True)
     manifest = json.loads(args.cases.read_text()) if args.cases else generate_cases()
     cases = manifest["cases"]
-    assert manifest["cases_sha256"] == sha(canonical_json(cases))
-    assert len({c["id"] for c in cases}) == len(cases)
+    require(manifest["cases_sha256"] == sha(canonical_json(cases)), 'Case manifest hash differs')
+    require(len({c["id"] for c in cases}) == len(cases), 'Duplicate case IDs')
     for case in cases:
-        assert case["puzzle_sha256"] == sha(case["puzzle"].encode("utf-8"))
+        require(case["puzzle_sha256"] == sha(case["puzzle"].encode("utf-8")),
+                ('puzzle hash differs', case["id"]))
         expected = "valid" if case["kind"] in ("valid", "unsatisfiable") else case["kind"]
-        assert input_status(case["puzzle"]) == expected
+        require(input_status(case["puzzle"]) == expected, ('unexpected input status', case["id"]))
         if case["kind"] == "valid":
-            assert valid_solution(case["puzzle"], case["completed_grid"])
+            require(valid_solution(case["puzzle"], case["completed_grid"]),
+                    ('invalid completed grid', case["id"]))
     paths = {name: Path(str(out) + suffix) for name, suffix in
              (("cases", ".cases.json"), ("oracle", ".oracle.json"),
               ("batch", ".batch.txt"), ("raw", ".raw.json.gz"))}

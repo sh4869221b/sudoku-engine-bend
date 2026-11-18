@@ -118,28 +118,43 @@ def gen_text(result: G.DigResult) -> Maybe<&2, String>:
     case G.DigFuel{}:
       None{}
 
-def gen_prepend(index: U32, head: Maybe<&2, String>, rest: Maybe<&2, List<&2, B.Job>>) -> Maybe<&2, List<&2, B.Job>>:
-  match head rest:
-    case Some{puzzle} Some{tail}:
-      Some{B.Job{index, puzzle} <> tail}
-    case _ _:
+def gen_puzzle(index: U32) -> Maybe<&2, String>:
+  gen_text(G.generate(T.digging_fuel(), index, 36, False{}))
+
+# The pending puzzle is already evaluated. Accumulate in seed order using
+# tail calls, then reverse the jobs to keep the original benchmark order.
+def generate_go(remaining: Nat, +index: U32, head: Maybe<&2, String>, reversed: List<&2, B.Job>) -> Maybe<&2, List<&2, B.Job>>:
+  match remaining head:
+    case _ None{}:
       None{}
+    case 0n Some{puzzle}:
+      Some{List.reverse(&2, B.Job, B.Job{index, puzzle} <> reversed)}
+    case 1n+k Some{puzzle}:
+      +next = (index + 1 : U32)
+      generate_go(k, next, gen_puzzle(next), B.Job{index, puzzle} <> reversed)
 
 def generate(n: Nat, +index: U32) -> Maybe<&2, List<&2, B.Job>>:
   match n:
     case 0n:
       Some{Nil{}}
     case 1n+k:
-      gen_prepend(index, gen_text(G.generate(T.digging_fuel(), index, 36, False{})), generate(k, (index + 1 : U32)))
+      generate_go(k, index, gen_puzzle(index), Nil{})
 
 def allowed_n(+n: U32) -> Bool:
   U32.is_eq(n, 1) || U32.is_eq(n, 10) || U32.is_eq(n, 100) || U32.is_eq(n, 1000) || U32.is_eq(n, 10000)
 
+def report_solved(ok: Bool, +n: U32, +solved: U32, start: Nat, finish: Nat) -> IO(Unit):
+  match ok:
+    case True{}:
+      +elapsed = Nat.sub(finish, start)
+      IO.print("N=" ++ U32.show(solved) ++ " mode=cpu threads=runtime total_ms=" ++ Nat.show(elapsed) ++ " per_ms=" ++ F32.show(F32.div(F32.from_nat(elapsed), U32.to_f32(solved))))
+    case False{}:
+      IO.die(Unit, 4, "benchmark failed: solved=" ++ U32.show(solved) ++ " failed=0 expected=" ++ U32.show(n))
+
 def report(+n: U32, start: Nat, finish: Nat, stats: Stats) -> IO(Unit):
   match stats:
-    case Stats{solved, 0}:
-      +elapsed = Nat.sub(finish, start)
-      IO.print("N=" ++ U32.show(n) ++ " mode=cpu threads=runtime total_ms=" ++ Nat.show(elapsed) ++ " per_ms=" ++ F32.show(F32.div(F32.from_nat(elapsed), U32.to_f32(n))))
+    case Stats{+solved, 0}:
+      report_solved(U32.is_eq(solved, n), n, solved, start, finish)
     case Stats{solved, failed}:
       IO.die(Unit, 4, "benchmark failed: solved=" ++ U32.show(solved) ++ " failed=" ++ U32.show(failed))
 
@@ -243,23 +258,25 @@ def prepared_ready(+n: U32, r: PreparedTree & Bool) -> IO(Unit):
   (tree, valid) = r
   prepared_timed(n, U32.is_ne(n, 0) && valid, tree)
 
-def file_jobs(+jobs: List<&2, B.Job>) -> IO(Unit):
-  +n = U32.from_nat(List.length(&2, B.Job, jobs))
-  prepared_ready(n, prepare_tree(B.build(jobs)))
+def counted_jobs(jobs: List<&2, B.Job>, +n: U32) -> IO(Unit):
+  prepared_ready(n, prepare_tree(B.build_sized(jobs, n)))
 
-def generated(jobs: Maybe<&2, List<&2, B.Job>>) -> IO(Unit):
+def file_jobs(+jobs: List<&2, B.Job>) -> IO(Unit):
+  counted_jobs(jobs, B.job_count(jobs, 0))
+
+def generated(n: U32, jobs: Maybe<&2, List<&2, B.Job>>) -> IO(Unit):
   match jobs:
     case None{}:
       IO.die(Unit, 4, "benchmark preparation fuel")
     case Some{xs}:
-      file_jobs(xs)
+      counted_jobs(xs, n)
 
-def gen_count(ok: Bool, count: U32) -> IO(Unit):
+def gen_count(ok: Bool, +count: U32) -> IO(Unit):
   match ok:
     case False{}:
       IO.die(Unit, 1, "bench --generate requires 1,10,100,1000 or 10000")
     case True{}:
-      generated(generate(U32.to_nat(count), 1))
+      generated(count, generate(U32.to_nat(count), 1))
 
 def gen_option(count: Maybe<&2, U32>) -> IO(Unit):
   match count:
