@@ -15,6 +15,7 @@ from pathlib import Path
 import re
 import subprocess
 import time
+from checks import require
 
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_NAMES = {
@@ -78,8 +79,8 @@ def fixture_manifest():
     source = (ROOT / 'qa/adaptive-trace.bend').read_text()
     matches = re.findall(r'fixture\(budget, "([^"]+)", "([0-9]{81})"\)', source)
     fixtures = dict(matches)
-    assert len(matches) == len(fixtures) == 10
-    assert set(fixtures) == EXPECTED_NAMES
+    require(len(matches) == len(fixtures) == 10, 'Expected ten distinct oracle fixtures')
+    require(set(fixtures) == EXPECTED_NAMES, 'Unexpected oracle fixture names')
     records = []
     for name, grid in matches:
         record = {'name': name, 'grid': grid}
@@ -87,7 +88,7 @@ def fixture_manifest():
             base, seed_text = name.rsplit('-seed-', 1)
             seed = int(seed_text)
             expected, digits, rows, columns = transformed(fixtures[base], seed)
-            assert expected == grid, f'non-reproducible transformed fixture: {name}'
+            require(expected == grid, f'non-reproducible transformed fixture: {name}')
             record.update(base=base, seed=seed, digit_map=digits,
                           source_rows=rows, source_columns=columns)
         records.append(record)
@@ -104,27 +105,28 @@ def parse_output(output, budget):
     records = []
     for line in output.splitlines():
         match = LINE.fullmatch(line)
-        assert match, f'unrecognized oracle output: {line!r}'
+        require(match, f'unrecognized oracle output: {line!r}')
         row = {key: int(value) if value is not None and key not in ('fixture', 'outcome')
                else value for key, value in match.groupdict().items()}
-        assert row['steps'] == row['forward'] + row['backward'], row
-        assert row['comparisons'] == row['steps'] + 1, row
-        assert 0 <= row['active_forward'] <= row['forward'], row
-        assert 0 <= row['found'] <= row['limit'], row
+        require(row['steps'] == row['forward'] + row['backward'], row)
+        require(row['comparisons'] == row['steps'] + 1, row)
+        require(0 <= row['active_forward'] <= row['forward'], row)
+        require(0 <= row['found'] <= row['limit'], row)
         if row['outcome'] == 'capped-incomplete':
-            assert row['steps'] == budget, row
-            assert row['fixture'] not in REQUIRED_COMPLETE, row
+            require(row['steps'] == budget, row)
+            require(row['fixture'] not in REQUIRED_COMPLETE, row)
         else:
-            assert row['steps'] <= budget and row['phase'] is None, row
+            require(row['steps'] <= budget and row['phase'] is None, row)
             expected_found = 0 if row['fixture'] == 'contradiction' else (
                 row['limit'] if row['fixture'] == 'empty' else 1)
-            assert row['found'] == expected_found, row
+            require(row['found'] == expected_found, row)
         records.append({key: value for key, value in row.items() if value is not None})
-    assert len(records) == 20
-    assert {(r['fixture'], r['limit']) for r in records} == {
-        (name, limit) for name in EXPECTED_NAMES for limit in (1, 2)}
-    assert sum(r['backward'] for r in records) > 1000
-    assert sum(r['active_forward'] for r in records) > 1000
+    require(len(records) == 20, 'Expected twenty oracle records')
+    require({(r['fixture'], r['limit']) for r in records} == {
+        (name, limit) for name in EXPECTED_NAMES for limit in (1, 2)},
+        'Missing oracle fixture and limit combinations')
+    require(sum(r['backward'] for r in records) > 1000, 'Insufficient backward steps')
+    require(sum(r['active_forward'] for r in records) > 1000, 'Insufficient active forward steps')
     return records
 
 
@@ -145,7 +147,7 @@ def main():
     parser.add_argument('--lock-held', action='store_true',
                         help='caller already holds the shared exclusive CPU lock')
     args = parser.parse_args()
-    assert 100 <= args.budget <= 10000000, 'budget must be between 100 and 10,000,000'
+    require(100 <= args.budget <= 10000000, 'budget must be between 100 and 10,000,000')
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, BEND_NO_TELEMETRY='1')
@@ -164,8 +166,8 @@ def main():
                                    output / 'run.log', env, 180)
         after = fingerprint()
         (output / 'source-hashes-after.json').write_text(json.dumps(after, indent=2) + '\n')
-        assert before == after, 'sources changed during the oracle build/run'
-        assert actual.stderr == '', actual.stderr
+        require(before == after, 'sources changed during the oracle build/run')
+        require(actual.stderr == '', actual.stderr)
         records = parse_output(actual.stdout, args.budget)
     summary = {
         'status': 'PASS',

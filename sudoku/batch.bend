@@ -64,9 +64,19 @@ def consume(+depth: Nat, xs: List<&2, Job>) -> JobTree & List<&2, Job>:
     case 1n+k items:
       consume_right(rest => consume(k, rest), consume(k, items))
 
-def build(+xs: List<&2, Job>) -> JobTree:
-  +d = U32.to_nat(depth_go(32n, U32.from_nat(List.length(&2, Job, xs)), 1, 0))
+def job_count(xs: List<&2, Job>, +count: U32) -> U32:
+  match xs:
+    case Nil{}:
+      count
+    case job <> tail:
+      job_count(tail, (count + 1 : U32))
+
+def build_sized(xs: List<&2, Job>, n: U32) -> JobTree:
+  +d = U32.to_nat(depth_go(32n, n, 1, 0))
   Pair.fst(JobTree, List<&2, Job>, consume(d, xs))
+
+def build(+xs: List<&2, Job>) -> JobTree:
+  build_sized(xs, job_count(xs, 0))
 
 def job_tail(mode: U32, puzzle: String, tail: String) -> String:
   match mode:

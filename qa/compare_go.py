@@ -1,6 +1,7 @@
 """Same-host alternating native CLI comparison; Python standard library only."""
 import pathlib,subprocess,time,json,statistics,os,hashlib,platform,re
 from runtime_args import native_command
+from checks import require
 REPO=pathlib.Path(__file__).resolve().parents[1]
 R=pathlib.Path(os.environ.get('COMPARE_OUTPUT',str(REPO/'.omo/evidence/optimization-run')))
 R.mkdir(parents=True,exist_ok=True)
@@ -19,12 +20,12 @@ def measure(name,args,threads=1,reps=11):
   for engine in (['bend','go'] if rep%2==0 else ['go','bend']):
    r=run(engine,args,threads);r.update(case=name,engine=engine,threads=threads,rep=rep,warmup=rep<2)
    if args[0]=='bench':
-    m=re.search(r'total_ms=(\d+)',r['stdout']);assert r['code']==0 and m,r;r['kernel_ms']=int(m[1])
+    m=re.search(r'total_ms=(\d+)',r['stdout']);require(r['code']==0 and m, r);r['kernel_ms']=int(m[1])
    else:
-    if engine in expected:assert r['code']==expected[engine]['code'] and r['stdout']==expected[engine]['stdout'] and r['stderr']==expected[engine]['stderr'],r
+    if engine in expected:require(r['code']==expected[engine]['code'] and r['stdout']==expected[engine]['stdout'] and r['stderr']==expected[engine]['stderr'], r)
     expected[engine]=r
    raw.append(r)
- if args[0]!='bench':assert all(expected['bend'][k]==expected['go'][k] for k in ['code','stdout','stderr']),(name,expected)
+ if args[0]!='bench':require(all(expected['bend'][k]==expected['go'][k] for k in ['code','stdout','stderr']), (name,expected))
  (R/'raw.json').write_text(json.dumps(raw,indent=2));print('DONE',name,threads,flush=True)
 for label in ['new_easy','original_medium','original_hard','new_unsolvable','new_multi_solution','new_complete']:
  for cmd in ['solve','count','rate']:measure(cmd+'_'+label,[cmd,corpus[label]])
@@ -33,7 +34,7 @@ for seed in [0,7,42]:
 measure('generate_100_clues36',['generate','--seed','1','--count','100','--clues','36'])
 # Same pre-materialized generated corpus in both languages. Generation excluded
 # from bench's internal timer, but included in separate generation measurements.
-p=run('go',['generate','--seed','1','--count','100','--clues','36'],1);assert p['code']==0
+p=run('go',['generate','--seed','1','--count','100','--clues','36'],1);require(p['code']==0, "p['code']==0")
 base=p['stdout'].splitlines();batch=R/'batch-10000.txt';batch.write_text('\n'.join(base*100)+'\n')
 mix=R/'batch-mixed-1000.txt';mixbase=[corpus[x] for x in ['new_easy','original_medium','original_hard','new_complete']];mix.write_text('\n'.join(mixbase*250)+'\n')
 for threads in [1,8,16]:

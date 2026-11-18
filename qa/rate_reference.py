@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Independent Python candidate-set reference for the documented technique order."""
 import json,pathlib,subprocess
+from checks import require
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 UNITS=[[r*9+c for c in range(9)] for r in range(9)]+[[r*9+c for r in range(9)] for c in range(9)]+[[(br*3+r)*9+bc*3+c for r in range(3) for c in range(3)] for br in range(3) for bc in range(3)]
 PEERS=[set().union(*(set(u) for u in UNITS if p in u))-{p} for p in range(81)]
@@ -52,7 +53,7 @@ def reference(s):
  return dict(status=status,tech=max(trace,default=0),steps=len(trace),score=score,trace=trace)
 def run(*args):
  p=subprocess.run([str(ROOT/'bin/bend-sudoku'),'+RTS','--threads','1','-RTS',*args],text=True,capture_output=True,timeout=90)
- assert p.returncode==0,(args,p.returncode,p.stderr)
+ require(p.returncode==0, (args,p.returncode,p.stderr))
  return p.stdout.strip()
 if __name__=='__main__':
  fixtures=[];covered=set()
@@ -60,11 +61,11 @@ if __name__=='__main__':
   s=run('generate','--seed',str(seed),'--minimal'); ref=reference(s)
   lines=run('rate',s).splitlines();got={a.strip():b.strip() for a,b in (line.split(':',1) for line in lines)}
   names=['None','NakedSingle','HiddenSingle','LockedCandidates','NakedPair']
-  assert int(got['Steps'])==ref['steps'] and int(got['Score'])==ref['score'] and got['Max technique']==names[ref['tech']],(seed,ref,got)
+  require(int(got['Steps'])==ref['steps'] and int(got['Score'])==ref['score'] and got['Max technique']==names[ref['tech']], (seed,ref,got))
   if set(ref['trace'])-covered:
    fixtures.append(dict(seed=seed,puzzle=s,expected=ref));covered.update(ref['trace'])
   if covered=={1,2,3,4}:break
- assert covered=={1,2,3,4},covered
+ require(covered=={1,2,3,4}, covered)
  dest=ROOT/'qa/fixtures/technique';dest.mkdir(parents=True,exist_ok=True)
  (dest/'reference.json').write_text(json.dumps(fixtures,indent=2)+'\n')
  print(json.dumps({'status':'PASS','seeds_checked':seed+1,'covered_techniques':sorted(covered),'fixtures':len(fixtures)},indent=2))
