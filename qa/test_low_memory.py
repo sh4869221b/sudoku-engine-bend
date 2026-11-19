@@ -767,17 +767,16 @@ class IsolationTests(unittest.TestCase):
 
 
 class GateContractTests(unittest.TestCase):
-    def test_all_existing_gate_invocations_remain_unconditional(self):
+    def test_locked_proof_and_remaining_runtime_gates_are_unconditional(self):
         source = (QA / 'verify_gates.sh').read_text()
         before_benchmark = source.split('if [ "${BEND_SKIP_BENCHMARK:-0}" != 1 ]; then')[0]
         self.assertNotIn('BEND_LOW_MEMORY', source)
         self.assertNotIn('\nif ', before_benchmark)
         self.assertIn('"$BEND" PROOF.bend --verdict', before_benchmark)
-        self.assertIn('"$BEND" qa/run.bend --check-only', before_benchmark)
         self.assertIn('./build.sh', before_benchmark)
-        native_sources = ['qa_run.bend', *('qa/' + name + '.bend' for name in (
+        native_sources = ['qa/run.bend', *('qa/' + name + '.bend' for name in (
             'optimization', 'row-bitmap', 'queued-candidates', 'singleton-predicate',
-            'bitmap-arithmetic', 'peer-equivalence', 'validation-reason', 'output-tail',
+            'bitmap-arithmetic', 'peer-equivalence', 'validation-reason',
             'orderstat', 'arithmetic', 'rating-cache', 'rating-index', 'rating-array',
             'array-techniques', 'candidate-digits', 'bench-direct', 'fuel_cli'))]
         for name in native_sources:

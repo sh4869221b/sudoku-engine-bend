@@ -34,7 +34,10 @@ copy and writes its log, summary and evidence there. Historical committed result
 and fixtures are never overwritten. `./verify.sh --skip-benchmark` runs all
 correctness, proof and lane gates while explicitly omitting timing measurements.
 See the [stable-toolchain validation](.omo/evidence/stable-toolchains-20261001/REPORT.md)
-and [.omo/evidence/contracts.md](.omo/evidence/contracts.md) for CLI and proof scope.
+and [.omo/evidence/contracts.md](.omo/evidence/contracts.md) for CLI contracts.
+The [proof scope and remaining runtime gates](qa/PROOF-SCOPE.md) describe what
+is proved, which assertions those proofs replace, and where independent tests
+are still required.
 
 ## Low-memory verification
 

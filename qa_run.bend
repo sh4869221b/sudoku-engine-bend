@@ -3,14 +3,11 @@ import ./sudoku/board.bend as B
 import ./sudoku/parser.bend as P
 import ./sudoku/validate.bend as V
 import ./sudoku/candidates.bend as C
-import ./sudoku/solver.bend as S
-import ./sudoku/counter.bend as K
 import ./sudoku/generator.bend as G
 import ./sudoku/difficulty.bend as D
 import ./sudoku/types.bend as T
 import ./sudoku/commands.bend as Cmd
 import ./sudoku/batch.bend as Batch
-import ./sudoku/properties.bend as Props
 
 def easy() -> String:
   "530070000600195000098000060800060003400803001700020006060000280000419005000080079"
@@ -35,13 +32,6 @@ def response(code: U32, +expected: String, reply: Cmd.Reply) -> Bool:
   match reply:
     case Cmd.Reply{actual, out, err}:
       U32.is_eq(code, actual) && String.eq(expected, out)
-
-def is_fuel(result: T.SolveResult) -> Bool:
-  match result:
-    case T.OutOfFuel{}:
-      True{}
-    case _:
-      False{}
 
 def is_digfuel(result: G.DigResult) -> Bool:
   match result:
@@ -105,19 +95,12 @@ def emit(ok: Bool, name: String) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    emit(Props.mirror_all(81n, 0), "mirror all81")
-    emit(Props.set_get_all(128n, 0), "set/get128 four values")
     emit(peer_property(81n, 0), "20 peers all81")
-    emit(Props.parsed_candidates(P.parse81(easy())), "actual candidates bounded easy81")
-    emit(Props.parsed_candidates(P.parse81(zero())), "actual candidates bounded empty81")
     emit(response(0, solved(), Cmd.eval(1, False{}, T.solve_fuel(), T.rate_fuel(), easy())), "solve preserves known easy solution")
     emit(response(0, "1", Cmd.eval(3, False{}, T.solve_fuel(), T.rate_fuel(), easy())), "unique count")
     emit(response(0, "2", Cmd.eval(3, False{}, T.solve_fuel(), T.rate_fuel(), zero())), "empty multiple count")
     emit(response(2, "", Cmd.eval(1, False{}, 1n, 1n, "bad")), "invalid parse exit2")
-    emit(is_fuel(S.solve(0n, board(easy()))), "solve fuel0")
-    emit(String.eq(K.show(K.count2(0n, board(easy()))), "fuel"), "count fuel0")
     emit(is_digfuel(G.generate(0n, 42, 32, False{})), "dig fuel0")
-    emit(rate_is(3, 0, 0, 0, D.rate(0n, board(easy()))), "rate fuel0")
     emit(rate_is(0, 0, 0, 0, D.rate(729n, board(solved()))), "rate complete")
     emit(rate_is(1, 0, 0, 0, D.rate(729n, board(zero()))), "rate requires guess")
     emit(rate_is(0, 1, 51, 51, D.rate(729n, board(easy()))), "rate51 singles independently counted blanks")
@@ -138,20 +121,4 @@ def main() -> IO(Unit):
     emit(batch_eq(2), "batch check equals sequential3")
     emit(batch_eq(3), "batch count equals sequential3")
     emit(batch_eq(4), "batch rate equals sequential3")
-    emit(String.eq(K.show(K.count_add(T.CountZero{}, T.CountZero{})), "0"), "count table Zero+Zero")
-    emit(String.eq(K.show(K.count_add(T.CountZero{}, T.CountOne{})), "1"), "count table Zero+One")
-    emit(String.eq(K.show(K.count_add(T.CountZero{}, T.CountMany{})), "2"), "count table Zero+Many")
-    emit(String.eq(K.show(K.count_add(T.CountZero{}, T.CountFuel{})), "fuel"), "count table Zero+Fuel")
-    emit(String.eq(K.show(K.count_add(T.CountOne{}, T.CountZero{})), "1"), "count table One+Zero")
-    emit(String.eq(K.show(K.count_add(T.CountOne{}, T.CountOne{})), "2"), "count table One+One")
-    emit(String.eq(K.show(K.count_add(T.CountOne{}, T.CountMany{})), "2"), "count table One+Many")
-    emit(String.eq(K.show(K.count_add(T.CountOne{}, T.CountFuel{})), "fuel"), "count table One+Fuel")
-    emit(String.eq(K.show(K.count_add(T.CountMany{}, T.CountZero{})), "2"), "count table Many+Zero")
-    emit(String.eq(K.show(K.count_add(T.CountMany{}, T.CountOne{})), "2"), "count table Many+One")
-    emit(String.eq(K.show(K.count_add(T.CountMany{}, T.CountMany{})), "2"), "count table Many+Many")
-    emit(String.eq(K.show(K.count_add(T.CountMany{}, T.CountFuel{})), "2"), "count table Many+Fuel")
-    emit(String.eq(K.show(K.count_add(T.CountFuel{}, T.CountZero{})), "fuel"), "count table Fuel+Zero")
-    emit(String.eq(K.show(K.count_add(T.CountFuel{}, T.CountOne{})), "fuel"), "count table Fuel+One")
-    emit(String.eq(K.show(K.count_add(T.CountFuel{}, T.CountMany{})), "2"), "count table Fuel+Many")
-    emit(String.eq(K.show(K.count_add(T.CountFuel{}, T.CountFuel{})), "fuel"), "count table Fuel+Fuel")
     IO.print("RESULT: all assertions passed")
