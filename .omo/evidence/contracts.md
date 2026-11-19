@@ -3,6 +3,8 @@
 Date: 2026-09-30. Reference: source-spec.md at original commit 489b07059c2f1d4cce4997512b0ea4164c2b0f4d, and issue discussions #7/#8/#20/#21/#22/#23. Only the specification and issue discussions were read from the original repository, never its implementation files. This repository was written independently.
 
 Current setup and runtime instructions are in [README.md](../../README.md).
+The current laws and runtime gates are listed in [QA proof scope](../../qa/PROOF-SCOPE.md);
+the proof and QA lists below describe historical checkpoints.
 This historical record's 2.0.34 tool selection, `--threads` syntax, absence of
 CI, and Node File-effect limitation are superseded by the
 [2.0.40 upgrade](../../qa/compiler-20261106/REPORT.ja.md). Native runtime flags

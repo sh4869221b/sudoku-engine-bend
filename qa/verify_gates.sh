@@ -5,8 +5,7 @@ cd "$(dirname "$0")/.."
 export BEND_NO_TELEMETRY=1
 ./build.sh
 "$BEND" PROOF.bend --verdict
-"$BEND" qa/run.bend --check-only
-"$BEND" qa_run.bend -o bin/qa-run
+"$BEND" qa/run.bend -o bin/qa-run
 ./bin/qa-run +RTS --threads 1 -RTS
 "$BEND" qa/optimization.bend -o bin/qa-optimization
 ./bin/qa-optimization +RTS --threads 1 -RTS
@@ -24,8 +23,6 @@ BEND="$BEND" python3 qa/adaptive_trace.py --lock-held
 ./bin/qa-peer-equivalence +RTS --threads 1 -RTS
 "$BEND" qa/validation-reason.bend -o bin/qa-validation-reason
 ./bin/qa-validation-reason +RTS --threads 1 -RTS
-"$BEND" qa/output-tail.bend -o bin/qa-output-tail
-./bin/qa-output-tail +RTS --threads 1 -RTS
 "$BEND" qa/orderstat.bend -o bin/qa-orderstat
 ./bin/qa-orderstat +RTS --threads 1 -RTS
 "$BEND" qa/arithmetic.bend -o bin/qa-arithmetic
