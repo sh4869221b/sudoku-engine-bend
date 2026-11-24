@@ -10598,3 +10598,616 @@ law actual_cache_then_queue_blank_matches_direct:
   for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
   {cell_value(Q.encode(C.cache(image_board(image))),logical_position(row,col)) ==
     Pair.snd(Array<U32>,U32,C.at(image_board(image),logical_position(row,col))) : U32}
+
+# Ordinary positions use literal zero, not the queued representation's flag bit.
+def PlainBlank(+word: U32) -> Bool:
+  match word:
+    case 0:
+      True{}
+    case _:
+      False{}
+
+def plain_open_at(+image: BoardImage,+p: U32) -> Bool:
+  PlainBlank(cell_value(image_board(image),p))
+
+def plain_first_index(+n: Nat,+p: U32,+open: Bool,+image: BoardImage) -> U32:
+  match n:
+    case 0n:
+      81
+    case 1n+k:
+      Bool.pick(U32,open,p,plain_first_index(k,(p + 1 : U32),plain_open_at(image,(p + 1 : U32)),image))
+
+def plain_first_actual(b: Array<U32>,+n: Nat,+p: U32) -> Array<U32>:
+  C.first_empty(n,p,B.get_cell(b,p))
+
+law plain_scan_normal_parts:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for -same: Array<U32>
+  for +word: U32
+  for keep: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  {plain_first_actual(b,n,p) == C.first_empty(n,p,(b,cell_value(b,p))) : Array<U32>}
+
+law plain_scan_normal:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for read: BoardReadWitness(b,p)
+  {plain_first_actual(b,n,p) == C.first_empty(n,p,(b,cell_value(b,p))) : Array<U32>}
+
+law plain_scan_positive_word:
+  for +word: U32
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  for later: {plain_first_actual(image_board(image),n,(p + 1 : U32)) ==
+    B.set_cell(image_board(image),108,plain_first_index(n,(p + 1 : U32),plain_open_at(image,(p + 1 : U32)),image)) : Array<U32>}
+  {C.first_empty(1n+n,p,(image_board(image),word)) ==
+    B.set_cell(image_board(image),108,plain_first_index(1n+n,p,PlainBlank(word),image)) : Array<U32>}
+
+law plain_scan_lift_exact:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  for pure: {C.first_empty(n,p,(image_board(image),cell_value(image_board(image),p))) ==
+    B.set_cell(image_board(image),108,plain_first_index(n,p,plain_open_at(image,p),image)) : Array<U32>}
+  {plain_first_actual(image_board(image),n,p) == B.set_cell(image_board(image),108,plain_first_index(n,p,plain_open_at(image,p),image)) : Array<U32>}
+
+law plain_scan_sets_exact:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  {plain_first_actual(image_board(image),n,p) == B.set_cell(image_board(image),108,plain_first_index(n,p,plain_open_at(image,p),image)) : Array<U32>}
+
+law plain_scan_reads_exact:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  {cell_value(plain_first_actual(image_board(image),n,p),108) == plain_first_index(n,p,plain_open_at(image,p),image) : U32}
+
+def PlainFirstWitness(+n: Nat,+p: U32,+image: BoardImage,-ptr: U32) -> Type:
+  match n:
+    case 0n:
+      {ptr == 81 : U32}
+    case 1n+k:
+      Either<&1,&1,
+        ({plain_open_at(image,p) == True{} : Bool} & {ptr == p : U32}),
+        ({plain_open_at(image,p) == False{} : Bool} & PlainFirstWitness(k,(p + 1 : U32),image,ptr))>
+
+law plain_index_no_skip:
+  for +n: Nat
+  for +p: U32
+  for +open: Bool
+  for +image: BoardImage
+  for observed: {plain_open_at(image,p) == open : Bool}
+  PlainFirstWitness(n,p,image,plain_first_index(n,p,open,image))
+
+law plain_scan_no_skip:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  PlainFirstWitness(n,p,image,cell_value(plain_first_actual(image_board(image),n,p),108))
+
+def PlainCursorRoutes(+n: Nat,+p: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      (LogicalCoordinateFor(p) & PlainCursorRoutes(k,(p + 1 : U32)))
+
+def PlainCursorWords(+n: Nat,+p: U32,-cached: Array<U32>,-original: Array<U32>) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      ({cell_value(cached,p) == cell_value(original,p) : U32} &
+        PlainCursorWords(k,(p + 1 : U32),cached,original))
+
+law logical_first_cursor_routes:
+  PlainCursorRoutes(81n,0)
+
+law plain_cursor_cache_step:
+  for +image: BoardImage
+  for +n: Nat
+  for +p: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for routes: PlainCursorRoutes(1n+n,p)
+  for next: (Board128(image_board(image)) -> PlainCursorRoutes(n,(p + 1 : U32)) ->
+    PlainCursorWords(n,(p + 1 : U32),C.cache_units(27n,0,image_board(image)),image_board(image)))
+  PlainCursorWords(1n+n,p,C.cache_units(27n,0,image_board(image)),image_board(image))
+
+law plain_cursor_cache_words:
+  for +image: BoardImage
+  for +n: Nat
+  for +p: U32
+  for shape: Board128(image_board(image))
+  for routes: PlainCursorRoutes(n,p)
+  PlainCursorWords(n,p,C.cache_units(27n,0,image_board(image)),image_board(image))
+
+law plain_cursor_witness_step:
+  for +n: Nat
+  for +p: U32
+  for +ptr: U32
+  for +cached: BoardImage
+  for +original: BoardImage
+  for equal: PlainCursorWords(1n+n,p,image_board(cached),image_board(original))
+  for witnessed: PlainFirstWitness(1n+n,p,cached,ptr)
+  for next: (PlainCursorWords(n,(p + 1 : U32),image_board(cached),image_board(original)) ->
+    PlainFirstWitness(n,(p + 1 : U32),cached,ptr) ->
+    PlainFirstWitness(n,(p + 1 : U32),original,ptr))
+  PlainFirstWitness(1n+n,p,original,ptr)
+
+law plain_cursor_witness_changes_image:
+  for +n: Nat
+  for +p: U32
+  for +ptr: U32
+  for +cached: BoardImage
+  for +original: BoardImage
+  for equal: PlainCursorWords(n,p,image_board(cached),image_board(original))
+  for witnessed: PlainFirstWitness(n,p,cached,ptr)
+  PlainFirstWitness(n,p,original,ptr)
+
+law plain_first_shared_open_step:
+  for +n: Nat
+  for +p: U32
+  for +a: BoardImage
+  for +b: BoardImage
+  for +open: Bool
+  for next: {plain_first_index(n,(p + 1 : U32),plain_open_at(a,(p + 1 : U32)),a) ==
+    plain_first_index(n,(p + 1 : U32),plain_open_at(b,(p + 1 : U32)),b) : U32}
+  {plain_first_index(1n+n,p,open,a) == plain_first_index(1n+n,p,open,b) : U32}
+
+law plain_first_model_agrees_on_walk:
+  for +n: Nat
+  for +p: U32
+  for +a: BoardImage
+  for +b: BoardImage
+  for reads: PlainCursorWords(n,p,image_board(a),image_board(b))
+  {plain_first_index(n,p,plain_open_at(a,p),a) ==
+    plain_first_index(n,p,plain_open_at(b,p),b) : U32}
+
+law plain_first_transport_observed_image:
+  for +n: Nat
+  for +p: U32
+  for +original: BoardImage
+  for +cached: BoardImage
+  for -raw: Array<U32>
+  for computed: {image_board(cached) == raw : Array<U32>}
+  for reads: PlainCursorWords(n,p,raw,image_board(original))
+  {cell_value(plain_first_actual(raw,n,p),108) == plain_first_index(n,p,plain_open_at(original,p),original) : U32}
+
+law actual_cache_initial_first_from_reification:
+  for +original: BoardImage
+  for shape: Board128(image_board(original))
+  for reified: Sigma<&2,&1,BoardImage,cached => {image_board(cached) == C.cache_units(27n,0,image_board(original)) : Array<U32>}>
+  {cell_value(C.cache(image_board(original)),108) == plain_first_index(81n,0,plain_open_at(original,0),original) : U32}
+
+law actual_cache_initial_first_blank:
+  for +original: BoardImage
+  for shape: Board128(image_board(original))
+  {cell_value(C.cache(image_board(original)),108) == plain_first_index(81n,0,plain_open_at(original,0),original) : U32}
+
+law plain_row_route:
+  for +row: CellCoordinate
+  PlainCursorRoutes(9n,(group_unit(CacheRows{},row) * 9 : U32))
+
+law cached_row_fold_agrees_on_reads:
+  for +n: Nat
+  for +p: U32
+  for +col: U32
+  for +used: U32
+  for +cached: BoardImage
+  for +original: BoardImage
+  for agree: PlainCursorWords(n,p,image_board(cached),image_board(original))
+  {cached_row_fold(n,p,col,used,cached) == cached_row_fold(n,p,col,used,original) : U32}
+
+law row_prefix_agreement_step:
+  for +image: BoardImage
+  for +prefix: Nat
+  for +remaining: Nat
+  for +n: Nat
+  for +p: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for totals: ({Nat.add(prefix,remaining) == 27n : Nat} & {Nat.add(prefix,remaining) == 27n : Nat} & {Nat.add(prefix,remaining) == 27n : Nat})
+  for routes: PlainCursorRoutes(1n+n,p)
+  for next: (Board128(image_board(image)) -> {Nat.add(prefix,remaining) == 27n : Nat} ->
+    PlainCursorRoutes(n,(p + 1 : U32)) -> PlainCursorWords(n,(p + 1 : U32),C.cache_units(prefix,0,image_board(image)),image_board(image)))
+  PlainCursorWords(1n+n,p,C.cache_units(prefix,0,image_board(image)),image_board(image))
+
+law row_prefix_agrees:
+  for +image: BoardImage
+  for +prefix: Nat
+  for +remaining: Nat
+  for +n: Nat
+  for +p: U32
+  for shape: Board128(image_board(image))
+  for total: {Nat.add(prefix,remaining) == 27n : Nat}
+  for routes: PlainCursorRoutes(n,p)
+  PlainCursorWords(n,p,C.cache_units(prefix,0,image_board(image)),image_board(image))
+
+law actual_row_step_reads_original:
+  for +image: BoardImage
+  for +cached: BoardImage
+  for +unit: U32
+  for kind: {(unit < 9 : U32) == True{} : Bool}
+  for reads: PlainCursorWords(9n,(unit * 9 : U32),image_board(cached),image_board(image))
+  {cell_value(cache_setup_step(unit,image_board(cached)),(81 + unit : U32)) ==
+    cached_row_fold(9n,(unit * 9 : U32),0,0,image) : U32}
+
+law actual_row_step_reads_prefix:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +prefix: Nat
+  for +remaining: Nat
+  for shape: Board128(image_board(image))
+  for total: {Nat.add(prefix,remaining) == 27n : Nat}
+  {cell_value(cache_setup_step(group_unit(CacheRows{},row),C.cache_units(prefix,0,image_board(image))),actual_cache_target(CacheRows{},row)) ==
+    cached_row_fold(9n,(group_unit(CacheRows{},row) * 9 : U32),0,0,image) : U32}
+
+law complete_cache_rebuild_row_word_counts:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for counts: ({Nat.add(group_unit_nat(CacheRows{},row),1n+cache_tail_count(CacheRows{},row)) == 27n : Nat} &
+    {Nat.add(group_unit_nat(CacheRows{},row),1n+cache_tail_count(CacheRows{},row)) == 27n : Nat} &
+    {Nat.add(group_unit_nat(CacheRows{},row),1n+cache_tail_count(CacheRows{},row)) == 27n : Nat})
+  for guard: {cache_setup_route_guard(cache_tail_count(CacheRows{},row),(group_unit(CacheRows{},row) + 1 : U32),actual_cache_target(CacheRows{},row)) == True{} : Bool}
+  for apart: RoutedApart(108,actual_cache_target(CacheRows{},row))
+  for alias: {actual_cache_target(CacheRows{},row) == cache_group_slot(CacheRows{},row) : U32}
+  {cell_value(C.cache(image_board(image)),cache_group_slot(CacheRows{},row)) ==
+    cached_row_fold(9n,(group_unit(CacheRows{},row) * 9 : U32),0,0,image) : U32}
+
+law complete_cache_rebuild_row_word_parts:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for window: CacheWindow(CacheRows{},row)
+  {cell_value(C.cache(image_board(image)),cache_group_slot(CacheRows{},row)) ==
+    cached_row_fold(9n,(group_unit(CacheRows{},row) * 9 : U32),0,0,image) : U32}
+
+law complete_cache_rebuild_row_word:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for shape: Board128(image_board(image))
+  {cell_value(C.cache(image_board(image)),cache_group_slot(CacheRows{},row)) ==
+    cached_row_fold(9n,(group_unit(CacheRows{},row) * 9 : U32),0,0,image) : U32}
+
+law swap_join_left_keeps_word:
+  for -right: Array<U32>
+  for result: Array<U32> & U32
+  {Pair.snd(Array<U32>,U32,Array.swap.lo(U32,right,result)) == Pair.snd(Array<U32>,U32,result) : U32}
+
+law swap_join_right_keeps_word:
+  for -left: Array<U32>
+  for result: Array<U32> & U32
+  {Pair.snd(Array<U32>,U32,Array.swap.hi(U32,left,result)) == Pair.snd(Array<U32>,U32,result) : U32}
+
+law array_image_swap_previous_word:
+  for +tree: BoardImage
+  for +n: U32
+  for +p: U32
+  for +value: U32
+  for +left: Bool
+  {Pair.snd(Array<U32>,U32,Array.swap.go(U32,image_board(tree),n,p,value,left)) ==
+    Pair.snd(Array<U32>,U32,Array.get.go(U32,image_board(tree),n,p,left)) : U32}
+
+law array_swap_previous_word:
+  for tree: Array<U32>
+  for +n: U32
+  for +p: U32
+  for +value: U32
+  for +left: Bool
+  {Pair.snd(Array<U32>,U32,Array.swap.go(U32,tree,n,p,value,left)) ==
+    Pair.snd(Array<U32>,U32,Array.get.go(U32,tree,n,p,left)) : U32}
+
+law array_swap_at_previous_word:
+  for +p: U32
+  for +value: U32
+  for sizing: Array<U32> & U32
+  {Pair.snd(Array<U32>,U32,Array.swap.at(U32,p,value,sizing)) ==
+    Pair.snd(Array<U32>,U32,Array.get.at(U32,p,sizing)) : U32}
+
+law board_swap_previous_word:
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  {Pair.snd(Array<U32>,U32,Array.swap(U32,b,p,value)) == cell_value(b,p) : U32}
+
+law ordinary_swapped_returns_previous_field:
+  for +p: U32
+  for +value: U32
+  for pair: (Array<U32> & U32)
+  {Pair.snd(Array<U32>,U32,C.swapped(p,value,pair)) == Pair.snd(Array<U32>,U32,pair) : U32}
+
+law ordinary_swap_returns_original_target:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  {Pair.snd(Array<U32>,U32,C.swap(image_board(image),p,value)) == cell_value(image_board(image),p) : U32}
+
+law ordinary_swap_target_from_pair:
+  for +p: U32
+  for +value: U32
+  for pair: Array<U32> & U32
+  for routes: OrdinaryMetaRoutes(p,p)
+  for set: PlainWord(Array.set.fin(U32,pair),p,value)
+  PlainWord(Pair.fst(Array<U32>,U32,C.swapped(p,value,pair)),p,value)
+
+law ordinary_swap_target_exact:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +value: U32
+  for shape: Board128(image_board(image))
+  PlainWord(swap_board_out(image_board(image),logical_position(row,col),value),logical_position(row,col),value)
+
+law ordinary_pointer_clear_exact:
+  for +image: BoardImage
+  for +p: U32
+  for +start: U32
+  {cell_value(C.start_after_set(True{},p,(image_board(image),start)),108) == U32.min(start,p) : U32}
+
+law ordinary_pointer_fill_away_is_identity:
+  for b: Array<U32>
+  for +p: U32
+  for +start: U32
+  for away: {U32.is_eq(p,start) == False{} : Bool}
+  {C.start_after_set(False{},p,(b,start)) == b : Array<U32>}
+
+law ordinary_pointer_fill_at_rescans_without_skipping:
+  for +image: BoardImage
+  for +p: U32
+  for +start: U32
+  for hit: {U32.is_eq(p,start) == True{} : Bool}
+  PlainFirstWitness(U32.to_nat((81 - start : U32)),start,image,
+    cell_value(C.start_after_set(False{},p,(image_board(image),start)),108))
+
+law ordinary_pointer_clear_from_actual_read:
+  for +image: BoardImage
+  for +p: U32
+  for -same: Array<U32>
+  for +word: U32
+  for kept: {same == image_board(image) : Array<U32>}
+  for read: {B.get_cell(image_board(image),108) == (same,word) : Array<U32> & U32}
+  {cell_value(C.start_after_set(True{},p,B.get_cell(image_board(image),108)),108) ==
+    U32.min(cell_value(image_board(image),108),p) : U32}
+
+law ordinary_pointer_clear_normalized:
+  for +image: BoardImage
+  for +p: U32
+  for read: BoardReadWitness(image_board(image),108)
+  {cell_value(C.start_after_set(True{},p,B.get_cell(image_board(image),108)),108) ==
+    U32.min(cell_value(image_board(image),108),p) : U32}
+
+law ordinary_pointer_clear_uses_actual_prior:
+  for +image: BoardImage
+  for +p: U32
+  {cell_value(C.start_after_set(True{},p,B.get_cell(image_board(image),108)),108) ==
+    U32.min(cell_value(image_board(image),108),p) : U32}
+
+law prepared_seed_rows_shape_step:
+  for +image: BoardImage
+  for +n: Nat
+  for +unit: U32
+  for shape: Board128(image_board(image))
+  for next: (@b:Array<U32> -> Board128(b) -> Board128(C.empty_rows_go(n,(unit + 1 : U32),b)))
+  Board128(C.empty_rows_go(1n+n,unit,image_board(image)))
+
+law prepared_seed_rows_keeps_shape:
+  for +n: Nat
+  for +unit: U32
+  for b: Array<U32>
+  for shape: Board128(b)
+  Board128(C.empty_rows_go(n,unit,b))
+
+def SeedRowsKeepsWord(+n: Nat,+unit: U32,+q: U32,-b: Array<U32>) -> Type:
+  Board128(b) -> CacheSetupWalkRoutes(n,unit,q) ->
+  {cell_value(C.empty_rows_go(n,unit,b),q) == cell_value(b,q) : U32}
+
+law prepared_seed_rows_preserves_word_step:
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for +image: BoardImage
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for route: CacheSetupWalkRoutes(1n+n,unit,q)
+  for next: (@b:Array<U32> -> SeedRowsKeepsWord(n,(unit + 1 : U32),q,b))
+  {cell_value(C.empty_rows_go(1n+n,unit,image_board(image)),q) == cell_value(image_board(image),q) : U32}
+
+law prepared_seed_rows_preserves_word:
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for b: Array<U32>
+  SeedRowsKeepsWord(n,unit,q,b)
+
+law prepared_seed_rows_preserves_original_cell:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  {cell_value(C.empty_rows(image_board(image)),logical_position(row,col)) ==
+    cell_value(image_board(image),logical_position(row,col)) : U32}
+
+law prepared_seed_rows_split:
+  for +prefix: Nat
+  for +suffix: Nat
+  for +unit: U32
+  for b: Array<U32>
+  {C.empty_rows_go(Nat.add(prefix,suffix),unit,b) ==
+    C.empty_rows_go(suffix,walk_position(prefix,unit),C.empty_rows_go(prefix,unit,b)) : Array<U32>}
+
+def SeedExactRowWindow(+row: CellCoordinate) -> Type:
+  ({Nat.add(coordinate_nat(row),1n+column_tail(row)) == 9n : Nat} &
+   {cache_setup_route_guard(column_tail(row),(coord_u32(row) + 1 : U32),(81 + coord_u32(row) : U32)) == True{} : Bool} &
+   {(81 + coord_u32(row) : U32) == cache_group_slot(CacheRows{},row) : U32})
+
+law seed_exact_row_window:
+  for +row: CellCoordinate
+  SeedExactRowWindow(row)
+
+law prepared_seed_row_all_columns_empty_parts:
+  for +row: CellCoordinate
+  for +image: BoardImage
+  for shape: Board128(image_board(image))
+  for window: SeedExactRowWindow(row)
+  {cell_value(C.empty_rows(image_board(image)),cache_group_slot(CacheRows{},row)) == 523264 : U32}
+
+def empty_image(+height: Nat) -> BoardImage:
+  match height:
+    case 0n:
+      ImageLeaf{0}
+    case 1n+k:
+      ImageNode{empty_image(k),empty_image(k)}
+
+law empty_reified_matches:
+  {image_board(empty_image(7n)) == B.empty() : Array<U32>}
+
+law prepared_seed_row_all_columns_empty:
+  for +row: CellCoordinate
+  {cell_value(C.empty_rows(B.empty()),cache_group_slot(CacheRows{},row)) == 523264 : U32}
+
+
+law empty_image_reads_zero:
+  for +height: Nat
+  for +size: U32
+  for +p: U32
+  for +left: Bool
+  {Pair.snd(Array<U32>,U32,Array.get.go(U32,image_board(empty_image(height)),size,p,left)) == 0 : U32}
+
+law empty_board_reads_zero:
+  for +p: U32
+  {cell_value(B.empty(),p) == 0 : U32}
+
+law prepared_seed_logical_cell_is_blank:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  {cell_value(C.empty_rows(B.empty()),logical_position(row,col)) == 0 : U32}
+
+law prepared_seed_nonrow_window:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for nonrow: {CacheGroupIsRow(group) == False{} : Bool}
+  {cache_setup_route_guard(9n,0,cache_group_slot(group,index)) == True{} : Bool}
+
+law prepared_seed_nonrow_slot_is_zero:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for nonrow: {CacheGroupIsRow(group) == False{} : Bool}
+  {cell_value(C.empty_rows(B.empty()),cache_group_slot(group,index)) == 0 : U32}
+
+def PreparedPairShape(-state: Array<U32> & U32) -> Type:
+  Board128(Pair.fst(Array<U32>,U32,state))
+
+law prepared_read_shape_parts:
+  for +image: BoardImage
+  for +p: U32
+  for -same: Array<U32>
+  for +word: U32
+  for keep: {same == image_board(image) : Array<U32>}
+  for read: {B.get_cell(image_board(image),p) == (same,word) : Array<U32> & U32}
+  for shape: Board128(image_board(image))
+  PreparedPairShape(B.get_cell(image_board(image),p))
+
+law prepared_read_shape_witness:
+  for +image: BoardImage
+  for +p: U32
+  for read: BoardReadWitness(image_board(image),p)
+  for shape: Board128(image_board(image))
+  PreparedPairShape(B.get_cell(image_board(image),p))
+
+law prepared_read_shape_image:
+  for +image: BoardImage
+  for +p: U32
+  for shape: Board128(image_board(image))
+  PreparedPairShape(B.get_cell(image_board(image),p))
+
+law prepared_read_preserves_shape:
+  for b: Array<U32>
+  for +p: U32
+  for shape: Board128(b)
+  PreparedPairShape(B.get_cell(b,p))
+
+law prepared_write_cell_shape:
+  for +pos: U32
+  for +digit: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_set(pos,digit,state))
+
+law prepared_append_unit_mask_shape:
+  for +unit: U32
+  for +bit: U32
+  for +bad: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_used(unit,bit,bad,state))
+
+law prepared_append_unit_shape_image:
+  for +unit: U32
+  for +bit: U32
+  for +image: BoardImage
+  for +bad: U32
+  for shape: Board128(image_board(image))
+  PreparedPairShape(P.prepared_unit(unit,bit,(image_board(image),bad)))
+
+law prepared_append_unit_shape:
+  for +unit: U32
+  for +bit: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_unit(unit,bit,state))
+
+law prepared_append_row_mask_shape:
+  for +unit: U32
+  for +bit: U32
+  for +empty: U32
+  for +bad: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_row_used(unit,bit,empty,bad,state))
+
+law prepared_append_row_shape_image:
+  for +pos: U32
+  for +bit: U32
+  for +image: BoardImage
+  for +bad: U32
+  for shape: Board128(image_board(image))
+  PreparedPairShape(P.prepared_row(pos,bit,(image_board(image),bad)))
+
+law prepared_append_row_shape:
+  for +pos: U32
+  for +bit: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_row(pos,bit,state))
+
+law prepared_store_nonzero_chain_shape_image:
+  for +pos: U32
+  for +digit: U32
+  for +image: BoardImage
+  for +bad: U32
+  for shape: Board128(image_board(image))
+  PreparedPairShape(P.prepared_set(pos,digit,
+    P.prepared_unit((18 + B.box_of(pos) : U32),B.bit(digit),
+      P.prepared_unit((9 + M.rem9(pos) : U32),B.bit(digit),
+        P.prepared_row(pos,B.bit(digit),(image_board(image),bad))))))
+
+law prepared_store_nonzero_chain_shape:
+  for +pos: U32
+  for +digit: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_set(pos,digit,
+    P.prepared_unit((18 + B.box_of(pos) : U32),B.bit(digit),
+      P.prepared_unit((9 + M.rem9(pos) : U32),B.bit(digit),
+        P.prepared_row(pos,B.bit(digit),state)))))
+
+law prepared_legal_store_keeps_shape:
+  for +digit: BoardDigit
+  for +pos: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedPairShape(P.prepared_store(pos,digit_word(digit),state))

@@ -13266,3 +13266,780 @@ def L.actual_cache_then_queue_blank_matches_direct_parts(image,row,col,shapes,bl
 def L.actual_cache_then_queue_blank_matches_direct(image,row,col,shape,blank):
   L.actual_cache_then_queue_blank_matches_direct_parts(image,row,col,
     L.copy_shape_three(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),blank)
+
+def L.plain_scan_normal_parts(n,p,b,same,word,keep,observed):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),observed) :
+    {C.first_empty(n,p,_) == C.first_empty(n,p,(b,Pair.snd(Array<U32>,U32,_))) : Array<U32>}
+  %keep : {C.first_empty(n,p,(same,word)) == C.first_empty(n,p,(_,word)) : Array<U32>}
+  {==}
+
+def L.plain_scan_normal(n,p,b,read):
+  (same,+word,(keep,observed)) = read
+  L.plain_scan_normal_parts(n,p,b,same,word,keep,observed)
+
+def L.plain_scan_positive_word(word,n,p,image,later):
+  match word:
+    case U32{WCon{True{}, rest}}:
+      later
+    case U32{WCon{False{}, WCon{True{}, rest}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      later
+    case 0:
+      {==}
+
+def L.plain_scan_lift_exact(n,p,image,pure):
+  b = L.image_board(image)
+  +word = L.cell_value(L.image_board(image),p)
+  %Equal.sym(Array<U32>,L.plain_first_actual(b,n,p),C.first_empty(n,p,(b,word)),
+    L.plain_scan_normal(n,p,b,L.board_read_witness(L.image_board(image),p))) :
+    {_ == Board.set_cell(b,108,L.plain_first_index(n,p,L.plain_open_at(image,p),image)) : Array<U32>}
+  pure
+
+def L.plain_scan_sets_exact(n,p,image):
+  match n:
+    case 0n:
+      L.plain_scan_lift_exact(0n,p,image,{==})
+    case 1n+k:
+      +p1 = (p + 1 : U32)
+      L.plain_scan_lift_exact(1n+k,p,image,
+        L.plain_scan_positive_word(L.cell_value(L.image_board(image),p),k,p,image,L.plain_scan_sets_exact(k,p1,image)))
+
+def L.plain_scan_reads_exact(n,p,image):
+  b = L.image_board(image)
+  +index = L.plain_first_index(n,p,L.plain_open_at(image,p),image)
+  %Equal.sym(Array<U32>,L.plain_first_actual(b,n,p),Board.set_cell(b,108,index),
+    L.plain_scan_sets_exact(n,p,image)) : {L.cell_value(_,108) == index : U32}
+  L.board_set_get(L.image_board(image),108,index)
+
+def L.plain_index_no_skip(n,p,open,image,observed):
+  match n open:
+    case 0n True{}:
+      {==}
+    case 0n False{}:
+      {==}
+    case 1n+k True{}:
+      Inl{(observed,{==})}
+    case 1n+k False{}:
+      +p1 = (p + 1 : U32)
+      Inr{(observed,L.plain_index_no_skip(k,p1,L.plain_open_at(image,p1),image,{==}))}
+
+def L.plain_scan_no_skip(n,p,image):
+  b = L.image_board(image)
+  +index = L.plain_first_index(n,p,L.plain_open_at(image,p),image)
+  %Equal.sym(U32,L.cell_value(L.plain_first_actual(b,n,p),108),index,L.plain_scan_reads_exact(n,p,image)) :
+    L.PlainFirstWitness(n,p,image,_)
+  L.plain_index_no_skip(n,p,L.plain_open_at(image,p),image,{==})
+
+def L.logical_first_cursor_routes():
+  ((L.Coordinate0{},(L.Coordinate0{},{==})),
+   ((L.Coordinate0{},(L.Coordinate1{},{==})),
+   ((L.Coordinate0{},(L.Coordinate2{},{==})),
+   ((L.Coordinate0{},(L.Coordinate3{},{==})),
+   ((L.Coordinate0{},(L.Coordinate4{},{==})),
+   ((L.Coordinate0{},(L.Coordinate5{},{==})),
+   ((L.Coordinate0{},(L.Coordinate6{},{==})),
+   ((L.Coordinate0{},(L.Coordinate7{},{==})),
+   ((L.Coordinate0{},(L.Coordinate8{},{==})),
+   ((L.Coordinate1{},(L.Coordinate0{},{==})),
+   ((L.Coordinate1{},(L.Coordinate1{},{==})),
+   ((L.Coordinate1{},(L.Coordinate2{},{==})),
+   ((L.Coordinate1{},(L.Coordinate3{},{==})),
+   ((L.Coordinate1{},(L.Coordinate4{},{==})),
+   ((L.Coordinate1{},(L.Coordinate5{},{==})),
+   ((L.Coordinate1{},(L.Coordinate6{},{==})),
+   ((L.Coordinate1{},(L.Coordinate7{},{==})),
+   ((L.Coordinate1{},(L.Coordinate8{},{==})),
+   ((L.Coordinate2{},(L.Coordinate0{},{==})),
+   ((L.Coordinate2{},(L.Coordinate1{},{==})),
+   ((L.Coordinate2{},(L.Coordinate2{},{==})),
+   ((L.Coordinate2{},(L.Coordinate3{},{==})),
+   ((L.Coordinate2{},(L.Coordinate4{},{==})),
+   ((L.Coordinate2{},(L.Coordinate5{},{==})),
+   ((L.Coordinate2{},(L.Coordinate6{},{==})),
+   ((L.Coordinate2{},(L.Coordinate7{},{==})),
+   ((L.Coordinate2{},(L.Coordinate8{},{==})),
+   ((L.Coordinate3{},(L.Coordinate0{},{==})),
+   ((L.Coordinate3{},(L.Coordinate1{},{==})),
+   ((L.Coordinate3{},(L.Coordinate2{},{==})),
+   ((L.Coordinate3{},(L.Coordinate3{},{==})),
+   ((L.Coordinate3{},(L.Coordinate4{},{==})),
+   ((L.Coordinate3{},(L.Coordinate5{},{==})),
+   ((L.Coordinate3{},(L.Coordinate6{},{==})),
+   ((L.Coordinate3{},(L.Coordinate7{},{==})),
+   ((L.Coordinate3{},(L.Coordinate8{},{==})),
+   ((L.Coordinate4{},(L.Coordinate0{},{==})),
+   ((L.Coordinate4{},(L.Coordinate1{},{==})),
+   ((L.Coordinate4{},(L.Coordinate2{},{==})),
+   ((L.Coordinate4{},(L.Coordinate3{},{==})),
+   ((L.Coordinate4{},(L.Coordinate4{},{==})),
+   ((L.Coordinate4{},(L.Coordinate5{},{==})),
+   ((L.Coordinate4{},(L.Coordinate6{},{==})),
+   ((L.Coordinate4{},(L.Coordinate7{},{==})),
+   ((L.Coordinate4{},(L.Coordinate8{},{==})),
+   ((L.Coordinate5{},(L.Coordinate0{},{==})),
+   ((L.Coordinate5{},(L.Coordinate1{},{==})),
+   ((L.Coordinate5{},(L.Coordinate2{},{==})),
+   ((L.Coordinate5{},(L.Coordinate3{},{==})),
+   ((L.Coordinate5{},(L.Coordinate4{},{==})),
+   ((L.Coordinate5{},(L.Coordinate5{},{==})),
+   ((L.Coordinate5{},(L.Coordinate6{},{==})),
+   ((L.Coordinate5{},(L.Coordinate7{},{==})),
+   ((L.Coordinate5{},(L.Coordinate8{},{==})),
+   ((L.Coordinate6{},(L.Coordinate0{},{==})),
+   ((L.Coordinate6{},(L.Coordinate1{},{==})),
+   ((L.Coordinate6{},(L.Coordinate2{},{==})),
+   ((L.Coordinate6{},(L.Coordinate3{},{==})),
+   ((L.Coordinate6{},(L.Coordinate4{},{==})),
+   ((L.Coordinate6{},(L.Coordinate5{},{==})),
+   ((L.Coordinate6{},(L.Coordinate6{},{==})),
+   ((L.Coordinate6{},(L.Coordinate7{},{==})),
+   ((L.Coordinate6{},(L.Coordinate8{},{==})),
+   ((L.Coordinate7{},(L.Coordinate0{},{==})),
+   ((L.Coordinate7{},(L.Coordinate1{},{==})),
+   ((L.Coordinate7{},(L.Coordinate2{},{==})),
+   ((L.Coordinate7{},(L.Coordinate3{},{==})),
+   ((L.Coordinate7{},(L.Coordinate4{},{==})),
+   ((L.Coordinate7{},(L.Coordinate5{},{==})),
+   ((L.Coordinate7{},(L.Coordinate6{},{==})),
+   ((L.Coordinate7{},(L.Coordinate7{},{==})),
+   ((L.Coordinate7{},(L.Coordinate8{},{==})),
+   ((L.Coordinate8{},(L.Coordinate0{},{==})),
+   ((L.Coordinate8{},(L.Coordinate1{},{==})),
+   ((L.Coordinate8{},(L.Coordinate2{},{==})),
+   ((L.Coordinate8{},(L.Coordinate3{},{==})),
+   ((L.Coordinate8{},(L.Coordinate4{},{==})),
+   ((L.Coordinate8{},(L.Coordinate5{},{==})),
+   ((L.Coordinate8{},(L.Coordinate6{},{==})),
+   ((L.Coordinate8{},(L.Coordinate7{},{==})),
+   ((L.Coordinate8{},(L.Coordinate8{},{==})),
+   {==})))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+
+def L.plain_cursor_cache_step(image,n,p,shapes,routes,next):
+  (s0,s1) = shapes
+  (head,tail) = routes
+  (L.occupancy_prefix_one_unit_read(image,27n,0n,p,s0,{==},head),next(s1,tail))
+
+def L.plain_cursor_cache_words(image,n,p,shape,routes):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      L.plain_cursor_cache_step(image,k,p,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),
+        routes,s => rest => L.plain_cursor_cache_words(image,k,(p + 1 : U32),s,rest))
+
+def L.plain_cursor_witness_step(n,p,ptr,cached,original,equal,witnessed,next):
+  (head,tail) = equal
+  match witnessed:
+    case Inl{proof}:
+      (open,here) = proof
+      Inl{(Equal.trans(Bool,L.plain_open_at(original,p),L.plain_open_at(cached,p),True{},
+        %head : {L.PlainBlank(_) == L.plain_open_at(cached,p) : Bool}
+        {==},open),here)}
+    case Inr{proof}:
+      (filled,rest) = proof
+      Inr{(Equal.trans(Bool,L.plain_open_at(original,p),L.plain_open_at(cached,p),False{},
+        %head : {L.PlainBlank(_) == L.plain_open_at(cached,p) : Bool}
+        {==},filled),next(tail,rest))}
+
+def L.plain_cursor_witness_changes_image(n,p,ptr,cached,original,equal,witnessed):
+  match n:
+    case 0n:
+      witnessed
+    case 1n+k:
+      L.plain_cursor_witness_step(k,p,ptr,cached,original,equal,witnessed,
+        rs => w => L.plain_cursor_witness_changes_image(k,(p + 1 : U32),ptr,cached,original,rs,w))
+
+def L.plain_first_shared_open_step(n,p,a,b,open,next):
+  match open:
+    case True{}:
+      {==}
+    case False{}:
+      next
+
+def L.plain_first_model_agrees_on_walk(n,p,a,b,reads):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      (head,tail) = reads
+      +p1 = (p + 1 : U32)
+      %Equal.sym(U32,L.cell_value(L.image_board(a),p),L.cell_value(L.image_board(b),p),head) :
+        {L.plain_first_index(1n+k,p,L.PlainBlank(_),a) == L.plain_first_index(1n+k,p,L.plain_open_at(b,p),b) : U32}
+      L.plain_first_shared_open_step(k,p,a,b,L.plain_open_at(b,p),L.plain_first_model_agrees_on_walk(k,p1,a,b,tail))
+
+def L.plain_first_transport_observed_image(n,p,original,cached,raw,computed,reads):
+  +expected = L.plain_first_index(n,p,L.plain_open_at(original,p),original)
+  +intermediate = L.plain_first_index(n,p,L.plain_open_at(cached,p),cached)
+  use : (L.PlainCursorWords(n,p,raw,L.image_board(original)) ->
+    {L.cell_value(L.plain_first_actual(raw,n,p),108) == expected : U32}) =
+    %computed : (L.PlainCursorWords(n,p,_,L.image_board(original)) ->
+      {L.cell_value(L.plain_first_actual(_,n,p),108) == expected : U32})
+    eq => Equal.trans(U32,L.cell_value(L.plain_first_actual(L.image_board(cached),n,p),108),intermediate,expected,
+      L.plain_scan_reads_exact(n,p,cached),L.plain_first_model_agrees_on_walk(n,p,cached,original,eq))
+  use(reads)
+
+def L.actual_cache_initial_first_from_reification(original,shape,reified):
+  (+cached,proof) = reified
+  L.plain_first_transport_observed_image(81n,0,original,cached,C.cache_units(27n,0,L.image_board(original)),proof,
+    L.plain_cursor_cache_words(original,81n,0,shape,L.logical_first_cursor_routes()))
+
+def L.actual_cache_initial_first_blank(original,shape):
+  L.actual_cache_initial_first_from_reification(original,shape,L.reify_board(C.cache_units(27n,0,L.image_board(original))))
+
+def L.plain_row_route(row):
+  match row:
+    case L.Coordinate0{}:
+      ((L.Coordinate0{},(L.Coordinate0{},{==})),((L.Coordinate0{},(L.Coordinate1{},{==})),((L.Coordinate0{},(L.Coordinate2{},{==})),((L.Coordinate0{},(L.Coordinate3{},{==})),((L.Coordinate0{},(L.Coordinate4{},{==})),((L.Coordinate0{},(L.Coordinate5{},{==})),((L.Coordinate0{},(L.Coordinate6{},{==})),((L.Coordinate0{},(L.Coordinate7{},{==})),((L.Coordinate0{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate1{}:
+      ((L.Coordinate1{},(L.Coordinate0{},{==})),((L.Coordinate1{},(L.Coordinate1{},{==})),((L.Coordinate1{},(L.Coordinate2{},{==})),((L.Coordinate1{},(L.Coordinate3{},{==})),((L.Coordinate1{},(L.Coordinate4{},{==})),((L.Coordinate1{},(L.Coordinate5{},{==})),((L.Coordinate1{},(L.Coordinate6{},{==})),((L.Coordinate1{},(L.Coordinate7{},{==})),((L.Coordinate1{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate2{}:
+      ((L.Coordinate2{},(L.Coordinate0{},{==})),((L.Coordinate2{},(L.Coordinate1{},{==})),((L.Coordinate2{},(L.Coordinate2{},{==})),((L.Coordinate2{},(L.Coordinate3{},{==})),((L.Coordinate2{},(L.Coordinate4{},{==})),((L.Coordinate2{},(L.Coordinate5{},{==})),((L.Coordinate2{},(L.Coordinate6{},{==})),((L.Coordinate2{},(L.Coordinate7{},{==})),((L.Coordinate2{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate3{}:
+      ((L.Coordinate3{},(L.Coordinate0{},{==})),((L.Coordinate3{},(L.Coordinate1{},{==})),((L.Coordinate3{},(L.Coordinate2{},{==})),((L.Coordinate3{},(L.Coordinate3{},{==})),((L.Coordinate3{},(L.Coordinate4{},{==})),((L.Coordinate3{},(L.Coordinate5{},{==})),((L.Coordinate3{},(L.Coordinate6{},{==})),((L.Coordinate3{},(L.Coordinate7{},{==})),((L.Coordinate3{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate4{}:
+      ((L.Coordinate4{},(L.Coordinate0{},{==})),((L.Coordinate4{},(L.Coordinate1{},{==})),((L.Coordinate4{},(L.Coordinate2{},{==})),((L.Coordinate4{},(L.Coordinate3{},{==})),((L.Coordinate4{},(L.Coordinate4{},{==})),((L.Coordinate4{},(L.Coordinate5{},{==})),((L.Coordinate4{},(L.Coordinate6{},{==})),((L.Coordinate4{},(L.Coordinate7{},{==})),((L.Coordinate4{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate5{}:
+      ((L.Coordinate5{},(L.Coordinate0{},{==})),((L.Coordinate5{},(L.Coordinate1{},{==})),((L.Coordinate5{},(L.Coordinate2{},{==})),((L.Coordinate5{},(L.Coordinate3{},{==})),((L.Coordinate5{},(L.Coordinate4{},{==})),((L.Coordinate5{},(L.Coordinate5{},{==})),((L.Coordinate5{},(L.Coordinate6{},{==})),((L.Coordinate5{},(L.Coordinate7{},{==})),((L.Coordinate5{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate6{}:
+      ((L.Coordinate6{},(L.Coordinate0{},{==})),((L.Coordinate6{},(L.Coordinate1{},{==})),((L.Coordinate6{},(L.Coordinate2{},{==})),((L.Coordinate6{},(L.Coordinate3{},{==})),((L.Coordinate6{},(L.Coordinate4{},{==})),((L.Coordinate6{},(L.Coordinate5{},{==})),((L.Coordinate6{},(L.Coordinate6{},{==})),((L.Coordinate6{},(L.Coordinate7{},{==})),((L.Coordinate6{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate7{}:
+      ((L.Coordinate7{},(L.Coordinate0{},{==})),((L.Coordinate7{},(L.Coordinate1{},{==})),((L.Coordinate7{},(L.Coordinate2{},{==})),((L.Coordinate7{},(L.Coordinate3{},{==})),((L.Coordinate7{},(L.Coordinate4{},{==})),((L.Coordinate7{},(L.Coordinate5{},{==})),((L.Coordinate7{},(L.Coordinate6{},{==})),((L.Coordinate7{},(L.Coordinate7{},{==})),((L.Coordinate7{},(L.Coordinate8{},{==})),{==})))))))))
+    case L.Coordinate8{}:
+      ((L.Coordinate8{},(L.Coordinate0{},{==})),((L.Coordinate8{},(L.Coordinate1{},{==})),((L.Coordinate8{},(L.Coordinate2{},{==})),((L.Coordinate8{},(L.Coordinate3{},{==})),((L.Coordinate8{},(L.Coordinate4{},{==})),((L.Coordinate8{},(L.Coordinate5{},{==})),((L.Coordinate8{},(L.Coordinate6{},{==})),((L.Coordinate8{},(L.Coordinate7{},{==})),((L.Coordinate8{},(L.Coordinate8{},{==})),{==})))))))))
+
+def L.cached_row_fold_agrees_on_reads(n,p,col,used,cached,original,agree):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      (head,tail) = agree
+      +p1 = (p + 1 : U32)
+      +c1 = (col + 1 : U32)
+      +same_acc = U32.or(used,L.cached_row_digit_entry(col,L.cell_value(L.image_board(cached),p)))
+      %head : {L.cached_row_fold(k,p1,c1,same_acc,cached) ==
+        L.cached_row_fold(k,p1,c1,U32.or(used,L.cached_row_digit_entry(col,_)),original) : U32}
+      L.cached_row_fold_agrees_on_reads(k,p1,c1,same_acc,cached,original,tail)
+
+def L.row_prefix_agreement_step(image,prefix,remaining,n,p,shapes,totals,routes,next):
+  (s0,s1) = shapes
+  (t0,(t1,t2)) = totals
+  (here,later) = routes
+  (L.occupancy_prefix_one_unit_read(image,prefix,remaining,p,s0,t0,here),next(s1,t1,later))
+
+def L.row_prefix_agrees(image,prefix,remaining,n,p,shape,total,routes):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      L.row_prefix_agreement_step(image,prefix,remaining,k,p,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),
+        L.copy_nat_eq(Nat.add(prefix,remaining),27n,total),routes,
+        s => t => rest => L.row_prefix_agrees(image,prefix,remaining,k,(p + 1 : U32),s,t,rest))
+
+def L.actual_row_step_reads_original(image,cached,unit,kind,reads):
+  b = L.image_board(cached)
+  +q = (81 + unit : U32)
+  +p = (unit * 9 : U32)
+  +word = L.cached_row_fold(9n,p,0,0,cached)
+  +expected = L.cached_row_fold(9n,p,0,0,image)
+  %Equal.sym(Bool,(unit < 9 : U32),True{},kind) :
+    {L.cell_value(C.cache_unit_done(q,C.cached_used(_,unit,b)),q) == expected : U32}
+  %Equal.sym(Array<U32>,C.cache_unit_done(q,C.cached_used(True{},unit,b)),Board.set_cell(b,q,word),
+    L.actual_cached_one_row_write(cached,unit)) : {L.cell_value(_,q) == expected : U32}
+  %Equal.sym(U32,L.cell_value(Board.set_cell(b,q,word),q),word,L.board_set_get(L.image_board(cached),q,word)) :
+    {_ == expected : U32}
+  L.cached_row_fold_agrees_on_reads(9n,p,0,0,cached,image,reads)
+
+def L.actual_row_step_reads_prefix(image,row,prefix,remaining,shape,total):
+  +unit = L.group_unit(L.CacheRows{},row)
+  +p = (unit * 9 : U32)
+  +q = (81 + unit : U32)
+  original = L.image_board(image)
+  out = C.cache_units(prefix,0,L.image_board(image))
+  f : (L.PlainCursorWords(9n,p,out,original) -> {L.cell_value(L.cache_setup_step(unit,out),q) == L.cached_row_fold(9n,p,0,0,image) : U32}) =
+    L.on_reified_board(out,x => (L.PlainCursorWords(9n,p,x,original) ->
+      {L.cell_value(L.cache_setup_step(unit,x),q) == L.cached_row_fold(9n,p,0,0,image) : U32}),
+      L.reify_board(C.cache_units(prefix,0,L.image_board(image))),
+      cached => reads => L.actual_row_step_reads_original(image,cached,unit,L.cache_group_row_test(L.CacheRows{},row),reads))
+  f(L.row_prefix_agrees(image,prefix,remaining,9n,p,shape,total,L.plain_row_route(row)))
+
+def L.complete_cache_rebuild_row_word_counts(image,row,shapes,counts,guard,apart,alias):
+  (s0,(s1,s2)) = shapes
+  (t0,(t1,t2)) = counts
+  b = L.image_board(image)
+  +n = L.group_unit_nat(L.CacheRows{},row)
+  +m = L.cache_tail_count(L.CacheRows{},row)
+  +i = L.group_unit(L.CacheRows{},row)
+  +q = L.actual_cache_target(L.CacheRows{},row)
+  +word = L.cached_row_fold(9n,(i * 9 : U32),0,0,image)
+  prior = C.cache_units(27n,0,L.image_board(image))
+  wrote = L.cache_setup_step(i,C.cache_units(n,0,L.image_board(image)))
+  result = C.cache_units(m,(i + 1 : U32),L.cache_setup_step(i,C.cache_units(n,0,L.image_board(image))))
+  %alias : {L.cell_value(C.cache(b),_) == word : U32}
+  %Equal.sym(U32,L.cell_value(C.cache(b),q),L.cell_value(prior,q),
+    L.plain_refresh_keeps_actual_cell(C.cache_units(27n,0,L.image_board(image)),0,q)(
+      L.cache_setup_full_keeps_shape(27n,0,L.image_board(image),s0),apart)) : {_ == word : U32}
+  %Equal.sym(Array<U32>,prior,result,L.full_ordinary_setup_as_local_cache_write(L.CacheRows{},row,L.image_board(image),t0)) :
+    {L.cell_value(_,q) == word : U32}
+  %Equal.sym(U32,L.cell_value(result,q),L.cell_value(wrote,q),
+    L.cache_setup_sweep_keeps_cell(m,(i + 1 : U32),q,L.cache_setup_step(i,C.cache_units(n,0,L.image_board(image))),
+      L.cache_setup_step_keeps_shape(C.cache_units(n,0,L.image_board(image)),i,
+        L.cache_setup_full_keeps_shape(n,0,L.image_board(image),s1)),
+      L.cache_setup_route_from_checked(m,(i + 1 : U32),q,guard))) : {_ == word : U32}
+  L.actual_row_step_reads_prefix(image,row,n,1n+m,s2,t1)
+
+def L.complete_cache_rebuild_row_word_parts(image,row,shapes,window):
+  (count,(guard,(apart,alias))) = window
+  +n = L.group_unit_nat(L.CacheRows{},row)
+  +m = L.cache_tail_count(L.CacheRows{},row)
+  L.complete_cache_rebuild_row_word_counts(image,row,shapes,L.copy_nat_eq(Nat.add(n,1n+m),27n,count),guard,apart,alias)
+
+def L.complete_cache_rebuild_row_word(image,row,shape):
+  L.complete_cache_rebuild_row_word_parts(image,row,
+    L.copy_shape_three(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),
+    L.checked_cache_window(L.CacheRows{},row))
+
+def L.swap_join_left_keeps_word(right,result):
+  (b,+d) = result
+  {==}
+
+def L.swap_join_right_keeps_word(left,result):
+  (b,+d) = result
+  {==}
+
+def L.array_image_swap_previous_word(tree,n,p,value,left):
+  match tree left:
+    case L.ImageLeaf{d} _:
+      {==}
+    case L.ImageNode{lo,hi} True{}:
+      +h = U32.shr(n)
+      +z = U32.is_lt(p,U32.shr(h))
+      %Equal.sym(U32,Pair.snd(Array<U32>,U32,Array.swap.lo(U32,L.image_board(hi),Array.swap.go(U32,L.image_board(lo),h,p,value,z))),Pair.snd(Array<U32>,U32,Array.swap.go(U32,L.image_board(lo),h,p,value,z)),L.swap_join_left_keeps_word(L.image_board(hi),Array.swap.go(U32,L.image_board(lo),h,p,value,z))) :
+        {_ == Pair.snd(Array<U32>,U32,Array.swap.lo(U32,L.image_board(hi),Array.get.go(U32,L.image_board(lo),h,p,z))) : U32}
+      %Equal.sym(U32,Pair.snd(Array<U32>,U32,Array.swap.lo(U32,L.image_board(hi),Array.get.go(U32,L.image_board(lo),h,p,z))),Pair.snd(Array<U32>,U32,Array.get.go(U32,L.image_board(lo),h,p,z)),L.swap_join_left_keeps_word(L.image_board(hi),Array.get.go(U32,L.image_board(lo),h,p,z))) :
+        {Pair.snd(Array<U32>,U32,Array.swap.go(U32,L.image_board(lo),h,p,value,z)) == _ : U32}
+      L.array_image_swap_previous_word(lo,h,p,value,z)
+    case L.ImageNode{lo,hi} False{}:
+      +h = U32.shr(n)
+      +q = U32.sub(p,h)
+      +z = U32.is_lt(q,U32.shr(h))
+      %Equal.sym(U32,Pair.snd(Array<U32>,U32,Array.swap.hi(U32,L.image_board(lo),Array.swap.go(U32,L.image_board(hi),h,q,value,z))),Pair.snd(Array<U32>,U32,Array.swap.go(U32,L.image_board(hi),h,q,value,z)),L.swap_join_right_keeps_word(L.image_board(lo),Array.swap.go(U32,L.image_board(hi),h,q,value,z))) :
+        {_ == Pair.snd(Array<U32>,U32,Array.swap.hi(U32,L.image_board(lo),Array.get.go(U32,L.image_board(hi),h,q,z))) : U32}
+      %Equal.sym(U32,Pair.snd(Array<U32>,U32,Array.swap.hi(U32,L.image_board(lo),Array.get.go(U32,L.image_board(hi),h,q,z))),Pair.snd(Array<U32>,U32,Array.get.go(U32,L.image_board(hi),h,q,z)),L.swap_join_right_keeps_word(L.image_board(lo),Array.get.go(U32,L.image_board(hi),h,q,z))) :
+        {Pair.snd(Array<U32>,U32,Array.swap.go(U32,L.image_board(hi),h,q,value,z)) == _ : U32}
+      L.array_image_swap_previous_word(hi,h,q,value,z)
+
+def L.array_swap_previous_word(tree,n,p,value,left):
+  L.on_reified_board(tree,x => {Pair.snd(Array<U32>,U32,Array.swap.go(U32,x,n,p,value,left)) ==
+    Pair.snd(Array<U32>,U32,Array.get.go(U32,x,n,p,left)) : U32},
+    L.reify_board(tree),image => L.array_image_swap_previous_word(image,n,p,value,left))
+
+def L.array_swap_at_previous_word(p,value,sizing):
+  (b,+n) = sizing
+  +p1 = U32.and(p,U32.sub(n,1))
+  L.array_swap_previous_word(b,n,p1,value,U32.is_lt(p1,U32.shr(n)))
+
+def L.board_swap_previous_word(b,p,value):
+  L.array_swap_at_previous_word(p,value,Array.size(U32,b))
+
+def L.ordinary_swapped_returns_previous_field(p,value,pair):
+  (b,+d) = pair
+  {==}
+
+def L.ordinary_swap_returns_original_target(image,p,value):
+  b = L.image_board(image)
+  before = Array.swap(U32,L.image_board(image),p,value)
+  %Equal.sym(U32,Pair.snd(Array<U32>,U32,C.swapped(p,value,before)),Pair.snd(Array<U32>,U32,before),L.ordinary_swapped_returns_previous_field(p,value,before)) : {_ == L.cell_value(b,p) : U32}
+  L.board_swap_previous_word(L.image_board(image),p,value)
+
+def L.ordinary_swap_target_from_pair(p,value,pair,routes,set):
+  (b,+old) = pair
+  L.ordinary_after_write_keeps(b,p,old,value,p,value)(routes,set)
+
+def L.ordinary_swap_target_exact(image,row,col,value,shape):
+  b = L.image_board(image)
+  +p = L.logical_position(row,col)
+  L.ordinary_swap_target_from_pair(p,value,Array.swap(U32,L.image_board(image),p,value),
+    L.ordinary_routes_from_coordinates(row,col,row,col),
+    (L.board_set_keeps_perfect(L.image_board(image),p,value,7n,shape),L.board_set_get(L.image_board(image),p,value)))
+
+def L.ordinary_pointer_clear_exact(image,p,start):
+  L.board_set_get(L.image_board(image),108,U32.min(start,p))
+
+def L.ordinary_pointer_fill_away_is_identity(b,p,start,away):
+  %Equal.sym(Bool,U32.is_eq(p,start),False{},away) : {C.refresh_if(_,b,start) == b : Array<U32>}
+  {==}
+
+def L.ordinary_pointer_fill_at_rescans_without_skipping(image,p,start,hit):
+  b = L.image_board(image)
+  +n = U32.to_nat((81 - start : U32))
+  %Equal.sym(Bool,U32.is_eq(p,start),True{},hit) :
+    L.PlainFirstWitness(n,start,image,L.cell_value(C.refresh_if(_,b,start),108))
+  L.plain_scan_no_skip(n,start,image)
+
+def L.ordinary_pointer_clear_from_actual_read(image,p,same,word,kept,read):
+  b = L.image_board(image)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,108),(same,word),read) :
+    {L.cell_value(C.start_after_set(True{},p,_),108) == U32.min(Pair.snd(Array<U32>,U32,_),p) : U32}
+  %Equal.sym(Array<U32>,same,b,kept) :
+    {L.cell_value(C.start_after_set(True{},p,(_,word)),108) == U32.min(word,p) : U32}
+  L.ordinary_pointer_clear_exact(image,p,word)
+
+def L.ordinary_pointer_clear_normalized(image,p,read):
+  (same,+word,(keep,proof)) = read
+  L.ordinary_pointer_clear_from_actual_read(image,p,same,word,keep,proof)
+
+def L.ordinary_pointer_clear_uses_actual_prior(image,p):
+  L.ordinary_pointer_clear_normalized(image,p,L.board_read_witness(L.image_board(image),108))
+
+def L.prepared_seed_rows_shape_step(image,n,unit,shape,next):
+  +slot = (81 + unit : U32)
+  next(Board.set_cell(L.image_board(image),slot,523264),
+    L.board_set_keeps_perfect(L.image_board(image),slot,523264,7n,shape))
+
+def L.prepared_seed_rows_keeps_shape(n,unit,b,shape):
+  match n:
+    case 0n:
+      shape
+    case 1n+k:
+      f : (L.Board128(b) -> L.Board128(C.empty_rows_go(1n+k,unit,b))) =
+        L.on_reified_board(b,x => (L.Board128(x) -> L.Board128(C.empty_rows_go(1n+k,unit,x))),L.reify_board(b),
+          image => s => L.prepared_seed_rows_shape_step(image,k,unit,s,
+            x => sh => L.prepared_seed_rows_keeps_shape(k,(unit + 1 : U32),x,sh)))
+      f(shape)
+
+def L.prepared_seed_rows_preserves_word_step(n,unit,q,image,shapes,route,next):
+  (s0,s1) = shapes
+  (head,tail) = route
+  b = L.image_board(image)
+  +slot = (81 + unit : U32)
+  updated = Board.set_cell(L.image_board(image),slot,523264)
+  Equal.trans(U32,L.cell_value(C.empty_rows_go(n,(unit + 1 : U32),updated),q),L.cell_value(updated,q),L.cell_value(b,q),
+    next(Board.set_cell(L.image_board(image),slot,523264))(
+      L.board_set_keeps_perfect(L.image_board(image),slot,523264,7n,s0),tail),
+    L.perfect_write_keeps_cell(L.image_board(image),slot,q,523264,s1,head))
+
+def L.prepared_seed_rows_preserves_word(n,unit,q,b):
+  match n:
+    case 0n:
+      s => route => {==}
+    case 1n+k:
+      L.on_reified_board(b,x => L.SeedRowsKeepsWord(1n+k,unit,q,x),L.reify_board(b),
+        image => shape => route => L.prepared_seed_rows_preserves_word_step(k,unit,q,image,
+          L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),route,
+          x => L.prepared_seed_rows_preserves_word(k,(unit + 1 : U32),q,x)))
+
+def L.prepared_seed_rows_preserves_original_cell(image,row,col,shape):
+  +p = L.logical_position(row,col)
+  L.prepared_seed_rows_preserves_word(9n,0,p,L.image_board(image))(shape,
+    L.cache_setup_read_prefix_known(9n,18n,p,{==},
+      L.cache_setup_route_from_checked(27n,0,p,L.cache_setup_sweep_guard_logical(row,col))))
+
+def L.prepared_seed_rows_split(prefix,suffix,unit,b):
+  match prefix:
+    case 0n:
+      {==}
+    case 1n+k:
+      L.prepared_seed_rows_split(k,suffix,(unit + 1 : U32),Board.set_cell(b,(81 + unit : U32),523264))
+
+def L.seed_exact_row_window(row):
+  match row:
+    case L.Coordinate0{}:
+      ({==},({==},{==}))
+    case L.Coordinate1{}:
+      ({==},({==},{==}))
+    case L.Coordinate2{}:
+      ({==},({==},{==}))
+    case L.Coordinate3{}:
+      ({==},({==},{==}))
+    case L.Coordinate4{}:
+      ({==},({==},{==}))
+    case L.Coordinate5{}:
+      ({==},({==},{==}))
+    case L.Coordinate6{}:
+      ({==},({==},{==}))
+    case L.Coordinate7{}:
+      ({==},({==},{==}))
+    case L.Coordinate8{}:
+      ({==},({==},{==}))
+
+def L.prepared_seed_row_all_columns_empty_parts(row,image,shape,window):
+  (count,(guard,alias)) = window
+  +n = L.coordinate_nat(row)
+  +tail = L.column_tail(row)
+  +unit = L.coord_u32(row)
+  +slot = (81 + unit : U32)
+  b = L.image_board(image)
+  prior = C.empty_rows_go(n,0,L.image_board(image))
+  wrote = Board.set_cell(C.empty_rows_go(n,0,L.image_board(image)),slot,523264)
+  %alias : {L.cell_value(C.empty_rows(b),_) == 523264 : U32}
+  %count : {L.cell_value(C.empty_rows_go(_,0,b),slot) == 523264 : U32}
+  %Equal.sym(Array<U32>,C.empty_rows_go(Nat.add(n,1n+tail),0,b),
+    C.empty_rows_go(1n+tail,unit,prior),L.prepared_seed_rows_split(n,1n+tail,0,L.image_board(image))) :
+    {L.cell_value(_,slot) == 523264 : U32}
+  %Equal.sym(U32,L.cell_value(C.empty_rows_go(tail,(unit + 1 : U32),wrote),slot),L.cell_value(wrote,slot),
+    L.prepared_seed_rows_preserves_word(tail,(unit + 1 : U32),slot,
+      Board.set_cell(C.empty_rows_go(n,0,L.image_board(image)),slot,523264))(
+        L.board_set_keeps_perfect(C.empty_rows_go(n,0,L.image_board(image)),slot,523264,7n,
+          L.prepared_seed_rows_keeps_shape(n,0,L.image_board(image),shape)),
+        L.cache_setup_route_from_checked(tail,(unit + 1 : U32),slot,guard))) :
+    {_ == 523264 : U32}
+  L.board_set_get(C.empty_rows_go(n,0,L.image_board(image)),slot,523264)
+
+def L.empty_reified_matches():
+  {==}
+
+def L.prepared_seed_row_all_columns_empty(row):
+  %L.empty_reified_matches() :
+    {L.cell_value(C.empty_rows(_),L.cache_group_slot(L.CacheRows{},row)) == 523264 : U32}
+  L.prepared_seed_row_all_columns_empty_parts(row,L.empty_image(7n),{==},L.seed_exact_row_window(row))
+
+def L.empty_image_reads_zero(height,size,p,left):
+  match height left:
+    case 0n True{}:
+      {==}
+    case 0n False{}:
+      {==}
+    case 1n+k True{}:
+      b = L.image_board(L.empty_image(k))
+      +h = U32.shr(size)
+      +z = U32.is_lt(p,U32.shr(h))
+      out = Array.get.go(U32,b,h,p,z)
+      %Equal.sym(U32,Pair.snd(Array<U32>,U32,Array.swap.lo(U32,b,out)),
+        Pair.snd(Array<U32>,U32,out),L.swap_join_left_keeps_word(L.image_board(L.empty_image(k)),
+          Array.get.go(U32,L.image_board(L.empty_image(k)),h,p,z))) : {_ == 0 : U32}
+      L.empty_image_reads_zero(k,h,p,z)
+    case 1n+k False{}:
+      b = L.image_board(L.empty_image(k))
+      +h = U32.shr(size)
+      +q = U32.sub(p,h)
+      +z = U32.is_lt(q,U32.shr(h))
+      out = Array.get.go(U32,b,h,q,z)
+      %Equal.sym(U32,Pair.snd(Array<U32>,U32,Array.swap.hi(U32,b,out)),
+        Pair.snd(Array<U32>,U32,out),L.swap_join_right_keeps_word(L.image_board(L.empty_image(k)),
+          Array.get.go(U32,L.image_board(L.empty_image(k)),h,q,z))) : {_ == 0 : U32}
+      L.empty_image_reads_zero(k,h,q,z)
+
+def L.empty_board_reads_zero(p):
+  +masked = U32.and(p,127)
+  L.empty_image_reads_zero(7n,128,masked,U32.is_lt(masked,64))
+
+def L.prepared_seed_logical_cell_is_blank(row,col):
+  +p = L.logical_position(row,col)
+  %Equal.sym(U32,L.cell_value(C.empty_rows(Board.empty()),p),L.cell_value(Board.empty(),p),
+    L.prepared_seed_rows_preserves_original_cell(L.empty_image(7n),row,col,{==})) :
+    {_ == 0 : U32}
+  L.empty_board_reads_zero(p)
+
+def L.prepared_seed_nonrow_window(group,index,nonrow):
+  match group index:
+    case L.CacheRows{} _:
+      Empty.absurd({L.cache_setup_route_guard(9n,0,L.cache_group_slot(L.CacheRows{},index)) == True{} : Bool},
+        L.false_is_not_true(Equal.sym(Bool,True{},False{},nonrow)))
+    case L.CacheColumns{} L.Coordinate0{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate1{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate2{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate3{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate4{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate5{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate6{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate7{}:
+      {==}
+    case L.CacheColumns{} L.Coordinate8{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate0{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate1{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate2{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate3{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate4{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate5{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate6{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate7{}:
+      {==}
+    case L.CacheBoxes{} L.Coordinate8{}:
+      {==}
+
+def L.prepared_seed_nonrow_slot_is_zero(group,index,nonrow):
+  +q = L.cache_group_slot(group,index)
+  %Equal.sym(U32,L.cell_value(C.empty_rows(Board.empty()),q),L.cell_value(Board.empty(),q),
+    L.prepared_seed_rows_preserves_word(9n,0,q,Board.empty())(L.empty_board_depth_seven(),
+      L.cache_setup_route_from_checked(9n,0,q,L.prepared_seed_nonrow_window(group,index,nonrow)))) :
+    {_ == 0 : U32}
+  L.empty_board_reads_zero(q)
+
+def L.prepared_read_shape_parts(image,p,same,word,keep,read,shape):
+  b = L.image_board(image)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),read) :
+    L.PreparedPairShape(_)
+  %Equal.sym(Array<U32>,same,b,keep) : L.PreparedPairShape((_,word))
+  shape
+
+def L.prepared_read_shape_witness(image,p,read,shape):
+  (same,+word,(kept,seen)) = read
+  L.prepared_read_shape_parts(image,p,same,word,kept,seen,shape)
+
+def L.prepared_read_shape_image(image,p,shape):
+  L.prepared_read_shape_witness(image,p,L.board_read_witness(L.image_board(image),p),shape)
+
+def L.prepared_read_preserves_shape(b,p,shape):
+  f : (L.Board128(b) -> L.PreparedPairShape(Board.get_cell(b,p))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedPairShape(Board.get_cell(x,p))),
+      L.reify_board(b),image => s => L.prepared_read_shape_image(image,p,s))
+  f(shape)
+
+def L.prepared_write_cell_shape(pos,digit,state,shape):
+  (b,+bad) = state
+  L.board_set_keeps_perfect(b,pos,digit,7n,shape)
+
+def L.prepared_append_unit_mask_shape(unit,bit,bad,state,shape):
+  (b,+used) = state
+  L.board_set_keeps_perfect(b,(81 + unit : U32),U32.or(used,bit),7n,shape)
+
+def L.prepared_append_unit_shape_image(unit,bit,image,bad,shape):
+  b = L.image_board(image)
+  L.prepared_append_unit_mask_shape(unit,bit,bad,Board.get_cell(L.image_board(image),(81 + unit : U32)),
+    L.prepared_read_preserves_shape(L.image_board(image),(81 + unit : U32),shape))
+
+def L.prepared_append_unit_shape(unit,bit,state,shape):
+  (b,+bad) = state
+  f : (L.Board128(b) -> L.PreparedPairShape(P.prepared_unit(unit,bit,(b,bad)))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedPairShape(P.prepared_unit(unit,bit,(x,bad)))),L.reify_board(b),
+      image => s => L.prepared_append_unit_shape_image(unit,bit,image,bad,s))
+  f(shape)
+
+
+def L.prepared_append_row_mask_shape(unit,bit,empty,bad,state,shape):
+  (b,+used) = state
+  L.board_set_keeps_perfect(b,(81 + unit : U32),U32.or(U32.and(used,U32.not(empty)),bit),7n,shape)
+
+def L.prepared_append_row_shape_image(pos,bit,image,bad,shape):
+  b = L.image_board(image)
+  +unit = M.div9(pos)
+  +p = (81 + unit : U32)
+  L.prepared_append_row_mask_shape(unit,bit,Board.bit((10 + M.rem9(pos) : U32)),bad,Board.get_cell(L.image_board(image),p),
+    L.prepared_read_preserves_shape(L.image_board(image),p,shape))
+
+def L.prepared_append_row_shape(pos,bit,state,shape):
+  (b,+bad) = state
+  f : (L.Board128(b) -> L.PreparedPairShape(P.prepared_row(pos,bit,(b,bad)))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedPairShape(P.prepared_row(pos,bit,(x,bad)))),L.reify_board(b),
+      image => s => L.prepared_append_row_shape_image(pos,bit,image,bad,s))
+  f(shape)
+
+
+def L.prepared_store_nonzero_chain_shape_image(pos,digit,image,bad,shape):
+  +bit = Board.bit(digit)
+  +col = (9 + M.rem9(pos) : U32)
+  +box = (18 + Board.box_of(pos) : U32)
+  rowed = P.prepared_row(pos,bit,(L.image_board(image),bad))
+  coled = P.prepared_unit(col,bit,rowed)
+  boxed = P.prepared_unit(box,bit,coled)
+  L.prepared_write_cell_shape(pos,digit,boxed,
+    L.prepared_append_unit_shape(box,bit,P.prepared_unit(col,bit,P.prepared_row(pos,bit,(L.image_board(image),bad))),
+      L.prepared_append_unit_shape(col,bit,P.prepared_row(pos,bit,(L.image_board(image),bad)),
+        L.prepared_append_row_shape(pos,bit,(L.image_board(image),bad),shape))))
+
+def L.prepared_store_nonzero_chain_shape(pos,digit,state,shape):
+  (b,+bad) = state
+  f : (L.Board128(b) -> L.PreparedPairShape(P.prepared_set(pos,digit,P.prepared_unit((18 + Board.box_of(pos) : U32),Board.bit(digit),P.prepared_unit((9 + M.rem9(pos) : U32),Board.bit(digit),P.prepared_row(pos,Board.bit(digit),(b,bad))))))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedPairShape(P.prepared_set(pos,digit,P.prepared_unit((18 + Board.box_of(pos) : U32),Board.bit(digit),P.prepared_unit((9 + M.rem9(pos) : U32),Board.bit(digit),P.prepared_row(pos,Board.bit(digit),(x,bad))))))),L.reify_board(b),
+      image => s => L.prepared_store_nonzero_chain_shape_image(pos,digit,image,bad,s))
+  f(shape)
+
+
+def L.prepared_legal_store_keeps_shape(digit,pos,state,shape):
+  match digit:
+    case L.D0{}:
+      L.prepared_write_cell_shape(pos,0,state,shape)
+    case L.D1{}:
+      L.prepared_store_nonzero_chain_shape(pos,1,state,shape)
+    case L.D2{}:
+      L.prepared_store_nonzero_chain_shape(pos,2,state,shape)
+    case L.D3{}:
+      L.prepared_store_nonzero_chain_shape(pos,3,state,shape)
+    case L.D4{}:
+      L.prepared_store_nonzero_chain_shape(pos,4,state,shape)
+    case L.D5{}:
+      L.prepared_store_nonzero_chain_shape(pos,5,state,shape)
+    case L.D6{}:
+      L.prepared_store_nonzero_chain_shape(pos,6,state,shape)
+    case L.D7{}:
+      L.prepared_store_nonzero_chain_shape(pos,7,state,shape)
+    case L.D8{}:
+      L.prepared_store_nonzero_chain_shape(pos,8,state,shape)
+    case L.D9{}:
+      L.prepared_store_nonzero_chain_shape(pos,9,state,shape)

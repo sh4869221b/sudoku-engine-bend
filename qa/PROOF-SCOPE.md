@@ -685,3 +685,54 @@ claim about reachable search caches or prove solver soundness.
   position. This covers the explicit rebuild path, not arbitrary
   caller-supplied cached boards, fused prepared parsing, or
   preservation across the full solver transition system.
+
+## Ordinary first-empty pointer initialization
+
+- The actual ordinary first-empty scan writes precisely one field,
+  slot 108. Its witness visits the prefix in order and proves each
+  skipped word is not literal zero. It identifies the first zero or
+  records exhaustion with the sentinel 81.
+- The actual cache rebuild preserves all 81 logical reads before
+  that scan; hence its initial pointer is the first blank of the
+  original, pre-cache board or 81 if all cells are filled. There is
+  no incoming-state pointer premise. This is not a proof of
+  preservation across placements, clears, or fused prepared parsing.
+
+## Full ordinary row words on cache rebuild
+
+- The final row occupancy word for each of the nine rows equals
+  the full fold of that row in the original board, not just its
+  digit projection. This covers the high per-column vacancy marks
+  initialized by the ordinary rebuild. The proof preserves the
+  entire accumulator across earlier cache writes, the row's own
+  write, later cache writes, and the pointer refresh.
+- This initialization theorem does not assume uniqueness and does not
+  establish row metadata preservation across arbitrary later writes.
+
+## Ordinary swaps and fused parser's empty starting state
+
+- The real ordinary swap returns the original target word, rather
+  than a row/column/box bookkeeping word. It writes the requested
+  value at a logical target and preserves the 128-slot shape. This
+  complements the preexisting theorem for other logical cells.
+- At the actual pointer update, clearing stores the minimum of the
+  previous recorded pointer and the cleared position. Filling away
+  from the pointer leaves that update's input unchanged, whereas
+  filling at the pointer starts a no-skip scan of the suffix. This
+  specifies local decisions without proving all reachable inputs
+  already carry the globally first blank.
+- The actual fused parser's pre-scan seed is a 128-slot board:
+  each logical cell and each column/box occupancy word is zero,
+  while all nine row words have their nine vacancy bits set and no
+  digit occupancy. This does not characterize the parser's result
+  after processing characters or later ordinary swaps.
+
+## Fused parser shape during individual legal stores
+
+- A store of any of the ten allowed digit values preserves the
+  128-slot shape. This uses the actual row occupancy write,
+  column and box occupancy writes, and logical cell write; the
+  zero path is checked separately.
+- The result does not by itself prove that the character scanner
+  always produces one of these values or that the complete parser
+  preserves the value and occupancy invariants across characters.
