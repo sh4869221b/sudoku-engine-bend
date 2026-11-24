@@ -87,3 +87,36 @@ zero decode steps leave the array unchanged. This is not an 81-cell round-trip
 theorem: the blank branch writes flag metadata and a whole-board proof still
 needs to show that writes to distinct logical or metadata slots don't
 interfere. The runtime codec, candidate, and search regressions remain enabled.
+
+## Array isolation, queued blanks, and adaptive snapshots
+
+- Candidate masks from both the direct and cached readers decode to zero when shifted
+  down by ten bits, for every input word. The proof is structural over the
+  excluded high bits, not a sampling test. Fixed digits 1–9 are covered by
+  the separate single-cell laws above.
+- A write and a read whose normalized paths reach separate leaves return the
+  same observed value before and after the write. A certificate is constructed
+  by recursively following both routes through the actual array tree; it also
+  records the exact updated tree and both (nonmutating) reads. The public
+  board wrappers use the same measured capacity to normalize both addresses,
+  and a separate theorem proves that a write preserves capacity.
+  Different raw indices alone are not sufficient: on the 128-slot board,
+  reading 128 after writing 0 reads the new value. The source law checks this
+  alias directly.
+- The queued flag-slot formula maps all 81 cells to padding slots 109–111.
+  The flag writer itself preserves a separate logical cell under the same
+  route and size hypotheses. The production low-bit lookup identifies each
+  of the 32 one-hot positions, including bit 31 and wrapped multiplication.
+- Cloning returns two exact source trees, and taking the guess branch passes
+  the unchanged activated tree into the saved snapshot. Restoring a saved
+  snapshot with no alternatives returns that very board, removes the snapshot
+  from the stack, and enters backtracking. These laws do not assert that every
+  live stack corresponds to a valid search history.
+
+The public write noninterference proof is conditional on actual route
+separation and common measured capacity. It does not yet prove that every
+logical/padding index pair in every reachable board satisfies those premises,
+or compose the 81 iterations of production encode and decode. Full
+round-trip preservation, candidate/cache legality, and solver soundness still
+need those stronger invariants. Production and existing regression gates
+are unchanged.

@@ -1082,3 +1082,268 @@ def L.encode_fixed_cell_8(board, pos):
 
 def L.encode_fixed_cell_9(board, pos):
   L.board_set_get(board, pos, 9216)
+
+def L.word_zero_and(n, word):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      match word:
+        case WCon{bit, rest}:
+          Equal.cong(Word(k), Word(1n+k), t => WCon{False{}, t}, Word.and(k, Word.zero(k), rest), Word.zero(k), L.word_zero_and(k, rest))
+
+def L.candidate_word_decodes_blank(word):
+  match word:
+    case U32{WCon{b0, WCon{b1, WCon{b2, WCon{b3, WCon{b4, WCon{b5, WCon{b6, WCon{b7, WCon{b8, WCon{b9, rest}}}}}}}}}}}:
+      Equal.cong(Word(22n), U32, t => U32{Word.shr.pad(31n, Word.shr.pad(30n, Word.shr.pad(29n, Word.shr.pad(28n, Word.shr.pad(27n, Word.shr.pad(26n, Word.shr.pad(25n, Word.shr.pad(24n, Word.shr.pad(23n, Word.shr.pad(22n, t))))))))))}, Word.and(22n, Word.zero(22n), rest), Word.zero(22n), L.word_zero_and(22n, rest))
+
+def L.inverted_candidate_decodes_blank(cells):
+  (board, used) = cells
+  L.candidate_word_decodes_blank(U32.not(used))
+
+def L.urgent_flag_positions():
+  {==}
+
+def L.queued_occupied_not_a_candidate(board, pos, prior_pos, prior_mask, prior_size, word):
+  {==}
+
+def L.queued_urgent_zero(board, pos):
+  {==}
+
+def L.adaptive_alternative_exhausted(pos, frames, depth, found, snapshots, active, board):
+  {==}
+
+def L.adaptive_empty_alternatives_restore_snapshot(pos, frames, depth, found, saved, snapshots, active):
+  {==}
+
+def L.cross_left_read_projection(before, after, read_result):
+  (same, data) = read_result
+  {==}
+
+def L.cross_left_write_result(written, read_tree, n, j, write_result):
+  (next, old) = write_result
+  +i = U32.sub(j, U32.shr(n))
+  L.cross_left_read_projection(written, next, Array.get.go(U32, read_tree, U32.shr(n), i, U32.is_lt(i, U32.shr(U32.shr(n)))))
+
+def L.array_write_left_preserves_other(written, read_tree, n, i, j, value):
+  +p = i
+  L.cross_left_write_result(written, read_tree, n, j, Array.swap.go(U32, written, U32.shr(n), p, value, U32.is_lt(p, U32.shr(U32.shr(n)))))
+
+def L.cross_right_read_projection(before, after, read_result):
+  (same, data) = read_result
+  {==}
+
+def L.cross_right_write_result(written, read_tree, n, j, write_result):
+  (next, old) = write_result
+  +i = j
+  L.cross_right_read_projection(written, next, Array.get.go(U32, read_tree, U32.shr(n), i, U32.is_lt(i, U32.shr(U32.shr(n)))))
+
+def L.array_write_right_preserves_other(written, read_tree, n, i, j, value):
+  +p = U32.sub(i, U32.shr(n))
+  L.cross_right_write_result(written, read_tree, n, j, Array.swap.go(U32, written, U32.shr(n), p, value, U32.is_lt(p, U32.shr(U32.shr(n)))))
+
+def L.array_clone_join(left, right, ea, eb):
+  Equal.trans(Array<U32> & Array<U32>,
+    Array.clone.node(U32, Array.clone(U32, left), Array.clone(U32, right)),
+    Array.clone.node(U32, (left, left), Array.clone(U32, right)),
+    (ANode{left, right}, ANode{left, right}),
+    Equal.cong(Array<U32> & Array<U32>, Array<U32> & Array<U32>,
+      pair => Array.clone.node(U32, pair, Array.clone(U32, right)),
+      Array.clone(U32, left), (left, left), ea),
+    Equal.cong(Array<U32> & Array<U32>, Array<U32> & Array<U32>,
+      pair => Array.clone.node(U32, (left, left), pair),
+      Array.clone(U32, right), (right, right), eb))
+
+def L.array_clone_exact(a):
+  match a:
+    case ALeaf{x}:
+      {==}
+    case ANode{l, r}:
+      L.array_clone_join(l, r, L.array_clone_exact(l), L.array_clone_exact(r))
+
+def L.adaptive_guess_saves_activated_board(pos, digit, remaining, frames, depth, found, snapshots, active, board):
+  Equal.cong(Array<U32> & Array<U32>, Fast.State,
+    pair => Fast.guessed(pos, digit, remaining, frames, depth, found, snapshots, active, pair),
+    Array.clone(U32, Fast.activated(active, board)),
+    (Fast.activated(active, board), Fast.activated(active, board)),
+    L.array_clone_exact(Fast.activated(active, board)))
+
+def L.separate_descend_left(child, other, n, i, j, value, descent):
+  (next, +old, +seen, (write, before, after)) = descent
+  +wi = i
+  +ri = j
+  +wz = U32.is_lt(wi, U32.shr(U32.shr(n)))
+  +rz = U32.is_lt(ri, U32.shr(U32.shr(n)))
+  (ANode{next, other}, old, seen, (
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.lo(U32, other, p),
+      Array.swap.go(U32, child, U32.shr(n), wi, value, wz), (next, old), write),
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.lo(U32, other, p),
+      Array.get.go(U32, child, U32.shr(n), ri, rz), (child, seen), before),
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.lo(U32, other, p),
+      Array.get.go(U32, next, U32.shr(n), ri, rz), (next, seen), after)))
+
+def L.separate_observations_left(child, next, other, half, j, z, seen, read):
+  %Equal.sym(Array<U32> & U32, Array.get.go(U32, other, half, j, z), (other, seen), read) :
+    ({Array.swap.hi(U32, child, _) == (ANode{child, other}, seen) : Array<U32> & U32} & {Array.swap.hi(U32, next, _) == (ANode{next, other}, seen) : Array<U32> & U32})
+  ({==}, {==})
+
+def L.separate_at_left_shape(child, other, n, i, j, value, seen, written, read):
+  (next, +old, cap, (eq, unused_read, after_size, before_size)) = written
+  +wi = i
+  +ri = U32.sub(j, U32.shr(n))
+  +wz = U32.is_lt(wi, U32.shr(U32.shr(n)))
+  +rz = U32.is_lt(ri, U32.shr(U32.shr(n)))
+  # Both observations only traverse the other subtree.
+  (ANode{next, other}, old, seen, (
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.lo(U32, other, p),
+      Array.swap.go(U32, child, U32.shr(n), wi, value, wz), (next, old), eq),
+    L.separate_observations_left(child, next, other, U32.shr(n), ri, rz, seen, read)))
+
+def L.separate_at_left(child, other, n, i, j, value, written, observed):
+  (same, +seen, (shape, read)) = observed
+  +ri = U32.sub(j, U32.shr(n))
+  +rz = U32.is_lt(ri, U32.shr(U32.shr(n)))
+  finish : ({Array.get.go(U32, other, U32.shr(n), ri, rz) == (same, seen) : Array<U32> & U32} -> L.SeparateRead(ANode{child, other}, n, i, j, value, True{}, False{})) = (
+    %shape : ({Array.get.go(U32, _, U32.shr(n), ri, rz) == (same, seen) : Array<U32> & U32} -> L.SeparateRead(ANode{child, _}, n, i, j, value, True{}, False{}))
+    premise => L.separate_at_left_shape(child, same, n, i, j, value, seen, written, premise))
+  finish(read)
+
+
+def L.separate_descend_right(child, other, n, i, j, value, descent):
+  (next, +old, +seen, (write, before, after)) = descent
+  +wi = U32.sub(i, U32.shr(n))
+  +ri = U32.sub(j, U32.shr(n))
+  +wz = U32.is_lt(wi, U32.shr(U32.shr(n)))
+  +rz = U32.is_lt(ri, U32.shr(U32.shr(n)))
+  (ANode{other, next}, old, seen, (
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.hi(U32, other, p),
+      Array.swap.go(U32, child, U32.shr(n), wi, value, wz), (next, old), write),
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.hi(U32, other, p),
+      Array.get.go(U32, child, U32.shr(n), ri, rz), (child, seen), before),
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.hi(U32, other, p),
+      Array.get.go(U32, next, U32.shr(n), ri, rz), (next, seen), after)))
+
+def L.separate_observations_right(child, next, other, half, j, z, seen, read):
+  %Equal.sym(Array<U32> & U32, Array.get.go(U32, other, half, j, z), (other, seen), read) :
+    ({Array.swap.lo(U32, child, _) == (ANode{other, child}, seen) : Array<U32> & U32} & {Array.swap.lo(U32, next, _) == (ANode{other, next}, seen) : Array<U32> & U32})
+  ({==}, {==})
+
+def L.separate_at_right_shape(child, other, n, i, j, value, seen, written, read):
+  (next, +old, cap, (eq, unused_read, after_size, before_size)) = written
+  +wi = U32.sub(i, U32.shr(n))
+  +ri = j
+  +wz = U32.is_lt(wi, U32.shr(U32.shr(n)))
+  +rz = U32.is_lt(ri, U32.shr(U32.shr(n)))
+  # Both observations only traverse the other subtree.
+  (ANode{other, next}, old, seen, (
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, p => Array.swap.hi(U32, other, p),
+      Array.swap.go(U32, child, U32.shr(n), wi, value, wz), (next, old), eq),
+    L.separate_observations_right(child, next, other, U32.shr(n), ri, rz, seen, read)))
+
+def L.separate_at_right(child, other, n, i, j, value, written, observed):
+  (same, +seen, (shape, read)) = observed
+  +ri = j
+  +rz = U32.is_lt(ri, U32.shr(U32.shr(n)))
+  finish : ({Array.get.go(U32, other, U32.shr(n), ri, rz) == (same, seen) : Array<U32> & U32} -> L.SeparateRead(ANode{other, child}, n, i, j, value, False{}, True{})) = (
+    %shape : ({Array.get.go(U32, _, U32.shr(n), ri, rz) == (same, seen) : Array<U32> & U32} -> L.SeparateRead(ANode{_, child}, n, i, j, value, False{}, True{}))
+    premise => L.separate_at_right_shape(child, same, n, i, j, value, seen, written, premise))
+  finish(read)
+
+
+def L.separate_read_projection(tree, n, i, j, value, wz, rz, proof):
+  (next, +old, +seen, (write, before, after)) = proof
+  %Equal.sym(Array<U32> & U32, Array.swap.go(U32, tree, n, i, value, wz), (next, old), write) : {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, _), n, j, rz)) == Pair.snd(Array<U32>, U32, Array.get.go(U32, tree, n, j, rz)) : U32}
+  %Equal.sym(Array<U32> & U32, Array.get.go(U32, next, n, j, rz), (next, seen), after) : {Pair.snd(Array<U32>, U32, _) == Pair.snd(Array<U32>, U32, Array.get.go(U32, tree, n, j, rz)) : U32}
+  %Equal.sym(Array<U32> & U32, Array.get.go(U32, tree, n, j, rz), (tree, seen), before) : {seen == Pair.snd(Array<U32>, U32, _) : U32}
+  {==}
+
+def L.false_is_not_true(e):
+  %Equal.sym(Bool, False{}, True{}, e) : L.TrueOnly(_)
+  Unit{}
+
+def L.array_swap_preserves_separate_read(tree, n, i, j, value, wz, rz, distinct):
+  match tree wz rz:
+    case ALeaf{x} _ _:
+      Empty.absurd(L.SeparateRead(ALeaf{x}, n, i, j, value, wz, rz), L.false_is_not_true(distinct))
+    case ANode{left, right} True{} False{}:
+      +h = U32.shr(n)
+      +k = U32.shr(h)
+      +r = U32.sub(j, h)
+      L.separate_at_left(left, right, n, i, j, value,
+        L.array_swap_witness(left, h, i, value, U32.is_lt(i, k)),
+        L.array_get_witness(right, h, r, U32.is_lt(r, k)))
+    case ANode{left, right} False{} True{}:
+      +h = U32.shr(n)
+      +k = U32.shr(h)
+      +w = U32.sub(i, h)
+      L.separate_at_right(right, left, n, i, j, value,
+        L.array_swap_witness(right, h, w, value, U32.is_lt(w, k)),
+        L.array_get_witness(left, h, j, U32.is_lt(j, k)))
+    case ANode{left, right} True{} True{}:
+      +h = U32.shr(n)
+      +k = U32.shr(h)
+      L.separate_descend_left(left, right, n, i, j, value,
+        L.array_swap_preserves_separate_read(left, h, i, j, value, U32.is_lt(i, k), U32.is_lt(j, k), distinct))
+    case ANode{left, right} False{} False{}:
+      +h = U32.shr(n)
+      +k = U32.shr(h)
+      +w = U32.sub(i, h)
+      +r = U32.sub(j, h)
+      L.separate_descend_right(right, left, n, i, j, value,
+        L.array_swap_preserves_separate_read(right, h, w, r, value, U32.is_lt(w, k), U32.is_lt(r, k), distinct))
+
+def L.capacity_aligned(a, n, i, v, next, old, cap, write, after, eq):
+  %Equal.sym(Array<U32> & U32, Array.swap.at(U32, i, v, (a, n)), (next, old), write) : {Pair.snd(Array<U32>, U32, Array.size(U32, Array.set.fin(U32, _))) == n : U32}
+  %Equal.sym(Array<U32> & U32, Array.size(U32, next), (next, cap), after) : {Pair.snd(Array<U32>, U32, _) == n : U32}
+  Equal.cong(Array<U32> & U32, U32, p => Pair.snd(Array<U32>, U32, p), (a, cap), (a, n), eq)
+
+def L.capacity_from_write_witness(a, n, i, v, size, w):
+  (next, +old, +cap, (write, read, after, before)) = w
+  finish : ({Array.size(U32, a) == (a, cap) : Array<U32> & U32} -> L.SameCapacity(a, i, v)) = (
+    %Equal.sym(Array<U32> & U32, Array.size(U32, a), (a, n), size) :
+      ({_ == (a, cap) : Array<U32> & U32} -> {Pair.snd(Array<U32>, U32, Array.size(U32, Array.set.fin(U32, Array.swap.at(U32, i, v, _)))) == Pair.snd(Array<U32>, U32, _) : U32})
+    eq => L.capacity_aligned(a, n, i, v, next, old, cap, write, after,
+      Equal.sym(Array<U32> & U32, (a, n), (a, cap), eq)))
+  finish(before)
+
+def L.capacity_from_size_witness(a, i, v, size):
+  (same, +n, (shape, measured)) = size
+  +j = U32.and(i, U32.sub(n, 1))
+  finish : ({Array.size(U32, a) == (same, n) : Array<U32> & U32} -> L.SameCapacity(a, i, v)) = (
+    %shape : ({Array.size(U32, _) == (same, n) : Array<U32> & U32} -> L.SameCapacity(_, i, v))
+    eq => L.capacity_from_write_witness(same, n, i, v, eq, L.array_swap_witness(same, n, j, v, U32.is_lt(j, U32.shr(n)))))
+  finish(measured)
+
+def L.board_set_keeps_capacity(a, i, v):
+  L.capacity_from_size_witness(a, i, v, L.array_size_witness(a))
+
+def L.board_isolation_aligned(a, n, p, q, v, before, after, observed):
+  %Equal.sym(Array<U32> & U32, Array.size(U32, Board.set_cell(a, p, v)), (Board.set_cell(a, p, v), n), after) :
+    {Pair.snd(Array<U32>, U32, Array.get.at(U32, q, _)) == Pair.snd(Array<U32>, U32, Board.get_cell(a, q)) : U32}
+  %Equal.sym(Array<U32> & U32, Array.size(U32, a), (a, n), before) :
+    {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.at(U32, p, v, _)), n, U32.and(q, U32.sub(n, 1)), U32.is_lt(U32.and(q, U32.sub(n, 1)), U32.shr(n)))) == Pair.snd(Array<U32>, U32, Array.get.at(U32, q, _)) : U32}
+  observed
+
+def L.board_write_preserves_separate_read(a, n, p, q, v, before, after, disjoint):
+  +wi = U32.and(p, U32.sub(n, 1))
+  +ri = U32.and(q, U32.sub(n, 1))
+  +wz = U32.is_lt(wi, U32.shr(n))
+  +rz = U32.is_lt(ri, U32.shr(n))
+  L.board_isolation_aligned(a, n, p, q, v, before, after,
+    L.separate_read_projection(a, n, wi, ri, v, wz, rz,
+      L.array_swap_preserves_separate_read(a, n, wi, ri, v, wz, rz, disjoint)))
+
+def L.raw_128_aliases_zero(value):
+  {==}
+
+def L.queued_flag_slot_is_padding():
+  {==}
+
+def L.queued_flagged_keeps_separate_cell(a, pos, read_pos, present, old, n, before, after, separate):
+  L.board_write_preserves_separate_read(a, n, L.flag_slot(pos), read_pos, L.flag_word(pos, present, old), before, after, separate)
+
+def L.candidate_at_decodes_blank(board, pos):
+  L.inverted_candidate_decodes_blank(C.add_unit((18 + Board.box_of(pos) : U32), C.add_unit((9 + M.rem9(pos) : U32), C.unit_used(board, (M.div9(pos) : U32)))))
+
+def L.cached_at_decodes_blank(board, pos):
+  L.inverted_candidate_decodes_blank(C.cached_add((99 + Board.box_of(pos) : U32), C.cached_add((90 + M.rem9(pos) : U32), Array.get(U32, board, (81 + M.div9(pos) : U32)))))

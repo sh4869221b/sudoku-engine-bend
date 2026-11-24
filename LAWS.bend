@@ -1107,3 +1107,400 @@ law mask_digits_normalize:
 law mask_count_normalize:
   for +mask: U32
   {C.mask_count(U32.and(mask, 1023)) == C.mask_count(mask) : U32}
+
+# Structural zero of the candidate representation after removing ten bits.
+law word_zero_and:
+  for +n: Nat
+  for +word: Word(n)
+  {Word.and(n, Word.zero(n), word) == Word.zero(n) : Word(n)}
+
+law candidate_word_decodes_blank:
+  for +word: U32
+  {U32.shrn(U32.and(1022, word), 10n) == 0 : U32}
+
+law inverted_candidate_decodes_blank:
+  for cells: Array<U32> & U32
+  {U32.shrn(Pair.snd(Array<U32>, U32, C.invert(cells)), 10n) == 0 : U32}
+
+# All possible one-hot inputs, including bit 31 and wrapped multiplication.
+def flag_positions(+n: Nat, +index: Nat) -> List<&2, U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+k:
+      +bit = U32.shln(1, index)
+      Q.trailing(U32.shrn((bit * 125613361 : U32), 27n)) <> flag_positions(k, (1n+index))
+
+law urgent_flag_positions:
+  {flag_positions(32n, 0n) == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31] : List<&2, U32>}
+
+law queued_occupied_not_a_candidate:
+  for board: Array<U32>
+  for +pos: U32
+  for +prior_pos: U32
+  for +prior_mask: U32
+  for +prior_size: U32
+  for +word: U32
+  {Q.advance(False{}, pos, prior_pos, prior_mask, prior_size, board, word) == (board, (prior_pos, (prior_mask, prior_size))) : Array<U32> & U32 & U32 & U32}
+
+law queued_urgent_zero:
+  for board: Array<U32>
+  for +pos: U32
+  {Q.urgent(pos, (board, 0)) == (board, C.Choice{pos, 0, 0}) : Array<U32> & C.Choice}
+
+law adaptive_alternative_exhausted:
+  for +pos: U32
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1, Array<U32>>
+  for +active: Bool
+  for board: Array<U32>
+  {Fast.alternative(0, pos, frames, depth, found, snapshots, active, board) == Fast.Backtracking{board, frames, depth, found, snapshots, active} : Fast.State}
+
+law adaptive_empty_alternatives_restore_snapshot:
+  for +pos: U32
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for saved: Array<U32>
+  for snapshots: List<&1, Array<U32>>
+  for +active: Bool
+  {Fast.restore(pos, 0, frames, depth, found, saved <> snapshots, active) == Fast.Backtracking{saved, frames, depth, found, snapshots, active} : Fast.State}
+
+# A read and a write which diverge at a tree node do not interfere.
+
+law cross_left_read_projection:
+  for -before: Array<U32>
+  for -after: Array<U32>
+  for read_result: Array<U32> & U32
+  {Pair.snd(Array<U32>, U32, Array.swap.hi(U32, after, read_result)) == Pair.snd(Array<U32>, U32, Array.swap.hi(U32, before, read_result)) : U32}
+
+law cross_left_write_result:
+  for -written: Array<U32>
+  for read_tree: Array<U32>
+  for +n: U32
+  for +j: U32
+  for write_result: Array<U32> & U32
+  {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.lo(U32, read_tree, write_result)), n, j, False{})) == Pair.snd(Array<U32>, U32, Array.get.go(U32, ANode{written, read_tree}, n, j, False{})) : U32}
+
+law array_write_left_preserves_other:
+  for written: Array<U32>
+  for read_tree: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.go(U32, ANode{written, read_tree}, n, i, value, True{})), n, j, False{})) == Pair.snd(Array<U32>, U32, Array.get.go(U32, ANode{written, read_tree}, n, j, False{})) : U32}
+
+law cross_right_read_projection:
+  for -before: Array<U32>
+  for -after: Array<U32>
+  for read_result: Array<U32> & U32
+  {Pair.snd(Array<U32>, U32, Array.swap.lo(U32, after, read_result)) == Pair.snd(Array<U32>, U32, Array.swap.lo(U32, before, read_result)) : U32}
+
+law cross_right_write_result:
+  for -written: Array<U32>
+  for read_tree: Array<U32>
+  for +n: U32
+  for +j: U32
+  for write_result: Array<U32> & U32
+  {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.hi(U32, read_tree, write_result)), n, j, True{})) == Pair.snd(Array<U32>, U32, Array.get.go(U32, ANode{read_tree, written}, n, j, True{})) : U32}
+
+law array_write_right_preserves_other:
+  for written: Array<U32>
+  for read_tree: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.go(U32, ANode{read_tree, written}, n, i, value, False{})), n, j, True{})) == Pair.snd(Array<U32>, U32, Array.get.go(U32, ANode{read_tree, written}, n, j, True{})) : U32}
+
+# Snapshot ownership: cloning duplicates the exact source tree, not just digits.
+law array_clone_join:
+  for -left: Array<U32>
+  for -right: Array<U32>
+  for ea: {Array.clone(U32, left) == (left, left) : Array<U32> & Array<U32>}
+  for eb: {Array.clone(U32, right) == (right, right) : Array<U32> & Array<U32>}
+  {Array.clone(U32, ANode{left, right}) == (ANode{left, right}, ANode{left, right}) : Array<U32> & Array<U32>}
+
+law array_clone_exact:
+  for a: Array<U32>
+  {Array.clone(U32, a) == (a, a) : Array<U32> & Array<U32>}
+
+law adaptive_guess_saves_activated_board:
+  for +pos: U32
+  for +digit: U32
+  for +remaining: U32
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1, Array<U32>>
+  for +active: Bool
+  for board: Array<U32>
+  {Fast.place(True{}, pos, digit, remaining, frames, depth, found, snapshots, active, board) ==
+   Fast.guessed(pos, digit, remaining, frames, depth, found, snapshots, active,
+     (Fast.activated(active, board), Fast.activated(active, board))) : Fast.State}
+
+# A path certificate transports all three equations through ancestors: the
+# exact write, and an unchanged observation of the other leaf in either tree.
+def SeparateRead(-tree: Array<U32>, -n: U32, -i: U32, -j: U32, -value: U32, -write_left: Bool, -read_left: Bool) -> Type:
+  Sigma<&1, &1, Array<U32>, next =>
+  Sigma<&1, &1, U32, old =>
+  Sigma<&1, &1, U32, seen =>
+  ({Array.swap.go(U32, tree, n, i, value, write_left) == (next, old) : Array<U32> & U32}
+   & {Array.get.go(U32, tree, n, j, read_left) == (tree, seen) : Array<U32> & U32}
+   & {Array.get.go(U32, next, n, j, read_left) == (next, seen) : Array<U32> & U32})>>>
+
+law separate_descend_left:
+  for -child: Array<U32>
+  for other: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for descent: SeparateRead(child, U32.shr(n), i, j, value, U32.is_lt(i, U32.shr(U32.shr(n))), U32.is_lt(j, U32.shr(U32.shr(n))))
+  SeparateRead(ANode{child, other}, n, i, j, value, True{}, True{})
+
+law separate_at_left_shape:
+  for -child: Array<U32>
+  for other: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for +seen: U32
+  for written: ArrayWriteWitness(child, U32.shr(n), i, value, U32.is_lt(i, U32.shr(U32.shr(n))))
+  for read: {Array.get.go(U32, other, U32.shr(n), U32.sub(j, U32.shr(n)), U32.is_lt(U32.sub(j, U32.shr(n)), U32.shr(U32.shr(n)))) == (other, seen) : Array<U32> & U32}
+  SeparateRead(ANode{child, other}, n, i, j, value, True{}, False{})
+
+law separate_at_left:
+  for -child: Array<U32>
+  for -other: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for written: ArrayWriteWitness(child, U32.shr(n), i, value, U32.is_lt(i, U32.shr(U32.shr(n))))
+  for observed: ArrayReadWitness(other, U32.shr(n), U32.sub(j, U32.shr(n)), U32.is_lt(U32.sub(j, U32.shr(n)), U32.shr(U32.shr(n))))
+  SeparateRead(ANode{child, other}, n, i, j, value, True{}, False{})
+
+law separate_observations_left:
+  for -child: Array<U32>
+  for -next: Array<U32>
+  for -other: Array<U32>
+  for +half: U32
+  for +j: U32
+  for +z: Bool
+  for +seen: U32
+  for read: {Array.get.go(U32, other, half, j, z) == (other, seen) : Array<U32> & U32}
+  ({Array.swap.hi(U32, child, Array.get.go(U32, other, half, j, z)) == (ANode{child, other}, seen) : Array<U32> & U32} & {Array.swap.hi(U32, next, Array.get.go(U32, other, half, j, z)) == (ANode{next, other}, seen) : Array<U32> & U32})
+
+law separate_descend_right:
+  for -child: Array<U32>
+  for other: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for descent: SeparateRead(child, U32.shr(n), U32.sub(i, U32.shr(n)), U32.sub(j, U32.shr(n)), value, U32.is_lt(U32.sub(i, U32.shr(n)), U32.shr(U32.shr(n))), U32.is_lt(U32.sub(j, U32.shr(n)), U32.shr(U32.shr(n))))
+  SeparateRead(ANode{other, child}, n, i, j, value, False{}, False{})
+
+law separate_at_right_shape:
+  for -child: Array<U32>
+  for other: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for +seen: U32
+  for written: ArrayWriteWitness(child, U32.shr(n), U32.sub(i, U32.shr(n)), value, U32.is_lt(U32.sub(i, U32.shr(n)), U32.shr(U32.shr(n))))
+  for read: {Array.get.go(U32, other, U32.shr(n), j, U32.is_lt(j, U32.shr(U32.shr(n)))) == (other, seen) : Array<U32> & U32}
+  SeparateRead(ANode{other, child}, n, i, j, value, False{}, True{})
+
+law separate_at_right:
+  for -child: Array<U32>
+  for -other: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for written: ArrayWriteWitness(child, U32.shr(n), U32.sub(i, U32.shr(n)), value, U32.is_lt(U32.sub(i, U32.shr(n)), U32.shr(U32.shr(n))))
+  for observed: ArrayReadWitness(other, U32.shr(n), j, U32.is_lt(j, U32.shr(U32.shr(n))))
+  SeparateRead(ANode{other, child}, n, i, j, value, False{}, True{})
+
+law separate_observations_right:
+  for -child: Array<U32>
+  for -next: Array<U32>
+  for -other: Array<U32>
+  for +half: U32
+  for +j: U32
+  for +z: Bool
+  for +seen: U32
+  for read: {Array.get.go(U32, other, half, j, z) == (other, seen) : Array<U32> & U32}
+  ({Array.swap.lo(U32, child, Array.get.go(U32, other, half, j, z)) == (ANode{other, child}, seen) : Array<U32> & U32} & {Array.swap.lo(U32, next, Array.get.go(U32, other, half, j, z)) == (ANode{other, next}, seen) : Array<U32> & U32})
+
+law separate_read_projection:
+  for -tree: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for +wz: Bool
+  for +rz: Bool
+  for proof: SeparateRead(tree, n, i, j, value, wz, rz)
+  {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.go(U32, tree, n, i, value, wz)), n, j, rz)) ==
+   Pair.snd(Array<U32>, U32, Array.get.go(U32, tree, n, j, rz)) : U32}
+
+# Computes just the two routes, ignoring leaf values. Distinct raw indices
+# alone are insufficient because the public Array API masks/wraps them.
+def routes_separate(tree: Array<U32>, +n: U32, +i: U32, +j: U32, +wz: Bool, +rz: Bool) -> Bool:
+  match tree wz rz:
+    case ALeaf{x} _ _:
+      False{}
+    case ANode{left, right} True{} False{}:
+      True{}
+    case ANode{left, right} False{} True{}:
+      True{}
+    case ANode{left, right} True{} True{}:
+      +half = U32.shr(n)
+      routes_separate(left, half, i, j, U32.is_lt(i, U32.shr(half)), U32.is_lt(j, U32.shr(half)))
+    case ANode{left, right} False{} False{}:
+      +half = U32.shr(n)
+      +wi = U32.sub(i, half)
+      +ri = U32.sub(j, half)
+      routes_separate(right, half, wi, ri, U32.is_lt(wi, U32.shr(half)), U32.is_lt(ri, U32.shr(half)))
+
+def TrueOnly(tag: Bool) -> Type:
+  match tag:
+    case True{}:
+      Unit
+    case False{}:
+      Empty
+
+law false_is_not_true:
+  for e: {False{} == True{} : Bool}
+  Empty
+
+law array_swap_preserves_separate_read:
+  for tree: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +value: U32
+  for +wz: Bool
+  for +rz: Bool
+  for distinct: {routes_separate(tree, n, i, j, wz, rz) == True{} : Bool}
+  SeparateRead(tree, n, i, j, value, wz, rz)
+
+def SameCapacity(-a: Array<U32>, -i: U32, -v: U32) -> Type:
+  {Pair.snd(Array<U32>, U32, Array.size(U32, B.set_cell(a, i, v))) ==
+   Pair.snd(Array<U32>, U32, Array.size(U32, a)) : U32}
+
+law capacity_aligned:
+  for -a: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for -next: Array<U32>
+  for -old: U32
+  for +cap: U32
+  for write: {Array.swap.at(U32, i, v, (a, n)) == (next, old) : Array<U32> & U32}
+  for after: {Array.size(U32, next) == (next, cap) : Array<U32> & U32}
+  for eq: {(a, cap) == (a, n) : Array<U32> & U32}
+  {Pair.snd(Array<U32>, U32, Array.size(U32, Array.set.fin(U32, Array.swap.at(U32, i, v, (a, n))))) == n : U32}
+
+law capacity_from_write_witness:
+  for -a: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for size: {Array.size(U32, a) == (a, n) : Array<U32> & U32}
+  for w: ArrayWriteWitness(a, n, U32.and(i, U32.sub(n, 1)), v, U32.is_lt(U32.and(i, U32.sub(n, 1)), U32.shr(n)))
+  SameCapacity(a, i, v)
+
+law capacity_from_size_witness:
+  for -a: Array<U32>
+  for +i: U32
+  for +v: U32
+  for size: ArraySizeWitness(a)
+  SameCapacity(a, i, v)
+
+law board_set_keeps_capacity:
+  for a: Array<U32>
+  for +i: U32
+  for +v: U32
+  SameCapacity(a, i, v)
+
+# Bridge the routing certificate to the production wrappers, with a common
+# measured size so get/set normalize the addresses using the same modulus.
+law board_isolation_aligned:
+  for -a: Array<U32>
+  for +n: U32
+  for +p: U32
+  for +q: U32
+  for +v: U32
+  for before: {Array.size(U32, a) == (a, n) : Array<U32> & U32}
+  for after: {Array.size(U32, B.set_cell(a, p, v)) == (B.set_cell(a, p, v), n) : Array<U32> & U32}
+  for observed: {Pair.snd(Array<U32>, U32, Array.get.go(U32, Array.set.fin(U32, Array.swap.go(U32, a, n, U32.and(p, U32.sub(n, 1)), v, U32.is_lt(U32.and(p, U32.sub(n, 1)), U32.shr(n)))), n, U32.and(q, U32.sub(n, 1)), U32.is_lt(U32.and(q, U32.sub(n, 1)), U32.shr(n)))) == Pair.snd(Array<U32>, U32, Array.get.go(U32, a, n, U32.and(q, U32.sub(n, 1)), U32.is_lt(U32.and(q, U32.sub(n, 1)), U32.shr(n)))) : U32}
+  {Pair.snd(Array<U32>, U32, B.get_cell(B.set_cell(a, p, v), q)) == Pair.snd(Array<U32>, U32, B.get_cell(a, q)) : U32}
+
+law board_write_preserves_separate_read:
+  for a: Array<U32>
+  for +n: U32
+  for +p: U32
+  for +q: U32
+  for +v: U32
+  for before: {Array.size(U32, a) == (a, n) : Array<U32> & U32}
+  for after: {Array.size(U32, B.set_cell(a, p, v)) == (B.set_cell(a, p, v), n) : Array<U32> & U32}
+  for disjoint: {routes_separate(a, n, U32.and(p, U32.sub(n, 1)), U32.and(q, U32.sub(n, 1)), U32.is_lt(U32.and(p, U32.sub(n, 1)), U32.shr(n)), U32.is_lt(U32.and(q, U32.sub(n, 1)), U32.shr(n))) == True{} : Bool}
+  {Pair.snd(Array<U32>, U32, B.get_cell(B.set_cell(a, p, v), q)) == Pair.snd(Array<U32>, U32, B.get_cell(a, q)) : U32}
+
+# Alias counterexample: even on the production 128-slot tree, an out-of-range
+# raw index is not another cell. The public access normalizes it.
+law raw_128_aliases_zero:
+  for +value: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(B.set_cell(B.empty(), 0, value), 128)) == value : U32}
+
+def flag_slot(+pos: U32) -> U32:
+  (109 + U32.shrn(pos, 5n) : U32)
+
+def flag_word(+pos: U32, +present: Bool, +old: U32) -> U32:
+  +bit = U32.shln(1, U32.to_nat(U32.and(pos, 31)))
+  Bool.pick(U32, present, U32.or(old, bit), U32.and(old, U32.not(bit)))
+
+def flag_slots(+n: Nat, +pos: U32) -> List<&2, U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+k:
+      flag_slot(pos) <> flag_slots(k, (pos + 1 : U32))
+
+law queued_flag_slot_is_padding:
+  {flag_slots(81n, 0) ==
+   List.append(&2, U32, List.replicate(U32, 32n, 109),
+     List.append(&2, U32, List.replicate(U32, 32n, 110), List.replicate(U32, 17n, 111))) : List<&2, U32>}
+
+law queued_flagged_keeps_separate_cell:
+  for a: Array<U32>
+  for +pos: U32
+  for +read_pos: U32
+  for +present: Bool
+  for +old: U32
+  for +n: U32
+  for before: {Array.size(U32, a) == (a, n) : Array<U32> & U32}
+  for after: {Array.size(U32, Q.flagged(pos, present, (a, old))) == (Q.flagged(pos, present, (a, old)), n) : Array<U32> & U32}
+  for separate: {routes_separate(a, n, U32.and(flag_slot(pos), U32.sub(n, 1)), U32.and(read_pos, U32.sub(n, 1)),
+    U32.is_lt(U32.and(flag_slot(pos), U32.sub(n, 1)), U32.shr(n)), U32.is_lt(U32.and(read_pos, U32.sub(n, 1)), U32.shr(n))) == True{} : Bool}
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.flagged(pos, present, (a, old)), read_pos)) ==
+   Pair.snd(Array<U32>, U32, B.get_cell(a, read_pos)) : U32}
+
+law candidate_at_decodes_blank:
+  for board: Array<U32>
+  for +pos: U32
+  {U32.shrn(Pair.snd(Array<U32>, U32, C.at(board, pos)), 10n) == 0 : U32}
+
+law cached_at_decodes_blank:
+  for board: Array<U32>
+  for +pos: U32
+  {U32.shrn(Pair.snd(Array<U32>, U32, C.cached_at(board, pos)), 10n) == 0 : U32}
