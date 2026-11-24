@@ -9643,3 +9643,343 @@ law copy_shape_four_from_three:
   for -b: ArrayShape
   for eqs: ({a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape})
   ({a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape})
+
+def direct_unit_fold(+n: Nat,+unit: U32,+j: U32,+image: BoardImage,+used: U32) -> U32:
+  match n:
+    case 0n:
+      used
+    case 1n+k:
+      direct_unit_fold(k,unit,(j + 1 : U32),image,
+        U32.or(used,B.bit(cell_value(image_board(image),B.unit_pos(unit,j)))))
+
+law direct_unit_fold_actual:
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for +image: BoardImage
+  for +used: U32
+  {C.used_go(n,unit,j,(image_board(image),cell_value(image_board(image),B.unit_pos(unit,j))),used) ==
+    (image_board(image),direct_unit_fold(n,unit,j,image,used)) : Array<U32> & U32}
+
+law direct_unit_used_image:
+  for +image: BoardImage
+  for +unit: U32
+  {C.unit_used(image_board(image),unit) == (image_board(image),direct_unit_fold(9n,unit,0,image,0)) : Array<U32> & U32}
+
+law direct_add_unit_image:
+  for +image: BoardImage
+  for +unit: U32
+  for +used: U32
+  {C.add_unit(unit,(image_board(image),used)) ==
+    (image_board(image),direct_unit_fold(9n,unit,0,image,used)) : Array<U32> & U32}
+
+def direct_candidate_word(+image: BoardImage,+p: U32) -> U32:
+  +row_bits = direct_unit_fold(9n,M.div9(p),0,image,0)
+  +col_bits = direct_unit_fold(9n,(9 + M.rem9(p) : U32),0,image,row_bits)
+  +box_bits = direct_unit_fold(9n,(18 + B.box_of(p) : U32),0,image,col_bits)
+  U32.and(1022,U32.not(box_bits))
+
+law actual_direct_candidates_image:
+  for +image: BoardImage
+  for +p: U32
+  {C.at(image_board(image),p) == (image_board(image),direct_candidate_word(image,p)) : Array<U32> & U32}
+
+law bool_or_assoc:
+  for +a: Bool
+  for +b: Bool
+  for +c: Bool
+  {Bool.or(Bool.or(a,b),c) == Bool.or(a,Bool.or(b,c)) : Bool}
+
+law word_or_assoc:
+  for +n: Nat
+  for +a: Word(n)
+  for +b: Word(n)
+  for +c: Word(n)
+  {Word.or(n,Word.or(n,a,b),c) == Word.or(n,a,Word.or(n,b,c)) : Word(n)}
+
+law u32_or_assoc:
+  for +a: U32
+  for +b: U32
+  for +c: U32
+  {U32.or(U32.or(a,b),c) == U32.or(a,U32.or(b,c)) : U32}
+
+law word_or_zero_right:
+  for +n: Nat
+  for +a: Word(n)
+  {Word.or(n,a,Word.zero(n)) == a : Word(n)}
+
+law u32_or_zero_right:
+  for +a: U32
+  {U32.or(a,0) == a : U32}
+
+law direct_fold_accumulator_or:
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for +image: BoardImage
+  for +extra: U32
+  for +acc: U32
+  {direct_unit_fold(n,unit,j,image,U32.or(extra,acc)) ==
+    U32.or(extra,direct_unit_fold(n,unit,j,image,acc)) : U32}
+
+law direct_fold_accumulator_base:
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for +image: BoardImage
+  for +extra: U32
+  {direct_unit_fold(n,unit,j,image,extra) ==
+    U32.or(extra,direct_unit_fold(n,unit,j,image,0)) : U32}
+
+def direct_row_word(+image: BoardImage,+p: U32) -> U32:
+  direct_unit_fold(9n,M.div9(p),0,image,0)
+
+def direct_col_word(+image: BoardImage,+p: U32) -> U32:
+  direct_unit_fold(9n,(9 + M.rem9(p) : U32),0,image,0)
+
+def direct_box_word(+image: BoardImage,+p: U32) -> U32:
+  direct_unit_fold(9n,(18 + B.box_of(p) : U32),0,image,0)
+
+law direct_candidate_is_three_unit_union:
+  for +image: BoardImage
+  for +p: U32
+  {direct_candidate_word(image,p) ==
+    occupancy_candidate_mask(direct_row_word(image,p),direct_col_word(image,p),direct_box_word(image,p)) : U32}
+
+def word_unseen_in_union(+n: Nat,+mask: Word(n),+a: Word(n),+b: Word(n),+c: Word(n)) -> Word(n):
+  Word.and(n,mask,Word.not(n,Word.or(n,Word.or(n,a,b),c)))
+
+law word_unseen_union_trim:
+  for +n: Nat
+  for +mask: Word(n)
+  for +a: Word(n)
+  for +b: Word(n)
+  for +c: Word(n)
+  {word_unseen_in_union(n,mask,a,b,c) ==
+    word_unseen_in_union(n,mask,Word.and(n,mask,a),Word.and(n,mask,b),Word.and(n,mask,c)) : Word(n)}
+
+def unseen_mask_clip(+mask: U32,+a: U32,+b: U32,+c: U32) -> U32:
+  U32.and(mask,U32.not(U32.or(U32.or(a,b),c)))
+
+law u32_unseen_union_trim:
+  for +mask: U32
+  for +a: U32
+  for +b: U32
+  for +c: U32
+  {unseen_mask_clip(mask,a,b,c) ==
+    unseen_mask_clip(mask,U32.and(mask,a),U32.and(mask,b),U32.and(mask,c)) : U32}
+
+def ThreeDigitWordsAgree(+ar: U32,+ac: U32,+ab: U32,+br: U32,+bc: U32,+bb: U32) -> Type:
+  ({U32.and(1022,ar) == U32.and(1022,br) : U32} &
+   {U32.and(1022,ac) == U32.and(1022,bc) : U32} &
+   {U32.and(1022,ab) == U32.and(1022,bb) : U32})
+
+law occupancy_masks_same_if_digits_same:
+  for +ar: U32
+  for +ac: U32
+  for +ab: U32
+  for +br: U32
+  for +bc: U32
+  for +bb: U32
+  for same: ThreeDigitWordsAgree(ar,ac,ab,br,bc,bb)
+  {occupancy_candidate_mask(ar,ac,ab) == occupancy_candidate_mask(br,bc,bb) : U32}
+
+def CacheSoundAt(+image: BoardImage,+p: U32) -> Type:
+  ThreeDigitWordsAgree(cell_value(image_board(image),ordinary_row_slot(p)),
+    cell_value(image_board(image),ordinary_col_slot(p)),cell_value(image_board(image),ordinary_box_slot(p)),
+    direct_row_word(image,p),direct_col_word(image,p),direct_box_word(image,p))
+
+law cached_candidates_match_direct_if_unit_bits_agree:
+  for +image: BoardImage
+  for +p: U32
+  for valid: CacheSoundAt(image,p)
+  {cached_word(image_board(image),p) == Pair.snd(Array<U32>,U32,C.at(image_board(image),p)) : U32}
+
+law encoded_blank_matches_direct_given_sound_cache:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
+  for valid: CacheSoundAt(image,logical_position(row,col))
+  {cell_value(Q.encode(image_board(image)),logical_position(row,col)) ==
+    Pair.snd(Array<U32>,U32,C.at(image_board(image),logical_position(row,col))) : U32}
+
+law word_remove_disjoint_union:
+  for +n: Nat
+  for +others: Word(n)
+  for +gone: Word(n)
+  for disjoint: {Word.and(n,others,gone) == Word.zero(n) : Word(n)}
+  {Word.and(n,Word.or(n,others,gone),Word.not(n,gone)) == others : Word(n)}
+
+law u32_remove_disjoint_union:
+  for +others: U32
+  for +gone: U32
+  for disjoint: {U32.and(others,gone) == 0 : U32}
+  {U32.and(U32.or(others,gone),U32.not(gone)) == others : U32}
+
+law ordinary_update_word_when_old_is_unique:
+  for +others: U32
+  for +gone: U32
+  for +added: U32
+  for disjoint: {U32.and(others,gone) == 0 : U32}
+  {U32.or(U32.and(U32.or(others,gone),U32.not(gone)),added) == U32.or(others,added) : U32}
+
+law ordinary_unit_formula_unique:
+  for +others: U32
+  for +old: U32
+  for +value: U32
+  for disjoint: {U32.and(others,B.bit(old)) == 0 : U32}
+  {ordinary_unit_word(old,value,U32.or(others,B.bit(old))) == U32.or(others,B.bit(value)) : U32}
+
+def word_replace_mask(+n: Nat,+used: Word(n),+gone: Word(n),+added: Word(n)) -> Word(n):
+  Word.or(n,Word.and(n,used,Word.not(n,gone)),added)
+
+law word_replace_mask_commutes_with_clip:
+  for +n: Nat
+  for +clip: Word(n)
+  for +used: Word(n)
+  for +gone: Word(n)
+  for +added: Word(n)
+  {Word.and(n,clip,word_replace_mask(n,used,gone,added)) ==
+    word_replace_mask(n,Word.and(n,clip,used),Word.and(n,clip,gone),Word.and(n,clip,added)) : Word(n)}
+
+def replace_digit_mask(+used: U32,+gone: U32,+added: U32) -> U32:
+  U32.or(U32.and(used,U32.not(gone)),added)
+
+law u32_replace_mask_commutes_with_clip:
+  for +clip: U32
+  for +used: U32
+  for +gone: U32
+  for +added: U32
+  {U32.and(clip,replace_digit_mask(used,gone,added)) ==
+    replace_digit_mask(U32.and(clip,used),U32.and(clip,gone),U32.and(clip,added)) : U32}
+
+law ordinary_unit_update_preserves_legal_digit_union:
+  for +others: U32
+  for +old: U32
+  for +value: U32
+  for +used: U32
+  for seen: {U32.and(1022,used) == U32.or(others,U32.and(1022,B.bit(old))) : U32}
+  for unique: {U32.and(others,U32.and(1022,B.bit(old))) == 0 : U32}
+  {U32.and(1022,ordinary_unit_word(old,value,used)) == U32.or(others,U32.and(1022,B.bit(value))) : U32}
+
+law ordinary_unit_write_exact_word:
+  for +image: BoardImage
+  for +slot: U32
+  for +old: U32
+  for +value: U32
+  {cell_value(C.update_unit(slot,old,value,image_board(image)),slot) ==
+    ordinary_unit_word(old,value,cell_value(image_board(image),slot)) : U32}
+
+law ordinary_unit_actual_keeps_digit_union:
+  for +image: BoardImage
+  for +slot: U32
+  for +others: U32
+  for +old: U32
+  for +value: U32
+  for seen: {U32.and(1022,cell_value(image_board(image),slot)) == U32.or(others,U32.and(1022,B.bit(old))) : U32}
+  for unique: {U32.and(others,U32.and(1022,B.bit(old))) == 0 : U32}
+  {U32.and(1022,cell_value(C.update_unit(slot,old,value,image_board(image)),slot)) ==
+    U32.or(others,U32.and(1022,B.bit(value))) : U32}
+
+law bool_and_assoc:
+  for +a: Bool
+  for +b: Bool
+  for +c: Bool
+  {Bool.and(a,Bool.and(b,c)) == Bool.and(Bool.and(a,b),c) : Bool}
+
+law word_and_assoc:
+  for +n: Nat
+  for +a: Word(n)
+  for +b: Word(n)
+  for +c: Word(n)
+  {Word.and(n,a,Word.and(n,b,c)) == Word.and(n,Word.and(n,a,b),c) : Word(n)}
+
+law u32_and_assoc:
+  for +a: U32
+  for +b: U32
+  for +c: U32
+  {U32.and(a,U32.and(b,c)) == U32.and(U32.and(a,b),c) : U32}
+
+def row_mark_empty(+is_blank: Bool,+value: U32,+mark: U32) -> U32:
+  Bool.pick(U32,is_blank,U32.or(value,mark),U32.and(value,U32.not(mark)))
+
+law row_mark_clip_when_disjoint:
+  for +is_blank: Bool
+  for +value: U32
+  for +mark: U32
+  for apart: {U32.and(1022,mark) == 0 : U32}
+  {U32.and(1022,row_mark_empty(is_blank,value,mark)) == U32.and(1022,value) : U32}
+
+law ordinary_row_clip_equals_unit_clip:
+  for +old: U32
+  for +value: U32
+  for +empty: U32
+  for +used: U32
+  for apart: {U32.and(1022,empty) == 0 : U32}
+  {U32.and(1022,ordinary_row_word(old,value,empty,used)) ==
+    U32.and(1022,ordinary_unit_word(old,value,used)) : U32}
+
+law ordinary_row_write_exact_word:
+  for +image: BoardImage
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  {cell_value(C.update_row(p,old,value,image_board(image)),ordinary_row_slot(p)) ==
+    ordinary_row_word(old,value,ordinary_empty_bit(p),cell_value(image_board(image),ordinary_row_slot(p))) : U32}
+
+law row_empty_bit_outside_digit_bits:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  {U32.and(1022,ordinary_empty_bit(logical_position(row,col))) == 0 : U32}
+
+law ordinary_row_actual_keeps_digit_union:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +others: U32
+  for +old: U32
+  for +value: U32
+  for seen: {U32.and(1022,cell_value(image_board(image),ordinary_row_slot(logical_position(row,col)))) ==
+    U32.or(others,U32.and(1022,B.bit(old))) : U32}
+  for unique: {U32.and(others,U32.and(1022,B.bit(old))) == 0 : U32}
+  {U32.and(1022,cell_value(C.update_row(logical_position(row,col),old,value,image_board(image)),ordinary_row_slot(logical_position(row,col)))) ==
+    U32.or(others,U32.and(1022,B.bit(value))) : U32}
+
+law bool_and_comm:
+  for +a: Bool
+  for +b: Bool
+  {Bool.and(a,b) == Bool.and(b,a) : Bool}
+
+law word_and_comm:
+  for +n: Nat
+  for +a: Word(n)
+  for +b: Word(n)
+  {Word.and(n,a,b) == Word.and(n,b,a) : Word(n)}
+
+law u32_and_comm:
+  for +a: U32
+  for +b: U32
+  {U32.and(a,b) == U32.and(b,a) : U32}
+
+law clip_discards_bit_zero_last:
+  for +w: U32
+  {U32.and(1022,U32.and(w,1023)) == U32.and(1022,w) : U32}
+
+law row_inner_clip_equivalence:
+  for +used: U32
+  for +gone: U32
+  for +added: U32
+  {U32.and(1022,replace_digit_mask(used,U32.and(gone,1023),U32.and(added,1023))) ==
+    U32.and(1022,replace_digit_mask(used,gone,added)) : U32}
+
+law column_empty_bit_outside_digits:
+  for +col: CellCoordinate
+  {U32.and(1022,B.bit((10 + coord_u32(col) : U32))) == 0 : U32}
+
+law row_empty_outside_digits_using_geometry:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for geometry: PlaceGeometry(row,col)
+  {U32.and(1022,ordinary_empty_bit(logical_position(row,col))) == 0 : U32}

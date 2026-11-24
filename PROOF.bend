@@ -11750,3 +11750,442 @@ def L.full_queue_encoded_blank_with_window(image,row,col,shape,blank,window):
 def L.encoded_logical_blank_uses_original_cached_mask(b,row,col):
   L.on_reified_board(b,x => L.EncodeBlankOriginalCache(x,row,col),
     L.reify_board(b),image => shape => blank => L.full_queue_encoded_blank_with_window(image,row,col,shape,blank,L.every_cell_window(row,col)))
+
+def L.direct_unit_fold_actual(n,unit,j,image,used):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      +next = (j + 1 : U32)
+      +p = Board.unit_pos(unit,next)
+      b = L.image_board(image)
+      +d = L.cell_value(L.image_board(image),Board.unit_pos(unit,j))
+      +folded = U32.or(used,Board.bit(d))
+      +next_value = L.cell_value(L.image_board(image),p)
+      %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(b,next_value),
+        L.cached_read_exact(L.image_board(image),p,L.board_read_witness(L.image_board(image),p))) :
+        {C.used_go(k,unit,next,_,folded) == (b,L.direct_unit_fold(k,unit,next,image,folded)) : Array<U32> & U32}
+      L.direct_unit_fold_actual(k,unit,next,image,folded)
+
+def L.direct_unit_used_image(image,unit):
+  b = L.image_board(image)
+  +p = Board.unit_pos(unit,0)
+  +value = L.cell_value(L.image_board(image),p)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(b,value),
+    L.cached_read_exact(L.image_board(image),p,L.board_read_witness(L.image_board(image),p))) :
+    {C.used_go(9n,unit,0,_,0) == (b,L.direct_unit_fold(9n,unit,0,image,0)) : Array<U32> & U32}
+  L.direct_unit_fold_actual(9n,unit,0,image,0)
+
+def L.direct_add_unit_image(image,unit,used):
+  b = L.image_board(image)
+  +p = Board.unit_pos(unit,0)
+  +value = L.cell_value(L.image_board(image),p)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(b,value),
+    L.cached_read_exact(L.image_board(image),p,L.board_read_witness(L.image_board(image),p))) :
+    {C.used_go(9n,unit,0,_,used) == (b,L.direct_unit_fold(9n,unit,0,image,used)) : Array<U32> & U32}
+  L.direct_unit_fold_actual(9n,unit,0,image,used)
+
+def L.actual_direct_candidates_image(image,p):
+  b = L.image_board(image)
+  +r = M.div9(p)
+  +c = (9 + M.rem9(p) : U32)
+  +k = (18 + Board.box_of(p) : U32)
+  +rv = L.direct_unit_fold(9n,r,0,image,0)
+  +cv = L.direct_unit_fold(9n,c,0,image,rv)
+  +kv = L.direct_unit_fold(9n,k,0,image,cv)
+  %Equal.sym(Array<U32> & U32,C.unit_used(b,r),(b,rv),L.direct_unit_used_image(image,r)) :
+    {C.invert(C.add_unit(k,C.add_unit(c,_))) == (b,L.direct_candidate_word(image,p)) : Array<U32> & U32}
+  %Equal.sym(Array<U32> & U32,C.add_unit(c,(b,rv)),(b,cv),L.direct_add_unit_image(image,c,rv)) :
+    {C.invert(C.add_unit(k,_)) == (b,L.direct_candidate_word(image,p)) : Array<U32> & U32}
+  %Equal.sym(Array<U32> & U32,C.add_unit(k,(b,cv)),(b,kv),L.direct_add_unit_image(image,k,cv)) :
+    {C.invert(_) == (b,L.direct_candidate_word(image,p)) : Array<U32> & U32}
+  {==}
+
+def L.bool_or_assoc(a,b,c):
+  match a b c:
+    case False{} False{} False{}:
+      {==}
+    case False{} False{} True{}:
+      {==}
+    case False{} True{} False{}:
+      {==}
+    case False{} True{} True{}:
+      {==}
+    case True{} False{} False{}:
+      {==}
+    case True{} False{} True{}:
+      {==}
+    case True{} True{} False{}:
+      {==}
+    case True{} True{} True{}:
+      {==}
+
+def L.word_or_assoc(n,a,b,c):
+  match n a b c:
+    case 0n WNil{} WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{+aa,+at} WCon{+ba,+bt} WCon{+ca,+ct}:
+      +head = Bool.or(aa,Bool.or(ba,ca))
+      %Equal.sym(Bool,Bool.or(Bool.or(aa,ba),ca),head,L.bool_or_assoc(aa,ba,ca)) :
+        {WCon{_,Word.or(k,Word.or(k,at,bt),ct)} == WCon{head,Word.or(k,at,Word.or(k,bt,ct))} : Word(1n+k)}
+      Equal.cong(Word(k),Word(1n+k),w => WCon{head,w},Word.or(k,Word.or(k,at,bt),ct),Word.or(k,at,Word.or(k,bt,ct)),
+        L.word_or_assoc(k,at,bt,ct))
+
+def L.u32_or_assoc(a,b,c):
+  match a b c:
+    case U32{+x} U32{+y} U32{+z}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.or(32n,Word.or(32n,x,y),z),Word.or(32n,x,Word.or(32n,y,z)),
+        L.word_or_assoc(32n,x,y,z))
+
+def L.word_or_zero_right(n,a):
+  match n a:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{False{},+t}:
+      Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},Word.or(k,t,Word.zero(k)),t,L.word_or_zero_right(k,t))
+    case 1n+k WCon{True{},+t}:
+      Equal.cong(Word(k),Word(1n+k),w => WCon{True{},w},Word.or(k,t,Word.zero(k)),t,L.word_or_zero_right(k,t))
+
+def L.u32_or_zero_right(a):
+  match a:
+    case U32{+w}:
+      Equal.cong(Word(32n),U32,x => U32{x},Word.or(32n,w,Word.zero(32n)),w,L.word_or_zero_right(32n,w))
+
+def L.direct_fold_accumulator_or(n,unit,j,image,extra,acc):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      +next = (j + 1 : U32)
+      +added = Board.bit(L.cell_value(L.image_board(image),Board.unit_pos(unit,j)))
+      %Equal.sym(U32,U32.or(U32.or(extra,acc),added),U32.or(extra,U32.or(acc,added)),L.u32_or_assoc(extra,acc,added)) :
+        {L.direct_unit_fold(k,unit,next,image,_) == U32.or(extra,L.direct_unit_fold(k,unit,next,image,U32.or(acc,added))) : U32}
+      L.direct_fold_accumulator_or(k,unit,next,image,extra,U32.or(acc,added))
+
+def L.direct_fold_accumulator_base(n,unit,j,image,extra):
+  %L.u32_or_zero_right(extra) :
+    {L.direct_unit_fold(n,unit,j,image,_) == U32.or(extra,L.direct_unit_fold(n,unit,j,image,0)) : U32}
+  L.direct_fold_accumulator_or(n,unit,j,image,extra,0)
+
+def L.direct_candidate_is_three_unit_union(image,p):
+  +ru = M.div9(p)
+  +cu = (9 + M.rem9(p) : U32)
+  +bu = (18 + Board.box_of(p) : U32)
+  +r = L.direct_row_word(image,p)
+  +c = L.direct_col_word(image,p)
+  +b = L.direct_box_word(image,p)
+  +old_col = L.direct_unit_fold(9n,cu,0,image,r)
+  +old_box = L.direct_unit_fold(9n,bu,0,image,old_col)
+  %Equal.sym(U32,old_box,U32.or(old_col,b),L.direct_fold_accumulator_base(9n,bu,0,image,old_col)) :
+    {U32.and(1022,U32.not(_)) == L.occupancy_candidate_mask(r,c,b) : U32}
+  %Equal.sym(U32,old_col,U32.or(r,c),L.direct_fold_accumulator_base(9n,cu,0,image,r)) :
+    {U32.and(1022,U32.not(U32.or(_,b))) == L.occupancy_candidate_mask(r,c,b) : U32}
+  {==}
+
+def L.word_unseen_union_trim(n,mask,a,b,c):
+  match n mask a b c:
+    case 0n WNil{} WNil{} WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{False{},+mt} WCon{+x,+xt} WCon{+y,+yt} WCon{+z,+zt}:
+      Equal.cong(Word(k),Word(1n+k),v => WCon{False{},v},L.word_unseen_in_union(k,mt,xt,yt,zt),
+        L.word_unseen_in_union(k,mt,Word.and(k,mt,xt),Word.and(k,mt,yt),Word.and(k,mt,zt)),
+        L.word_unseen_union_trim(k,mt,xt,yt,zt))
+    case 1n+k WCon{True{},+mt} WCon{+x,+xt} WCon{+y,+yt} WCon{+z,+zt}:
+      +head = Bool.not(Bool.or(Bool.or(x,y),z))
+      Equal.cong(Word(k),Word(1n+k),v => WCon{head,v},L.word_unseen_in_union(k,mt,xt,yt,zt),
+        L.word_unseen_in_union(k,mt,Word.and(k,mt,xt),Word.and(k,mt,yt),Word.and(k,mt,zt)),
+        L.word_unseen_union_trim(k,mt,xt,yt,zt))
+
+def L.u32_unseen_union_trim(mask,a,b,c):
+  match mask a b c:
+    case U32{+m} U32{+x} U32{+y} U32{+z}:
+      Equal.cong(Word(32n),U32,v => U32{v},L.word_unseen_in_union(32n,m,x,y,z),
+        L.word_unseen_in_union(32n,m,Word.and(32n,m,x),Word.and(32n,m,y),Word.and(32n,m,z)),
+        L.word_unseen_union_trim(32n,m,x,y,z))
+
+def L.occupancy_masks_same_if_digits_same(ar,ac,ab,br,bc,bb,same):
+  (row,(col,box)) = same
+  +ar1 = U32.and(1022,ar)
+  +ac1 = U32.and(1022,ac)
+  +ab1 = U32.and(1022,ab)
+  +br1 = U32.and(1022,br)
+  +bc1 = U32.and(1022,bc)
+  +bb1 = U32.and(1022,bb)
+  %Equal.sym(U32,L.occupancy_candidate_mask(ar,ac,ab),L.occupancy_candidate_mask(ar1,ac1,ab1),L.u32_unseen_union_trim(1022,ar,ac,ab)) :
+    {_ == L.occupancy_candidate_mask(br,bc,bb) : U32}
+  %Equal.sym(U32,L.occupancy_candidate_mask(br,bc,bb),L.occupancy_candidate_mask(br1,bc1,bb1),L.u32_unseen_union_trim(1022,br,bc,bb)) :
+    {L.occupancy_candidate_mask(ar1,ac1,ab1) == _ : U32}
+  %Equal.sym(U32,ar1,br1,row) :
+    {L.occupancy_candidate_mask(_,ac1,ab1) == L.occupancy_candidate_mask(br1,bc1,bb1) : U32}
+  %Equal.sym(U32,ac1,bc1,col) :
+    {L.occupancy_candidate_mask(br1,_,ab1) == L.occupancy_candidate_mask(br1,bc1,bb1) : U32}
+  %Equal.sym(U32,ab1,bb1,box) :
+    {L.occupancy_candidate_mask(br1,bc1,_) == L.occupancy_candidate_mask(br1,bc1,bb1) : U32}
+  {==}
+
+def L.cached_candidates_match_direct_if_unit_bits_agree(image,p,valid):
+  b = L.image_board(image)
+  +r = L.cell_value(L.image_board(image),L.ordinary_row_slot(p))
+  +c = L.cell_value(L.image_board(image),L.ordinary_col_slot(p))
+  +k = L.cell_value(L.image_board(image),L.ordinary_box_slot(p))
+  +dr = L.direct_row_word(image,p)
+  +dc = L.direct_col_word(image,p)
+  +db = L.direct_box_word(image,p)
+  %Equal.sym(U32,L.cached_word(b,p),L.occupancy_candidate_mask(r,c,k),L.cached_candidates_are_occupancy_image(image,p)) :
+    {_ == Pair.snd(Array<U32>,U32,C.at(b,p)) : U32}
+  %Equal.sym(Array<U32> & U32,C.at(b,p),(b,L.direct_candidate_word(image,p)),L.actual_direct_candidates_image(image,p)) :
+    {L.occupancy_candidate_mask(r,c,k) == Pair.snd(Array<U32>,U32,_) : U32}
+  %Equal.sym(U32,L.direct_candidate_word(image,p),L.occupancy_candidate_mask(dr,dc,db),L.direct_candidate_is_three_unit_union(image,p)) :
+    {L.occupancy_candidate_mask(r,c,k) == _ : U32}
+  L.occupancy_masks_same_if_digits_same(r,c,k,dr,dc,db,valid)
+
+def L.encoded_blank_matches_direct_given_sound_cache(image,row,col,shape,blank,valid):
+  b = L.image_board(image)
+  +p = L.logical_position(row,col)
+  Equal.trans(U32,L.cell_value(Q.encode(b),p),L.cached_word(b,p),Pair.snd(Array<U32>,U32,C.at(b,p)),
+    L.encoded_logical_blank_uses_original_cached_mask(L.image_board(image),row,col)(shape,blank),
+    L.cached_candidates_match_direct_if_unit_bits_agree(image,p,valid))
+
+def L.word_remove_disjoint_union(n,others,gone,disjoint):
+  match n others gone:
+    case 0n WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{False{},+others_tail} WCon{False{},+gone_tail}:
+      Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+        Word.and(k,Word.or(k,others_tail,gone_tail),Word.not(k,gone_tail)),others_tail,
+        L.word_remove_disjoint_union(k,others_tail,gone_tail,
+          Equal.cong(Word(1n+k),Word(k),w => L.bit_word_tail(k,w),WCon{False{},Word.and(k,others_tail,gone_tail)},Word.zero(1n+k),disjoint)))
+    case 1n+k WCon{False{},+others_tail} WCon{True{},+gone_tail}:
+      Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+        Word.and(k,Word.or(k,others_tail,gone_tail),Word.not(k,gone_tail)),others_tail,
+        L.word_remove_disjoint_union(k,others_tail,gone_tail,
+          Equal.cong(Word(1n+k),Word(k),w => L.bit_word_tail(k,w),WCon{False{},Word.and(k,others_tail,gone_tail)},Word.zero(1n+k),disjoint)))
+    case 1n+k WCon{True{},+others_tail} WCon{False{},+gone_tail}:
+      Equal.cong(Word(k),Word(1n+k),w => WCon{True{},w},
+        Word.and(k,Word.or(k,others_tail,gone_tail),Word.not(k,gone_tail)),others_tail,
+        L.word_remove_disjoint_union(k,others_tail,gone_tail,
+          Equal.cong(Word(1n+k),Word(k),w => L.bit_word_tail(k,w),WCon{False{},Word.and(k,others_tail,gone_tail)},Word.zero(1n+k),disjoint)))
+    case 1n+k WCon{True{},+others_tail} WCon{True{},+gone_tail}:
+      Empty.absurd({WCon{False{},Word.and(k,Word.or(k,others_tail,gone_tail),Word.not(k,gone_tail))} == WCon{True{},others_tail} : Word(1n+k)},
+        L.false_is_not_true(Equal.sym(Bool,True{},False{},
+          Equal.cong(Word(1n+k),Bool,w => L.bit_word_head(k,w),WCon{True{},Word.and(k,others_tail,gone_tail)},Word.zero(1n+k),disjoint))))
+
+def L.u32_remove_disjoint_union(others,gone,disjoint):
+  match others gone:
+    case U32{+a} U32{+b}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,Word.or(32n,a,b),Word.not(32n,b)),a,
+        L.word_remove_disjoint_union(32n,a,b,
+          Equal.cong(U32,Word(32n),w => L.bits_of_u32(w),U32{Word.and(32n,a,b)},0,disjoint)))
+
+def L.ordinary_update_word_when_old_is_unique(others,gone,added,disjoint):
+  Equal.cong(U32,U32,w => U32.or(w,added),U32.and(U32.or(others,gone),U32.not(gone)),others,
+    L.u32_remove_disjoint_union(others,gone,disjoint))
+
+def L.ordinary_unit_formula_unique(others,old,value,disjoint):
+  L.ordinary_update_word_when_old_is_unique(others,Board.bit(old),Board.bit(value),disjoint)
+
+def L.word_replace_mask_commutes_with_clip(n,clip,used,gone,added):
+  match n clip used gone added:
+    case 0n WNil{} WNil{} WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{False{},+ct} WCon{+x,+xt} WCon{+y,+yt} WCon{+z,+zt}:
+      Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},Word.and(k,ct,L.word_replace_mask(k,xt,yt,zt)),
+        L.word_replace_mask(k,Word.and(k,ct,xt),Word.and(k,ct,yt),Word.and(k,ct,zt)),
+        L.word_replace_mask_commutes_with_clip(k,ct,xt,yt,zt))
+    case 1n+k WCon{True{},+ct} WCon{+x,+xt} WCon{+y,+yt} WCon{+z,+zt}:
+      +head = Bool.or(Bool.and(x,Bool.not(y)),z)
+      Equal.cong(Word(k),Word(1n+k),w => WCon{head,w},Word.and(k,ct,L.word_replace_mask(k,xt,yt,zt)),
+        L.word_replace_mask(k,Word.and(k,ct,xt),Word.and(k,ct,yt),Word.and(k,ct,zt)),
+        L.word_replace_mask_commutes_with_clip(k,ct,xt,yt,zt))
+
+def L.u32_replace_mask_commutes_with_clip(clip,used,gone,added):
+  match clip used gone added:
+    case U32{+c} U32{+x} U32{+y} U32{+z}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,c,L.word_replace_mask(32n,x,y,z)),
+        L.word_replace_mask(32n,Word.and(32n,c,x),Word.and(32n,c,y),Word.and(32n,c,z)),
+        L.word_replace_mask_commutes_with_clip(32n,c,x,y,z))
+
+def L.ordinary_unit_update_preserves_legal_digit_union(others,old,value,used,seen,unique):
+  +gone = Board.bit(old)
+  +added = Board.bit(value)
+  +g = U32.and(1022,gone)
+  +a = U32.and(1022,added)
+  %Equal.sym(U32,U32.and(1022,L.replace_digit_mask(used,gone,added)),L.replace_digit_mask(U32.and(1022,used),g,a),
+    L.u32_replace_mask_commutes_with_clip(1022,used,gone,added)) :
+    {_ == U32.or(others,a) : U32}
+  %Equal.sym(U32,U32.and(1022,used),U32.or(others,g),seen) :
+    {L.replace_digit_mask(_,g,a) == U32.or(others,a) : U32}
+  L.ordinary_update_word_when_old_is_unique(others,g,a,unique)
+
+def L.ordinary_unit_write_exact_word(image,slot,old,value):
+  b = L.image_board(image)
+  +prior = L.cell_value(L.image_board(image),slot)
+  +next = L.ordinary_unit_word(old,value,prior)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,slot),(b,prior),
+    L.cached_read_exact(L.image_board(image),slot,L.board_read_witness(L.image_board(image),slot))) :
+    {L.cell_value(C.update_done(slot,old,value,_),slot) == next : U32}
+  L.board_set_get(L.image_board(image),slot,next)
+
+def L.ordinary_unit_actual_keeps_digit_union(image,slot,others,old,value,seen,unique):
+  +used = L.cell_value(L.image_board(image),slot)
+  +next = L.ordinary_unit_word(old,value,used)
+  %Equal.sym(U32,L.cell_value(C.update_unit(slot,old,value,L.image_board(image)),slot),next,
+    L.ordinary_unit_write_exact_word(image,slot,old,value)) :
+    {U32.and(1022,_) == U32.or(others,U32.and(1022,Board.bit(value))) : U32}
+  L.ordinary_unit_update_preserves_legal_digit_union(others,old,value,used,seen,unique)
+
+def L.bool_and_assoc(a,b,c):
+  match a b c:
+    case False{} False{} False{}:
+      {==}
+    case False{} False{} True{}:
+      {==}
+    case False{} True{} False{}:
+      {==}
+    case False{} True{} True{}:
+      {==}
+    case True{} False{} False{}:
+      {==}
+    case True{} False{} True{}:
+      {==}
+    case True{} True{} False{}:
+      {==}
+    case True{} True{} True{}:
+      {==}
+
+def L.word_and_assoc(n,a,b,c):
+  match n a b c:
+    case 0n WNil{} WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{+x,+xt} WCon{+y,+yt} WCon{+z,+zt}:
+      +head = Bool.and(Bool.and(x,y),z)
+      %Equal.sym(Bool,Bool.and(x,Bool.and(y,z)),head,L.bool_and_assoc(x,y,z)) :
+        {WCon{_,Word.and(k,xt,Word.and(k,yt,zt))} == WCon{head,Word.and(k,Word.and(k,xt,yt),zt)} : Word(1n+k)}
+      Equal.cong(Word(k),Word(1n+k),w => WCon{head,w},Word.and(k,xt,Word.and(k,yt,zt)),Word.and(k,Word.and(k,xt,yt),zt),
+        L.word_and_assoc(k,xt,yt,zt))
+
+def L.u32_and_assoc(a,b,c):
+  match a b c:
+    case U32{+x} U32{+y} U32{+z}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,x,Word.and(32n,y,z)),Word.and(32n,Word.and(32n,x,y),z),
+        L.word_and_assoc(32n,x,y,z))
+
+def L.row_mark_clip_when_disjoint(is_blank,value,mark,apart):
+  match is_blank:
+    case True{}:
+      L.u32_mask_set_keeps_other(value,1022,mark,apart)
+    case False{}:
+      L.u32_mask_clear_keeps_other(value,1022,mark,apart)
+
+
+def L.bool_and_comm(a,b):
+  match a b:
+    case False{} False{}:
+      {==}
+    case False{} True{}:
+      {==}
+    case True{} False{}:
+      {==}
+    case True{} True{}:
+      {==}
+
+def L.word_and_comm(n,a,b):
+  match n a b:
+    case 0n WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{+x,+xt} WCon{+y,+yt}:
+      +head = Bool.and(y,x)
+      %Equal.sym(Bool,Bool.and(x,y),head,L.bool_and_comm(x,y)) :
+        {WCon{_,Word.and(k,xt,yt)} == WCon{head,Word.and(k,yt,xt)} : Word(1n+k)}
+      Equal.cong(Word(k),Word(1n+k),w => WCon{head,w},Word.and(k,xt,yt),Word.and(k,yt,xt),L.word_and_comm(k,xt,yt))
+
+def L.u32_and_comm(a,b):
+  match a b:
+    case U32{+x} U32{+y}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,x,y),Word.and(32n,y,x),L.word_and_comm(32n,x,y))
+
+def L.clip_discards_bit_zero_last(w):
+  %Equal.sym(U32,U32.and(w,1023),U32.and(1023,w),L.u32_and_comm(w,1023)) :
+    {U32.and(1022,_) == U32.and(1022,w) : U32}
+  L.u32_and_assoc(1022,1023,w)
+
+def L.row_inner_clip_equivalence(used,gone,added):
+  +g = U32.and(gone,1023)
+  +a = U32.and(added,1023)
+  +k = U32.and(1022,used)
+  +gg = U32.and(1022,gone)
+  +aa = U32.and(1022,added)
+  %Equal.sym(U32,U32.and(1022,L.replace_digit_mask(used,g,a)),L.replace_digit_mask(k,U32.and(1022,g),U32.and(1022,a)),
+    L.u32_replace_mask_commutes_with_clip(1022,used,g,a)) :
+    {_ == U32.and(1022,L.replace_digit_mask(used,gone,added)) : U32}
+  %Equal.sym(U32,U32.and(1022,g),gg,L.clip_discards_bit_zero_last(gone)) :
+    {L.replace_digit_mask(k,_,U32.and(1022,a)) == U32.and(1022,L.replace_digit_mask(used,gone,added)) : U32}
+  %Equal.sym(U32,U32.and(1022,a),aa,L.clip_discards_bit_zero_last(added)) :
+    {L.replace_digit_mask(k,gg,_) == U32.and(1022,L.replace_digit_mask(used,gone,added)) : U32}
+  Equal.sym(U32,U32.and(1022,L.replace_digit_mask(used,gone,added)),L.replace_digit_mask(k,gg,aa),
+    L.u32_replace_mask_commutes_with_clip(1022,used,gone,added))
+
+def L.column_empty_bit_outside_digits(col):
+  match col:
+    case L.Coordinate0{}:
+      {==}
+    case L.Coordinate1{}:
+      {==}
+    case L.Coordinate2{}:
+      {==}
+    case L.Coordinate3{}:
+      {==}
+    case L.Coordinate4{}:
+      {==}
+    case L.Coordinate5{}:
+      {==}
+    case L.Coordinate6{}:
+      {==}
+    case L.Coordinate7{}:
+      {==}
+    case L.Coordinate8{}:
+      {==}
+
+def L.row_empty_outside_digits_using_geometry(row,col,geometry):
+  (unused,observed) = geometry
+  +p = L.logical_position(row,col)
+  %Equal.sym(U32,M.rem9(p),L.coord_u32(col),observed) :
+    {U32.and(1022,Board.bit((10 + _ : U32))) == 0 : U32}
+  L.column_empty_bit_outside_digits(col)
+
+def L.row_empty_bit_outside_digit_bits(row,col):
+  L.row_empty_outside_digits_using_geometry(row,col,L.source_place_geometry(row,col))
+
+def L.ordinary_row_clip_equals_unit_clip(old,value,empty,used,apart):
+  +gone = Board.bit(old)
+  +added = Board.bit(value)
+  +a = U32.and(added,1023)
+  +g = U32.and(gone,1023)
+  +base = L.replace_digit_mask(used,g,a)
+  Equal.trans(U32,U32.and(1022,L.ordinary_row_word(old,value,empty,used)),U32.and(1022,base),U32.and(1022,L.ordinary_unit_word(old,value,used)),
+    L.row_mark_clip_when_disjoint(U32.is_eq(value,0),base,empty,apart),
+    L.row_inner_clip_equivalence(used,gone,added))
+
+def L.ordinary_row_write_exact_word(image,p,old,value):
+  b = L.image_board(image)
+  +slot = L.ordinary_row_slot(p)
+  +prior = L.cell_value(L.image_board(image),slot)
+  +empty = L.ordinary_empty_bit(p)
+  +next = L.ordinary_row_word(old,value,empty,prior)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,slot),(b,prior),
+    L.cached_read_exact(L.image_board(image),slot,L.board_read_witness(L.image_board(image),slot))) :
+    {L.cell_value(C.row_updated(slot,old,value,empty,_),slot) == next : U32}
+  L.board_set_get(L.image_board(image),slot,next)
+
+def L.ordinary_row_actual_keeps_digit_union(image,row,col,others,old,value,seen,unique):
+  +p = L.logical_position(row,col)
+  +slot = L.ordinary_row_slot(p)
+  +used = L.cell_value(L.image_board(image),slot)
+  +empty = L.ordinary_empty_bit(p)
+  %Equal.sym(U32,L.cell_value(C.update_row(p,old,value,L.image_board(image)),slot),L.ordinary_row_word(old,value,empty,used),
+    L.ordinary_row_write_exact_word(image,p,old,value)) :
+    {U32.and(1022,_) == U32.or(others,U32.and(1022,Board.bit(value))) : U32}
+  %Equal.sym(U32,U32.and(1022,L.ordinary_row_word(old,value,empty,used)),U32.and(1022,L.ordinary_unit_word(old,value,used)),
+    L.ordinary_row_clip_equals_unit_clip(old,value,empty,used,L.row_empty_bit_outside_digit_bits(row,col))) :
+    {_ == U32.or(others,U32.and(1022,Board.bit(value))) : U32}
+  L.ordinary_unit_update_preserves_legal_digit_union(others,old,value,used,seen,unique)

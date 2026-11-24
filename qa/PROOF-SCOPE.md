@@ -631,3 +631,30 @@ claim about reachable search caches or prove solver soundness.
   projection equality to the prefix. This ties normalization to an
   exact source value, without claiming the original ordinary cache
   already matches direct Sudoku legality.
+
+## Conditional bridge from occupancy cache to direct candidates
+
+- The real direct candidate scanner returns its input board and the
+  digit complement of the three unit folds. Trimming the three input
+  masks to bits 1–9 before combining them produces the same answer;
+  blank bit 0 and metadata bits do not matter.
+- If the corresponding ordinary cache words agree with those three
+  unit folds on bits 1–9, a logical blank's actual queued encoding
+  equals the actual direct candidate mask. Establishing that premise
+  after initial parsing and valid search updates is separate.
+- In an additional local runtime probe (not a formal theorem), making
+  an invalid duplicate-1 row and clearing one occurrence causes the
+  ordinary cache to disagree with direct scanning. A valid-state
+  uniqueness invariant is needed for a general clearing theorem.
+
+## Local ordinary cache writes preserve digit occupancy under uniqueness
+
+- In the actual row and ordinary unit cache-write helpers, the
+  observed digit bits after a replacement equal the unaffected
+  digits plus the new digit, if the previous cached union was
+  correct and the removed nonzero digit occurred nowhere else in
+  the unit. Blank and row-empty metadata are clipped away.
+- The row helper's actual empty-column marker is proven disjoint
+  from the digit bits for every logical coordinate. This is local
+  write correctness; the premises still need to be established
+  for whole-board ordinary placement, clearing, and parsing.
