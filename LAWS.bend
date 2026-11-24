@@ -5124,3 +5124,347 @@ law queued_stale_flag_can_select_clue:
 law ordinary_stale_bitmap_can_select_clue:
   ({cell_value(inconsistent_plain_board(),0) == 1 : U32} &
    {Pair.snd(Array<U32>,C.Choice,C.cached_select(inconsistent_plain_board())) == C.Choice{0,2,1} : C.Choice})
+
+# An alternative uses the restored board rather than transient unwind words.
+def lowest_bit(+mask: U32) -> U32:
+  U32.and(mask,(0 - mask : U32))
+
+def alternative_digit(+mask: U32) -> U32:
+  C.mask_count((lowest_bit(mask) - 1 : U32))
+
+def alternatives_after(+mask: U32) -> U32:
+  U32.xor(mask,lowest_bit(mask))
+
+law adaptive_nonzero_alternative_replays_guess:
+  for +mask: U32
+  for +p: U32
+  for -frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for -snapshots: List<&1,Array<U32>>
+  for -saved: Array<U32>
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  {Fast.alternative(mask,p,frames,depth,found,snapshots,True{},saved) ==
+    Fast.place(True{},p,alternative_digit(mask),alternatives_after(mask),frames,depth,found,snapshots,True{},saved) : Fast.State}
+
+law adaptive_nonzero_restore_replays_guess:
+  for +mask: U32
+  for +p: U32
+  for -frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for -snapshots: List<&1,Array<U32>>
+  for -saved: Array<U32>
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  {Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}) ==
+    Fast.place(True{},p,alternative_digit(mask),alternatives_after(mask),frames,depth,found,snapshots,True{},saved) : Fast.State}
+
+# For an arbitrary fixed-width word, isolate its first set bit without using a
+# truth table or assuming a candidate range.
+def first_one_word(+n: Nat, +w: Word(n)) -> Word(n):
+  match n w:
+    case 0n WNil{}:
+      WNil{}
+    case 1n+k WCon{True{}, tail}:
+      WCon{True{}, Word.zero(k)}
+    case 1n+k WCon{False{}, tail}:
+      WCon{False{}, first_one_word(k,tail)}
+
+law zero_subtract_no_carry_is_not:
+  for +n: Nat
+  for +w: Word(n)
+  {Word.adc(n,Word.zero(n),w,True{},False{}) == Word.not(n,w) : Word(n)}
+
+law word_and_complement_zero:
+  for +n: Nat
+  for +w: Word(n)
+  {Word.and(n,w,Word.not(n,w)) == Word.zero(n) : Word(n)}
+
+law word_first_one_is_lowest_bit:
+  for +n: Nat
+  for +w: Word(n)
+  {Word.and(n,w,Word.sub(n,Word.zero(n),w)) == first_one_word(n,w) : Word(n)}
+
+law u32_first_one_is_lowest_bit:
+  for +w: Word(32n)
+  {lowest_bit(U32{w}) == U32{first_one_word(32n,w)} : U32}
+
+law first_one_word_is_present:
+  for +n: Nat
+  for +w: Word(n)
+  {Word.and(n,first_one_word(n,w),w) == first_one_word(n,w) : Word(n)}
+
+law lowest_bit_is_present:
+  for +w: Word(32n)
+  {U32.and(lowest_bit(U32{w}),U32{w}) == lowest_bit(U32{w}) : U32}
+
+def remove_first_one_word(+n: Nat, +w: Word(n)) -> Word(n):
+  match n w:
+    case 0n WNil{}:
+      WNil{}
+    case 1n+k WCon{True{},tail}:
+      WCon{False{},tail}
+    case 1n+k WCon{False{},tail}:
+      WCon{False{},remove_first_one_word(k,tail)}
+
+law word_xor_zero_right:
+  for +n: Nat
+  for +w: Word(n)
+  {Word.xor(n,w,Word.zero(n)) == w : Word(n)}
+
+law word_xor_first_one_removes_only_first:
+  for +n: Nat
+  for +w: Word(n)
+  {Word.xor(n,w,first_one_word(n,w)) == remove_first_one_word(n,w) : Word(n)}
+
+law alternatives_after_removes_only_first:
+  for +w: Word(32n)
+  {alternatives_after(U32{w}) == U32{remove_first_one_word(32n,w)} : U32}
+
+def pad_candidate(+n: Nat, +bits: Word(n)) -> Word(Nat.add(n,22n)):
+  match n bits:
+    case 0n WNil{}:
+      Word.zero(22n)
+    case 1n+k WCon{head,tail}:
+      WCon{head,pad_candidate(k,tail)}
+
+def candidate_bits_word(+bits: Word(9n)) -> U32:
+  U32{WCon{False{},pad_candidate(9n,bits)}}
+
+def ChosenAlternative(+mask: U32) -> Type:
+  Sigma<&2,&1,BoardDigit,d =>
+    (Nonblank(d) & {alternative_digit(mask) == digit_word(d) : U32}
+      & {lowest_bit(mask) == B.bit(digit_word(d)) : U32})>
+
+law chosen_alternative_pack:
+  for +w: Word(32n)
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  for count: {C.mask_count((B.bit(digit_word(d)) - 1 : U32)) == digit_word(d) : U32}
+  for eq: {lowest_bit(U32{w}) == B.bit(digit_word(d)) : U32}
+  ChosenAlternative(U32{w})
+
+law chosen_alternative_from_first_one:
+  for +w: Word(32n)
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  for found: {U32{first_one_word(32n,w)} == B.bit(digit_word(d)) : U32}
+  for count: {C.mask_count((B.bit(digit_word(d)) - 1 : U32)) == digit_word(d) : U32}
+  ChosenAlternative(U32{w})
+
+law candidate_bits_select_digit:
+  for +bits: Word(9n)
+  for nonempty: {U32.is_eq(candidate_bits_word(bits),0) == False{} : Bool}
+  ChosenAlternative(candidate_bits_word(bits))
+
+def CandidateMaskImage(+word: U32) -> Type:
+  Sigma<&2,&1,Word(9n),bits => {U32.and(1022,word) == candidate_bits_word(bits) : U32}>
+
+law low_candidate_mask_image:
+  for +word: U32
+  CandidateMaskImage(word)
+
+law clipped_candidate_selects_digit_image:
+  for +word: U32
+  for image: CandidateMaskImage(word)
+  for nonempty: {U32.is_eq(U32.and(1022,word),0) == False{} : Bool}
+  ChosenAlternative(U32.and(1022,word))
+
+law clipped_candidate_selects_digit:
+  for +word: U32
+  for nonempty: {U32.is_eq(U32.and(1022,word),0) == False{} : Bool}
+  ChosenAlternative(U32.and(1022,word))
+
+law normalized_candidate_selects_digit:
+  for +mask: U32
+  for clipped: {U32.and(1022,mask) == mask : U32}
+  for nonempty: {U32.is_eq(mask,0) == False{} : Bool}
+  ChosenAlternative(mask)
+
+law adaptive_restore_replays_chosen_digit:
+  for +mask: U32
+  for +p: U32
+  for -frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for -snapshots: List<&1,Array<U32>>
+  for -saved: Array<U32>
+  for +d: BoardDigit
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for digit_is: {alternative_digit(mask) == digit_word(d) : U32}
+  {Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}) ==
+    Fast.place(True{},p,digit_word(d),alternatives_after(mask),frames,depth,found,snapshots,True{},saved) : Fast.State}
+
+law adaptive_restored_working_keeps_clue_image:
+  for +image: BoardImage
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for digit_is: {alternative_digit(mask) == digit_word(digit) : U32}
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: FixedClue(image_board(image),logical_position(qr,qc),fixed)
+  {searching_word(Fast.restore(logical_position(sr,sc),mask,frames,depth,found,image_board(image) <> snapshots,True{}),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_restored_working_keeps_clue:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for digit_is: {alternative_digit(mask) == digit_word(digit) : U32}
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: FixedClue(saved,logical_position(qr,qc),fixed)
+  {searching_word(Fast.restore(logical_position(sr,sc),mask,frames,depth,found,saved <> snapshots,True{}),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_restored_snapshot_keeps_clue_image:
+  for +image: BoardImage
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for digit_is: {alternative_digit(mask) == digit_word(digit) : U32}
+  for clue: FixedClue(image_board(image),q,fixed)
+  {searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,image_board(image) <> snapshots,True{}),q) == fixed_word(fixed) : U32}
+
+law adaptive_restored_snapshot_keeps_clue:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for digit_is: {alternative_digit(mask) == digit_word(digit) : U32}
+  for clue: FixedClue(saved,q,fixed)
+  {searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == fixed_word(fixed) : U32}
+
+law copy_mask_nonempty:
+  for +mask: U32
+  for known: {U32.is_eq(mask,0) == False{} : Bool}
+  ({U32.is_eq(mask,0) == False{} : Bool} & {U32.is_eq(mask,0) == False{} : Bool})
+
+law adaptive_normalized_restore_working_keeps_clue_take:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for choice: ChosenAlternative(mask)
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: FixedClue(saved,logical_position(qr,qc),fixed)
+  {searching_word(Fast.restore(logical_position(sr,sc),mask,frames,depth,found,saved <> snapshots,True{}),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_normalized_restore_working_keeps_clue_split:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +mask: U32
+  for both: ({U32.is_eq(mask,0) == False{} : Bool} & {U32.is_eq(mask,0) == False{} : Bool})
+  for clipped: {U32.and(1022,mask) == mask : U32}
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: FixedClue(saved,logical_position(qr,qc),fixed)
+  {searching_word(Fast.restore(logical_position(sr,sc),mask,frames,depth,found,saved <> snapshots,True{}),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_normalized_restore_working_keeps_clue:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for clipped: {U32.and(1022,mask) == mask : U32}
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: FixedClue(saved,logical_position(qr,qc),fixed)
+  {searching_word(Fast.restore(logical_position(sr,sc),mask,frames,depth,found,saved <> snapshots,True{}),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_normalized_restore_snapshot_keeps_clue_take:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for choice: ChosenAlternative(mask)
+  for clue: FixedClue(saved,q,fixed)
+  {searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == fixed_word(fixed) : U32}
+
+law adaptive_normalized_restore_snapshot_keeps_clue_split:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +mask: U32
+  for both: ({U32.is_eq(mask,0) == False{} : Bool} & {U32.is_eq(mask,0) == False{} : Bool})
+  for clipped: {U32.and(1022,mask) == mask : U32}
+  for clue: FixedClue(saved,q,fixed)
+  {searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == fixed_word(fixed) : U32}
+
+law adaptive_normalized_restore_snapshot_keeps_clue:
+  for saved: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +mask: U32
+  for present: {U32.is_eq(mask,0) == False{} : Bool}
+  for clipped: {U32.and(1022,mask) == mask : U32}
+  for clue: FixedClue(saved,q,fixed)
+  {searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == fixed_word(fixed) : U32}

@@ -5427,3 +5427,295 @@ def L.queued_stale_flag_can_select_clue():
 
 def L.ordinary_stale_bitmap_can_select_clue():
   ({==},{==})
+
+def L.adaptive_nonzero_alternative_replays_guess(mask,p,frames,depth,found,snapshots,saved,present):
+  match mask:
+    case 0:
+      Empty.absurd({Fast.alternative(0,p,frames,depth,found,snapshots,True{},saved) ==
+        Fast.place(True{},p,L.alternative_digit(0),L.alternatives_after(0),frames,depth,found,snapshots,True{},saved) : Fast.State},
+        L.false_is_not_true(Equal.sym(Bool,True{},False{},present)))
+    case U32{WCon{True{}, rest}}:
+      {==}
+    case U32{WCon{False{}, WCon{True{}, rest}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      {==}
+
+def L.adaptive_nonzero_restore_replays_guess(mask,p,frames,depth,found,snapshots,saved,present):
+  L.adaptive_nonzero_alternative_replays_guess(mask,p,frames,depth,found,snapshots,saved,present)
+
+def L.zero_subtract_no_carry_is_not(n,w):
+  match n w:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{True{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.adc(k,Word.zero(k),tail,True{},False{}),Word.not(k,tail),
+        L.zero_subtract_no_carry_is_not(k,tail))
+    case 1n+k WCon{False{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{True{},r},
+        Word.adc(k,Word.zero(k),tail,True{},False{}),Word.not(k,tail),
+        L.zero_subtract_no_carry_is_not(k,tail))
+
+def L.word_and_complement_zero(n,w):
+  match n w:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{True{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.and(k,tail,Word.not(k,tail)),Word.zero(k),L.word_and_complement_zero(k,tail))
+    case 1n+k WCon{False{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.and(k,tail,Word.not(k,tail)),Word.zero(k),L.word_and_complement_zero(k,tail))
+
+def L.word_first_one_is_lowest_bit(n,w):
+  match n w:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{True{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{True{},r},
+        Word.and(k,tail,Word.adc(k,Word.zero(k),tail,True{},False{})),Word.zero(k),
+        Equal.trans(Word(k),
+          Word.and(k,tail,Word.adc(k,Word.zero(k),tail,True{},False{})),Word.and(k,tail,Word.not(k,tail)),Word.zero(k),
+          Equal.cong(Word(k),Word(k),r => Word.and(k,tail,r),
+            Word.adc(k,Word.zero(k),tail,True{},False{}),Word.not(k,tail),
+            L.zero_subtract_no_carry_is_not(k,tail)),
+          L.word_and_complement_zero(k,tail)))
+    case 1n+k WCon{False{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.and(k,tail,Word.sub(k,Word.zero(k),tail)),L.first_one_word(k,tail),
+        L.word_first_one_is_lowest_bit(k,tail))
+
+def L.u32_first_one_is_lowest_bit(w):
+  Equal.cong(Word(32n),U32,r => U32{r},Word.and(32n,w,Word.sub(32n,Word.zero(32n),w)),
+    L.first_one_word(32n,w),L.word_first_one_is_lowest_bit(32n,w))
+
+def L.first_one_word_is_present(n,w):
+  match n w:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{True{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{True{},r},
+        Word.and(k,Word.zero(k),tail),Word.zero(k),L.word_zero_and(k,tail))
+    case 1n+k WCon{False{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.and(k,L.first_one_word(k,tail),tail),L.first_one_word(k,tail),
+        L.first_one_word_is_present(k,tail))
+
+def L.lowest_bit_is_present(w):
+  %Equal.sym(U32,L.lowest_bit(U32{w}),U32{L.first_one_word(32n,w)},L.u32_first_one_is_lowest_bit(w)) :
+    {U32.and(_,U32{w}) == _ : U32}
+  Equal.cong(Word(32n),U32,r => U32{r},Word.and(32n,L.first_one_word(32n,w),w),
+    L.first_one_word(32n,w),L.first_one_word_is_present(32n,w))
+
+def L.word_xor_zero_right(n,w):
+  match n w:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{True{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{True{},r},
+        Word.xor(k,tail,Word.zero(k)),tail,L.word_xor_zero_right(k,tail))
+    case 1n+k WCon{False{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.xor(k,tail,Word.zero(k)),tail,L.word_xor_zero_right(k,tail))
+
+def L.word_xor_first_one_removes_only_first(n,w):
+  match n w:
+    case 0n WNil{}:
+      {==}
+    case 1n+k WCon{True{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.xor(k,tail,Word.zero(k)),tail,L.word_xor_zero_right(k,tail))
+    case 1n+k WCon{False{},tail}:
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.xor(k,tail,L.first_one_word(k,tail)),L.remove_first_one_word(k,tail),
+        L.word_xor_first_one_removes_only_first(k,tail))
+
+def L.alternatives_after_removes_only_first(w):
+  %Equal.sym(U32,L.lowest_bit(U32{w}),U32{L.first_one_word(32n,w)},L.u32_first_one_is_lowest_bit(w)) :
+    {U32.xor(U32{w},_) == U32{L.remove_first_one_word(32n,w)} : U32}
+  Equal.cong(Word(32n),U32,r => U32{r},Word.xor(32n,w,L.first_one_word(32n,w)),
+    L.remove_first_one_word(32n,w),L.word_xor_first_one_removes_only_first(32n,w))
+
+def L.chosen_alternative_pack(w,d,nonblank,count,eq):
+  %Equal.sym(U32,L.lowest_bit(U32{w}),Board.bit(L.digit_word(d)),eq) : Sigma<&2,&1,L.BoardDigit,x => (L.Nonblank(x) & {C.mask_count((_ - 1 : U32)) == L.digit_word(x) : U32} & {_ == Board.bit(L.digit_word(x)) : U32})>
+  (d,(nonblank,(count,{==})))
+
+def L.chosen_alternative_from_first_one(w,d,nonblank,found,count):
+  L.chosen_alternative_pack(w,d,nonblank,count,
+    Equal.trans(U32,L.lowest_bit(U32{w}),U32{L.first_one_word(32n,w)},Board.bit(L.digit_word(d)),
+      L.u32_first_one_is_lowest_bit(w),found))
+
+
+def L.candidate_bits_select_digit(bits,nonempty):
+  match bits:
+    case WCon{True{}, tail}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{True{}, tail})},L.D1{},{==},{==},{==})
+    case WCon{False{}, WCon{True{}, tail}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{True{}, tail}})},L.D2{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{True{}, tail}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{True{}, tail}}})},L.D3{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}})},L.D4{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}})},L.D5{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}})},L.D6{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}}})},L.D7{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, tail}}}}}}}})},L.D8{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}}:
+      L.chosen_alternative_from_first_one(WCon{False{},L.pad_candidate(9n,WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}})},L.D9{},{==},{==},{==})
+    case WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WNil{}}}}}}}}}}:
+      Empty.absurd(L.ChosenAlternative(0),L.false_is_not_true(Equal.sym(Bool,True{},False{},nonempty)))
+
+def L.low_candidate_mask_image(word):
+  match word:
+    case U32{WCon{b0, WCon{b1, WCon{b2, WCon{b3, WCon{b4, WCon{b5, WCon{b6, WCon{b7, WCon{b8, WCon{b9, upper}}}}}}}}}}}:
+      (WCon{b1, WCon{b2, WCon{b3, WCon{b4, WCon{b5, WCon{b6, WCon{b7, WCon{b8, WCon{b9, WNil{}}}}}}}}}},
+       Equal.cong(Word(22n),U32,pad => U32{WCon{False{}, WCon{b1, WCon{b2, WCon{b3, WCon{b4, WCon{b5, WCon{b6, WCon{b7, WCon{b8, WCon{b9, pad}}}}}}}}}}},Word.and(22n,Word.zero(22n),upper),
+         Word.zero(22n),L.word_zero_and(22n,upper)))
+
+def L.clipped_candidate_selects_digit_image(word,image,nonempty):
+  (+bits,match_bits) = image
+  result : ({U32.is_eq(U32.and(1022,word),0) == False{} : Bool} -> L.ChosenAlternative(U32.and(1022,word))) =
+    %Equal.sym(U32,U32.and(1022,word),L.candidate_bits_word(bits),match_bits) :
+      ({U32.is_eq(_,0) == False{} : Bool} -> L.ChosenAlternative(_))
+    premise => L.candidate_bits_select_digit(bits,premise)
+  result(nonempty)
+
+def L.clipped_candidate_selects_digit(word,nonempty):
+  L.clipped_candidate_selects_digit_image(word,L.low_candidate_mask_image(word),nonempty)
+
+def L.normalized_candidate_selects_digit(mask,clipped,nonempty):
+  result : ({U32.is_eq(mask,0) == False{} : Bool} -> L.ChosenAlternative(mask)) =
+    %clipped : ({U32.is_eq(_,0) == False{} : Bool} -> L.ChosenAlternative(_))
+    premise => L.clipped_candidate_selects_digit(mask,premise)
+  result(nonempty)
+
+def L.adaptive_restore_replays_chosen_digit(mask,p,frames,depth,found,snapshots,saved,d,present,digit_is):
+  %digit_is :
+    {Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}) ==
+      Fast.place(True{},p,_,L.alternatives_after(mask),frames,depth,found,snapshots,True{},saved) : Fast.State}
+  L.adaptive_nonzero_restore_replays_guess(mask,p,frames,depth,found,snapshots,saved,present)
+
+def L.adaptive_restored_working_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,mask,present,digit_is,distinct,clue):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  Equal.trans(U32,L.searching_word(Fast.restore(p,mask,frames,depth,found,L.image_board(image) <> snapshots,True{}),q),
+    L.searching_word(Fast.place(True{},p,L.digit_word(digit),L.alternatives_after(mask),frames,depth,found,snapshots,True{},L.image_board(image)),q),L.fixed_word(fixed),
+    Equal.cong(Fast.State,U32,out => L.searching_word(out,q),
+      Fast.restore(p,mask,frames,depth,found,L.image_board(image) <> snapshots,True{}),
+      Fast.place(True{},p,L.digit_word(digit),L.alternatives_after(mask),frames,depth,found,snapshots,True{},L.image_board(image)),
+      L.adaptive_restore_replays_chosen_digit(mask,p,frames,depth,found,snapshots,L.image_board(image),digit,present,digit_is)),
+    L.adaptive_active_guess_keeps_clue(L.image_board(image),frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,L.alternatives_after(mask),distinct,clue))
+
+def L.adaptive_restored_working_keeps_clue(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,mask,present,digit_is,distinct,clue):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  pkeep : (L.FixedClue(saved,q,fixed) -> {L.searching_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == L.fixed_word(fixed) : U32}) =
+    L.on_reified_board(saved,x =>
+      (L.FixedClue(x,q,fixed) -> {L.searching_word(Fast.restore(p,mask,frames,depth,found,x <> snapshots,True{}),q) == L.fixed_word(fixed) : U32}),
+      L.reify_board(saved),image => L.adaptive_restored_working_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,mask,present,digit_is,distinct))
+  pkeep(clue)
+
+def L.adaptive_restored_snapshot_keeps_clue_image(image,frames,depth,found,snapshots,p,q,fixed,digit,mask,present,digit_is,clue):
+  Equal.trans(U32,L.searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,L.image_board(image) <> snapshots,True{}),q),
+    L.searching_snapshot_word(Fast.place(True{},p,L.digit_word(digit),L.alternatives_after(mask),frames,depth,found,snapshots,True{},L.image_board(image)),q),L.fixed_word(fixed),
+    Equal.cong(Fast.State,U32,out => L.searching_snapshot_word(out,q),
+      Fast.restore(p,mask,frames,depth,found,L.image_board(image) <> snapshots,True{}),
+      Fast.place(True{},p,L.digit_word(digit),L.alternatives_after(mask),frames,depth,found,snapshots,True{},L.image_board(image)),
+      L.adaptive_restore_replays_chosen_digit(mask,p,frames,depth,found,snapshots,L.image_board(image),digit,present,digit_is)),
+    L.adaptive_active_guess_snapshot_keeps_clue(L.image_board(image),frames,depth,found,snapshots,p,q,fixed,L.digit_word(digit),L.alternatives_after(mask),clue))
+
+def L.adaptive_restored_snapshot_keeps_clue(saved,frames,depth,found,snapshots,p,q,fixed,digit,mask,present,digit_is,clue):
+  pkeep : (L.FixedClue(saved,q,fixed) -> {L.searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == L.fixed_word(fixed) : U32}) =
+    L.on_reified_board(saved,x =>
+      (L.FixedClue(x,q,fixed) -> {L.searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,x <> snapshots,True{}),q) == L.fixed_word(fixed) : U32}),
+      L.reify_board(saved),image => L.adaptive_restored_snapshot_keeps_clue_image(image,frames,depth,found,snapshots,p,q,fixed,digit,mask,present,digit_is))
+  pkeep(clue)
+
+def L.copy_mask_nonempty(mask,known):
+  %known : ({U32.is_eq(mask,0) == _ : Bool} & {U32.is_eq(mask,0) == _ : Bool})
+  ({==},{==})
+
+def L.adaptive_normalized_restore_working_keeps_clue_take(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,mask,present,choice,distinct,clue):
+  (+digit,(nonblank,(is_digit,bit))) = choice
+  L.adaptive_restored_working_keeps_clue(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,mask,present,is_digit,distinct,clue)
+
+def L.adaptive_normalized_restore_working_keeps_clue_split(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,mask,both,clipped,distinct,clue):
+  (branch,select) = both
+  L.adaptive_normalized_restore_working_keeps_clue_take(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,mask,branch,L.normalized_candidate_selects_digit(mask,clipped,select),distinct,clue)
+
+def L.adaptive_normalized_restore_working_keeps_clue(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,mask,present,clipped,distinct,clue):
+  L.adaptive_normalized_restore_working_keeps_clue_split(saved,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,mask,L.copy_mask_nonempty(mask,present),clipped,distinct,clue)
+
+def L.adaptive_normalized_restore_snapshot_keeps_clue_take(saved,frames,depth,found,snapshots,p,q,fixed,mask,present,choice,clue):
+  (+digit,(nonblank,(is_digit,bit))) = choice
+  L.adaptive_restored_snapshot_keeps_clue(saved,frames,depth,found,snapshots,p,q,fixed,digit,mask,present,is_digit,clue)
+
+def L.adaptive_normalized_restore_snapshot_keeps_clue_split(saved,frames,depth,found,snapshots,p,q,fixed,mask,both,clipped,clue):
+  (branch,select) = both
+  L.adaptive_normalized_restore_snapshot_keeps_clue_take(saved,frames,depth,found,snapshots,p,q,fixed,mask,branch,L.normalized_candidate_selects_digit(mask,clipped,select),clue)
+
+def L.adaptive_normalized_restore_snapshot_keeps_clue(saved,frames,depth,found,snapshots,p,q,fixed,mask,present,clipped,clue):
+  L.adaptive_normalized_restore_snapshot_keeps_clue_split(saved,frames,depth,found,snapshots,p,q,fixed,mask,L.copy_mask_nonempty(mask,present),clipped,clue)

@@ -314,3 +314,25 @@ claim about reachable search caches or prove solver soundness.
   not claimed reachable. Establishing that neither case occurs on a
   reachable forward turn requires maintenance of the urgency flags and
   ordinary empty-column bits as a separate invariant.
+
+## Nonempty alternatives and snapshot replay
+
+- For any word width, the implementation’s two’s-complement low-bit
+  operation isolates the first set bit. The proof is by induction on
+  the actual addition/subtraction words, not an enumeration of masks.
+  The isolated bit is present in the original word. XOR removes exactly
+  that first bit and preserves the complete suffix.
+- Every nonempty mask containing only Sudoku digit bits 1–9 yields a
+  selected digit in 1–9 and its corresponding present bit. The source
+  performs the real masking and count-table lookup; no assumption about
+  a valid digit is made in the public candidate lemma. This is not a
+  claim about arbitrary high bits, bit 0, or an empty mask.
+- The actual nonempty restore operation replays the guess from the saved
+  pre-choice board, not from the transient unwind board. For every
+  normalized nonempty remaining mask it preserves a different fixed
+  digit on the new working board and every fixed digit on the new saved
+  board, including at the chosen position of the saved board. In the
+  live case the real placement is permitted to replace the chosen cell.
+- The preservation result assumes a fixed clue on the restored board.
+  Reaching such a board by all production selectors still requires the
+  ordinary cached vacancy and queued urgency metadata invariants.
