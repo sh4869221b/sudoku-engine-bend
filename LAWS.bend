@@ -9114,3 +9114,532 @@ law logical_peer_preserves_exact_urgency:
   for norm: NormalizedQueueMask(cell_value(b,logical_position(row,col)))
   {actual_flag_at(actual_peer(b,logical_position(row,col),B.bit(digit_word(placed))),logical_position(row,col)) ==
     Q.zero_or_single(cell_value(actual_peer(b,logical_position(row,col),B.bit(digit_word(placed))),logical_position(row,col))) : Bool}
+
+def bit_word_head(+n: Nat, +w: Word(1n+n)) -> Bool:
+  match w:
+    case WCon{head,tail}:
+      head
+
+def bit_word_tail(+n: Nat, +w: Word(1n+n)) -> Word(n):
+  match w:
+    case WCon{head,tail}:
+      tail
+
+def bits_of_u32(+w: U32) -> Word(32n):
+  match w:
+    case U32{bits}:
+      bits
+
+law word_mask_set_keeps_other:
+  for +n: Nat
+  for +value: Word(n)
+  for +watch: Word(n)
+  for +edit: Word(n)
+  for apart: {Word.and(n,watch,edit) == Word.zero(n) : Word(n)}
+  {Word.and(n,watch,Word.or(n,value,edit)) == Word.and(n,watch,value) : Word(n)}
+
+law u32_mask_set_keeps_other:
+  for +value: U32
+  for +watch: U32
+  for +edit: U32
+  for apart: {U32.and(watch,edit) == 0 : U32}
+  {U32.and(watch,U32.or(value,edit)) == U32.and(watch,value) : U32}
+
+law word_mask_clear_keeps_other:
+  for +n: Nat
+  for +value: Word(n)
+  for +watch: Word(n)
+  for +edit: Word(n)
+  for apart: {Word.and(n,watch,edit) == Word.zero(n) : Word(n)}
+  {Word.and(n,watch,Word.and(n,value,Word.not(n,edit))) == Word.and(n,watch,value) : Word(n)}
+
+law u32_mask_clear_keeps_other:
+  for +value: U32
+  for +watch: U32
+  for +edit: U32
+  for apart: {U32.and(watch,edit) == 0 : U32}
+  {U32.and(watch,U32.and(value,U32.not(edit))) == U32.and(watch,value) : U32}
+
+law flag_update_keeps_disjoint_watch_mask:
+  for +pos: U32
+  for +watch: U32
+  for +value: U32
+  for +on: Bool
+  for apart: {U32.and(watch,own_queue_flag_mask(pos)) == 0 : U32}
+  {U32.and(watch,flag_word(pos,on,value)) == U32.and(watch,value) : U32}
+
+def FlagPaddingRoute(+p: U32) -> Type:
+  Either<&1,&1,RoutedApart(flag_slot(p),111),
+    ({flag_slot(p) == 111 : U32} & {U32.and(4294836224,own_queue_flag_mask(p)) == 0 : U32})>
+
+law logical_flag_padding_route:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  FlagPaddingRoute(logical_position(row,col))
+
+def FlagKeepsPadding(-b: Array<U32>, +p: U32, +on: Bool) -> Type:
+  Board128(b) -> FlagPaddingRoute(p) ->
+  {U32.and(4294836224,cell_value(Q.flag(b,p,on),111)) == U32.and(4294836224,cell_value(b,111)) : U32}
+
+law flag_keeps_padding_same_slot:
+  for +image: BoardImage
+  for +p: U32
+  for +on: Bool
+  for disjoint: {U32.and(4294836224,own_queue_flag_mask(p)) == 0 : U32}
+  {U32.and(4294836224,cell_value(Q.flag(image_board(image),p,on),flag_slot(p))) ==
+    U32.and(4294836224,cell_value(image_board(image),flag_slot(p))) : U32}
+
+law flag_keeps_padding_image:
+  for +image: BoardImage
+  for +p: U32
+  for +on: Bool
+  FlagKeepsPadding(image_board(image),p,on)
+
+law flag_keeps_padding:
+  for b: Array<U32>
+  for +p: U32
+  for +on: Bool
+  FlagKeepsPadding(b,p,on)
+
+law actual_logical_flag_keeps_high_padding:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +on: Bool
+  for shape: Board128(b)
+  {U32.and(4294836224,cell_value(Q.flag(b,logical_position(row,col),on),111)) ==
+    U32.and(4294836224,cell_value(b,111)) : U32}
+
+law queue_seed_zeros_final_flag_slot:
+  for b: Array<U32>
+  {cell_value(queue_seed(b),111) == 0 : U32}
+
+def high_flag_padding(b: Array<U32>) -> U32:
+  U32.and(4294836224,cell_value(b,111))
+
+law logical_write_apart_from_flag_padding:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  RoutedApart(logical_position(row,col),111)
+
+def ChangedFlagKeepsPadding(-b: Array<U32>, +p: U32, +needed: Bool) -> Type:
+  Board128(b) -> FlagPaddingRoute(p) ->
+  {high_flag_padding(Q.changed_flag(needed,b,p)) == high_flag_padding(b) : U32}
+
+law changed_flag_keeps_padding:
+  for b: Array<U32>
+  for +p: U32
+  for +needed: Bool
+  ChangedFlagKeepsPadding(b,p,needed)
+
+law changed_write_keeps_padding_yes:
+  for +image: BoardImage
+  for +p: U32
+  for +old: U32
+  for +bit: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for apart: RoutedApart(p,111)
+  for route: FlagPaddingRoute(p)
+  {high_flag_padding(Q.changed(True{},p,bit,image_board(image),old)) == high_flag_padding(image_board(image)) : U32}
+
+law changed_write_keeps_padding_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +old: U32
+  for +bit: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(p,111)
+  for route: FlagPaddingRoute(p)
+  {high_flag_padding(Q.changed(needed,p,bit,image_board(image),old)) == high_flag_padding(image_board(image)) : U32}
+
+def PeerKeepsPadding(-b: Array<U32>, +p: U32, +bit: U32) -> Type:
+  Board128(b) -> RoutedApart(p,111) -> FlagPaddingRoute(p) ->
+  {high_flag_padding(actual_peer(b,p,bit)) == high_flag_padding(b) : U32}
+
+law actual_peer_keeps_padding_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  PeerKeepsPadding(image_board(image),p,bit)
+
+law actual_peer_keeps_padding:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  PeerKeepsPadding(b,p,bit)
+
+law logical_peer_keeps_flag_padding:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +bit: U32
+  for shape: Board128(b)
+  {high_flag_padding(actual_peer(b,logical_position(row,col),bit)) == high_flag_padding(b) : U32}
+
+def OtherFlagRoute(+p: U32, +q: U32) -> Type:
+  Either<&1,&1,RoutedApart(flag_slot(p),flag_slot(q)),
+    ({flag_slot(p) == flag_slot(q) : U32} &
+     {U32.and(own_queue_flag_mask(q),own_queue_flag_mask(p)) == 0 : U32})>
+
+def FlagKeepsOther(-b: Array<U32>, +p: U32, +q: U32, +on: Bool) -> Type:
+  Board128(b) -> OtherFlagRoute(p,q) ->
+  {actual_flag_at(Q.flag(b,p,on),q) == actual_flag_at(b,q) : Bool}
+
+law flag_keeps_other_shared_slot:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +on: Bool
+  for disjoint: {U32.and(own_queue_flag_mask(q),own_queue_flag_mask(p)) == 0 : U32}
+  {queue_flag_present(q,cell_value(Q.flag(image_board(image),p,on),flag_slot(p))) ==
+    queue_flag_present(q,cell_value(image_board(image),flag_slot(p))) : Bool}
+
+law flag_keeps_other_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +on: Bool
+  FlagKeepsOther(image_board(image),p,q,on)
+
+law actual_flag_keeps_other:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +on: Bool
+  FlagKeepsOther(b,p,q,on)
+
+def ChangedFlagKeepsOther(-b: Array<U32>, +p: U32, +q: U32, +needed: Bool) -> Type:
+  Board128(b) -> OtherFlagRoute(p,q) ->
+  {actual_flag_at(Q.changed_flag(needed,b,p),q) == actual_flag_at(b,q) : Bool}
+
+law changed_flag_keeps_other:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +needed: Bool
+  ChangedFlagKeepsOther(b,p,q,needed)
+
+law peer_write_keeps_other_flag_yes:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +old: U32
+  for +bit: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for apart: RoutedApart(p,flag_slot(q))
+  for route: OtherFlagRoute(p,q)
+  {actual_flag_at(Q.changed(True{},p,bit,image_board(image),old),q) == actual_flag_at(image_board(image),q) : Bool}
+
+law peer_write_keeps_other_flag_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +q: U32
+  for +old: U32
+  for +bit: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(p,flag_slot(q))
+  for route: OtherFlagRoute(p,q)
+  {actual_flag_at(Q.changed(needed,p,bit,image_board(image),old),q) == actual_flag_at(image_board(image),q) : Bool}
+
+def PeerKeepsOtherFlag(-b: Array<U32>, +p: U32, +q: U32, +bit: U32) -> Type:
+  Board128(b) -> RoutedApart(p,flag_slot(q)) -> OtherFlagRoute(p,q) ->
+  {actual_flag_at(actual_peer(b,p,bit),q) == actual_flag_at(b,q) : Bool}
+
+law actual_peer_keeps_other_flag_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +bit: U32
+  PeerKeepsOtherFlag(image_board(image),p,q,bit)
+
+law actual_peer_keeps_other_flag:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +bit: U32
+  PeerKeepsOtherFlag(b,p,q,bit)
+
+def ProtectedEncodeRoute(+watched: U32) -> Type:
+  (RoutedApart(109,watched) & RoutedApart(110,watched) & RoutedApart(111,watched) & EncodeApart(81n,0,watched))
+
+law occupancy_not_written_routes:
+  for +band: CacheGroup
+  for +index: CellCoordinate
+  ProtectedEncodeRoute(cache_group_slot(band,index))
+
+def EncodeKeepsWord(-b: Array<U32>, +q: U32) -> Type:
+  Board128(b) -> ProtectedEncodeRoute(q) -> {cell_value(Q.encode(b),q) == cell_value(b,q) : U32}
+
+law encode_keeps_protected_word_parts:
+  for +image: BoardImage
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for routes: ProtectedEncodeRoute(q)
+  {cell_value(Q.encode(image_board(image)),q) == cell_value(image_board(image),q) : U32}
+
+law encode_keeps_protected_word_image:
+  for +image: BoardImage
+  for +q: U32
+  EncodeKeepsWord(image_board(image),q)
+
+law encode_keeps_protected_word:
+  for b: Array<U32>
+  for +q: U32
+  EncodeKeepsWord(b,q)
+
+law queued_encode_keeps_ordinary_occupancy:
+  for b: Array<U32>
+  for +band: CacheGroup
+  for +index: CellCoordinate
+  for shape: Board128(b)
+  {cell_value(Q.encode(b),cache_group_slot(band,index)) == cell_value(b,cache_group_slot(band,index)) : U32}
+
+law encode_routes_prefix:
+  for +n: Nat
+  for +remaining: Nat
+  for +p: U32
+  for +q: U32
+  for whole: EncodeApart(Nat.add(n,remaining),p,q)
+  EncodeApart(n,p,q)
+
+law encoded_prefix_from_seed_keeps_occupancy:
+  for b: Array<U32>
+  for +n: Nat
+  for +remaining: Nat
+  for +band: CacheGroup
+  for +index: CellCoordinate
+  for shape: Board128(b)
+  for sweep: {Nat.add(n,remaining) == 81n : Nat}
+  {cell_value(Q.encode_go(n,0,queue_seed(b)),cache_group_slot(band,index)) == cell_value(b,cache_group_slot(band,index)) : U32}
+
+law encode_keeps_seeded_prefix_routes:
+  for +image: BoardImage
+  for +n: Nat
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for r9: RoutedApart(109,q)
+  for r10: RoutedApart(110,q)
+  for r11: RoutedApart(111,q)
+  for prefix: EncodeApart(n,0,q)
+  {cell_value(Q.encode_go(n,0,queue_seed(image_board(image))),q) == cell_value(image_board(image),q) : U32}
+
+law encode_routes_prefix_from_total:
+  for +n: Nat
+  for +remaining: Nat
+  for +q: U32
+  for sweep: {Nat.add(n,remaining) == 81n : Nat}
+  for whole: EncodeApart(81n,0,q)
+  EncodeApart(n,0,q)
+
+law encode_protected_prefix_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +remaining: Nat
+  for +q: U32
+  for shape: Board128(image_board(image))
+  for routes: ProtectedEncodeRoute(q)
+  for sweep: {Nat.add(n,remaining) == 81n : Nat}
+  {cell_value(Q.encode_go(n,0,queue_seed(image_board(image))),q) == cell_value(image_board(image),q) : U32}
+
+law cached_read_exact_parts:
+  for -b: Array<U32>
+  for +p: U32
+  for -same: Array<U32>
+  for +value: U32
+  for kept: {same == b : Array<U32>}
+  for read: {B.get_cell(b,p) == (same,value) : Array<U32> & U32}
+  {B.get_cell(b,p) == (b,cell_value(b,p)) : Array<U32> & U32}
+
+law cached_read_exact:
+  for b: Array<U32>
+  for +p: U32
+  for read: BoardReadWitness(b,p)
+  {B.get_cell(b,p) == (b,cell_value(b,p)) : Array<U32> & U32}
+
+law cached_add_exact_image:
+  for +image: BoardImage
+  for +p: U32
+  for +used: U32
+  {C.cached_add(p,(image_board(image),used)) ==
+    (image_board(image),U32.or(used,cell_value(image_board(image),p))) : Array<U32> & U32}
+
+def occupancy_candidate_mask(+row_bits: U32,+col_bits: U32,+box_bits: U32) -> U32:
+  U32.and(1022,U32.not(U32.or(U32.or(row_bits,col_bits),box_bits)))
+
+law cached_candidates_are_occupancy_image:
+  for +image: BoardImage
+  for +p: U32
+  {cached_word(image_board(image),p) ==
+    occupancy_candidate_mask(cell_value(image_board(image),ordinary_row_slot(p)),
+      cell_value(image_board(image),ordinary_col_slot(p)),cell_value(image_board(image),ordinary_box_slot(p))) : U32}
+
+def SameOccupancyAt(-a: Array<U32>,-b: Array<U32>,+p: U32) -> Type:
+  ({cell_value(a,ordinary_row_slot(p)) == cell_value(b,ordinary_row_slot(p)) : U32} &
+   {cell_value(a,ordinary_col_slot(p)) == cell_value(b,ordinary_col_slot(p)) : U32} &
+   {cell_value(a,ordinary_box_slot(p)) == cell_value(b,ordinary_box_slot(p)) : U32})
+
+law cached_word_same_occupancy:
+  for +new: BoardImage
+  for +old: BoardImage
+  for +p: U32
+  for same: SameOccupancyAt(image_board(new),image_board(old),p)
+  {cached_word(image_board(new),p) == cached_word(image_board(old),p) : U32}
+
+def seeded_encode_prefix(+n: Nat,b: Array<U32>) -> Array<U32>:
+  Q.encode_go(n,0,queue_seed(b))
+
+law encode_prefix_holds_cache_read_parts:
+  for +image: BoardImage
+  for +n: Nat
+  for +remaining: Nat
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for sweeps: ({Nat.add(n,remaining) == 81n : Nat} & {Nat.add(n,remaining) == 81n : Nat} & {Nat.add(n,remaining) == 81n : Nat})
+  for geometry: OrdinaryGeometry(row,col)
+  SameOccupancyAt(seeded_encode_prefix(n,image_board(image)),image_board(image),logical_position(row,col))
+
+law copy_nat_eq:
+  for -a: Nat
+  for -b: Nat
+  for same: {a == b : Nat}
+  ({a == b : Nat} & {a == b : Nat} & {a == b : Nat})
+
+law encoded_prefix_keeps_cached_candidate_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +remaining: Nat
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  for sweep: {Nat.add(n,remaining) == 81n : Nat}
+  {cached_word(seeded_encode_prefix(n,image_board(image)),logical_position(row,col)) ==
+    cached_word(image_board(image),logical_position(row,col)) : U32}
+
+def EncodeKeepsCacheSource(-b: Array<U32>, +n: Nat,+remaining: Nat,+row: CellCoordinate,+col: CellCoordinate) -> Type:
+  Board128(b) -> {Nat.add(n,remaining) == 81n : Nat} ->
+  {cached_word(seeded_encode_prefix(n,b),logical_position(row,col)) == cached_word(b,logical_position(row,col)) : U32}
+
+law actual_encoded_prefix_keeps_cached_candidate:
+  for b: Array<U32>
+  for +n: Nat
+  for +remaining: Nat
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  EncodeKeepsCacheSource(b,n,remaining,row,col)
+
+law encode_go_split_at_prefix:
+  for +prefix: Nat
+  for +suffix: Nat
+  for +start: U32
+  for b: Array<U32>
+  {Q.encode_go(Nat.add(prefix,suffix),start,b) ==
+    Q.encode_go(suffix,walk_position(prefix,start),Q.encode_go(prefix,start,b)) : Array<U32>}
+
+law encoded_blank_is_exact_cached_word_image:
+  for +image: BoardImage
+  for +p: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(flag_slot(p),p)
+  {cell_value(Q.encoded(p,(image_board(image),0)),p) == cached_word(image_board(image),p) : U32}
+
+def EncodeBlankIsExactCache(-b: Array<U32>,+p: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) -> {cell_value(b,p) == 0 : U32} ->
+  {cell_value(actual_encoded_step(b,p),p) == cached_word(b,p) : U32}
+
+law actual_encode_blank_exact_cache_image:
+  for +image: BoardImage
+  for +p: U32
+  EncodeBlankIsExactCache(image_board(image),p)
+
+law actual_encode_blank_exact_cache:
+  for b: Array<U32>
+  for +p: U32
+  EncodeBlankIsExactCache(b,p)
+
+law full_queue_encode_as_local_step:
+  for +prefix: Nat
+  for +suffix: Nat
+  for b: Array<U32>
+  for total: {Nat.add(prefix,1n+suffix) == 81n : Nat}
+  {Q.encode(b) == Q.encode_go(suffix,(walk_position(prefix,0) + 1 : U32),
+    actual_encoded_step(seeded_encode_prefix(prefix,b),walk_position(prefix,0))) : Array<U32>}
+
+law with_center_is_add:
+  for +prefix: Nat
+  for +suffix: Nat
+  {with_center(prefix,suffix) == Nat.add(prefix,1n+suffix) : Nat}
+
+law checked_center_total:
+  for +prefix: Nat
+  for +suffix: Nat
+  for count: {with_center(prefix,suffix) == 81n : Nat}
+  {Nat.add(prefix,1n+suffix) == 81n : Nat}
+
+def encode_seeded_logical_prefix(+row: CellCoordinate,+col: CellCoordinate,b: Array<U32>) -> Array<U32>:
+  seeded_encode_prefix(logical_offset(row,col),b)
+
+law full_queue_encoded_blank_core:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for count: {Nat.add(logical_offset(row,col),1n+logical_tail(row,col)) == 81n : Nat}
+  for shape: Board128(encode_seeded_logical_prefix(row,col,image_board(image)))
+  for safe: RoutedApart(flag_slot(logical_position(row,col)),logical_position(row,col))
+  for after: EncodeApart(logical_tail(row,col),(logical_position(row,col) + 1 : U32),logical_position(row,col))
+  for blank: {cell_value(encode_seeded_logical_prefix(row,col,image_board(image)),logical_position(row,col)) == 0 : U32}
+  for cache: {cached_word(encode_seeded_logical_prefix(row,col,image_board(image)),logical_position(row,col)) ==
+    cached_word(image_board(image),logical_position(row,col)) : U32}
+  {cell_value(Q.encode(image_board(image)),logical_position(row,col)) == cached_word(image_board(image),logical_position(row,col)) : U32}
+
+law full_queue_encoded_blank_final_reads:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for count: {Nat.add(logical_offset(row,col),1n+logical_tail(row,col)) == 81n : Nat}
+  for shapes: (Board128(encode_seeded_logical_prefix(row,col,image_board(image))) & Board128(encode_seeded_logical_prefix(row,col,image_board(image))))
+  for safe: RoutedApart(flag_slot(logical_position(row,col)),logical_position(row,col))
+  for after: EncodeApart(logical_tail(row,col),(logical_position(row,col) + 1 : U32),logical_position(row,col))
+  for blank: {cell_value(encode_seeded_logical_prefix(row,col,image_board(image)),logical_position(row,col)) == 0 : U32}
+  for cache: {cached_word(encode_seeded_logical_prefix(row,col,image_board(image)),logical_position(row,col)) ==
+    cached_word(image_board(image),logical_position(row,col)) : U32}
+  {cell_value(Q.encode(image_board(image)),logical_position(row,col)) == cached_word(image_board(image),logical_position(row,col)) : U32}
+
+law full_queue_encoded_blank_with_routes:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for counts: ({Nat.add(logical_offset(row,col),1n+logical_tail(row,col)) == 81n : Nat} &
+    {Nat.add(logical_offset(row,col),1n+logical_tail(row,col)) == 81n : Nat} &
+    {Nat.add(logical_offset(row,col),1n+logical_tail(row,col)) == 81n : Nat})
+  for routes: WindowRoutes(logical_offset(row,col),logical_tail(row,col),logical_position(row,col),(logical_position(row,col) + 1 : U32))
+  for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
+  {cell_value(Q.encode(image_board(image)),logical_position(row,col)) == cached_word(image_board(image),logical_position(row,col)) : U32}
+
+law full_queue_encoded_blank_with_window:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
+  for window: VerifiedWindow(logical_offset(row,col),logical_tail(row,col))
+  {cell_value(Q.encode(image_board(image)),logical_position(row,col)) == cached_word(image_board(image),logical_position(row,col)) : U32}
+
+def EncodeBlankOriginalCache(-b: Array<U32>,+row: CellCoordinate,+col: CellCoordinate) -> Type:
+  Board128(b) -> {cell_value(b,logical_position(row,col)) == 0 : U32} ->
+  {cell_value(Q.encode(b),logical_position(row,col)) == cached_word(b,logical_position(row,col)) : U32}
+
+law encoded_logical_blank_uses_original_cached_mask:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  EncodeBlankOriginalCache(b,row,col)
+
+law copy_shape_four_from_three:
+  for -a: ArrayShape
+  for -b: ArrayShape
+  for eqs: ({a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape})
+  ({a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape})

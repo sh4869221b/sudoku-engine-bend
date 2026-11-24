@@ -590,3 +590,44 @@ claim about reachable search caches or prove solver soundness.
   and its flag slot are proven nonaliasing at all logical positions.
   This remains a local theorem: other-position flags, flag padding,
   and reachability of the premises are separate obligations.
+
+## Disjoint flag bits and unused high padding
+
+- Setting or clearing a mask leaves every disjoint watched bit
+  unchanged, for arbitrary 32-bit words. The proof lifts the bit
+  property by induction, not enumeration of flag-word values.
+- The highest 15 bits of flag word 111 represent no Sudoku cell.
+  The seed writes zero to that word. For every logical position,
+  the actual single-cell flag edit and peer update retain those
+  padding bits, including the guarded no-op. This covers arbitrary
+  candidate-removal masks for the local peer operation.
+- This is a seed and local preservation result, not a claim about
+  all intermediate placements, encoder steps, or restored snapshots.
+
+## Watched flag and frozen encoding occupancy
+
+- Actual flag and peer updates retain another flag bit given either
+  disjoint flag slots or disjoint bit masks in the same word, and an
+  independent written cell route for the peer update. This is a
+  conditional array-level theorem, not yet a global all-cell invariant.
+- Each of the 27 actual row, column, and block occupancy words is
+  unchanged by the full queued encoder, and by any prefix after
+  initialization. The actual cached candidate reader depends on
+  precisely three such words and yields the same mask for each logical
+  position on every intermediate prefix as on the original board.
+- Correctness of the original ordinary cache against direct Sudoku
+  legality and the exact final encoded mask of each blank are separate
+  obligations. In particular, this does not assume that queued
+  placement maintains the ordinary occupancy cache.
+
+## Encoded blanks use the original cached mask
+
+- The actual queued encoder at every initially blank logical cell
+  stores exactly the candidate mask read from the original board's
+  ordinary occupancy cache. It neither changes that blank before the
+  cell's turn nor rewrites its encoded word afterward.
+- The verification splits the actual loop into prefix, the real
+  cache-reading blank update, and suffix, and applies the occupancy
+  projection equality to the prefix. This ties normalization to an
+  exact source value, without claiming the original ordinary cache
+  already matches direct Sudoku legality.
