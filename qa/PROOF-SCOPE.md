@@ -422,3 +422,20 @@ claim about reachable search caches or prove solver soundness.
   Valid Sudoku mask words exclude bit 0 and can contain at most nine
   candidates; that separate range guarantee must be linked to real
   live selectable states before proving the no-blank converse.
+
+## Queued fallback completion and eligible words
+
+- Any in-range continuation with a non-sentinel best position cannot
+  return to the completion position 81. This covers all actual scan
+  exits, including its early terminal sizes and fuel exhaustion.
+- A scanned word below 1024 with actual scalar size below 10 is eligible
+  for the initial best slot. If a bounded fallback interval contains
+  any eligible word, the actual scan started with the empty best slot
+  cannot return the completion position. This is checked on arbitrary
+  prefix/suffix windows and for the production fallback from every
+  logical start coordinate.
+- Consequently a completion result excludes any eligible word in the
+  actual interval examined. To conclude no Sudoku blank remains, one
+  must still show that the start does not skip any true blank and that
+  all true blanks carry an eligible mask, in every live reachable state.
+  This theorem does not assume those state invariants.

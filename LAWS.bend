@@ -6307,3 +6307,348 @@ law queued_logical_start_selects_only_vacancy_or_sentinel:
 law queued_end_start_returns_completion_marker:
   for -b: Array<U32>
   {selector_position(Q.start((b,81))) == 81 : U32}
+
+# Once a real position is recorded, subsequent in-range inspections
+# cannot return to the completion marker (position 81).
+def NotCompleted(-pos: U32) -> Type:
+  {pos == 81 : U32} -> Empty
+
+law queued_in_range_not_completed:
+  for +pos: U32
+  for good: {(pos < 81 : U32) == True{} : Bool}
+  NotCompleted(pos)
+
+law queued_pick_keeps_non_sentinel:
+  for +take: Bool
+  for +pos: U32
+  for +best: U32
+  for now: NotCompleted(pos)
+  for old: NotCompleted(best)
+  NotCompleted(Bool.pick(U32,take,pos,best))
+
+law queued_advance_keeps_non_sentinel:
+  for -b: Array<U32>
+  for +open: Bool
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for +word: U32
+  for now: NotCompleted(pos)
+  for old: NotCompleted(p)
+  NotCompleted(scalar_choice_position(Q.advance(open,pos,p,m,size,b,word)))
+
+law queued_inspected_keeps_non_sentinel:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for now: NotCompleted(pos)
+  for old: NotCompleted(p)
+  for read: SameBoardRead(b,r)
+  NotCompleted(scalar_choice_position(Q.inspected(pos,p,m,size,r)))
+
+law queued_read_keeps_non_sentinel:
+  for b: Array<U32>
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for in_range: {(pos < 81 : U32) == True{} : Bool}
+  for old: NotCompleted(p)
+  NotCompleted(scalar_choice_position(Q.inspected(pos,p,m,size,Array.get(U32,b,pos))))
+
+law queued_eligible_raw_beats_no_candidate:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for open: {(word < 1024 : U32) == True{} : Bool}
+  for better: {(C.scalar_size(word) < 10 : U32) == True{} : Bool}
+  {scalar_choice_position(Q.inspected(pos,81,0,10,(b,word))) == pos : U32}
+
+def QueuedSeenScan(-r: QueuedScanTuple(), +n: Nat, +pos: U32) -> Type:
+  QueuedScanRange(n,pos) -> NotCompleted(scalar_choice_position(r)) ->
+  NotCompleted(selector_position(Q.scan(n,pos,r)))
+
+def QueuedNextSeen(+n: Nat, +pos: U32) -> Type:
+  @next:QueuedScanTuple() -> QueuedSeenScan(next,n,(pos + 1 : U32))
+
+law queued_seen_step_image:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for +image: BoardImage
+  for range: QueuedScanRange(1n+n,pos)
+  for old: NotCompleted(p)
+  for later: QueuedNextSeen(n,pos)
+  NotCompleted(selector_position(Q.scan(n,(pos + 1 : U32),
+    Q.inspected(pos,p,m,size,Array.get(U32,image_board(image),pos)))))
+
+law queued_seen_step:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for b: Array<U32>
+  for range: QueuedScanRange(1n+n,pos)
+  for old: NotCompleted(p)
+  for later: QueuedNextSeen(n,pos)
+  NotCompleted(selector_position(Q.scan(n,(pos + 1 : U32),
+    Q.inspected(pos,p,m,size,Array.get(U32,b,pos)))))
+
+law queued_seen_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for prior: NotCompleted(p)
+  NotCompleted(selector_position(Q.scan(0n,pos,(b,(p,(m,size))))))
+
+law queued_seen_succ:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for b: Array<U32>
+  for range: QueuedScanRange(1n+n,pos)
+  for prior: NotCompleted(p)
+  for continue: QueuedNextSeen(n,pos)
+  NotCompleted(selector_position(Q.scan(1n+n,pos,(b,(p,(m,size))))))
+
+law queued_seen_last_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for +p: U32
+  for rest: U32 & U32
+  QueuedSeenScan((b,(p,rest)),0n,pos)
+
+law queued_seen_tail_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for tail: U32 & U32 & U32
+  QueuedSeenScan((b,tail),0n,pos)
+
+law queued_seen_tuple_zero:
+  for +pos: U32
+  for r: QueuedScanTuple()
+  QueuedSeenScan(r,0n,pos)
+
+law queued_seen_last_succ:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  for +p: U32
+  for rest: U32 & U32
+  for continue: QueuedNextSeen(n,pos)
+  QueuedSeenScan((b,(p,rest)),1n+n,pos)
+
+law queued_seen_tail_succ:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  for tail: U32 & U32 & U32
+  for continue: QueuedNextSeen(n,pos)
+  QueuedSeenScan((b,tail),1n+n,pos)
+
+law queued_seen_tuple_succ:
+  for +n: Nat
+  for +pos: U32
+  for r: QueuedScanTuple()
+  for continue: QueuedNextSeen(n,pos)
+  QueuedSeenScan(r,1n+n,pos)
+
+law queued_seen_scan:
+  for +n: Nat
+  for +pos: U32
+  for r: QueuedScanTuple()
+  QueuedSeenScan(r,n,pos)
+
+
+def QueueEligibleWord(-word: U32) -> Type:
+  ({(word < 1024 : U32) == True{} : Bool} & {(C.scalar_size(word) < 10 : U32) == True{} : Bool})
+
+def QueueEligibleAt(-b: Array<U32>, +pos: U32) -> Type:
+  QueueEligibleWord(cell_value(b,pos))
+
+def QueueHasEligible(-b: Array<U32>, +n: Nat, +pos: U32) -> Type:
+  match n:
+    case 0n:
+      Empty
+    case 1n+k:
+      Either<&1,&1,QueueEligibleAt(b,pos),QueueHasEligible(b,k,(pos + 1 : U32))>
+
+def QueueInitial(b: Array<U32>) -> QueuedScanTuple():
+  (b,(81,(0,10)))
+
+def QueuedInitialScanProgress(-b: Array<U32>, +n: Nat, +pos: U32) -> Type:
+  QueuedScanRange(n,pos) -> QueueHasEligible(b,n,pos) ->
+  NotCompleted(selector_position(Q.scan(n,pos,QueueInitial(b))))
+
+law queued_eligible_actual_initial_non_sentinel:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for range: {(pos < 81 : U32) == True{} : Bool}
+  for yes: QueueEligibleWord(word)
+  NotCompleted(scalar_choice_position(Q.inspected(pos,81,0,10,(b,word))))
+
+law queued_initial_closed_keeps_tuple:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for closed: {(word < 1024 : U32) == False{} : Bool}
+  {Q.inspected(pos,81,0,10,(b,word)) == QueueInitial(b) : QueuedScanTuple()}
+
+law queued_initial_not_better_keeps_tuple:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for open: {(word < 1024 : U32) == True{} : Bool}
+  for size: {(C.scalar_size(word) < 10 : U32) == False{} : Bool}
+  {Q.inspected(pos,81,0,10,(b,word)) == QueueInitial(b) : QueuedScanTuple()}
+
+def QueuedInitialStep(-b: Array<U32>, +pos: U32, +word: U32) -> Type:
+  Either<&1,&1,NotCompleted(scalar_choice_position(Q.inspected(pos,81,0,10,(b,word)))),
+    {Q.inspected(pos,81,0,10,(b,word)) == QueueInitial(b) : QueuedScanTuple()}>
+
+law queued_initial_step_size:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for +small: Bool
+  for range: {(pos < 81 : U32) == True{} : Bool}
+  for open: {(word < 1024 : U32) == True{} : Bool}
+  for size: {(C.scalar_size(word) < 10 : U32) == small : Bool}
+  QueuedInitialStep(b,pos,word)
+
+law queued_initial_step_open:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for +open: Bool
+  for range: {(pos < 81 : U32) == True{} : Bool}
+  for observed: {(word < 1024 : U32) == open : Bool}
+  QueuedInitialStep(b,pos,word)
+
+law queued_initial_step_classifies:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for range: {(pos < 81 : U32) == True{} : Bool}
+  QueuedInitialStep(b,pos,word)
+
+law queued_eligible_word_from_read:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for observe: {cell_value(b,pos) == word : U32}
+  for proof: QueueEligibleAt(b,pos)
+  QueueEligibleWord(word)
+
+def QueuedProgressNext(+n: Nat, +pos: U32) -> Type:
+  @b:Array<U32> -> QueuedInitialScanProgress(b,n,(pos + 1 : U32))
+
+law queued_progress_decision:
+  for +image: BoardImage
+  for +n: Nat
+  for +pos: U32
+  for +word: U32
+  for range: QueuedScanRange(n,(pos + 1 : U32))
+  for tail: QueueHasEligible(image_board(image),n,(pos + 1 : U32))
+  for step: QueuedInitialStep(image_board(image),pos,word)
+  for later: QueuedProgressNext(n,pos)
+  NotCompleted(selector_position(Q.scan(n,(pos + 1 : U32),Q.inspected(pos,81,0,10,(image_board(image),word)))))
+
+law queued_progress_use_witness:
+  for +image: BoardImage
+  for +n: Nat
+  for +pos: U32
+  for +word: U32
+  for real: {cell_value(image_board(image),pos) == word : U32}
+  for in_range: {(pos < 81 : U32) == True{} : Bool}
+  for range: QueuedScanRange(n,(pos + 1 : U32))
+  for has_one: QueueHasEligible(image_board(image),1n+n,pos)
+  for later: QueuedProgressNext(n,pos)
+  NotCompleted(selector_position(Q.scan(n,(pos + 1 : U32),Q.inspected(pos,81,0,10,(image_board(image),word)))))
+
+law queued_progress_real_word:
+  for +image: BoardImage
+  for +n: Nat
+  for +pos: U32
+  for +word: U32
+  for interval: QueuedScanRange(1n+n,pos)
+  for has_one: QueueHasEligible(image_board(image),1n+n,pos)
+  for observed:
+    ({Array.get(U32,image_board(image),pos) == (image_board(image),word) : Array<U32> & U32} &
+     {Array.get(U32,image_board(image),pos) == (image_board(image),word) : Array<U32> & U32})
+  for later: QueuedProgressNext(n,pos)
+  NotCompleted(selector_position(Q.scan(1n+n,pos,QueueInitial(image_board(image)))))
+
+law queued_progress_observed:
+  for +image: BoardImage
+  for +n: Nat
+  for +pos: U32
+  for interval: QueuedScanRange(1n+n,pos)
+  for has_one: QueueHasEligible(image_board(image),1n+n,pos)
+  for observed: SameBoardRead(image_board(image),Array.get(U32,image_board(image),pos))
+  for later: QueuedProgressNext(n,pos)
+  NotCompleted(selector_position(Q.scan(1n+n,pos,QueueInitial(image_board(image)))))
+
+law queued_initial_progress_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +pos: U32
+  for later: QueuedProgressNext(n,pos)
+  QueuedInitialScanProgress(image_board(image),1n+n,pos)
+
+law queued_initial_progress_step:
+  for b: Array<U32>
+  for +n: Nat
+  for +pos: U32
+  for later: QueuedProgressNext(n,pos)
+  QueuedInitialScanProgress(b,1n+n,pos)
+
+law queued_scan_cannot_hide_eligible:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  QueuedInitialScanProgress(b,n,pos)
+
+law queued_logical_start_cannot_hide_eligible:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for exists: QueueHasEligible(b,U32.to_nat((81 - logical_position(row,col) : U32)),logical_position(row,col))
+  NotCompleted(selector_position(Q.start((b,logical_position(row,col)))))
+
+law queued_eligible_at_window_middle:
+  for +before: Nat
+  for -b: Array<U32>
+  for +start: U32
+  for +after: Nat
+  for witness: QueueEligibleAt(b,walk_position(before,start))
+  QueueHasEligible(b,with_center(before,after),start)
+
+law queued_scanned_eligible_prevents_completion:
+  for b: Array<U32>
+  for +start: U32
+  for +before: Nat
+  for +after: Nat
+  for range: QueuedScanRange(with_center(before,after),start)
+  for witness: QueueEligibleAt(b,walk_position(before,start))
+  NotCompleted(selector_position(Q.scan(with_center(before,after),start,QueueInitial(b))))
+
+law queued_completion_conflicts_with_eligible:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for exists: QueueHasEligible(b,U32.to_nat((81 - logical_position(row,col) : U32)),logical_position(row,col))
+  for completed: {selector_position(Q.start((b,logical_position(row,col)))) == 81 : U32}
+  Empty
