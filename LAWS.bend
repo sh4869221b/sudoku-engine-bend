@@ -2222,3 +2222,485 @@ law decode_middle_value:
   for later: DecodeApart(suffix,(walk_position(prefix,start) + 1 : U32),walk_position(prefix,start))
   {cell_value(Q.decode(with_center(prefix,suffix),start,board),walk_position(prefix,start))
     == U32.shrn(cell_value(board,walk_position(prefix,start)),10n) : U32}
+
+law flag_normalized_read:
+  for -b: Array<U32>
+  for +p: U32
+  for +on: Bool
+  for -same: Array<U32>
+  for +old: U32
+  for untouched: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,flag_slot(p)) == (same,old) : Array<U32> & U32}
+  {Q.flag(b,p,on) == B.set_cell(b,flag_slot(p),flag_word(p,on,cell_value(b,flag_slot(p)))) : Array<U32>}
+
+law flag_normalized:
+  for -b: Array<U32>
+  for +p: U32
+  for +on: Bool
+  for read: BoardReadWitness(b,flag_slot(p))
+  {Q.flag(b,p,on) == B.set_cell(b,flag_slot(p),flag_word(p,on,cell_value(b,flag_slot(p)))) : Array<U32>}
+
+def FlagKeeps(-b: Array<U32>, +p: U32, +on: Bool, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),q) ->
+  {cell_value(Q.flag(b,p,on),q) == cell_value(b,q) : U32}
+
+law flag_keeps_cell_image:
+  for +image: BoardImage
+  for +p: U32
+  for +on: Bool
+  for +q: U32
+  FlagKeeps(image_board(image),p,on,q)
+
+law flag_keeps_cell:
+  for b: Array<U32>
+  for +p: U32
+  for +on: Bool
+  for +q: U32
+  FlagKeeps(b,p,on,q)
+
+def MaskKeeps(-b: Array<U32>, +p: U32, +mask: U32, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) ->
+  {cell_value(Q.encoded_mask(p,(b,mask)),q) == cell_value(b,q) : U32}
+
+law encoded_mask_keeps_step:
+  for +image: BoardImage
+  for +p: U32
+  for +mask: U32
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for distinct: RoutedApart(p,q)
+  for flags: RoutedApart(flag_slot(p),q)
+  {cell_value(Q.encoded_mask(p,(image_board(image),mask)),q) == cell_value(image_board(image),q) : U32}
+
+law encoded_mask_keeps_image:
+  for +image: BoardImage
+  for +p: U32
+  for +mask: U32
+  for +q: U32
+  MaskKeeps(image_board(image),p,mask,q)
+
+law encoded_mask_keeps_cell:
+  for b: Array<U32>
+  for +p: U32
+  for +mask: U32
+  for +q: U32
+  MaskKeeps(b,p,mask,q)
+
+def MaskWrites(-b: Array<U32>, +p: U32, +mask: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) ->
+  {cell_value(Q.encoded_mask(p,(b,mask)),p) == mask : U32}
+
+law encoded_mask_writes_image:
+  for +image: BoardImage
+  for +p: U32
+  for +mask: U32
+  MaskWrites(image_board(image),p,mask)
+
+law encoded_mask_writes_cell:
+  for b: Array<U32>
+  for +p: U32
+  for +mask: U32
+  MaskWrites(b,p,mask)
+
+def cached_word(b: Array<U32>, +p: U32) -> U32:
+  Pair.snd(Array<U32>,U32,C.cached_at(b,p))
+
+law encoded_blank_normalized_read:
+  for -b: Array<U32>
+  for +p: U32
+  for -same: Array<U32>
+  for +mask: U32
+  for unchanged: {same == b : Array<U32>}
+  for observed: {C.cached_at(b,p) == (same,mask) : Array<U32> & U32}
+  {Q.encoded(p,(b,0)) == Q.encoded_mask(p,(b,cached_word(b,p))) : Array<U32>}
+
+law encoded_blank_normalized:
+  for -b: Array<U32>
+  for +p: U32
+  for read: SameBoardRead(b,C.cached_at(b,p))
+  {Q.encoded(p,(b,0)) == Q.encoded_mask(p,(b,cached_word(b,p))) : Array<U32>}
+
+def EncodedKeeps(-b: Array<U32>, +p: U32, +d: U32, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) ->
+  {cell_value(Q.encoded(p,(b,d)),q) == cell_value(b,q) : U32}
+
+law encoded_blank_keeps_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  EncodedKeeps(image_board(image),p,0,q)
+
+law encoded_blank_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  EncodedKeeps(b,p,0,q)
+
+def EncodedRestores(-b: Array<U32>, +p: U32, +d: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) ->
+  {U32.shrn(cell_value(Q.encoded(p,(b,d)),p),10n) == d : U32}
+
+law encoded_blank_restores_image:
+  for +image: BoardImage
+  for +p: U32
+  EncodedRestores(image_board(image),p,0)
+
+law encoded_blank_restores:
+  for b: Array<U32>
+  for +p: U32
+  EncodedRestores(b,p,0)
+
+type BoardDigit is Data:
+  D0{}
+  D1{}
+  D2{}
+  D3{}
+  D4{}
+  D5{}
+  D6{}
+  D7{}
+  D8{}
+  D9{}
+
+def digit_word(+d: BoardDigit) -> U32:
+  match d:
+    case D0{}:
+      0
+    case D1{}:
+      1
+    case D2{}:
+      2
+    case D3{}:
+      3
+    case D4{}:
+      4
+    case D5{}:
+      5
+    case D6{}:
+      6
+    case D7{}:
+      7
+    case D8{}:
+      8
+    case D9{}:
+      9
+
+law encoded_digit_keeps:
+  for +d: BoardDigit
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  EncodedKeeps(b,p,digit_word(d),q)
+
+law encoded_digit_restores:
+  for +d: BoardDigit
+  for b: Array<U32>
+  for +p: U32
+  EncodedRestores(b,p,digit_word(d))
+
+law encoded_any_keeps:
+  for +d: U32
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  EncodedKeeps(b,p,d,q)
+
+def actual_encoded_step(b: Array<U32>, +p: U32) -> Array<U32>:
+  Q.encoded(p,B.get_cell(b,p))
+
+law encode_step_normalized_read:
+  for -b: Array<U32>
+  for +p: U32
+  for -same: Array<U32>
+  for +word: U32
+  for untouched: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  {actual_encoded_step(b,p) == Q.encoded(p,(b,cell_value(b,p))) : Array<U32>}
+
+law encode_step_normalized:
+  for -b: Array<U32>
+  for +p: U32
+  for read: BoardReadWitness(b,p)
+  {actual_encoded_step(b,p) == Q.encoded(p,(b,cell_value(b,p))) : Array<U32>}
+
+def EncodeStepKeeps(-b: Array<U32>, +p: U32, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) ->
+  {cell_value(actual_encoded_step(b,p),q) == cell_value(b,q) : U32}
+
+law encode_step_keeps_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  EncodeStepKeeps(image_board(image),p,q)
+
+law encode_step_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  EncodeStepKeeps(b,p,q)
+
+def EncodeStepRestores(-b: Array<U32>, +p: U32, +d: BoardDigit) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) ->
+  {cell_value(b,p) == digit_word(d) : U32} ->
+  {U32.shrn(cell_value(actual_encoded_step(b,p),p),10n) == digit_word(d) : U32}
+
+law encode_step_restores_image:
+  for +image: BoardImage
+  for +p: U32
+  for +d: BoardDigit
+  EncodeStepRestores(image_board(image),p,d)
+
+law encode_step_restores:
+  for b: Array<U32>
+  for +p: U32
+  for +d: BoardDigit
+  EncodeStepRestores(b,p,d)
+
+law actual_encode_step_keeps_perfect:
+  for b: Array<U32>
+  for +p: U32
+  for shape: Board128(b)
+  Board128(actual_encoded_step(b,p))
+
+def EncodeApart(+n: Nat, +p: U32, +q: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      RoutedApart(p,q) & RoutedApart(flag_slot(p),q) & EncodeApart(k,(p + 1 : U32),q)
+
+def EncodeTailProof(+n: Nat, +p: U32, +q: U32) -> Type:
+  @b:Array<U32> -> Board128(b) -> EncodeApart(n,p,q) ->
+  {cell_value(Q.encode_go(n,p,b),q) == cell_value(b,q) : U32}
+
+def EncodeKeepStep(-b: Array<U32>, +n: Nat, +p: U32, +q: U32) -> Type:
+  Board128(b) -> EncodeApart(1n+n,p,q) -> EncodeTailProof(n,(p + 1 : U32),q) ->
+  {cell_value(Q.encode_go(1n+n,p,b),q) == cell_value(b,q) : U32}
+
+law encode_sweep_keep_image_step:
+  for +image: BoardImage
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for apart: EncodeApart(1n+n,p,q)
+  for next: EncodeTailProof(n,(p + 1 : U32),q)
+  {cell_value(Q.encode_go(1n+n,p,image_board(image)),q) == cell_value(image_board(image),q) : U32}
+
+law encode_sweep_keep_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  EncodeKeepStep(image_board(image),n,p,q)
+
+law encode_sweep_keep_step:
+  for b: Array<U32>
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  EncodeKeepStep(b,n,p,q)
+
+law encode_sweep_keeps:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for b: Array<U32>
+  for shape: Board128(b)
+  for apart: EncodeApart(n,p,q)
+  {cell_value(Q.encode_go(n,p,b),q) == cell_value(b,q) : U32}
+
+def EncodeMiddleValue(-b: Array<U32>, +prefix: Nat, +suffix: Nat, +p: U32, +d: BoardDigit) -> Type:
+  Board128(b) ->
+  EncodeApart(prefix,p,walk_position(prefix,p)) ->
+  RoutedApart(flag_slot(walk_position(prefix,p)),walk_position(prefix,p)) ->
+  EncodeApart(suffix,(walk_position(prefix,p) + 1 : U32),walk_position(prefix,p)) ->
+  {cell_value(b,walk_position(prefix,p)) == digit_word(d) : U32} ->
+  {U32.shrn(cell_value(Q.encode_go(with_center(prefix,suffix),p,b),walk_position(prefix,p)),10n) == digit_word(d) : U32}
+
+def EncodeMiddleProof(+prefix: Nat, +suffix: Nat, +p: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> EncodeMiddleValue(b,prefix,suffix,p,d)
+
+law encode_middle_base_image:
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for safe: RoutedApart(flag_slot(p),p)
+  for tail: EncodeApart(suffix,(p + 1 : U32),p)
+  for digit: {cell_value(image_board(image),p) == digit_word(d) : U32}
+  {U32.shrn(cell_value(Q.encode_go(1n+suffix,p,image_board(image)),p),10n) == digit_word(d) : U32}
+
+law encode_middle_base:
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  EncodeMiddleValue(image_board(image),0n,suffix,p,d)
+
+law encode_middle_step_image:
+  for +image: BoardImage
+  for +k: Nat
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for before: EncodeApart(1n+k,p,walk_position(1n+k,p))
+  for safe: RoutedApart(flag_slot(walk_position(1n+k,p)),walk_position(1n+k,p))
+  for after: EncodeApart(suffix,(walk_position(1n+k,p) + 1 : U32),walk_position(1n+k,p))
+  for digit: {cell_value(image_board(image),walk_position(1n+k,p)) == digit_word(d) : U32}
+  for next: EncodeMiddleProof(k,suffix,(p + 1 : U32),d)
+  {U32.shrn(cell_value(Q.encode_go(with_center(1n+k,suffix),p,image_board(image)),walk_position(1n+k,p)),10n) == digit_word(d) : U32}
+
+law encode_middle_step:
+  for +image: BoardImage
+  for +k: Nat
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for next: EncodeMiddleProof(k,suffix,(p + 1 : U32),d)
+  EncodeMiddleValue(image_board(image),1n+k,suffix,p,d)
+
+law encode_middle_from_image:
+  for +prefix: Nat
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  EncodeMiddleValue(image_board(image),prefix,suffix,p,d)
+
+law encode_middle_value:
+  for b: Array<U32>
+  for +prefix: Nat
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  EncodeMiddleValue(b,prefix,suffix,p,d)
+
+law encode_sweep_keeps_perfect:
+  for b: Array<U32>
+  for +n: Nat
+  for +p: U32
+  for shape: Board128(b)
+  Board128(Q.encode_go(n,p,b))
+
+def RoundTripAt(-b: Array<U32>, +before: Nat, +after: Nat, +p: U32, +d: BoardDigit) -> Type:
+  Board128(b) ->
+  EncodeApart(before,p,walk_position(before,p)) ->
+  RoutedApart(flag_slot(walk_position(before,p)),walk_position(before,p)) ->
+  EncodeApart(after,(walk_position(before,p) + 1 : U32),walk_position(before,p)) ->
+  DecodeApart(before,p,walk_position(before,p)) ->
+  DecodeApart(after,(walk_position(before,p) + 1 : U32),walk_position(before,p)) ->
+  {cell_value(b,walk_position(before,p)) == digit_word(d) : U32} ->
+  {cell_value(Q.decode(with_center(before,after),p,Q.encode_go(with_center(before,after),p,b)),walk_position(before,p))
+    == digit_word(d) : U32}
+
+law roundtrip_at_image_step:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for ep: EncodeApart(before,p,walk_position(before,p))
+  for safe: RoutedApart(flag_slot(walk_position(before,p)),walk_position(before,p))
+  for es: EncodeApart(after,(walk_position(before,p) + 1 : U32),walk_position(before,p))
+  for dp: DecodeApart(before,p,walk_position(before,p))
+  for ds: DecodeApart(after,(walk_position(before,p) + 1 : U32),walk_position(before,p))
+  for digit: {cell_value(image_board(image),walk_position(before,p)) == digit_word(d) : U32}
+  {cell_value(Q.decode(with_center(before,after),p,Q.encode_go(with_center(before,after),p,image_board(image))),walk_position(before,p))
+    == digit_word(d) : U32}
+
+law roundtrip_at_image:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for +p: U32
+  for +d: BoardDigit
+  RoundTripAt(image_board(image),before,after,p,d)
+
+law queued_roundtrip_at:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +p: U32
+  for +d: BoardDigit
+  RoundTripAt(b,before,after,p,d)
+
+def queue_seed(b: Array<U32>) -> Array<U32>:
+  B.set_cell(B.set_cell(B.set_cell(b,109,0),110,0),111,0)
+
+law queue_seed_perfect:
+  for b: Array<U32>
+  for shape: Board128(b)
+  Board128(queue_seed(b))
+
+def QueueSeedKeeps(-b: Array<U32>, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(109,q) -> RoutedApart(110,q) -> RoutedApart(111,q) ->
+  {cell_value(queue_seed(b),q) == cell_value(b,q) : U32}
+
+law queue_seed_keeps_step:
+  for +image: BoardImage
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for r9: RoutedApart(109,q)
+  for r10: RoutedApart(110,q)
+  for r11: RoutedApart(111,q)
+  {cell_value(queue_seed(image_board(image)),q) == cell_value(image_board(image),q) : U32}
+
+law queue_seed_keeps_image:
+  for +image: BoardImage
+  for +q: U32
+  QueueSeedKeeps(image_board(image),q)
+
+law queue_seed_keeps_cell:
+  for b: Array<U32>
+  for +q: U32
+  QueueSeedKeeps(b,q)
+
+def RoundTrip81At(-b: Array<U32>, +before: Nat, +after: Nat, +d: BoardDigit) -> Type:
+  Board128(b) ->
+  RoutedApart(109,walk_position(before,0)) ->
+  RoutedApart(110,walk_position(before,0)) ->
+  RoutedApart(111,walk_position(before,0)) ->
+  EncodeApart(before,0,walk_position(before,0)) ->
+  RoutedApart(flag_slot(walk_position(before,0)),walk_position(before,0)) ->
+  EncodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0)) ->
+  DecodeApart(before,0,walk_position(before,0)) ->
+  DecodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0)) ->
+  {with_center(before,after) == 81n : Nat} ->
+  {cell_value(b,walk_position(before,0)) == digit_word(d) : U32} ->
+  {cell_value(Q.decode(81n,0,Q.encode(b)),walk_position(before,0)) == digit_word(d) : U32}
+
+law roundtrip81_at_step:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for r9: RoutedApart(109,walk_position(before,0))
+  for r10: RoutedApart(110,walk_position(before,0))
+  for r11: RoutedApart(111,walk_position(before,0))
+  for ep: EncodeApart(before,0,walk_position(before,0))
+  for safe: RoutedApart(flag_slot(walk_position(before,0)),walk_position(before,0))
+  for es: EncodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0))
+  for dp: DecodeApart(before,0,walk_position(before,0))
+  for ds: DecodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0))
+  for count: {with_center(before,after) == 81n : Nat}
+  for digit: {cell_value(image_board(image),walk_position(before,0)) == digit_word(d) : U32}
+  {cell_value(Q.decode(81n,0,Q.encode(image_board(image))),walk_position(before,0)) == digit_word(d) : U32}
+
+law roundtrip81_at_image:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  RoundTrip81At(image_board(image),before,after,d)
+
+law public_queue_roundtrip_at:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  RoundTrip81At(b,before,after,d)

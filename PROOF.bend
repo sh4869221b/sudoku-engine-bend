@@ -1888,3 +1888,389 @@ def L.decode_middle_value(prefix,suffix,start,board,shape,prior,later):
       L.decode_middle_value_step(k,suffix,start,board,
         L.copy_shape_proof(L.array_shape(board),L.perfect_shape(7n),shape),prior,later,
         sub => sub_shape => before => after => L.decode_middle_value(k,suffix,(start + 1 : U32),sub,sub_shape,before,after))
+
+def L.flag_normalized_read(b,p,on,same,old,untouched,observed):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,L.flag_slot(p)),(same,old),observed) :
+    {Q.flagged(p,on,_) == Board.set_cell(b,L.flag_slot(p),L.flag_word(p,on,Pair.snd(Array<U32>,U32,_))) : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,untouched) :
+    {Board.set_cell(_,L.flag_slot(p),L.flag_word(p,on,old)) == Board.set_cell(b,L.flag_slot(p),L.flag_word(p,on,old)) : Array<U32>}
+  {==}
+
+def L.flag_normalized(b,p,on,read):
+  (same,+old,(untouched,observed)) = read
+  L.flag_normalized_read(b,p,on,same,old,untouched,observed)
+
+def L.flag_keeps_cell_image(image,p,on,q,shape,apart):
+  b = L.image_board(image)
+  +slot = L.flag_slot(p)
+  +word = L.flag_word(p,on,L.cell_value(L.image_board(image),slot))
+  %Equal.sym(Array<U32>,Q.flag(b,p,on),Board.set_cell(b,slot,word),
+    L.flag_normalized(b,p,on,L.board_read_witness(L.image_board(image),slot))) :
+    {L.cell_value(_,q) == L.cell_value(b,q) : U32}
+  L.perfect_write_keeps_cell(L.image_board(image),slot,q,word,shape,apart)
+
+def L.flag_keeps_cell(b,p,on,q):
+  L.on_reified_board(b,x => L.FlagKeeps(x,p,on,q),
+    L.reify_board(b),image => L.flag_keeps_cell_image(image,p,on,q))
+
+def L.encoded_mask_keeps_step(image,p,mask,q,shapes,distinct,flags):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  written = Board.set_cell(L.image_board(image),p,mask)
+  +on = Q.zero_or_single(mask)
+  Equal.trans(U32,
+    L.cell_value(Q.encoded_mask(p,(b,mask)),q), L.cell_value(written,q), L.cell_value(b,q),
+    L.flag_keeps_cell(written,p,on,q)(L.board_set_keeps_perfect(L.image_board(image),p,mask,7n,s0),flags),
+    L.perfect_write_keeps_cell(L.image_board(image),p,q,mask,s1,distinct))
+
+def L.encoded_mask_keeps_image(image,p,mask,q,shape,distinct,flags):
+  L.encoded_mask_keeps_step(image,p,mask,q,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),distinct,flags)
+
+def L.encoded_mask_keeps_cell(b,p,mask,q):
+  L.on_reified_board(b,x => L.MaskKeeps(x,p,mask,q),
+    L.reify_board(b),image => L.encoded_mask_keeps_image(image,p,mask,q))
+
+def L.encoded_mask_writes_image(image,p,mask,shape,apart):
+  b = L.image_board(image)
+  written = Board.set_cell(L.image_board(image),p,mask)
+  Equal.trans(U32,L.cell_value(Q.encoded_mask(p,(b,mask)),p),L.cell_value(written,p),mask,
+    L.flag_keeps_cell(written,p,Q.zero_or_single(mask),p)(L.board_set_keeps_perfect(L.image_board(image),p,mask,7n,shape),apart),
+    L.board_set_get(L.image_board(image),p,mask))
+
+def L.encoded_mask_writes_cell(b,p,mask):
+  L.on_reified_board(b,x => L.MaskWrites(x,p,mask),
+    L.reify_board(b),image => L.encoded_mask_writes_image(image,p,mask))
+
+def L.encoded_blank_normalized_read(b,p,same,mask,unchanged,observed):
+  %Equal.sym(Array<U32> & U32,C.cached_at(b,p),(same,mask),observed) :
+    {Q.encoded_mask(p,_) == Q.encoded_mask(p,(b,Pair.snd(Array<U32>,U32,_))) : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,unchanged) :
+    {Q.encoded_mask(p,(_,mask)) == Q.encoded_mask(p,(b,mask)) : Array<U32>}
+  {==}
+
+def L.encoded_blank_normalized(b,p,read):
+  (same,+mask,(unchanged,observed)) = read
+  L.encoded_blank_normalized_read(b,p,same,mask,unchanged,observed)
+
+def L.encoded_blank_keeps_image(image,p,q,shape,apart,flags):
+  b = L.image_board(image)
+  +mask = L.cached_word(L.image_board(image),p)
+  %Equal.sym(Array<U32>,Q.encoded(p,(b,0)),Q.encoded_mask(p,(b,mask)),
+    L.encoded_blank_normalized(b,p,L.cached_at_observed(L.image_board(image),p))) :
+    {L.cell_value(_,q) == L.cell_value(b,q) : U32}
+  L.encoded_mask_keeps_cell(L.image_board(image),p,mask,q)(shape,apart,flags)
+
+def L.encoded_blank_keeps(b,p,q):
+  L.on_reified_board(b,x => L.EncodedKeeps(x,p,0,q),
+    L.reify_board(b),image => L.encoded_blank_keeps_image(image,p,q))
+
+def L.encoded_blank_restores_image(image,p,shape,apart):
+  b = L.image_board(image)
+  +mask = L.cached_word(L.image_board(image),p)
+  %Equal.sym(Array<U32>,Q.encoded(p,(b,0)),Q.encoded_mask(p,(b,mask)),
+    L.encoded_blank_normalized(b,p,L.cached_at_observed(L.image_board(image),p))) :
+    {U32.shrn(L.cell_value(_,p),10n) == 0 : U32}
+  Equal.trans(U32,U32.shrn(L.cell_value(Q.encoded_mask(p,(b,mask)),p),10n),U32.shrn(mask,10n),0,
+    Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded_mask(p,(b,mask)),p),mask,
+      L.encoded_mask_writes_cell(L.image_board(image),p,mask)(shape,apart)),
+    L.cached_at_decodes_blank(L.image_board(image),p))
+
+def L.encoded_blank_restores(b,p):
+  L.on_reified_board(b,x => L.EncodedRestores(x,p,0),
+    L.reify_board(b),image => L.encoded_blank_restores_image(image,p))
+
+def L.encoded_digit_keeps(d,b,p,q,shape,apart,flags):
+  match d:
+    case L.D0{}:
+      L.encoded_blank_keeps(b,p,q)(shape,apart,flags)
+    case L.D1{}:
+      L.perfect_write_keeps_cell(b,p,q,1024,shape,apart)
+    case L.D2{}:
+      L.perfect_write_keeps_cell(b,p,q,2048,shape,apart)
+    case L.D3{}:
+      L.perfect_write_keeps_cell(b,p,q,3072,shape,apart)
+    case L.D4{}:
+      L.perfect_write_keeps_cell(b,p,q,4096,shape,apart)
+    case L.D5{}:
+      L.perfect_write_keeps_cell(b,p,q,5120,shape,apart)
+    case L.D6{}:
+      L.perfect_write_keeps_cell(b,p,q,6144,shape,apart)
+    case L.D7{}:
+      L.perfect_write_keeps_cell(b,p,q,7168,shape,apart)
+    case L.D8{}:
+      L.perfect_write_keeps_cell(b,p,q,8192,shape,apart)
+    case L.D9{}:
+      L.perfect_write_keeps_cell(b,p,q,9216,shape,apart)
+
+def L.encoded_digit_restores(d,b,p,shape,apart):
+  match d:
+    case L.D0{}:
+      L.encoded_blank_restores(b,p)(shape,apart)
+    case L.D1{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,1)),p),1024,L.encode_fixed_cell_1(b,p))
+    case L.D2{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,2)),p),2048,L.encode_fixed_cell_2(b,p))
+    case L.D3{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,3)),p),3072,L.encode_fixed_cell_3(b,p))
+    case L.D4{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,4)),p),4096,L.encode_fixed_cell_4(b,p))
+    case L.D5{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,5)),p),5120,L.encode_fixed_cell_5(b,p))
+    case L.D6{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,6)),p),6144,L.encode_fixed_cell_6(b,p))
+    case L.D7{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,7)),p),7168,L.encode_fixed_cell_7(b,p))
+    case L.D8{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,8)),p),8192,L.encode_fixed_cell_8(b,p))
+    case L.D9{}:
+      Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(Q.encoded(p,(b,9)),p),9216,L.encode_fixed_cell_9(b,p))
+
+def L.encoded_any_keeps(d,b,p,q,shape,apart,flags):
+  match d:
+    case U32{WCon{True{}, rest}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{True{}, rest}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{True{}, rest}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{True{}, rest}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{True{}, rest}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.perfect_write_keeps_cell(b,p,q,U32.shln(U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},10n),shape,apart)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.encoded_blank_keeps(b,p,q)(shape,apart,flags)
+
+def L.encode_step_normalized_read(b,p,same,word,untouched,observed):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),observed) :
+    {Q.encoded(p,_) == Q.encoded(p,(b,Pair.snd(Array<U32>,U32,_))) : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,untouched) :
+    {Q.encoded(p,(_,word)) == Q.encoded(p,(b,word)) : Array<U32>}
+  {==}
+
+def L.encode_step_normalized(b,p,read):
+  (same,+word,(untouched,observed)) = read
+  L.encode_step_normalized_read(b,p,same,word,untouched,observed)
+
+def L.encode_step_keeps_image(image,p,q,shape,apart,flags):
+  b = L.image_board(image)
+  +word = L.cell_value(L.image_board(image),p)
+  %Equal.sym(Array<U32>,L.actual_encoded_step(b,p),Q.encoded(p,(b,word)),
+    L.encode_step_normalized(b,p,L.board_read_witness(L.image_board(image),p))) :
+    {L.cell_value(_,q) == L.cell_value(b,q) : U32}
+  L.encoded_any_keeps(word,L.image_board(image),p,q,shape,apart,flags)
+
+def L.encode_step_keeps(b,p,q):
+  L.on_reified_board(b,x => L.EncodeStepKeeps(x,p,q),
+    L.reify_board(b),image => L.encode_step_keeps_image(image,p,q))
+
+def L.encode_step_restores_image(image,p,d,shape,apart,word_is):
+  b = L.image_board(image)
+  +word = L.cell_value(L.image_board(image),p)
+  +digit = L.digit_word(d)
+  %Equal.sym(Array<U32>,L.actual_encoded_step(b,p),Q.encoded(p,(b,word)),
+    L.encode_step_normalized(b,p,L.board_read_witness(L.image_board(image),p))) :
+    {U32.shrn(L.cell_value(_,p),10n) == digit : U32}
+  %Equal.sym(U32,word,digit,word_is) :
+    {U32.shrn(L.cell_value(Q.encoded(p,(b,_)),p),10n) == digit : U32}
+  L.encoded_digit_restores(d,L.image_board(image),p,shape,apart)
+
+def L.encode_step_restores(b,p,d):
+  L.on_reified_board(b,x => L.EncodeStepRestores(x,p,d),
+    L.reify_board(b),image => L.encode_step_restores_image(image,p,d))
+
+def L.actual_encode_step_keeps_perfect(b,p,shape):
+  Equal.trans(L.ArrayShape,L.array_shape(L.actual_encoded_step(b,p)),L.array_shape(b),L.perfect_shape(7n),
+    L.project_shape_transition(b,L.actual_encoded_step(b,p),L.encode_loop_shape(1n,p,b)),
+    shape)
+
+def L.encode_sweep_keep_image_step(image,n,p,q,shapes,apart,next):
+  (s0,s1) = shapes
+  (cell,(flag,tail)) = apart
+  b = L.image_board(image)
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  Equal.trans(U32,L.cell_value(Q.encode_go(n,p1,step),q),L.cell_value(step,q),L.cell_value(b,q),
+    next(step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail),
+    L.encode_step_keeps(L.image_board(image),p,q)(s1,cell,flag))
+
+def L.encode_sweep_keep_image(image,n,p,q,shape,apart,next):
+  L.encode_sweep_keep_image_step(image,n,p,q,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),apart,next)
+
+def L.encode_sweep_keep_step(b,n,p,q):
+  L.on_reified_board(b,x => L.EncodeKeepStep(x,n,p,q),
+    L.reify_board(b),image => L.encode_sweep_keep_image(image,n,p,q))
+
+def L.encode_sweep_keeps(n,p,q,b,shape,apart):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      L.encode_sweep_keep_step(b,k,p,q)(shape,apart,
+        sub => sub_shape => sep => L.encode_sweep_keeps(k,(p + 1 : U32),q,sub,sub_shape,sep))
+
+def L.encode_middle_base_image(image,suffix,p,d,shapes,safe,tail,digit):
+  (s0,s1) = shapes
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  +final = L.cell_value(Q.encode_go(suffix,p1,L.actual_encoded_step(L.image_board(image),p)),p)
+  +current = L.cell_value(L.actual_encoded_step(L.image_board(image),p),p)
+  Equal.trans(U32,U32.shrn(final,10n),U32.shrn(current,10n),L.digit_word(d),
+    Equal.cong(U32,U32,x => U32.shrn(x,10n),final,current,
+      L.encode_sweep_keeps(suffix,p1,p,step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail)),
+    L.encode_step_restores(L.image_board(image),p,d)(s1,safe,digit))
+
+def L.encode_middle_base(image,suffix,p,d,shape,before,safe,after,digit):
+  L.encode_middle_base_image(image,suffix,p,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),safe,after,digit)
+
+def L.encode_middle_step_image(image,k,suffix,p,d,shapes,before,safe,after,digit,next):
+  (s0,s1) = shapes
+  (cell,(flag,tail)) = before
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  +q = L.walk_position(k,p1)
+  next(step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail,safe,after,
+    Equal.trans(U32,L.cell_value(step,q),L.cell_value(L.image_board(image),q),L.digit_word(d),
+      L.encode_step_keeps(L.image_board(image),p,q)(s1,cell,flag),digit))
+
+def L.encode_middle_step(image,k,suffix,p,d,next,shape,before,safe,after,digit):
+  L.encode_middle_step_image(image,k,suffix,p,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),before,safe,after,digit,next)
+
+def L.encode_middle_from_image(prefix,image,suffix,p,d,shape,before,safe,after,digit):
+  match prefix:
+    case 0n:
+      L.encode_middle_base(image,suffix,p,d,shape,before,safe,after,digit)
+    case 1n+k:
+      L.encode_middle_step(image,k,suffix,p,d,
+        sub => L.on_reified_board(sub,x => L.EncodeMiddleValue(x,k,suffix,(p + 1 : U32),d),
+          L.reify_board(sub),im => L.encode_middle_from_image(k,im,suffix,(p + 1 : U32),d)),
+        shape,before,safe,after,digit)
+
+def L.encode_middle_value(b,prefix,suffix,p,d):
+  L.on_reified_board(b,x => L.EncodeMiddleValue(x,prefix,suffix,p,d),
+    L.reify_board(b),image => L.encode_middle_from_image(prefix,image,suffix,p,d))
+
+def L.encode_sweep_keeps_perfect(b,n,p,shape):
+  Equal.trans(L.ArrayShape,L.array_shape(Q.encode_go(n,p,b)),L.array_shape(b),L.perfect_shape(7n),
+    L.project_shape_transition(b,Q.encode_go(n,p,b),L.encode_loop_shape(n,p,b)),
+    shape)
+
+def L.roundtrip_at_image_step(image,before,after,p,d,shapes,ep,safe,es,dp,ds,digit):
+  (s0,s1) = shapes
+  +n = L.with_center(before,after)
+  +q = L.walk_position(before,p)
+  encoded = Q.encode_go(n,p,L.image_board(image))
+  Equal.trans(U32,L.cell_value(Q.decode(n,p,encoded),q),U32.shrn(L.cell_value(encoded,q),10n),L.digit_word(d),
+    L.decode_middle_value(before,after,p,encoded,L.encode_sweep_keeps_perfect(L.image_board(image),n,p,s0),dp,ds),
+    L.encode_middle_value(L.image_board(image),before,after,p,d)(s1,ep,safe,es,digit))
+
+def L.roundtrip_at_image(image,before,after,p,d,shape,ep,safe,es,dp,ds,digit):
+  L.roundtrip_at_image_step(image,before,after,p,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),ep,safe,es,dp,ds,digit)
+
+def L.queued_roundtrip_at(b,before,after,p,d):
+  L.on_reified_board(b,x => L.RoundTripAt(x,before,after,p,d),
+    L.reify_board(b),image => L.roundtrip_at_image(image,before,after,p,d))
+
+def L.queue_seed_perfect(b,shape):
+  Equal.trans(L.ArrayShape,L.array_shape(L.queue_seed(b)),L.array_shape(b),L.perfect_shape(7n),
+    L.project_shape_transition(b,L.queue_seed(b),L.queue_seed_shape(b)),shape)
+
+def L.queue_seed_keeps_step(image,q,shapes,r9,r10,r11):
+  (s0,(s1,s2)) = shapes
+  b = L.image_board(image)
+  first = Board.set_cell(L.image_board(image),109,0)
+  second = Board.set_cell(Board.set_cell(L.image_board(image),109,0),110,0)
+  Equal.trans(U32,L.cell_value(L.queue_seed(b),q),L.cell_value(second,q),L.cell_value(b,q),
+    L.perfect_write_keeps_cell(second,111,q,0,
+      L.board_set_keeps_perfect(Board.set_cell(L.image_board(image),109,0),110,0,7n,
+        L.board_set_keeps_perfect(L.image_board(image),109,0,7n,s0)),r11),
+    Equal.trans(U32,L.cell_value(second,q),L.cell_value(first,q),L.cell_value(b,q),
+      L.perfect_write_keeps_cell(first,110,q,0,L.board_set_keeps_perfect(L.image_board(image),109,0,7n,s1),r10),
+      L.perfect_write_keeps_cell(L.image_board(image),109,q,0,s2,r9)))
+
+def L.queue_seed_keeps_image(image,q,shape,r9,r10,r11):
+  L.queue_seed_keeps_step(image,q,
+    L.copy_shape_three(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),r9,r10,r11)
+
+def L.queue_seed_keeps_cell(b,q):
+  L.on_reified_board(b,x => L.QueueSeedKeeps(x,q),
+    L.reify_board(b),image => L.queue_seed_keeps_image(image,q))
+
+def L.roundtrip81_at_step(image,before,after,d,shapes,r9,r10,r11,ep,safe,es,dp,ds,count,digit):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  seed = L.queue_seed(L.image_board(image))
+  +q = L.walk_position(before,0)
+  %count :
+    {L.cell_value(Q.decode(_,0,Q.encode_go(_,0,L.queue_seed(b))),q) == L.digit_word(d) : U32}
+  L.queued_roundtrip_at(seed,before,after,0,d)(
+    L.queue_seed_perfect(L.image_board(image),s0),ep,safe,es,dp,ds,
+    Equal.trans(U32,L.cell_value(seed,q),L.cell_value(b,q),L.digit_word(d),
+      L.queue_seed_keeps_cell(L.image_board(image),q)(s1,r9,r10,r11),digit))
+
+def L.roundtrip81_at_image(image,before,after,d,shape,r9,r10,r11,ep,safe,es,dp,ds,count,digit):
+  L.roundtrip81_at_step(image,before,after,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),
+    r9,r10,r11,ep,safe,es,dp,ds,count,digit)
+
+def L.public_queue_roundtrip_at(b,before,after,d):
+  L.on_reified_board(b,x => L.RoundTrip81At(x,before,after,d),
+    L.reify_board(b),image => L.roundtrip81_at_image(image,before,after,d))

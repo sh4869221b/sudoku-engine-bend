@@ -179,3 +179,22 @@ claim about reachable search caches or prove solver soundness.
   both the prefix and the suffix, not a separate decoder implementation.
   It does not yet prove that encoding produces the corresponding word at
   every cell, nor solver soundness or cache correctness.
+
+## Pointwise encode/decode round trip
+
+- A production flag update leaves a word alone if it routes to a different
+  slot. The public encoder's resets of slots 109–111 have the same property.
+  For a blank cell, writing a candidate mask and then setting its urgency
+  flag leaves the mask in the intended cell. No assumption about the
+  correctness of the cached candidates is needed to decode that word to zero.
+- For any of the ten Sudoku digits, a single production encoding step
+  produces a word whose high bits decode to the original digit. Encoding
+  an arbitrary U32 word also leaves a watched cell unchanged when both the
+  logical write and the possible flag write route elsewhere.
+- The source encoder and decoder together restore a chosen digit in the
+  actual 81-step public round trip, including the initial flag resets.
+  This is a pointwise theorem conditional on a perfect 128-slot tree, a digit
+  in 0–9 at the chosen cell, and route separation for the preceding and
+  following writes. The preceding bounded route checks are separate
+  declarations; the proof does not yet supply every routing premise in
+  one unconditional 81-cell theorem. It does not prove solver soundness.
