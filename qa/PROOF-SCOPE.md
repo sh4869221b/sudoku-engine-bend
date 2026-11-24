@@ -658,3 +658,30 @@ claim about reachable search caches or prove solver soundness.
   from the digit bits for every logical coordinate. This is local
   write correctness; the premises still need to be established
   for whole-board ordinary placement, clearing, and parsing.
+
+## Ordinary occupancy initialization leaves the original cells intact
+
+- The ordinary cache initializer's actual row and non-row scans
+  return their input array with the computed unit word, then write
+  only the selected occupancy slot. For the real row scan, digit
+  bits agree with the direct row unit fold for each of the nine
+  rows; the extra blank-column marks do not affect that projection.
+- The full 27-unit initialization and every prefix leave all 81
+  logical cells unchanged on a 128-slot board. The public ordinary
+  cache also leaves them unchanged during its pointer refresh.
+- A per-target fold transfer is still needed to establish that the
+  final 27 cached words describe the original board, and the fused
+  prepared parser remains a separate entry path.
+
+## Ordinary cache rebuild and queued activation from a raw board
+
+- The real `C.cache` rebuild writes all 27 unit digit projections
+  correctly for the original board. Proofs cover the actual order:
+  earlier writes preserve each scanner read, the unit's own write
+  establishes its digit projection, later writes do not overlap it,
+  and the first-empty pointer refresh writes only slot 108.
+- On a 128-slot board, `Q.encode(C.cache(board))` stores the direct
+  `C.at(board,p)` candidate mask at every initially blank logical
+  position. This covers the explicit rebuild path, not arbitrary
+  caller-supplied cached boards, fused prepared parsing, or
+  preservation across the full solver transition system.

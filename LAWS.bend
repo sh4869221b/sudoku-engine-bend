@@ -9983,3 +9983,618 @@ law row_empty_outside_digits_using_geometry:
   for +col: CellCoordinate
   for geometry: PlaceGeometry(row,col)
   {U32.and(1022,ordinary_empty_bit(logical_position(row,col))) == 0 : U32}
+
+def cached_row_digit_entry(+col: U32,+raw: U32) -> U32:
+  U32.or(U32.and(B.bit(raw),1023),Bool.pick(U32,U32.is_eq(raw,0),B.bit((10 + col : U32)),0))
+
+def cached_row_fold(+n: Nat,+pos: U32,+col: U32,+used: U32,+image: BoardImage) -> U32:
+  match n:
+    case 0n:
+      used
+    case 1n+k:
+      cached_row_fold(k,(pos + 1 : U32),(col + 1 : U32),
+        U32.or(used,cached_row_digit_entry(col,cell_value(image_board(image),pos))),image)
+
+law actual_cached_row_scan:
+  for +n: Nat
+  for +pos: U32
+  for +col: U32
+  for +used: U32
+  for +image: BoardImage
+  {C.row_used(n,pos,col,used,(image_board(image),cell_value(image_board(image),pos))) ==
+    (image_board(image),cached_row_fold(n,pos,col,used,image)) : Array<U32> & U32}
+
+law actual_cached_used_row:
+  for +image: BoardImage
+  for +unit: U32
+  {C.cached_used(True{},unit,image_board(image)) ==
+    (image_board(image),cached_row_fold(9n,(unit * 9 : U32),0,0,image)) : Array<U32> & U32}
+
+law actual_cached_one_nonrow_write:
+  for +image: BoardImage
+  for +unit: U32
+  {C.cache_unit_done((81 + unit : U32),C.cached_used(False{},unit,image_board(image))) ==
+    B.set_cell(image_board(image),(81 + unit : U32),direct_unit_fold(9n,unit,0,image,0)) : Array<U32>}
+
+law actual_cached_one_row_write:
+  for +image: BoardImage
+  for +unit: U32
+  {C.cache_unit_done((81 + unit : U32),C.cached_used(True{},unit,image_board(image))) ==
+    B.set_cell(image_board(image),(81 + unit : U32),cached_row_fold(9n,(unit * 9 : U32),0,0,image)) : Array<U32>}
+
+law bit_clip_distributes_over_or:
+  for +m: Bool
+  for +x: Bool
+  for +y: Bool
+  {Bool.and(m,Bool.or(x,y)) == Bool.or(Bool.and(m,x),Bool.and(m,y)) : Bool}
+
+law word_clip_distributes_over_or:
+  for +n: Nat
+  for +m: Word(n)
+  for +x: Word(n)
+  for +y: Word(n)
+  {Word.and(n,m,Word.or(n,x,y)) == Word.or(n,Word.and(n,m,x),Word.and(n,m,y)) : Word(n)}
+
+law u32_clip_distributes_over_or:
+  for +m: U32
+  for +x: U32
+  for +y: U32
+  {U32.and(m,U32.or(x,y)) == U32.or(U32.and(m,x),U32.and(m,y)) : U32}
+
+law cached_row_clip_mark:
+  for +blank: Bool
+  for +marker: U32
+  for outside: {U32.and(1022,marker) == 0 : U32}
+  {U32.and(1022,Bool.pick(U32,blank,marker,0)) == 0 : U32}
+
+law cached_row_entry_digit_clip:
+  for +col: U32
+  for +raw: U32
+  for outside: {U32.and(1022,B.bit((10 + col : U32))) == 0 : U32}
+  {U32.and(1022,cached_row_digit_entry(col,raw)) == U32.and(1022,B.bit(raw)) : U32}
+
+law cached_row_acc_step_keeps_digit_word:
+  for +col: U32
+  for +raw: U32
+  for +cached: U32
+  for +direct: U32
+  for same: {U32.and(1022,cached) == U32.and(1022,direct) : U32}
+  for outside: {U32.and(1022,B.bit((10 + col : U32))) == 0 : U32}
+  {U32.and(1022,U32.or(cached,cached_row_digit_entry(col,raw))) ==
+    U32.and(1022,U32.or(direct,B.bit(raw))) : U32}
+
+def RowFoldRoute(+n: Nat,+unit: U32,+j: U32,+pos: U32,+col: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      ({B.unit_pos(unit,j) == pos : U32} & {U32.and(1022,B.bit((10 + col : U32))) == 0 : U32} &
+        RowFoldRoute(k,unit,(j + 1 : U32),(pos + 1 : U32),(col + 1 : U32)))
+
+law cached_row_fold_matches_direct_digits:
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for +pos: U32
+  for +col: U32
+  for +cached: U32
+  for +direct: U32
+  for +image: BoardImage
+  for same: {U32.and(1022,cached) == U32.and(1022,direct) : U32}
+  for route: RowFoldRoute(n,unit,j,pos,col)
+  {U32.and(1022,cached_row_fold(n,pos,col,cached,image)) ==
+    U32.and(1022,direct_unit_fold(n,unit,j,image,direct)) : U32}
+
+law logical_row_fold_route:
+  for +row: CellCoordinate
+  RowFoldRoute(9n,coord_u32(row),0,(coord_u32(row) * 9 : U32),0)
+
+law cached_row_setup_digits_match_direct:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  {U32.and(1022,cell_value(C.cache_unit_done((81 + coord_u32(row) : U32),C.cached_used(True{},coord_u32(row),image_board(image))),(81 + coord_u32(row) : U32))) ==
+    U32.and(1022,direct_unit_fold(9n,coord_u32(row),0,image,0)) : U32}
+
+def cache_setup_step(+unit: U32,b: Array<U32>) -> Array<U32>:
+  C.cache_unit_done((81 + unit : U32),C.cached_used((unit < 9 : U32),unit,b))
+
+def cache_setup_word(+row: Bool,+unit: U32,+image: BoardImage) -> U32:
+  Bool.pick(U32,row,cached_row_fold(9n,(unit * 9 : U32),0,0,image),direct_unit_fold(9n,unit,0,image,0))
+
+law cache_setup_step_is_write_mode:
+  for +image: BoardImage
+  for +unit: U32
+  for +row: Bool
+  {C.cache_unit_done((81 + unit : U32),C.cached_used(row,unit,image_board(image))) ==
+    B.set_cell(image_board(image),(81 + unit : U32),cache_setup_word(row,unit,image)) : Array<U32>}
+
+law cache_setup_step_is_write:
+  for +image: BoardImage
+  for +unit: U32
+  {cache_setup_step(unit,image_board(image)) ==
+    B.set_cell(image_board(image),(81 + unit : U32),cache_setup_word((unit < 9 : U32),unit,image)) : Array<U32>}
+
+def CacheSetupKeepsCell(-b: Array<U32>, +unit: U32, +q: U32) -> Type:
+  Board128(b) -> RoutedApart((81 + unit : U32),q) ->
+  {cell_value(cache_setup_step(unit,b),q) == cell_value(b,q) : U32}
+
+law cache_setup_step_keeps_cell_image:
+  for +image: BoardImage
+  for +unit: U32
+  for +q: U32
+  CacheSetupKeepsCell(image_board(image),unit,q)
+
+law cache_setup_step_keeps_cell:
+  for b: Array<U32>
+  for +unit: U32
+  for +q: U32
+  CacheSetupKeepsCell(b,unit,q)
+
+law cache_setup_step_keeps_shape_image:
+  for +image: BoardImage
+  for +unit: U32
+  for shape: Board128(image_board(image))
+  Board128(cache_setup_step(unit,image_board(image)))
+
+law cache_setup_step_keeps_shape:
+  for b: Array<U32>
+  for +unit: U32
+  for shape: Board128(b)
+  Board128(cache_setup_step(unit,b))
+
+law cache_setup_full_keeps_shape:
+  for +n: Nat
+  for +unit: U32
+  for b: Array<U32>
+  for shape: Board128(b)
+  Board128(C.cache_units(n,unit,b))
+
+def CacheSetupShapeTail(+n: Nat,+unit: U32) -> Type:
+  @b:Array<U32> -> Board128(b) -> Board128(C.cache_units(n,unit,b))
+
+law cache_setup_shape_next_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +unit: U32
+  for shape: Board128(image_board(image))
+  for recurse: CacheSetupShapeTail(n,(unit + 1 : U32))
+  Board128(C.cache_units(1n+n,unit,image_board(image)))
+
+law cache_setup_shape_next:
+  for b: Array<U32>
+  for +n: Nat
+  for +unit: U32
+  for shape: Board128(b)
+  for recurse: CacheSetupShapeTail(n,(unit + 1 : U32))
+  Board128(C.cache_units(1n+n,unit,b))
+
+def CacheSetupWalkRoutes(+n: Nat,+unit: U32,+q: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      (RoutedApart((81 + unit : U32),q) & CacheSetupWalkRoutes(k,(unit + 1 : U32),q))
+
+def CacheSetupReadTail(+n: Nat,+unit: U32,+q: U32) -> Type:
+  @b:Array<U32> -> Board128(b) -> CacheSetupWalkRoutes(n,unit,q) ->
+  {cell_value(C.cache_units(n,unit,b),q) == cell_value(b,q) : U32}
+
+law cache_setup_read_next_parts:
+  for +image: BoardImage
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for routes: CacheSetupWalkRoutes(1n+n,unit,q)
+  for recurse: CacheSetupReadTail(n,(unit + 1 : U32),q)
+  {cell_value(C.cache_units(1n+n,unit,image_board(image)),q) == cell_value(image_board(image),q) : U32}
+
+law cache_setup_read_next_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for shape: Board128(image_board(image))
+  for routes: CacheSetupWalkRoutes(1n+n,unit,q)
+  for recurse: CacheSetupReadTail(n,(unit + 1 : U32),q)
+  {cell_value(C.cache_units(1n+n,unit,image_board(image)),q) == cell_value(image_board(image),q) : U32}
+
+law cache_setup_read_next:
+  for b: Array<U32>
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for shape: Board128(b)
+  for routes: CacheSetupWalkRoutes(1n+n,unit,q)
+  for recurse: CacheSetupReadTail(n,(unit + 1 : U32),q)
+  {cell_value(C.cache_units(1n+n,unit,b),q) == cell_value(b,q) : U32}
+
+law cache_setup_sweep_keeps_cell:
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  CacheSetupReadTail(n,unit,q)
+
+def cache_setup_route_guard(+n: Nat,+unit: U32,+q: U32) -> Bool:
+  match n:
+    case 0n:
+      True{}
+    case 1n+k:
+      Bool.and(apart_guard((81 + unit : U32),q),cache_setup_route_guard(k,(unit + 1 : U32),q))
+
+law cache_setup_route_from_checked_split:
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for pieces: (RoutedApart((81 + unit : U32),q) & {cache_setup_route_guard(n,(unit + 1 : U32),q) == True{} : Bool})
+  for recurse: ({cache_setup_route_guard(n,(unit + 1 : U32),q) == True{} : Bool} -> CacheSetupWalkRoutes(n,(unit + 1 : U32),q))
+  CacheSetupWalkRoutes(1n+n,unit,q)
+
+law cache_setup_route_from_checked:
+  for +n: Nat
+  for +unit: U32
+  for +q: U32
+  for check: {cache_setup_route_guard(n,unit,q) == True{} : Bool}
+  CacheSetupWalkRoutes(n,unit,q)
+
+law cache_setup_sweep_guard_logical:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  {cache_setup_route_guard(27n,0,logical_position(row,col)) == True{} : Bool}
+
+law ordinary_occupancy_setup_keeps_logical_cell:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(b)
+  {cell_value(C.cache_units(27n,0,b),logical_position(row,col)) == cell_value(b,logical_position(row,col)) : U32}
+
+law cache_setup_read_prefix_route:
+  for +n: Nat
+  for +remaining: Nat
+  for +unit: U32
+  for +q: U32
+  for whole: CacheSetupWalkRoutes(Nat.add(n,remaining),unit,q)
+  CacheSetupWalkRoutes(n,unit,q)
+
+law cache_setup_read_prefix_known:
+  for +n: Nat
+  for +remaining: Nat
+  for +q: U32
+  for total: {Nat.add(n,remaining) == 27n : Nat}
+  for whole: CacheSetupWalkRoutes(27n,0,q)
+  CacheSetupWalkRoutes(n,0,q)
+
+law ordinary_occupancy_prefix_keeps_logical_cell:
+  for b: Array<U32>
+  for +n: Nat
+  for +remaining: Nat
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(b)
+  for total: {Nat.add(n,remaining) == 27n : Nat}
+  {cell_value(C.cache_units(n,0,b),logical_position(row,col)) == cell_value(b,logical_position(row,col)) : U32}
+
+law plain_word_projects:
+  for -b: Array<U32>
+  for +q: U32
+  for +value: U32
+  for held: PlainWord(b,q,value)
+  {cell_value(b,q) == value : U32}
+
+law plain_refresh_keeps_actual_cell_image:
+  for +image: BoardImage
+  for +start: U32
+  for +q: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(108,q)
+  {cell_value(C.refresh_start(image_board(image),start),q) == cell_value(image_board(image),q) : U32}
+
+def PlainRefreshKeepsCell(-b: Array<U32>,+start: U32,+q: U32) -> Type:
+  Board128(b) -> RoutedApart(108,q) ->
+  {cell_value(C.refresh_start(b,start),q) == cell_value(b,q) : U32}
+
+law plain_refresh_keeps_actual_cell:
+  for b: Array<U32>
+  for +start: U32
+  for +q: U32
+  PlainRefreshKeepsCell(b,start,q)
+
+law complete_ordinary_cache_keeps_logical_cell_parts:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  {cell_value(C.cache(image_board(image)),logical_position(row,col)) == cell_value(image_board(image),logical_position(row,col)) : U32}
+
+law complete_ordinary_cache_keeps_logical_cell:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(b)
+  {cell_value(C.cache(b),logical_position(row,col)) == cell_value(b,logical_position(row,col)) : U32}
+
+def cache_group_unit_base(+group: CacheGroup) -> Nat:
+  match group:
+    case CacheRows{}:
+      0n
+    case CacheColumns{}:
+      9n
+    case CacheBoxes{}:
+      18n
+
+def group_unit_nat(+group: CacheGroup,+index: CellCoordinate) -> Nat:
+  Nat.add(cache_group_unit_base(group),coordinate_nat(index))
+
+def group_unit(+group: CacheGroup,+index: CellCoordinate) -> U32:
+  walk_position(group_unit_nat(group,index),0)
+
+def LogicalCoordinateFor(+pos: U32) -> Type:
+  Sigma<&2,&1,CellCoordinate,r =>
+    Sigma<&2,&1,CellCoordinate,c => {pos == logical_position(r,c) : U32}>>
+
+def UnitScanRoutes(+n: Nat,+unit: U32,+j: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      (LogicalCoordinateFor(B.unit_pos(unit,j)) & UnitScanRoutes(k,unit,(j + 1 : U32)))
+
+law actual_unit_route_for_every_cache_slot:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  UnitScanRoutes(9n,group_unit(group,index),0)
+
+def UnitFoldAgreement(+n: Nat,+unit: U32,+j: U32,-a: Array<U32>,-b: Array<U32>) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      ({cell_value(a,B.unit_pos(unit,j)) == cell_value(b,B.unit_pos(unit,j)) : U32} &
+       UnitFoldAgreement(k,unit,(j + 1 : U32),a,b))
+
+law direct_fold_agrees_on_unit_reads:
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for +a: BoardImage
+  for +b: BoardImage
+  for +used: U32
+  for reads: UnitFoldAgreement(n,unit,j,image_board(a),image_board(b))
+  {direct_unit_fold(n,unit,j,a,used) == direct_unit_fold(n,unit,j,b,used) : U32}
+
+law occupancy_prefix_one_unit_read:
+  for +image: BoardImage
+  for +prefix: Nat
+  for +remaining: Nat
+  for +at: U32
+  for shape: Board128(image_board(image))
+  for total: {Nat.add(prefix,remaining) == 27n : Nat}
+  for coordinate: LogicalCoordinateFor(at)
+  {cell_value(C.cache_units(prefix,0,image_board(image)),at) == cell_value(image_board(image),at) : U32}
+
+law occupancy_prefix_unit_agreement_step:
+  for +image: BoardImage
+  for +prefix: Nat
+  for +remaining: Nat
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for totals: ({Nat.add(prefix,remaining) == 27n : Nat} & {Nat.add(prefix,remaining) == 27n : Nat} & {Nat.add(prefix,remaining) == 27n : Nat})
+  for route: UnitScanRoutes(1n+n,unit,j)
+  for next: (Board128(image_board(image)) -> {Nat.add(prefix,remaining) == 27n : Nat} ->
+    UnitScanRoutes(n,unit,(j + 1 : U32)) -> UnitFoldAgreement(n,unit,(j + 1 : U32),C.cache_units(prefix,0,image_board(image)),image_board(image)))
+  UnitFoldAgreement(1n+n,unit,j,C.cache_units(prefix,0,image_board(image)),image_board(image))
+
+law occupancy_prefix_unit_agreement:
+  for +image: BoardImage
+  for +prefix: Nat
+  for +remaining: Nat
+  for +n: Nat
+  for +unit: U32
+  for +j: U32
+  for shape: Board128(image_board(image))
+  for total: {Nat.add(prefix,remaining) == 27n : Nat}
+  for route: UnitScanRoutes(n,unit,j)
+  UnitFoldAgreement(n,unit,j,C.cache_units(prefix,0,image_board(image)),image_board(image))
+
+law occupancy_prefix_frozen_direct_fold:
+  for +image: BoardImage
+  for +prefix: Nat
+  for +remaining: Nat
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for shape: Board128(image_board(image))
+  for total: {Nat.add(prefix,remaining) == 27n : Nat}
+  {Pair.snd(Array<U32>,U32,C.unit_used(C.cache_units(prefix,0,image_board(image)),group_unit(group,index))) ==
+    direct_unit_fold(9n,group_unit(group,index),0,image,0) : U32}
+
+
+law production_unit_result_agrees_if_reads_image:
+  for +next: BoardImage
+  for +image: BoardImage
+  for +unit: U32
+  for reads: UnitFoldAgreement(9n,unit,0,image_board(next),image_board(image))
+  {Pair.snd(Array<U32>,U32,C.unit_used(image_board(next),unit)) == direct_unit_fold(9n,unit,0,image,0) : U32}
+
+law cache_units_split_at_prefix:
+  for +prefix: Nat
+  for +suffix: Nat
+  for +unit: U32
+  for b: Array<U32>
+  {C.cache_units(Nat.add(prefix,suffix),unit,b) ==
+    C.cache_units(suffix,walk_position(prefix,unit),C.cache_units(prefix,unit,b)) : Array<U32>}
+
+def cache_tail_count(+group: CacheGroup,+index: CellCoordinate) -> Nat:
+  Nat.sub(26n,group_unit_nat(group,index))
+
+def actual_cache_target(+group: CacheGroup,+index: CellCoordinate) -> U32:
+  (81 + group_unit(group,index) : U32)
+
+def CacheWindow(+group: CacheGroup,+index: CellCoordinate) -> Type:
+  ({Nat.add(group_unit_nat(group,index),1n+cache_tail_count(group,index)) == 27n : Nat} &
+   {cache_setup_route_guard(cache_tail_count(group,index),(group_unit(group,index) + 1 : U32),actual_cache_target(group,index)) == True{} : Bool} &
+   RoutedApart(108,actual_cache_target(group,index)) &
+   {actual_cache_target(group,index) == cache_group_slot(group,index) : U32})
+
+law checked_cache_window:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  CacheWindow(group,index)
+
+law full_ordinary_setup_as_local_cache_write:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for b: Array<U32>
+  for count: {Nat.add(group_unit_nat(group,index),1n+cache_tail_count(group,index)) == 27n : Nat}
+  {C.cache_units(27n,0,b) == C.cache_units(cache_tail_count(group,index),(group_unit(group,index) + 1 : U32),
+    cache_setup_step(group_unit(group,index),C.cache_units(group_unit_nat(group,index),0,b))) : Array<U32>}
+
+def CacheGroupIsRow(+group: CacheGroup) -> Bool:
+  match group:
+    case CacheRows{}:
+      True{}
+    case _:
+      False{}
+
+law cache_group_row_test:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  {(group_unit(group,index) < 9 : U32) == CacheGroupIsRow(group) : Bool}
+
+law cache_one_narrow_nonrow:
+  for +image: BoardImage
+  for +unit: U32
+  {U32.and(1022,cell_value(C.cache_unit_done((81 + unit : U32),C.cached_used(False{},unit,image_board(image))),(81 + unit : U32))) ==
+    U32.and(1022,Pair.snd(Array<U32>,U32,C.unit_used(image_board(image),unit))) : U32}
+
+law cache_one_narrow_row:
+  for +image: BoardImage
+  for +index: CellCoordinate
+  {U32.and(1022,cell_value(C.cache_unit_done((81 + coord_u32(index) : U32),C.cached_used(True{},coord_u32(index),image_board(image))),(81 + coord_u32(index) : U32))) ==
+    U32.and(1022,Pair.snd(Array<U32>,U32,C.unit_used(image_board(image),coord_u32(index)))) : U32}
+
+law cache_one_group_write_image:
+  for +image: BoardImage
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for kind: {(group_unit(group,index) < 9 : U32) == CacheGroupIsRow(group) : Bool}
+  {U32.and(1022,cell_value(cache_setup_step(group_unit(group,index),image_board(image)),actual_cache_target(group,index))) ==
+    U32.and(1022,Pair.snd(Array<U32>,U32,C.unit_used(image_board(image),group_unit(group,index)))) : U32}
+
+def CacheOneProjectedWrite(-b: Array<U32>,+group: CacheGroup,+index: CellCoordinate) -> Type:
+  {U32.and(1022,cell_value(cache_setup_step(group_unit(group,index),b),actual_cache_target(group,index))) ==
+    U32.and(1022,Pair.snd(Array<U32>,U32,C.unit_used(b,group_unit(group,index)))) : U32}
+
+law cache_one_group_write:
+  for b: Array<U32>
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  CacheOneProjectedWrite(b,group,index)
+
+law cache_units_complete_target:
+  for +image: BoardImage
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for shape: Board128(image_board(image))
+  for totals: ({Nat.add(group_unit_nat(group,index),1n+cache_tail_count(group,index)) == 27n : Nat} &
+    {Nat.add(group_unit_nat(group,index),1n+cache_tail_count(group,index)) == 27n : Nat} &
+    {Nat.add(group_unit_nat(group,index),1n+cache_tail_count(group,index)) == 27n : Nat})
+  for guards: {cache_setup_route_guard(cache_tail_count(group,index),(group_unit(group,index) + 1 : U32),actual_cache_target(group,index)) == True{} : Bool}
+  for pre_shape: Board128(image_board(image))
+  {U32.and(1022,cell_value(C.cache_units(27n,0,image_board(image)),actual_cache_target(group,index))) ==
+    U32.and(1022,direct_unit_fold(9n,group_unit(group,index),0,image,0)) : U32}
+
+law complete_cache_sets_unit_digits_parts:
+  for +image: BoardImage
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for window: CacheWindow(group,index)
+  {U32.and(1022,cell_value(C.cache(image_board(image)),cache_group_slot(group,index))) ==
+    U32.and(1022,direct_unit_fold(9n,group_unit(group,index),0,image,0)) : U32}
+
+law complete_cache_sets_unit_digits:
+  for +image: BoardImage
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for shape: Board128(image_board(image))
+  {U32.and(1022,cell_value(C.cache(image_board(image)),cache_group_slot(group,index))) ==
+    U32.and(1022,direct_unit_fold(9n,group_unit(group,index),0,image,0)) : U32}
+
+def CacheScanGeometry(+row: CellCoordinate,+col: CellCoordinate) -> Type:
+  ({M.div9(logical_position(row,col)) == group_unit(CacheRows{},row) : U32} &
+   {(9 + M.rem9(logical_position(row,col)) : U32) == group_unit(CacheColumns{},col) : U32} &
+   {(18 + B.box_of(logical_position(row,col)) : U32) == group_unit(CacheBoxes{},box_coordinate(row,col)) : U32})
+
+law cache_scan_geometry:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  CacheScanGeometry(row,col)
+
+def CacheRecomputedDigits(-out: Array<U32>,+original: BoardImage,+p: U32) -> Type:
+  ({U32.and(1022,cell_value(out,ordinary_row_slot(p))) == U32.and(1022,direct_row_word(original,p)) : U32} &
+   {U32.and(1022,cell_value(out,ordinary_col_slot(p))) == U32.and(1022,direct_col_word(original,p)) : U32} &
+   {U32.and(1022,cell_value(out,ordinary_box_slot(p))) == U32.and(1022,direct_box_word(original,p)) : U32})
+
+law complete_cache_original_projection_parts:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for slots: OrdinaryGeometry(row,col)
+  for units: CacheScanGeometry(row,col)
+  CacheRecomputedDigits(C.cache(image_board(image)),image,logical_position(row,col))
+
+law cached_word_from_recomputed_projection:
+  for +next: BoardImage
+  for +original: BoardImage
+  for +p: U32
+  for equal: CacheRecomputedDigits(image_board(next),original,p)
+  {cached_word(image_board(next),p) == Pair.snd(Array<U32>,U32,C.at(image_board(original),p)) : U32}
+
+law actual_cache_rebuilds_direct_candidates:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  {cached_word(C.cache(image_board(image)),logical_position(row,col)) ==
+    Pair.snd(Array<U32>,U32,C.at(image_board(image),logical_position(row,col))) : U32}
+
+law ordinary_pointer_keeps_shape_parts:
+  for +image: BoardImage
+  for -out: Array<U32>
+  for shape: Board128(image_board(image))
+  for writes: FirstOnlyWritesPointer(image_board(image),out)
+  Board128(out)
+
+law ordinary_pointer_keeps_shape_image:
+  for +image: BoardImage
+  for +start: U32
+  for shape: Board128(image_board(image))
+  Board128(C.refresh_start(image_board(image),start))
+
+law ordinary_pointer_keeps_shape:
+  for b: Array<U32>
+  for +start: U32
+  for shape: Board128(b)
+  Board128(C.refresh_start(b,start))
+
+law actual_cache_then_queue_blank_matches_direct_parts:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
+  {cell_value(Q.encode(C.cache(image_board(image))),logical_position(row,col)) ==
+    Pair.snd(Array<U32>,U32,C.at(image_board(image),logical_position(row,col))) : U32}
+
+law actual_cache_then_queue_blank_matches_direct:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
+  {cell_value(Q.encode(C.cache(image_board(image))),logical_position(row,col)) ==
+    Pair.snd(Array<U32>,U32,C.at(image_board(image),logical_position(row,col))) : U32}
