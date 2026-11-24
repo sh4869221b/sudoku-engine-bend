@@ -27,6 +27,26 @@ than checking the wrapper and compiling the suite separately.
 The checker negative control now mutates the universal mirror claim; the native
 mutated-counter control still demonstrates detection of a search/count regression.
 
+## Additional source guarantees
+
+These check actual production definitions, not a separate Sudoku solver.
+None changes the search implementation or removes a native, JavaScript,
+integration, performance, or compiler-boundary test.
+
+| Area | What the BendTT kernel checks | What the claim does not say |
+| --- | --- | --- |
+| Board reads and validation | Reads return the exact same array tree, including padding, under Base's array index semantics. The unit scan and the full validator return the original board for every input array. A failed completeness or unit check cannot be overturned by processing another cell. A nonempty diagnostic survives subsequent unit results. | Not a proof that the validator is equivalent to a fully independent mathematical Sudoku specification. |
+| Board geometry | All 27 actual row, column and box lists equal independently enumerated row-major indices: 243 memberships in order. The peer predicate rejects a cell compared with itself for every U32. | Not equivalence between the peer bitmap and the peer predicate; the existing native differential remains. |
+| Direct and prepared search boundaries | Both search-state evaluators preserve terminal solutions or fuel results at every fuel and limit. The prepared public solve/count entry points return fuel at zero. An attempted adaptive restore without a snapshot returns fuel. The solver result adapter distinguishes a zero-result state, a one-result state and a fuel state. | Not legality of search placements, cache correctness, soundness of a returned solution, or completeness of the search. |
+| Parser boundaries | Both paths preserve length-before-character error priority at their finishing helpers and reject input still containing characters once the scan reaches its capacity. | Not full parser equivalence or a proof about all host input processing. |
+
+The raw solver accepts a prevalidated board by convention. For example, a full
+board filled with the same digit can bypass Sudoku checks if passed straight to
+the raw function (as opposed to the validated CLI). A useful solver-soundness
+theorem must assume or establish valid givens and coherent cache/first-empty
+metadata, then preserve them through placement, representation switches and
+restoration. This work does not promote that assumption to a proved claim.
+
 ## Why the other runtime gates remain
 
 - The production solver is not universally proved sound or complete. Zero fuel
