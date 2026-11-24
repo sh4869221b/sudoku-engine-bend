@@ -7500,3 +7500,205 @@ law logical_placement_preserves_other_candidate_mask:
   for shape: Board128(b)
   for prior: NormalizedQueueMask(cell_value(b,logical_position(watched_row,watched_col)))
   NormalizedQueueMask(cell_value(Q.place(guess,logical_position(source_row,source_col),digit_word(digit),b),logical_position(watched_row,watched_col)))
+
+# Candidate removal never changes the encoded high digit, even for malformed low bits.
+def word_ones(+n: Nat) -> Word(n):
+  match n:
+    case 0n:
+      WNil{}
+    case 1n+k:
+      WCon{True{},word_ones(k)}
+
+law word_and_ones_right:
+  for +n: Nat
+  for +x: Word(n)
+  {Word.and(n,x,word_ones(n)) == x : Word(n)}
+
+law peer_removal_keeps_high_digit:
+  for +old: U32
+  for +digit: BoardDigit
+  {U32.shrn(peer_mask(old,B.bit(digit_word(digit))),10n) == U32.shrn(old,10n) : U32}
+
+law cmp_low_against_zero_ignores_lt:
+  for +bit: Bool
+  for +higher: Cmp
+  {Cmp.is_lt(Word.cmp.fin(bit,False{},higher)) == Cmp.is_lt(higher) : Bool}
+
+def queued_packing(+b0: Bool, +b1: Bool, +b2: Bool, +b3: Bool, +b4: Bool, +b5: Bool, +b6: Bool, +b7: Bool, +b8: Bool, +b9: Bool, +upper: Word(22n)) -> U32:
+  U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}}
+
+law queued_packed_vacancy_from_upper:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +b8: Bool
+  for +b9: Bool
+  for +upper: Word(22n)
+  {(queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32) ==
+    Cmp.is_lt(Word.cmp(22n,upper,WCon{True{},Word.zero(21n)})) : Bool}
+
+def vacancy_from_upper(+t: Word(22n)) -> Bool:
+  Cmp.is_lt(Word.cmp(22n,t,WCon{True{},Word.zero(21n)}))
+
+law peer_removal_keeps_vacancy:
+  for +old: U32
+  for +digit: BoardDigit
+  {(peer_mask(old,B.bit(digit_word(digit))) < 1024 : U32) == (old < 1024 : U32) : Bool}
+
+def QueuedVacant(+raw: U32) -> Bool:
+  (raw < 1024 : U32)
+
+law changed_peer_keeps_vacancy_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +pos: U32
+  for +digit: BoardDigit
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(flag_slot(pos),pos)
+  {QueuedVacant(cell_value(Q.changed(needed,pos,B.bit(digit_word(digit)),image_board(image),cell_value(image_board(image),pos)),pos))
+    == QueuedVacant(cell_value(image_board(image),pos)) : Bool}
+
+def ActualPeerKeepsVacancy(-b: Array<U32>, +pos: U32, +digit: BoardDigit) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(pos),pos) ->
+  {QueuedVacant(cell_value(actual_peer(b,pos,B.bit(digit_word(digit))),pos)) == QueuedVacant(cell_value(b,pos)) : Bool}
+
+law actual_peer_keeps_vacancy_image:
+  for +image: BoardImage
+  for +pos: U32
+  for +digit: BoardDigit
+  ActualPeerKeepsVacancy(image_board(image),pos,digit)
+
+law actual_peer_keeps_vacancy:
+  for b: Array<U32>
+  for +pos: U32
+  for +digit: BoardDigit
+  ActualPeerKeepsVacancy(b,pos,digit)
+
+# A read-only observation model for the production first-open pointer walk.
+def queue_open_at(+image: BoardImage, +p: U32) -> Bool:
+  QueuedVacant(cell_value(image_board(image),p))
+
+def first_open_index(+n: Nat, +p: U32, +open: Bool, +image: BoardImage) -> U32:
+  match n open:
+    case 0n _:
+      81
+    case 1n+k True{}:
+      p
+    case 1n+k False{}:
+      first_open_index(k,(p + 1 : U32),queue_open_at(image,(p + 1 : U32)),image)
+
+law first_actual_read_exact_parts:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for -same: Array<U32>
+  for +word: U32
+  for same_board: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  {first_actual(b,n,p) == Q.first_step(n,p,(b,QueuedVacant(cell_value(b,p)))) : Array<U32>}
+
+law first_actual_read_exact:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for read: BoardReadWitness(b,p)
+  {first_actual(b,n,p) == Q.first_step(n,p,(b,QueuedVacant(cell_value(b,p)))) : Array<U32>}
+
+law first_open_step_closed_matches_model:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  for later: {Q.first_step(n,(p + 1 : U32),(image_board(image),queue_open_at(image,(p + 1 : U32)))) ==
+    B.set_cell(image_board(image),108,first_open_index(n,(p + 1 : U32),queue_open_at(image,(p + 1 : U32)),image)) : Array<U32>}
+  {Q.first_step(1n+n,p,(image_board(image),False{})) ==
+    B.set_cell(image_board(image),108,first_open_index(1n+n,p,False{},image)) : Array<U32>}
+
+law first_open_step_matches_model:
+  for +n: Nat
+  for +p: U32
+  for +open: Bool
+  for +image: BoardImage
+  {Q.first_step(n,p,(image_board(image),open)) ==
+    B.set_cell(image_board(image),108,first_open_index(n,p,open,image)) : Array<U32>}
+
+law first_open_scan_writes_exact_pointer:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  {first_actual(image_board(image),n,p) ==
+    B.set_cell(image_board(image),108,first_open_index(n,p,queue_open_at(image,p),image)) : Array<U32>}
+
+law first_open_scan_reads_exact_pointer:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  {cell_value(first_actual(image_board(image),n,p),108) == first_open_index(n,p,queue_open_at(image,p),image) : U32}
+
+# Scanning past a position requires evidence that its actual word was closed.
+# The witness names either a first visited blank or exhaustion at position 81.
+def FirstOpenWitness(+n: Nat, +p: U32, +image: BoardImage, -ptr: U32) -> Type:
+  match n:
+    case 0n:
+      {ptr == 81 : U32}
+    case 1n+k:
+      Either<&1,&1,
+        ({queue_open_at(image,p) == True{} : Bool} & {ptr == p : U32}),
+        ({queue_open_at(image,p) == False{} : Bool} & FirstOpenWitness(k,(p + 1 : U32),image,ptr))>
+
+law first_open_model_no_skip:
+  for +n: Nat
+  for +p: U32
+  for +open: Bool
+  for +image: BoardImage
+  for read: {queue_open_at(image,p) == open : Bool}
+  FirstOpenWitness(n,p,image,first_open_index(n,p,open,image))
+
+law production_first_open_scan_no_skip:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  FirstOpenWitness(n,p,image,cell_value(first_actual(image_board(image),n,p),108))
+
+law refreshed_first_open_scan_no_skip:
+  for +start: U32
+  for +image: BoardImage
+  FirstOpenWitness(U32.to_nat((81 - start : U32)),start,image,
+    cell_value(Q.refresh_needed(True{},image_board(image),start),108))
+
+law refresh_at_pointer_does_not_skip:
+  for +image: BoardImage
+  for +placed: U32
+  for +start: U32
+  for observed: {cell_value(image_board(image),108) == start : U32}
+  for hit: {U32.is_eq(placed,start) == True{} : Bool}
+  FirstOpenWitness(U32.to_nat((81 - start : U32)),start,image,
+    cell_value(refresh_actual(image_board(image),placed),108))
+
+law refresh_away_from_pointer_leaves_board:
+  for +image: BoardImage
+  for +placed: U32
+  for +start: U32
+  for observed: {cell_value(image_board(image),108) == start : U32}
+  for miss: {U32.is_eq(placed,start) == False{} : Bool}
+  {refresh_actual(image_board(image),placed) == image_board(image) : Array<U32>}
+
+law first_open_witness_pointer_valid:
+  for +n: Nat
+  for +p: U32
+  for +image: BoardImage
+  for +ptr: U32
+  for witness: FirstOpenWitness(n,p,image,ptr)
+  for range: QueuedScanRange(n,p)
+  QueuedChoicePosition(image_board(image),ptr)
+
+law refreshed_logical_pointer_is_vacant_or_sentinel:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +image: BoardImage
+  QueuedChoicePosition(image_board(image),
+    cell_value(Q.refresh_needed(True{},image_board(image),logical_position(row,col)),108))

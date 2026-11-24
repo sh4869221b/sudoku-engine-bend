@@ -8554,3 +8554,320 @@ def L.logical_placement_preserves_other_candidate_mask(b,guess,sr,sc,wr,wc,digit
   L.safe_normalized_mask(Q.place(guess,p,L.digit_word(digit),b),q,
     L.logical_placement_keeps_other_candidate(b,guess,sr,sc,wr,wc,digit,distinct,
       (L.any_logical_flag_route(wr,wc,wr,wc),(shape,prior))))
+
+def L.word_and_ones_right(n,x):
+  match n:
+    case 0n:
+      match x:
+        case WNil{}:
+          {==}
+    case 1n+k:
+      match x:
+        case WCon{False{},tail}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,tail,L.word_ones(k)),tail,L.word_and_ones_right(k,tail))
+        case WCon{True{},tail}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{True{},w},
+            Word.and(k,tail,L.word_ones(k)),tail,L.word_and_ones_right(k,tail))
+
+def L.peer_removal_keeps_high_digit(old,digit):
+  match old digit:
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D0{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D1{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D2{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D3{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D4{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D5{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D6{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D7{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D8{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D9{}:
+      Equal.cong(Word(22n),U32,t => U32{Word.shr.pad(31n,Word.shr.pad(30n,Word.shr.pad(29n,Word.shr.pad(28n,Word.shr.pad(27n,Word.shr.pad(26n,Word.shr.pad(25n,Word.shr.pad(24n,Word.shr.pad(23n,Word.shr.pad(22n,t))))))))))},
+        Word.and(22n,upper,L.word_ones(22n)),upper,L.word_and_ones_right(22n,upper))
+
+def L.cmp_low_against_zero_ignores_lt(bit,higher):
+  match bit higher:
+    case _ LT{}:
+      {==}
+    case _ GT{}:
+      {==}
+    case False{} EQ{}:
+      {==}
+    case True{} EQ{}:
+      {==}
+
+def L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper):
+  +high = Word.cmp(22n,upper,WCon{True{},Word.zero(21n)})
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b0,False{},Word.cmp.fin(b1,False{},Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))))))),Cmp.is_lt(Word.cmp.fin(b1,False{},Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))))))),L.cmp_low_against_zero_ignores_lt(b0,Word.cmp.fin(b1,False{},Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b1,False{},Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))))))),Cmp.is_lt(Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))))),L.cmp_low_against_zero_ignores_lt(b1,Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b2,False{},Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))))),Cmp.is_lt(Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))))),L.cmp_low_against_zero_ignores_lt(b2,Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b3,False{},Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))))),Cmp.is_lt(Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))),L.cmp_low_against_zero_ignores_lt(b3,Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b4,False{},Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))),Cmp.is_lt(Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))),L.cmp_low_against_zero_ignores_lt(b4,Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b5,False{},Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))),Cmp.is_lt(Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))),L.cmp_low_against_zero_ignores_lt(b5,Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b6,False{},Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))),Cmp.is_lt(Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))),L.cmp_low_against_zero_ignores_lt(b6,Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b7,False{},Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))),Cmp.is_lt(Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))),L.cmp_low_against_zero_ignores_lt(b7,Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high)))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b8,False{},Word.cmp.fin(b9,False{},high))),Cmp.is_lt(Word.cmp.fin(b9,False{},high)),L.cmp_low_against_zero_ignores_lt(b8,Word.cmp.fin(b9,False{},high))) :
+    {_ == Cmp.is_lt(high) : Bool}
+  %Equal.sym(Bool,Cmp.is_lt(Word.cmp.fin(b9,False{},high)),Cmp.is_lt(high),L.cmp_low_against_zero_ignores_lt(b9,high)) :
+    {_ == Cmp.is_lt(high) : Bool}
+  {==}
+
+def L.peer_removal_keeps_vacancy(old,digit):
+  match old digit:
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D0{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,False{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,False{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D1{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,False{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,False{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D2{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,False{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,False{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D3{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,False{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,False{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D4{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,False{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,False{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D5{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,False{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,False{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D6{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,False{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,False{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D7{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,False{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,False{}),Bool.and(b8,True{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D8{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,False{}),Bool.and(b9,True{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,False{}),Bool.and(b9,True{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WCon{b9,upper}}}}}}}}}}} L.D9{}:
+      +old_lt = (L.queued_packing(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper) < 1024 : U32)
+      +new_upper = Word.and(22n,upper,L.word_ones(22n))
+      +new_lt = (L.queued_packing(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,False{}),new_upper) < 1024 : U32)
+      Equal.trans(Bool,new_lt,L.vacancy_from_upper(new_upper),old_lt,
+        L.queued_packed_vacancy_from_upper(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),Bool.and(b5,True{}),Bool.and(b6,True{}),Bool.and(b7,True{}),Bool.and(b8,True{}),Bool.and(b9,False{}),new_upper),
+        Equal.trans(Bool,L.vacancy_from_upper(new_upper),L.vacancy_from_upper(upper),old_lt,
+          Equal.cong(Word(22n),Bool,t => L.vacancy_from_upper(t),new_upper,upper,L.word_and_ones_right(22n,upper)),
+          Equal.sym(Bool,old_lt,L.vacancy_from_upper(upper),L.queued_packed_vacancy_from_upper(b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,upper))))
+
+def L.changed_peer_keeps_vacancy_image(image,needed,pos,digit,shape,apart):
+  match needed:
+    case False{}:
+      {==}
+    case True{}:
+      b = L.image_board(image)
+      +raw = L.cell_value(L.image_board(image),pos)
+      +bit = Board.bit(L.digit_word(digit))
+      %Equal.sym(U32,L.cell_value(Q.changed(True{},pos,bit,b,raw),pos),L.peer_mask(raw,bit),
+        L.changed_peer_word_image(image,pos,bit,raw,shape,apart)) :
+        {L.QueuedVacant(_) == L.QueuedVacant(raw) : Bool}
+      L.peer_removal_keeps_vacancy(raw,digit)
+
+def L.actual_peer_keeps_vacancy_image(image,pos,digit,shape,apart):
+  b = L.image_board(image)
+  +raw = L.cell_value(L.image_board(image),pos)
+  +bit = Board.bit(L.digit_word(digit))
+  +needed = U32.is_ne(U32.and(raw,bit),0)
+  %Equal.sym(Array<U32>,L.actual_peer(b,pos,bit),Q.changed(needed,pos,bit,b,raw),
+    L.peer_normalized(b,pos,bit,L.board_read_witness(L.image_board(image),pos))) :
+    {L.QueuedVacant(L.cell_value(_,pos)) == L.QueuedVacant(raw) : Bool}
+  L.changed_peer_keeps_vacancy_image(image,needed,pos,digit,shape,apart)
+
+def L.actual_peer_keeps_vacancy(b,pos,digit):
+  L.on_reified_board(b,x => L.ActualPeerKeepsVacancy(x,pos,digit),L.reify_board(b),image => L.actual_peer_keeps_vacancy_image(image,pos,digit))
+
+def L.first_actual_read_exact_parts(n,p,b,same,word,same_board,observed):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),observed) :
+    {Q.first_step(n,p,Q.first_read(_)) == Q.first_step(n,p,(b,L.QueuedVacant(Pair.snd(Array<U32>,U32,_)))) : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,same_board) :
+    {Q.first_step(n,p,(_,L.QueuedVacant(word))) == Q.first_step(n,p,(b,L.QueuedVacant(word))) : Array<U32>}
+  {==}
+
+def L.first_actual_read_exact(n,p,b,read):
+  (same,+word,(same_board,observed)) = read
+  L.first_actual_read_exact_parts(n,p,b,same,word,same_board,observed)
+
+def L.first_open_step_closed_matches_model(n,p,image,later):
+  b = L.image_board(image)
+  +p1 = (p + 1 : U32)
+  %Equal.sym(Array<U32>,L.first_actual(b,n,p1),Q.first_step(n,p1,(b,L.queue_open_at(image,p1))),
+    L.first_actual_read_exact(n,p1,b,L.board_read_witness(L.image_board(image),p1))) :
+    {_ == Board.set_cell(b,108,L.first_open_index(n,p1,L.queue_open_at(image,p1),image)) : Array<U32>}
+  later
+
+def L.first_open_step_matches_model(n,p,open,image):
+  match n open:
+    case 0n True{}:
+      {==}
+    case 0n False{}:
+      {==}
+    case 1n+k True{}:
+      {==}
+    case 1n+k False{}:
+      +p1 = (p + 1 : U32)
+      L.first_open_step_closed_matches_model(k,p,image,L.first_open_step_matches_model(k,p1,L.queue_open_at(image,p1),image))
+
+def L.first_open_scan_writes_exact_pointer(n,p,image):
+  b = L.image_board(image)
+  %Equal.sym(Array<U32>,L.first_actual(b,n,p),Q.first_step(n,p,(b,L.queue_open_at(image,p))),
+    L.first_actual_read_exact(n,p,b,L.board_read_witness(L.image_board(image),p))) :
+    {_ == Board.set_cell(b,108,L.first_open_index(n,p,L.queue_open_at(image,p),image)) : Array<U32>}
+  L.first_open_step_matches_model(n,p,L.queue_open_at(image,p),image)
+
+def L.first_open_scan_reads_exact_pointer(n,p,image):
+  b = L.image_board(image)
+  +index = L.first_open_index(n,p,L.queue_open_at(image,p),image)
+  %Equal.sym(Array<U32>,L.first_actual(b,n,p),Board.set_cell(b,108,index),
+    L.first_open_scan_writes_exact_pointer(n,p,image)) :
+    {L.cell_value(_,108) == index : U32}
+  L.board_set_get(L.image_board(image),108,index)
+
+def L.first_open_model_no_skip(n,p,open,image,read):
+  match n open:
+    case 0n True{}:
+      {==}
+    case 0n False{}:
+      {==}
+    case 1n+k True{}:
+      Inl{(read,{==})}
+    case 1n+k False{}:
+      +p1 = (p + 1 : U32)
+      Inr{(read,L.first_open_model_no_skip(k,p1,L.queue_open_at(image,p1),image,{==}))}
+
+def L.production_first_open_scan_no_skip(n,p,image):
+  b = L.image_board(image)
+  +index = L.first_open_index(n,p,L.queue_open_at(image,p),image)
+  %Equal.sym(U32,L.cell_value(L.first_actual(b,n,p),108),index,L.first_open_scan_reads_exact_pointer(n,p,image)) :
+    L.FirstOpenWitness(n,p,image,_)
+  L.first_open_model_no_skip(n,p,L.queue_open_at(image,p),image,{==})
+
+def L.refreshed_first_open_scan_no_skip(start,image):
+  L.production_first_open_scan_no_skip(U32.to_nat((81 - start : U32)),start,image)
+
+def L.refresh_at_pointer_does_not_skip(image,placed,start,observed,hit):
+  b = L.image_board(image)
+  +actual = L.cell_value(L.image_board(image),108)
+  +n = U32.to_nat((81 - start : U32))
+  %Equal.sym(Array<U32>,L.refresh_actual(b,placed),Q.refresh_needed(U32.is_eq(placed,actual),b,actual),
+    L.refresh_normalized(b,placed,L.board_read_witness(L.image_board(image),108))) :
+    L.FirstOpenWitness(n,start,image,L.cell_value(_,108))
+  %Equal.sym(U32,actual,start,observed) :
+    L.FirstOpenWitness(n,start,image,L.cell_value(Q.refresh_needed(U32.is_eq(placed,_),b,_),108))
+  %Equal.sym(Bool,U32.is_eq(placed,start),True{},hit) :
+    L.FirstOpenWitness(n,start,image,L.cell_value(Q.refresh_needed(_,b,start),108))
+  L.refreshed_first_open_scan_no_skip(start,image)
+
+def L.refresh_away_from_pointer_leaves_board(image,placed,start,observed,miss):
+  b = L.image_board(image)
+  +actual = L.cell_value(L.image_board(image),108)
+  %Equal.sym(Array<U32>,L.refresh_actual(b,placed),Q.refresh_needed(U32.is_eq(placed,actual),b,actual),
+    L.refresh_normalized(b,placed,L.board_read_witness(L.image_board(image),108))) :
+    {_ == b : Array<U32>}
+  %Equal.sym(U32,actual,start,observed) :
+    {Q.refresh_needed(U32.is_eq(placed,_),b,_) == b : Array<U32>}
+  %Equal.sym(Bool,U32.is_eq(placed,start),False{},miss) :
+    {Q.refresh_needed(_,b,start) == b : Array<U32>}
+  {==}
+
+def L.first_open_witness_pointer_valid(n,p,image,ptr,witness,range):
+  match n:
+    case 0n:
+      Inl{witness}
+    case 1n+k:
+      match witness:
+        case Inl{here}:
+          (open,chosen) = here
+          (valid,rest) = range
+          %Equal.sym(U32,ptr,p,chosen) : L.QueuedChoicePosition(L.image_board(image),_)
+          Inr{(valid,open)}
+        case Inr{later}:
+          (closed,sub) = later
+          (valid,rest) = range
+          L.first_open_witness_pointer_valid(k,(p + 1 : U32),image,ptr,sub,rest)
+
+def L.refreshed_logical_pointer_is_vacant_or_sentinel(row,col,image):
+  +start = L.logical_position(row,col)
+  L.first_open_witness_pointer_valid(U32.to_nat((81 - start : U32)),start,image,
+    L.cell_value(Q.refresh_needed(True{},L.image_board(image),start),108),
+    L.refreshed_first_open_scan_no_skip(start,image),L.queued_logical_start_range(row,col))

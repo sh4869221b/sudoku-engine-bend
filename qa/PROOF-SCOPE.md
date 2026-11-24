@@ -494,3 +494,31 @@ claim about reachable search caches or prove solver soundness.
   remaining digits are exactly the Sudoku-legal choices. It also
   does not prove the pointer stays at or before every remaining
   blank, or that all backtracking entry states maintain this premise.
+
+## Vacant status is unchanged by a queued peer update
+
+- Clearing the placement bit for a Sudoku digit leaves the high
+  encoded word unchanged, for every U32 input. The real vacancy
+  test, `word < 1024`, also stays unchanged; the lower ten bits
+  do not determine whether the comparison is less than that cutoff.
+- For the actual peer array update at a watched cell, the same
+  vacancy law holds on a 128-slot board with nonaliasing flag route,
+  whether the code takes its write or no-op branch. This includes
+  pre-existing malformed candidate low bits. Extending it through
+  the full placement and proving a bound for the scan pointer
+  are separate obligations.
+
+## Exact first-open pointer refresh
+
+- When the actual refresh runs, it writes the first vacant position
+  within the examined interval, or writes 81 if it exhausts that
+  interval. The certificate records every cell it skipped as closed
+  and uses the implementation's raw vacancy comparison. The exact
+  array result is the input with the pointer slot written.
+- When the placement is not at the old pointer, the refresh itself
+  returns the input unchanged. From any of the 81 logical starting
+  positions, a running refresh writes a genuine vacant logical position
+  or 81. These are properties of the refresh on its input board.
+- Proving that the prior part of the board contains no blank in every
+  reachable state still requires linking non-target vacancy preservation,
+  sound initial metadata, and restored snapshots across solver steps.
