@@ -736,3 +736,13 @@ claim about reachable search caches or prove solver soundness.
 - The result does not by itself prove that the character scanner
   always produces one of these values or that the complete parser
   preserves the value and occupancy invariants across characters.
+
+## Exact logical writes of individual prepared digits
+
+- For each allowed digit 0 through 9, an actual prepared store writes
+  that digit at the addressed cell of a 128-slot board. At every
+  other logical coordinate it preserves the existing digit, including
+  on the nonzero path with all three metadata writes. The three
+  physical metadata addresses are checked for all 81 positions.
+- This local result does not establish the full character parser's
+  validity decisions or occupancy invariants over its entire scan.

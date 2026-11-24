@@ -14043,3 +14043,344 @@ def L.prepared_legal_store_keeps_shape(digit,pos,state,shape):
       L.prepared_store_nonzero_chain_shape(pos,8,state,shape)
     case L.D9{}:
       L.prepared_store_nonzero_chain_shape(pos,9,state,shape)
+
+def L.prepared_read_keeps_logical_word_parts(image,pos,q,word,same,value,kept,read,proof):
+  b = L.image_board(image)
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,pos),(same,value),read) :
+    L.PreparedWord(_,q,word)
+  %Equal.sym(Array<U32>,same,b,kept) :
+    L.PreparedWord((_,value),q,word)
+  proof
+
+def L.prepared_read_keeps_logical_word_witness(image,pos,q,word,read,proof):
+  (same,+value,(kept,observed)) = read
+  L.prepared_read_keeps_logical_word_parts(image,pos,q,word,same,value,kept,observed,proof)
+
+def L.prepared_read_keeps_logical_word_image(image,pos,q,word,proof):
+  L.prepared_read_keeps_logical_word_witness(image,pos,q,word,L.board_read_witness(L.image_board(image),pos),proof)
+
+def L.prepared_read_keeps_logical_word(b,pos,q,word,proof):
+  f : (L.PlainWord(b,q,word) -> L.PreparedWord(Board.get_cell(b,pos),q,word)) =
+    L.on_reified_board(b,x => (L.PlainWord(x,q,word) -> L.PreparedWord(Board.get_cell(x,pos),q,word)),
+      L.reify_board(b),image => w => L.prepared_read_keeps_logical_word_image(image,pos,q,word,w))
+  f(proof)
+
+def L.prepared_cell_exact_value_parts(pos,value,image,bad,shape):
+  (L.board_set_keeps_perfect(L.image_board(image),pos,value,7n,shape),L.board_set_get(L.image_board(image),pos,value))
+
+def L.prepared_cell_exact_value(pos,value,state,shape):
+  (b,+bad) = state
+  f : (L.Board128(b) -> L.PreparedWord(P.prepared_set(pos,value,(b,bad)),pos,value)) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedWord(P.prepared_set(pos,value,(x,bad)),pos,value)),
+      L.reify_board(b),image => s => L.prepared_cell_exact_value_parts(pos,value,image,bad,s))
+  f(shape)
+
+def L.prepared_cell_keeps_other(pos,value,q,word,state,apart,proof):
+  (b,+bad) = state
+  L.plain_write(b,pos,value,q,word,apart,proof)
+
+def L.prepared_unit_mask_keeps_word(unit,bit,bad,q,word,state,apart,proof):
+  (b,+used) = state
+  L.plain_write(b,(81 + unit : U32),U32.or(used,bit),q,word,apart,proof)
+
+def L.prepared_unit_keeps_word_image(unit,bit,q,word,image,bad,apart,proof):
+  +at = (81 + unit : U32)
+  L.prepared_unit_mask_keeps_word(unit,bit,bad,q,word,Board.get_cell(L.image_board(image),at),apart,
+    L.prepared_read_keeps_logical_word(L.image_board(image),at,q,word,proof))
+
+def L.prepared_unit_keeps_word(unit,bit,q,word,state,apart,proof):
+  (b,+bad) = state
+  f : (L.RoutedApart((81 + unit : U32),q) -> L.PlainWord(b,q,word) ->
+    L.PreparedWord(P.prepared_unit(unit,bit,(b,bad)),q,word)) =
+    L.on_reified_board(b,x => (L.RoutedApart((81 + unit : U32),q) -> L.PlainWord(x,q,word) ->
+      L.PreparedWord(P.prepared_unit(unit,bit,(x,bad)),q,word)),L.reify_board(b),
+      image => a => w => L.prepared_unit_keeps_word_image(unit,bit,q,word,image,bad,a,w))
+  f(apart,proof)
+
+def L.prepared_row_mask_keeps_word(unit,bit,empty,bad,q,word,state,apart,proof):
+  (b,+used) = state
+  L.plain_write(b,(81 + unit : U32),U32.or(U32.and(used,U32.not(empty)),bit),q,word,apart,proof)
+
+def L.prepared_row_keeps_word_image(pos,bit,q,word,image,bad,apart,proof):
+  +unit = M.div9(pos)
+  +at = L.ordinary_row_slot(pos)
+  +empty = Board.bit((10 + M.rem9(pos) : U32))
+  L.prepared_row_mask_keeps_word(unit,bit,empty,bad,q,word,Board.get_cell(L.image_board(image),at),apart,
+    L.prepared_read_keeps_logical_word(L.image_board(image),at,q,word,proof))
+
+def L.prepared_row_keeps_word(pos,bit,q,word,state,apart,proof):
+  (b,+bad) = state
+  f : (L.RoutedApart(L.ordinary_row_slot(pos),q) -> L.PlainWord(b,q,word) ->
+    L.PreparedWord(P.prepared_row(pos,bit,(b,bad)),q,word)) =
+    L.on_reified_board(b,x => (L.RoutedApart(L.ordinary_row_slot(pos),q) -> L.PlainWord(x,q,word) ->
+      L.PreparedWord(P.prepared_row(pos,bit,(x,bad)),q,word)),L.reify_board(b),
+      image => a => w => L.prepared_row_keeps_word_image(pos,bit,q,word,image,bad,a,w))
+  f(apart,proof)
+
+def L.prepared_meta_chain_keeps_image(p,value,q,word,image,bad,routes,proof):
+  (cell,(row,(col,box))) = routes
+  +bit = Board.bit(value)
+  +c = L.prepared_column_unit(p)
+  +b = L.prepared_box_unit(p)
+  out = L.prepared_meta_chain(p,bit,(L.image_board(image),bad))
+  L.prepared_cell_keeps_other(p,value,q,word,out,cell,
+    L.prepared_unit_keeps_word(b,bit,q,word,P.prepared_unit(c,bit,P.prepared_row(p,bit,(L.image_board(image),bad))),box,
+      L.prepared_unit_keeps_word(c,bit,q,word,P.prepared_row(p,bit,(L.image_board(image),bad)),col,
+        L.prepared_row_keeps_word(p,bit,q,word,(L.image_board(image),bad),row,proof))))
+
+def L.prepared_meta_chain_keeps_other(p,value,q,word,state,routes,proof):
+  (b,+bad) = state
+  f : (L.PreparedWriteRoutes(p,q) -> L.PlainWord(b,q,word) ->
+    L.PreparedWord(P.prepared_set(p,value,L.prepared_meta_chain(p,Board.bit(value),(b,bad))),q,word)) =
+    L.on_reified_board(b,x => (L.PreparedWriteRoutes(p,q) -> L.PlainWord(x,q,word) ->
+      L.PreparedWord(P.prepared_set(p,value,L.prepared_meta_chain(p,Board.bit(value),(x,bad))),q,word)),
+      L.reify_board(b),image => r => w => L.prepared_meta_chain_keeps_image(p,value,q,word,image,bad,r,w))
+  f(routes,proof)
+
+def L.prepared_slot_aliases(row,col):
+  match row col:
+    case L.Coordinate0{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate8{}:
+      ({==},{==})
+
+def L.prepared_geometry_to_routes(p,q,apart,old,aliases):
+  (r,(c,(b,ptr))) = old
+  (t0,t1) = aliases
+  %Equal.sym(U32,(81 + L.prepared_column_unit(p) : U32),L.ordinary_col_slot(p),t0) : (L.RoutedApart(p,q) & L.RoutedApart(L.ordinary_row_slot(p),q) & L.RoutedApart(_,q) & L.RoutedApart((81 + L.prepared_box_unit(p) : U32),q))
+  %Equal.sym(U32,(81 + L.prepared_box_unit(p) : U32),L.ordinary_box_slot(p),t1) : (L.RoutedApart(p,q) & L.RoutedApart(L.ordinary_row_slot(p),q) & L.RoutedApart(L.ordinary_col_slot(p),q) & L.RoutedApart(_,q))
+  (apart,(r,(c,b)))
+
+def L.logical_prepared_store_routes(sr,sc,qr,qc,each):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  L.prepared_geometry_to_routes(p,q,
+    L.logical_distinct_apart(p,q,each,L.matrix_logical_entry(sr,sc,qr,qc),L.logical_address_facts(sr,sc),L.logical_address_facts(qr,qc)),
+    L.ordinary_routes_from_coordinates(sr,sc,qr,qc),L.prepared_slot_aliases(sr,sc))
+
+def L.prepared_store_keeps_other_legal(digit,p,q,word,state,routes,proof):
+  match digit:
+    case L.D0{}:
+      (cell,(row,(col,box))) = routes
+      L.prepared_cell_keeps_other(p,0,q,word,state,cell,proof)
+    case L.D1{}:
+      L.prepared_meta_chain_keeps_other(p,1,q,word,state,routes,proof)
+    case L.D2{}:
+      L.prepared_meta_chain_keeps_other(p,2,q,word,state,routes,proof)
+    case L.D3{}:
+      L.prepared_meta_chain_keeps_other(p,3,q,word,state,routes,proof)
+    case L.D4{}:
+      L.prepared_meta_chain_keeps_other(p,4,q,word,state,routes,proof)
+    case L.D5{}:
+      L.prepared_meta_chain_keeps_other(p,5,q,word,state,routes,proof)
+    case L.D6{}:
+      L.prepared_meta_chain_keeps_other(p,6,q,word,state,routes,proof)
+    case L.D7{}:
+      L.prepared_meta_chain_keeps_other(p,7,q,word,state,routes,proof)
+    case L.D8{}:
+      L.prepared_meta_chain_keeps_other(p,8,q,word,state,routes,proof)
+    case L.D9{}:
+      L.prepared_meta_chain_keeps_other(p,9,q,word,state,routes,proof)
+
+def L.logical_prepared_store_keeps_other(digit,sr,sc,qr,qc,word,state,each,proof):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  L.prepared_store_keeps_other_legal(digit,p,q,word,state,L.logical_prepared_store_routes(sr,sc,qr,qc,each),proof)
+
+def L.prepared_legal_digit_shape_for_final_write_image(p,value,image,bad,shape):
+  +bit = Board.bit(value)
+  +col = L.prepared_column_unit(p)
+  +box = L.prepared_box_unit(p)
+  after = L.prepared_meta_chain(p,bit,(L.image_board(image),bad))
+  L.prepared_cell_exact_value(p,value,after,
+    L.prepared_append_unit_shape(box,bit,P.prepared_unit(col,bit,P.prepared_row(p,bit,(L.image_board(image),bad))),
+      L.prepared_append_unit_shape(col,bit,P.prepared_row(p,bit,(L.image_board(image),bad)),
+        L.prepared_append_row_shape(p,bit,(L.image_board(image),bad),shape))))
+
+def L.prepared_legal_digit_shape_for_final_write(p,value,state,shape):
+  (b,+bad) = state
+  f : (L.Board128(b) -> L.PreparedWord(P.prepared_set(p,value,L.prepared_meta_chain(p,Board.bit(value),(b,bad))),p,value)) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedWord(P.prepared_set(p,value,L.prepared_meta_chain(p,Board.bit(value),(x,bad))),p,value)),
+      L.reify_board(b),image => s => L.prepared_legal_digit_shape_for_final_write_image(p,value,image,bad,s))
+  f(shape)
+
+def L.prepared_legal_store_writes_exact_digit(digit,p,state,shape):
+  match digit:
+    case L.D0{}:
+      L.prepared_cell_exact_value(p,0,state,shape)
+    case L.D1{}:
+      L.prepared_legal_digit_shape_for_final_write(p,1,state,shape)
+    case L.D2{}:
+      L.prepared_legal_digit_shape_for_final_write(p,2,state,shape)
+    case L.D3{}:
+      L.prepared_legal_digit_shape_for_final_write(p,3,state,shape)
+    case L.D4{}:
+      L.prepared_legal_digit_shape_for_final_write(p,4,state,shape)
+    case L.D5{}:
+      L.prepared_legal_digit_shape_for_final_write(p,5,state,shape)
+    case L.D6{}:
+      L.prepared_legal_digit_shape_for_final_write(p,6,state,shape)
+    case L.D7{}:
+      L.prepared_legal_digit_shape_for_final_write(p,7,state,shape)
+    case L.D8{}:
+      L.prepared_legal_digit_shape_for_final_write(p,8,state,shape)
+    case L.D9{}:
+      L.prepared_legal_digit_shape_for_final_write(p,9,state,shape)

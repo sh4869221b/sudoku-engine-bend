@@ -11211,3 +11211,234 @@ law prepared_legal_store_keeps_shape:
   for state: Array<U32> & U32
   for shape: PreparedPairShape(state)
   PreparedPairShape(P.prepared_store(pos,digit_word(digit),state))
+
+def PreparedWord(-state: Array<U32> & U32,+q: U32,+word: U32) -> Type:
+  PlainWord(Pair.fst(Array<U32>,U32,state),q,word)
+
+law prepared_read_keeps_logical_word_parts:
+  for +image: BoardImage
+  for +pos: U32
+  for +q: U32
+  for +word: U32
+  for -same: Array<U32>
+  for +value: U32
+  for kept: {same == image_board(image) : Array<U32>}
+  for read: {B.get_cell(image_board(image),pos) == (same,value) : Array<U32> & U32}
+  for proof: PlainWord(image_board(image),q,word)
+  PreparedWord(B.get_cell(image_board(image),pos),q,word)
+
+law prepared_read_keeps_logical_word_witness:
+  for +image: BoardImage
+  for +pos: U32
+  for +q: U32
+  for +word: U32
+  for read: BoardReadWitness(image_board(image),pos)
+  for proof: PlainWord(image_board(image),q,word)
+  PreparedWord(B.get_cell(image_board(image),pos),q,word)
+
+law prepared_read_keeps_logical_word_image:
+  for +image: BoardImage
+  for +pos: U32
+  for +q: U32
+  for +word: U32
+  for proof: PlainWord(image_board(image),q,word)
+  PreparedWord(B.get_cell(image_board(image),pos),q,word)
+
+law prepared_read_keeps_logical_word:
+  for b: Array<U32>
+  for +pos: U32
+  for +q: U32
+  for +word: U32
+  for proof: PlainWord(b,q,word)
+  PreparedWord(B.get_cell(b,pos),q,word)
+
+law prepared_cell_exact_value_parts:
+  for +pos: U32
+  for +value: U32
+  for +image: BoardImage
+  for +bad: U32
+  for shape: Board128(image_board(image))
+  PreparedWord(P.prepared_set(pos,value,(image_board(image),bad)),pos,value)
+
+law prepared_cell_exact_value:
+  for +pos: U32
+  for +value: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedWord(P.prepared_set(pos,value,state),pos,value)
+
+law prepared_cell_keeps_other:
+  for +pos: U32
+  for +value: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for apart: RoutedApart(pos,q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_set(pos,value,state),q,word)
+
+law prepared_unit_mask_keeps_word:
+  for +unit: U32
+  for +bit: U32
+  for +bad: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for apart: RoutedApart((81 + unit : U32),q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_used(unit,bit,bad,state),q,word)
+
+law prepared_unit_keeps_word_image:
+  for +unit: U32
+  for +bit: U32
+  for +q: U32
+  for +word: U32
+  for +image: BoardImage
+  for +bad: U32
+  for apart: RoutedApart((81 + unit : U32),q)
+  for proof: PlainWord(image_board(image),q,word)
+  PreparedWord(P.prepared_unit(unit,bit,(image_board(image),bad)),q,word)
+
+law prepared_unit_keeps_word:
+  for +unit: U32
+  for +bit: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for apart: RoutedApart((81 + unit : U32),q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_unit(unit,bit,state),q,word)
+
+law prepared_row_mask_keeps_word:
+  for +unit: U32
+  for +bit: U32
+  for +empty: U32
+  for +bad: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for apart: RoutedApart((81 + unit : U32),q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_row_used(unit,bit,empty,bad,state),q,word)
+
+law prepared_row_keeps_word_image:
+  for +pos: U32
+  for +bit: U32
+  for +q: U32
+  for +word: U32
+  for +image: BoardImage
+  for +bad: U32
+  for apart: RoutedApart(ordinary_row_slot(pos),q)
+  for proof: PlainWord(image_board(image),q,word)
+  PreparedWord(P.prepared_row(pos,bit,(image_board(image),bad)),q,word)
+
+law prepared_row_keeps_word:
+  for +pos: U32
+  for +bit: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for apart: RoutedApart(ordinary_row_slot(pos),q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_row(pos,bit,state),q,word)
+
+def prepared_column_unit(+p: U32) -> U32:
+  (9 + M.rem9(p) : U32)
+
+def prepared_box_unit(+p: U32) -> U32:
+  (18 + B.box_of(p) : U32)
+
+def PreparedWriteRoutes(+p: U32,+q: U32) -> Type:
+  (RoutedApart(p,q) & RoutedApart(ordinary_row_slot(p),q) &
+    RoutedApart((81 + prepared_column_unit(p) : U32),q) & RoutedApart((81 + prepared_box_unit(p) : U32),q))
+
+def prepared_meta_chain(+p: U32,+bit: U32,state: Array<U32> & U32) -> Array<U32> & U32:
+  P.prepared_unit(prepared_box_unit(p),bit,P.prepared_unit(prepared_column_unit(p),bit,P.prepared_row(p,bit,state)))
+
+law prepared_meta_chain_keeps_image:
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +word: U32
+  for +image: BoardImage
+  for +bad: U32
+  for routes: PreparedWriteRoutes(p,q)
+  for proof: PlainWord(image_board(image),q,word)
+  PreparedWord(P.prepared_set(p,value,prepared_meta_chain(p,B.bit(value),(image_board(image),bad))),q,word)
+
+law prepared_meta_chain_keeps_other:
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for routes: PreparedWriteRoutes(p,q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_set(p,value,prepared_meta_chain(p,B.bit(value),state)),q,word)
+
+law prepared_slot_aliases:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  ({(81 + prepared_column_unit(logical_position(row,col)) : U32) == ordinary_col_slot(logical_position(row,col)) : U32} &
+   {(81 + prepared_box_unit(logical_position(row,col)) : U32) == ordinary_box_slot(logical_position(row,col)) : U32})
+
+law prepared_geometry_to_routes:
+  for +p: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for old: OrdinaryMetaRoutes(p,q)
+  for aliases: ({(81 + prepared_column_unit(p) : U32) == ordinary_col_slot(p) : U32} &
+    {(81 + prepared_box_unit(p) : U32) == ordinary_box_slot(p) : U32})
+  PreparedWriteRoutes(p,q)
+
+law logical_prepared_store_routes:
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for each: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  PreparedWriteRoutes(logical_position(sr,sc),logical_position(qr,qc))
+
+law prepared_store_keeps_other_legal:
+  for +digit: BoardDigit
+  for +p: U32
+  for +q: U32
+  for +word: U32
+  for state: Array<U32> & U32
+  for routes: PreparedWriteRoutes(p,q)
+  for proof: PreparedWord(state,q,word)
+  PreparedWord(P.prepared_store(p,digit_word(digit),state),q,word)
+
+law logical_prepared_store_keeps_other:
+  for +digit: BoardDigit
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +word: U32
+  for state: Array<U32> & U32
+  for each: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for proof: PreparedWord(state,logical_position(qr,qc),word)
+  PreparedWord(P.prepared_store(logical_position(sr,sc),digit_word(digit),state),logical_position(qr,qc),word)
+
+law prepared_legal_digit_shape_for_final_write_image:
+  for +p: U32
+  for +value: U32
+  for +image: BoardImage
+  for +bad: U32
+  for shape: Board128(image_board(image))
+  PreparedWord(P.prepared_set(p,value,prepared_meta_chain(p,B.bit(value),(image_board(image),bad))),p,value)
+
+law prepared_legal_digit_shape_for_final_write:
+  for +p: U32
+  for +value: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedWord(P.prepared_set(p,value,prepared_meta_chain(p,B.bit(value),state)),p,value)
+
+law prepared_legal_store_writes_exact_digit:
+  for +digit: BoardDigit
+  for +p: U32
+  for state: Array<U32> & U32
+  for shape: PreparedPairShape(state)
+  PreparedWord(P.prepared_store(p,digit_word(digit),state),p,digit_word(digit))
