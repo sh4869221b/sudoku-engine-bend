@@ -8871,3 +8871,292 @@ def L.refreshed_logical_pointer_is_vacant_or_sentinel(row,col,image):
   L.first_open_witness_pointer_valid(U32.to_nat((81 - start : U32)),start,image,
     L.cell_value(Q.refresh_needed(True{},L.image_board(image),start),108),
     L.refreshed_first_open_scan_no_skip(start,image),L.queued_logical_start_range(row,col))
+
+def L.peer_keeps_vacancy_same_parts(expect,image,q,digit,routes,shapes,prior):
+  (keep,use) = routes
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(digit))
+  (keep,(L.peer_perfect(L.image_board(image),q,bit)(s0),
+    Equal.trans(Bool,L.QueuedVacant(L.cell_value(L.actual_peer(L.image_board(image),q,bit),q)),
+      L.QueuedVacant(L.cell_value(L.image_board(image),q)),expect,
+      L.actual_peer_keeps_vacancy(L.image_board(image),q,digit)(s1,use),prior)))
+
+def L.peer_keeps_vacancy_same(expect,image,q,digit,prior):
+  (safe,(shape,mask)) = prior
+  L.peer_keeps_vacancy_same_parts(expect,image,q,digit,
+    L.copy_true(L.apart_guard(L.flag_slot(q),q),safe),
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),mask)
+
+def L.peer_keeps_vacancy_separate_step(expect,image,p,q,safe,placed,shapes,given,sep,flag):
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(placed))
+  preserved : L.VacancyValue(expect,L.cell_value(L.actual_peer(L.image_board(image),p,bit),q)) =
+    %Equal.sym(U32,L.cell_value(L.actual_peer(L.image_board(image),p,bit),q),L.cell_value(L.image_board(image),q),
+      L.peer_keeps(L.image_board(image),p,bit,q)(s1,sep,flag)) :
+      L.VacancyValue(expect,_)
+    given
+  (safe,(L.peer_perfect(L.image_board(image),p,bit)(s0),preserved))
+
+def L.peer_keeps_vacancy_separate_image(expect,image,p,q,placed,apart,state):
+  (sep,flag) = apart
+  (safe,(shape,given)) = state
+  L.peer_keeps_vacancy_separate_step(expect,image,p,q,safe,placed,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),given,sep,flag)
+
+def L.peer_vacancy_transition_image(expect,image,p,q,placed,route,state):
+  match route:
+    case Inl{same}:
+      %Equal.sym(U32,p,q,same) :
+        L.SafeVacancyAt(expect,L.actual_peer(L.image_board(image),_,Board.bit(L.digit_word(placed))),q)
+      L.peer_keeps_vacancy_same(expect,image,q,placed,state)
+    case Inr{apart}:
+      L.peer_keeps_vacancy_separate_image(expect,image,p,q,placed,apart,state)
+
+def L.peer_vacancy_transition(expect,b,p,q,placed):
+  L.on_reified_board(b,x => L.PeerVacancyTransition(expect,x,p,q,placed),
+    L.reify_board(b),image => L.peer_vacancy_transition_image(expect,image,p,q,placed))
+
+def L.row_vacancy_step_image(expect,image,n,j,base,placed,q,d,routes,state,next):
+  (here,tail) = routes
+  +p = (base + j : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_vacancy_transition(expect,L.image_board(image),p,q,d)(here,state))
+
+def L.row_vacancy_step(expect,b,n,j,base,placed,q,d):
+  L.on_reified_board(b,x => L.RowVacancyStep(expect,x,n,j,base,placed,q,d),
+    L.reify_board(b),image => L.row_vacancy_step_image(expect,image,n,j,base,placed,q,d))
+
+def L.row_vacancy_line(expect,n,j,base,placed,q,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.row_vacancy_step(expect,b,k,j,base,placed,q,d)(routes,state,
+        sub => rest => witness => L.row_vacancy_line(expect,k,(j + 1 : U32),base,placed,q,d,sub,rest,witness))
+
+def L.column_vacancy_step_image(expect,image,n,j,col,placed,q,d,routes,state,next):
+  (here,tail) = routes
+  +p = (j * 9 + col : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_vacancy_transition(expect,L.image_board(image),p,q,d)(here,state))
+
+def L.column_vacancy_step(expect,b,n,j,col,placed,q,d):
+  L.on_reified_board(b,x => L.ColumnVacancyStep(expect,x,n,j,col,placed,q,d),
+    L.reify_board(b),image => L.column_vacancy_step_image(expect,image,n,j,col,placed,q,d))
+
+def L.column_vacancy_line(expect,n,j,col,placed,q,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.column_vacancy_step(expect,b,k,j,col,placed,q,d)(routes,state,
+        sub => rest => witness => L.column_vacancy_line(expect,k,(j + 1 : U32),col,placed,q,d,sub,rest,witness))
+
+def L.vacancy_peer_list_step_image(expect,image,p,tail,q,d,routes,state,next):
+  (here,later) = routes
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),later,
+    L.peer_vacancy_transition(expect,L.image_board(image),p,q,d)(here,state))
+
+def L.vacancy_peer_list_step(expect,b,p,tail,q,d,routes,state,next):
+  proof : (L.PeerListRoutes(p <> tail,q) -> L.SafeVacancyAt(expect,b,q) ->
+    L.VacancyPeerListProof(expect,tail,q,d) -> L.SafeVacancyAt(expect,L.run_peer_list(p <> tail,b,Board.bit(L.digit_word(d))),q)) =
+    L.on_reified_board(b,x => (L.PeerListRoutes(p <> tail,q) -> L.SafeVacancyAt(expect,x,q) ->
+      L.VacancyPeerListProof(expect,tail,q,d) -> L.SafeVacancyAt(expect,L.run_peer_list(p <> tail,x,Board.bit(L.digit_word(d))),q)),
+      L.reify_board(b),image => L.vacancy_peer_list_step_image(expect,image,p,tail,q,d))
+  proof(routes,state,next)
+
+def L.peer_list_vacancy(expect,positions,q,d,b,routes,state):
+  match positions:
+    case Nil{}:
+      state
+    case +p <> tail:
+      L.vacancy_peer_list_step(expect,b,p,tail,q,d,routes,state,sub => rest => witness => L.peer_list_vacancy(expect,tail,q,d,sub,rest,witness))
+
+def L.box_four_keeps_vacancy(expect,b,base,r1,r2,c1,c2,q,d,routes,state):
+  L.peer_list_vacancy(expect,L.box_positions(base,r1,r2,c1,c2),q,d,b,routes,state)
+
+def L.vacancy_after_pointer_write(expect,image,out,q,safe,shapes,known,apart,witness):
+  (s0,s1) = shapes
+  (+ptr,actual) = witness
+  b = L.image_board(image)
+  %Equal.sym(Array<U32>,out,Board.set_cell(b,108,ptr),actual) :
+    L.SafeVacancyAt(expect,_,q)
+  preserved : L.VacancyValue(expect,L.cell_value(Board.set_cell(b,108,ptr),q)) =
+    %Equal.sym(U32,L.cell_value(Board.set_cell(b,108,ptr),q),L.cell_value(b,q),
+      L.perfect_write_keeps_cell(L.image_board(image),108,q,ptr,s1,apart)) :
+      L.VacancyValue(expect,_)
+    known
+  (safe,(L.board_set_keeps_perfect(L.image_board(image),108,ptr,7n,s0),preserved))
+
+
+def L.refresh_needed_vacancy_image(expect,image,needed,start,q,apart,state):
+  match needed:
+    case False{}:
+      state
+    case True{}:
+      (safe,(shape,known)) = state
+      +n = U32.to_nat((81 - start : U32))
+      L.vacancy_after_pointer_write(expect,image,L.first_actual(L.image_board(image),n,start),q,safe,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known,apart,
+        L.first_actual_pointer(n,start,L.image_board(image),L.board_read_witness(L.image_board(image),start)))
+
+
+def L.refresh_keeps_vacancy_image(expect,image,p,q,apart,state):
+  b = L.image_board(image)
+  +start = L.cell_value(L.image_board(image),108)
+  +needed = U32.is_eq(p,start)
+  %Equal.sym(Array<U32>,L.refresh_actual(b,p),Q.refresh_needed(needed,b,start),
+    L.refresh_normalized(b,p,L.board_read_witness(L.image_board(image),108))) :
+    L.SafeVacancyAt(expect,_,q)
+  L.refresh_needed_vacancy_image(expect,image,needed,start,q,apart,state)
+
+def L.refresh_keeps_vacancy(expect,b,p,q):
+  L.on_reified_board(b,x => L.RefreshVacancyAt(expect,x,p,q),
+    L.reify_board(b),image => L.refresh_keeps_vacancy_image(expect,image,p,q))
+
+def L.clear_forced_vacancy_image_step(expect,image,p,q,safe,flag,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  preserved : L.VacancyValue(expect,L.cell_value(Q.flag(b,p,False{}),q)) =
+    %Equal.sym(U32,L.cell_value(Q.flag(b,p,False{}),q),L.cell_value(b,q),
+      L.flag_keeps_cell(L.image_board(image),p,False{},q)(s1,flag)) :
+      L.VacancyValue(expect,_)
+    known
+  (safe,(L.queue_flag_perfect(L.image_board(image),p,False{},s0),preserved))
+
+def L.clear_forced_vacancy_image(expect,image,guess,p,q,flag,state):
+  match guess:
+    case True{}:
+      state
+    case False{}:
+      (safe,(shape,known)) = state
+      L.clear_forced_vacancy_image_step(expect,image,p,q,safe,flag,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.clear_forced_vacancy(expect,b,guess,p,q,flag,state):
+  proof : (L.RoutedApart(L.flag_slot(p),q) -> L.SafeVacancyAt(expect,b,q) ->
+    L.SafeVacancyAt(expect,Q.clear_forced(guess,b,p),q)) =
+    L.on_reified_board(b,x => (L.RoutedApart(L.flag_slot(p),q) -> L.SafeVacancyAt(expect,x,q) ->
+      L.SafeVacancyAt(expect,Q.clear_forced(guess,x,p),q)),L.reify_board(b),
+      image => L.clear_forced_vacancy_image(expect,image,guess,p,q))
+  proof(flag,state)
+
+def L.write_vacancy_other_step(expect,image,p,value,q,safe,apart,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  preserved : L.VacancyValue(expect,L.cell_value(Board.set_cell(b,p,value),q)) =
+    %Equal.sym(U32,L.cell_value(Board.set_cell(b,p,value),q),L.cell_value(b,q),
+      L.perfect_write_keeps_cell(L.image_board(image),p,q,value,s1,apart)) :
+      L.VacancyValue(expect,_)
+    known
+  (safe,(L.board_set_keeps_perfect(L.image_board(image),p,value,7n,s0),preserved))
+
+def L.write_vacancy_other_image(expect,image,p,value,q,apart,state):
+  (safe,(shape,known)) = state
+  L.write_vacancy_other_step(expect,image,p,value,q,safe,apart,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.write_vacancy_other(expect,b,p,value,q,apart,state):
+  proof : (L.RoutedApart(p,q) -> L.SafeVacancyAt(expect,b,q) ->
+    L.SafeVacancyAt(expect,Board.set_cell(b,p,value),q)) =
+    L.on_reified_board(b,x => (L.RoutedApart(p,q) -> L.SafeVacancyAt(expect,x,q) ->
+      L.SafeVacancyAt(expect,Board.set_cell(x,p,value),q)),L.reify_board(b),
+      image => L.write_vacancy_other_image(expect,image,p,value,q))
+  proof(apart,state)
+
+def L.place_vacancy_peers_image(expect,image,p,q,d,routes,state):
+  (row,(col,(box,ptr))) = routes
+  L.refresh_keeps_vacancy(expect,L.place_boxes(L.image_board(image),p,d),p,q)(ptr,
+    L.box_four_keeps_vacancy(expect,L.place_columns(L.image_board(image),p,d),L.place_box_base(p),L.place_box_r1(p),L.place_box_r2(p),L.place_box_c1(p),L.place_box_c2(p),q,d,box,
+      L.column_vacancy_line(expect,9n,0,M.rem9(p),p,q,d,L.place_rows(L.image_board(image),p,d),col,
+        L.row_vacancy_line(expect,9n,0,L.place_row_base(p),p,q,d,L.image_board(image),row,state))))
+
+def L.place_peers_keep_vacancy(expect,b,p,q,d):
+  L.on_reified_board(b,x => L.PlacePeersVacancy(expect,x,p,q,d),
+    L.reify_board(b),image => L.place_vacancy_peers_image(expect,image,p,q,d))
+
+def L.place_keeps_vacancy_image(expect,image,guess,p,q,d,apart,flag,routes,state):
+  after_clear = Q.clear_forced(guess,L.image_board(image),p)
+  after_write = Board.set_cell(Q.clear_forced(guess,L.image_board(image),p),p,L.fixed_word(d))
+  L.place_peers_keep_vacancy(expect,after_write,p,q,d)(routes,
+    L.write_vacancy_other(expect,after_clear,p,L.fixed_word(d),q,apart,
+      L.clear_forced_vacancy(expect,L.image_board(image),guess,p,q,flag,state)))
+
+def L.queued_place_keeps_vacancy(expect,b,guess,p,q,d):
+  L.on_reified_board(b,x => L.PlaceKeepsVacancy(expect,x,guess,p,q,d),
+    L.reify_board(b),image => L.place_keeps_vacancy_image(expect,image,guess,p,q,d))
+
+
+def L.logical_placement_keeps_other_vacancy_state(expect,b,guess,sr,sc,wr,wc,digit,distinct,state):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(wr,wc)
+  L.queued_place_keeps_vacancy(expect,b,guess,p,q,digit)(
+    L.logical_distinct_apart(p,q,distinct,L.matrix_logical_entry(sr,sc,wr,wc),
+      L.logical_address_facts(sr,sc),L.logical_address_facts(wr,wc)),
+    L.any_logical_flag_route(sr,sc,wr,wc),
+    L.placement_routes_from_coordinates(sr,sc,wr,wc),state)
+
+
+def L.safe_vacancy_mask(expect,b,q,state):
+  (safe,(shape,prior)) = state
+  prior
+
+def L.logical_placement_preserves_other_vacancy(expect,b,guess,sr,sc,wr,wc,digit,distinct,shape,prior):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(wr,wc)
+  L.safe_vacancy_mask(expect,Q.place(guess,p,L.digit_word(digit),b),q,
+    L.logical_placement_keeps_other_vacancy_state(expect,b,guess,sr,sc,wr,wc,digit,distinct,
+      (L.any_logical_flag_route(wr,wc,wr,wc),(shape,prior))))
+
+def L.clear_forced_preserves_board128(b,guess,p,shape):
+  match guess:
+    case False{}:
+      L.queue_flag_perfect(b,p,False{},shape)
+    case True{}:
+      shape
+
+def L.fixed_write_after_clear_image(image,guess,p,digit,shape):
+  +word = L.fixed_word(digit)
+  (L.board_set_keeps_perfect(Q.clear_forced(guess,L.image_board(image),p),p,word,7n,
+    L.clear_forced_preserves_board128(L.image_board(image),guess,p,shape)),
+    L.board_set_get(Q.clear_forced(guess,L.image_board(image),p),p,word))
+
+def L.queued_place_target_fixed_image(image,guess,p,d,routes,shape):
+  after_write = Board.set_cell(Q.clear_forced(guess,L.image_board(image),p),p,L.fixed_word(d))
+  L.place_peers_keeps(after_write,p,p,d,d)(routes,L.fixed_write_after_clear_image(image,guess,p,d,shape))
+
+def L.queued_place_target_fixed(b,guess,p,d):
+  L.on_reified_board(b,x => L.PlaceTargetFixed(x,guess,p,d),
+    L.reify_board(b),image => L.queued_place_target_fixed_image(image,guess,p,d))
+
+def L.logical_placement_fixes_target(b,guess,row,col,digit,shape):
+  +p = L.logical_position(row,col)
+  L.queued_place_target_fixed(b,guess,p,digit)(L.placement_routes_from_coordinates(row,col,row,col),shape)
+
+def L.fixed_clue_is_closed(b,p,d,fixed,nonblank):
+  %Equal.sym(U32,L.cell_value(b,p),L.fixed_word(d),L.fixed_clue_word(b,p,d,fixed)) :
+    {L.QueuedVacant(_) == False{} : Bool}
+  L.queue_fixed_raw_word_is_closed(d,nonblank)
+
+def L.encode_routes_from_sweep(n,p,q,both):
+  (route,unused) = both
+  route
+
+def L.queued_encode_pointer_routes():
+  L.encode_routes_from_sweep(81n,0,108,L.sweep_witnesses(81n,0,108,{==}))
+
+def L.queued_encode_keeps_pointer_parts(image,shapes):
+  (s0,s1) = shapes
+  Equal.trans(U32,L.cell_value(Q.encode(L.image_board(image)),108),
+    L.cell_value(L.queue_seed(L.image_board(image)),108),L.cell_value(L.image_board(image),108),
+    L.encode_sweep_keeps(81n,0,108,L.queue_seed(L.image_board(image)),
+      L.queue_seed_perfect(L.image_board(image),s0),L.queued_encode_pointer_routes()),
+    L.queue_seed_keeps_cell(L.image_board(image),108)(s1,{==},{==},{==}))
+
+def L.queued_encode_keeps_pointer_image(image,shape):
+  L.queued_encode_keeps_pointer_parts(image,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape))
+
+def L.queued_encode_keeps_pointer(b):
+  L.on_reified_board(b,x => L.QueueEncodeKeepsPointer(x),
+    L.reify_board(b),image => L.queued_encode_keeps_pointer_image(image))

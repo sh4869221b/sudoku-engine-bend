@@ -522,3 +522,26 @@ claim about reachable search caches or prove solver soundness.
 - Proving that the prior part of the board contains no blank in every
   reachable state still requires linking non-target vacancy preservation,
   sound initial metadata, and restored snapshots across solver steps.
+
+## Queued placement preserves vacancy at every other cell
+
+- For two distinct logical positions on a 128-slot board, the actual
+  placement of a digit 1–9, in either forced or guess mode, preserves
+  whether the watched cell is vacant. Both initial truth values are
+  covered, without a normalization premise on that cell's low bits.
+- The proof composes the target write, flag updates, row and column
+  passes, the four-cell block pass, and the refresh. A peer visit to the
+  watched cell may clear a candidate without changing vacancy. Other
+  writes preserve its raw word when their array routes do not alias.
+- This does not prove that the placed cell is fixed on return or that
+  every reachable board starts with a valid first-vacant pointer.
+
+## Placement target and encoder pointer
+
+- The actual queued placement writes the fixed encoded digit at its
+  target and retains that word through all subsequent peer visits
+  and pointer refresh. For digits 1–9 the resulting word is closed.
+  Both forced and guessed placements are covered.
+- The full queued encoder retains the initial pointer word in slot
+  108, including its three flag resets and all 81 encoding steps.
+  It does not establish that the initial pointer was accurate.

@@ -7702,3 +7702,463 @@ law refreshed_logical_pointer_is_vacant_or_sentinel:
   for +image: BoardImage
   QueuedChoicePosition(image_board(image),
     cell_value(Q.refresh_needed(True{},image_board(image),logical_position(row,col)),108))
+
+def VacancyValue(+expect: Bool, +raw: U32) -> Type:
+  {QueuedVacant(raw) == expect : Bool}
+
+# The pointwise invariant carries its own distinct flag route for peer self visits.
+def SafeVacancyAt(+expect: Bool, -b: Array<U32>, +q: U32) -> Type:
+  (RoutedApart(flag_slot(q),q) & Board128(b) & VacancyValue(expect,cell_value(b,q)))
+
+law peer_keeps_vacancy_same_parts:
+  for +expect: Bool
+  for +image: BoardImage
+  for +q: U32
+  for +digit: BoardDigit
+  for routes: (RoutedApart(flag_slot(q),q) & RoutedApart(flag_slot(q),q))
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for prior: VacancyValue(expect,cell_value(image_board(image),q))
+  SafeVacancyAt(expect,actual_peer(image_board(image),q,B.bit(digit_word(digit))),q)
+
+law peer_keeps_vacancy_same:
+  for +expect: Bool
+  for +image: BoardImage
+  for +q: U32
+  for +digit: BoardDigit
+  for prior: SafeVacancyAt(expect,image_board(image),q)
+  SafeVacancyAt(expect,actual_peer(image_board(image),q,B.bit(digit_word(digit))),q)
+
+law peer_keeps_vacancy_separate_step:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for +placed: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for given: VacancyValue(expect,cell_value(image_board(image),q))
+  for sep: RoutedApart(p,q)
+  for flag: RoutedApart(flag_slot(p),q)
+  SafeVacancyAt(expect,actual_peer(image_board(image),p,B.bit(digit_word(placed))),q)
+
+law peer_keeps_vacancy_separate_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  for apart: (RoutedApart(p,q) & RoutedApart(flag_slot(p),q))
+  SafeVacancyAt(expect,image_board(image),q) ->
+  SafeVacancyAt(expect,actual_peer(image_board(image),p,B.bit(digit_word(placed))),q)
+
+def PeerVacancyTransition(+expect: Bool, -b: Array<U32>, +p: U32, +q: U32, +placed: BoardDigit) -> Type:
+  PeerRoute(p,q) -> SafeVacancyAt(expect,b,q) ->
+  SafeVacancyAt(expect,actual_peer(b,p,B.bit(digit_word(placed))),q)
+
+law peer_vacancy_transition_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  PeerVacancyTransition(expect,image_board(image),p,q,placed)
+
+law peer_vacancy_transition:
+  for +expect: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  PeerVacancyTransition(expect,b,p,q,placed)
+
+
+def RowVacancyProof(+expect: Bool, +n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> RowClueRoutes(n,j,base,q) -> SafeVacancyAt(expect,b,q) ->
+  SafeVacancyAt(expect,Q.row_line(n,j,base,placed,B.bit(digit_word(d)),b),q)
+
+def RowVacancyStep(+expect: Bool, -b: Array<U32>, +n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  RowClueRoutes(1n+n,j,base,q) -> SafeVacancyAt(expect,b,q) ->
+  RowVacancyProof(expect,n,(j + 1 : U32),base,placed,q,d) ->
+  SafeVacancyAt(expect,Q.row_line(1n+n,j,base,placed,B.bit(digit_word(d)),b),q)
+
+law row_vacancy_step_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowVacancyStep(expect,image_board(image),n,j,base,placed,q,d)
+
+law row_vacancy_step:
+  for +expect: Bool
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowVacancyStep(expect,b,n,j,base,placed,q,d)
+
+law row_vacancy_line:
+  for +expect: Bool
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowVacancyProof(expect,n,j,base,placed,q,d)
+
+
+def ColumnVacancyProof(+expect: Bool, +n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> ColumnClueRoutes(n,j,col,q) -> SafeVacancyAt(expect,b,q) ->
+  SafeVacancyAt(expect,Q.column_line(n,j,col,placed,B.bit(digit_word(d)),b),q)
+
+def ColumnVacancyStep(+expect: Bool, -b: Array<U32>, +n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  ColumnClueRoutes(1n+n,j,col,q) -> SafeVacancyAt(expect,b,q) ->
+  ColumnVacancyProof(expect,n,(j + 1 : U32),col,placed,q,d) ->
+  SafeVacancyAt(expect,Q.column_line(1n+n,j,col,placed,B.bit(digit_word(d)),b),q)
+
+law column_vacancy_step_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnVacancyStep(expect,image_board(image),n,j,col,placed,q,d)
+
+law column_vacancy_step:
+  for +expect: Bool
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnVacancyStep(expect,b,n,j,col,placed,q,d)
+
+law column_vacancy_line:
+  for +expect: Bool
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnVacancyProof(expect,n,j,col,placed,q,d)
+
+
+def VacancyPeerListProof(+expect: Bool, -positions: List<&2,U32>, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> PeerListRoutes(positions,q) -> SafeVacancyAt(expect,b,q) ->
+  SafeVacancyAt(expect,run_peer_list(positions,b,B.bit(digit_word(d))),q)
+
+law vacancy_peer_list_step_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  for routes: PeerListRoutes(p <> tail,q)
+  for state: SafeVacancyAt(expect,image_board(image),q)
+  for next: VacancyPeerListProof(expect,tail,q,d)
+  SafeVacancyAt(expect,run_peer_list(p <> tail,image_board(image),B.bit(digit_word(d))),q)
+
+law vacancy_peer_list_step:
+  for +expect: Bool
+  for b: Array<U32>
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  for routes: PeerListRoutes(p <> tail,q)
+  for state: SafeVacancyAt(expect,b,q)
+  for next: VacancyPeerListProof(expect,tail,q,d)
+  SafeVacancyAt(expect,run_peer_list(p <> tail,b,B.bit(digit_word(d))),q)
+
+law peer_list_vacancy:
+  for +expect: Bool
+  for positions: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  VacancyPeerListProof(expect,positions,q,d)
+
+
+law box_four_keeps_vacancy:
+  for +expect: Bool
+  for b: Array<U32>
+  for +base: U32
+  for +r1: U32
+  for +r2: U32
+  for +c1: U32
+  for +c2: U32
+  for +q: U32
+  for +d: BoardDigit
+  for routes: PeerListRoutes(box_positions(base,r1,r2,c1,c2),q)
+  for state: SafeVacancyAt(expect,b,q)
+  SafeVacancyAt(expect,Q.box_four(base,r1,r2,c1,c2,B.bit(digit_word(d)),b),q)
+
+law vacancy_after_pointer_write:
+  for +expect: Bool
+  for +image: BoardImage
+  for -out: Array<U32>
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for shape: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: VacancyValue(expect,cell_value(image_board(image),q))
+  for apart: RoutedApart(108,q)
+  for witness: FirstOnlyWritesPointer(image_board(image),out)
+  SafeVacancyAt(expect,out,q)
+
+
+law refresh_needed_vacancy_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +needed: Bool
+  for +start: U32
+  for +q: U32
+  for apart: RoutedApart(108,q)
+  for state: SafeVacancyAt(expect,image_board(image),q)
+  SafeVacancyAt(expect,Q.refresh_needed(needed,image_board(image),start),q)
+
+
+def RefreshVacancyAt(+expect: Bool, -b: Array<U32>, +p: U32, +q: U32) -> Type:
+  RoutedApart(108,q) -> SafeVacancyAt(expect,b,q) -> SafeVacancyAt(expect,refresh_actual(b,p),q)
+
+law refresh_keeps_vacancy_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  RefreshVacancyAt(expect,image_board(image),p,q)
+
+law refresh_keeps_vacancy:
+  for +expect: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  RefreshVacancyAt(expect,b,p,q)
+
+law clear_forced_vacancy_image_step:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for flag: RoutedApart(flag_slot(p),q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: VacancyValue(expect,cell_value(image_board(image),q))
+  SafeVacancyAt(expect,Q.clear_forced(False{},image_board(image),p),q)
+
+law clear_forced_vacancy_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: SafeVacancyAt(expect,image_board(image),q)
+  SafeVacancyAt(expect,Q.clear_forced(guess,image_board(image),p),q)
+
+law clear_forced_vacancy:
+  for +expect: Bool
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: SafeVacancyAt(expect,b,q)
+  SafeVacancyAt(expect,Q.clear_forced(guess,b,p),q)
+
+law write_vacancy_other_step:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for apart: RoutedApart(p,q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: VacancyValue(expect,cell_value(image_board(image),q))
+  SafeVacancyAt(expect,B.set_cell(image_board(image),p,value),q)
+
+law write_vacancy_other_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for state: SafeVacancyAt(expect,image_board(image),q)
+  SafeVacancyAt(expect,B.set_cell(image_board(image),p,value),q)
+
+law write_vacancy_other:
+  for +expect: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for state: SafeVacancyAt(expect,b,q)
+  SafeVacancyAt(expect,B.set_cell(b,p,value),q)
+
+
+def PlacePeersVacancy(+expect: Bool, -b: Array<U32>, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  PlacePeerRoutes(p,q) -> SafeVacancyAt(expect,b,q) -> SafeVacancyAt(expect,refresh_actual(place_boxes(b,p,d),p),q)
+
+law place_vacancy_peers_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlacePeersVacancy(expect,image_board(image),p,q,d)
+
+law place_peers_keep_vacancy:
+  for +expect: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlacePeersVacancy(expect,b,p,q,d)
+
+def PlaceKeepsVacancy(+expect: Bool, -b: Array<U32>, +guess: Bool, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) -> PlacePeerRoutes(p,q) -> SafeVacancyAt(expect,b,q) ->
+  SafeVacancyAt(expect,Q.place(guess,p,digit_word(d),b),q)
+
+law place_keeps_vacancy_image:
+  for +expect: Bool
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlaceKeepsVacancy(expect,image_board(image),guess,p,q,d)
+
+law queued_place_keeps_vacancy:
+  for +expect: Bool
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlaceKeepsVacancy(expect,b,guess,p,q,d)
+
+
+law logical_placement_keeps_other_vacancy_state:
+  for +expect: Bool
+  for b: Array<U32>
+  for +guess: Bool
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  for +digit: BoardDigit
+  for distinct: {U32.is_eq(logical_position(source_row,source_col),logical_position(watched_row,watched_col)) == False{} : Bool}
+  for state: SafeVacancyAt(expect,b,logical_position(watched_row,watched_col))
+  SafeVacancyAt(expect,Q.place(guess,logical_position(source_row,source_col),digit_word(digit),b),logical_position(watched_row,watched_col))
+
+
+law safe_vacancy_mask:
+  for +expect: Bool
+  for -b: Array<U32>
+  for +q: U32
+  for state: SafeVacancyAt(expect,b,q)
+  VacancyValue(expect,cell_value(b,q))
+
+law logical_placement_preserves_other_vacancy:
+  for +expect: Bool
+  for b: Array<U32>
+  for +guess: Bool
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  for +digit: BoardDigit
+  for distinct: {U32.is_eq(logical_position(source_row,source_col),logical_position(watched_row,watched_col)) == False{} : Bool}
+  for shape: Board128(b)
+  for prior: VacancyValue(expect,cell_value(b,logical_position(watched_row,watched_col)))
+  VacancyValue(expect,cell_value(Q.place(guess,logical_position(source_row,source_col),digit_word(digit),b),logical_position(watched_row,watched_col)))
+
+law clear_forced_preserves_board128:
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for shape: Board128(b)
+  Board128(Q.clear_forced(guess,b,p))
+
+law fixed_write_after_clear_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +digit: BoardDigit
+  for shape: Board128(image_board(image))
+  FixedClue(B.set_cell(Q.clear_forced(guess,image_board(image),p),p,fixed_word(digit)),p,digit)
+
+def PlaceTargetFixed(-b: Array<U32>, +guess: Bool, +p: U32, +d: BoardDigit) -> Type:
+  PlacePeerRoutes(p,p) -> Board128(b) -> FixedClue(Q.place(guess,p,digit_word(d),b),p,d)
+
+law queued_place_target_fixed_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +d: BoardDigit
+  PlaceTargetFixed(image_board(image),guess,p,d)
+
+law queued_place_target_fixed:
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +d: BoardDigit
+  PlaceTargetFixed(b,guess,p,d)
+
+law logical_placement_fixes_target:
+  for b: Array<U32>
+  for +guess: Bool
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +digit: BoardDigit
+  for shape: Board128(b)
+  FixedClue(Q.place(guess,logical_position(row,col),digit_word(digit),b),logical_position(row,col),digit)
+
+law fixed_clue_is_closed:
+  for -b: Array<U32>
+  for +p: U32
+  for +d: BoardDigit
+  for fixed: FixedClue(b,p,d)
+  for nonblank: Nonblank(d)
+  {QueuedVacant(cell_value(b,p)) == False{} : Bool}
+
+law encode_routes_from_sweep:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for both: SweepWitnesses(n,p,q)
+  EncodeApart(n,p,q)
+
+law queued_encode_pointer_routes:
+  EncodeApart(81n,0,108)
+
+def QueueEncodeKeepsPointer(-b: Array<U32>) -> Type:
+  Board128(b) -> {cell_value(Q.encode(b),108) == cell_value(b,108) : U32}
+
+law queued_encode_keeps_pointer_parts:
+  for +image: BoardImage
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  {cell_value(Q.encode(image_board(image)),108) == cell_value(image_board(image),108) : U32}
+
+law queued_encode_keeps_pointer_image:
+  for +image: BoardImage
+  QueueEncodeKeepsPointer(image_board(image))
+
+law queued_encode_keeps_pointer:
+  for b: Array<U32>
+  QueueEncodeKeepsPointer(b)
