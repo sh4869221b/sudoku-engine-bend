@@ -376,3 +376,29 @@ claim about reachable search caches or prove solver soundness.
 - The adaptive selector is read-only in both execution modes. A future
   selected-square validity theorem must still require and maintain
   live metadata consistency, not assume it from board identity.
+
+## Queued flags: actual selected slot and required metadata
+
+- With any nonzero 32-bit urgency word, the actual least-set-bit and
+  de Bruijn lookup select an offset in 0–31 whose bit is present in
+  that word. This joins the symbolic bit proof with the concrete table
+  at all 32 offsets rather than testing a few input words.
+- If every set bit in this particular urgency word names an actual
+  in-range cell with a queued vacancy word, the offset selected by
+  the real urgent-index arithmetic names an in-range vacancy too.
+  The urgent result reports the exact count for known zero and
+  known singleton candidate masks. This is conditional on truthful
+  metadata; it does not prove the condition is maintained yet.
+- The checker verifies intentionally stale-metadata counterexamples
+  against actual `Q.select`. With an unflagged two-candidate word at
+  cell 0 and the remaining logical words fixed, start 0 chooses
+  (position 0, mask 6, count 2). Setting the first-blank pointer to 81
+  instead yields the completion sentinel 81 despite that vacancy.
+  Restoring start 0 but setting a false urgency flag chooses cell 0
+  with count 1 despite the same two true candidates. Pinned native
+  execution independently reproduced these three outputs.
+- These are not claims about reachable normal search states. The
+  fallback only needs an in-range scan start no later than any actual
+  blank, not exact minimum-position equality for sound completion.
+  A normal forced-vs-guessed count proof must establish truthful
+  urgency metadata as well as the candidate-set correspondence.

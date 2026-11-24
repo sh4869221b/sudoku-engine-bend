@@ -5887,3 +5887,106 @@ law adaptive_selector_does_not_write:
   for +active: Bool
   for b: Array<U32>
   {selector_board(Fast.selection(active,b)) == b : Array<U32>}
+
+# The urgent fast path reads a flagged raw word; it does not recompute the
+# size, so validity of the flag is a separate semantic requirement.
+def selector_choice(r: Array<U32> & C.Choice) -> C.Choice:
+  Pair.snd(Array<U32>,C.Choice,r)
+
+law queued_urgent_mask_zero_reports_zero:
+  for -b: Array<U32>
+  for +p: U32
+  {selector_choice(Q.urgent(p,(b,0))) == C.Choice{p,0,C.mask_count(0)} : C.Choice}
+
+law queued_urgent_singleton_reports_exact_count:
+  for -b: Array<U32>
+  for +p: U32
+  for +mask: U32
+  for nonempty: {U32.is_eq(mask,0) == False{} : Bool}
+  for one: {C.mask_count(mask) == 1 : U32}
+  {selector_choice(Q.urgent(p,(b,mask))) == C.Choice{p,mask,C.mask_count(mask)} : C.Choice}
+
+def selector_contract_board(+start: U32, +flag: U32) -> Array<U32>:
+  Array.set(U32,Array.set(U32,Array.set(U32,Array.set(U32,Array.set(U32,[1024 : U32*128n],111,0),110,0),109,flag),108,start),0,6)
+
+law queued_late_pointer_hides_existing_blank:
+  ({cell_value(selector_contract_board(81,0),0) == 6 : U32}
+   & {selector_choice(Q.select(selector_contract_board(81,0))) == C.Choice{81,0,10} : C.Choice})
+
+law queued_valid_start_finds_pair:
+  {selector_choice(Q.select(selector_contract_board(0,0))) == C.Choice{0,6,2} : C.Choice}
+
+law queued_false_urgent_flag_underreports_pair:
+  ({C.mask_count(6) == 2 : U32}
+   & {selector_choice(Q.select(selector_contract_board(0,1))) == C.Choice{0,6,1} : C.Choice})
+
+def flag_offset(+bits: U32) -> U32:
+  Q.trailing(U32.shrn((lowest_bit(bits) * 125613361 : U32),27n))
+
+def flag_bit_at(+index: U32) -> U32:
+  U32.shln(1,U32.to_nat(index))
+
+def FirstFlag(+bits: U32) -> Type:
+  Sigma<&2,&1,U32,index => (
+    {(index < 32 : U32) == True{} : Bool} &
+    {flag_offset(bits) == index : U32} &
+    {U32.and(flag_bit_at(index),bits) == flag_bit_at(index) : U32})>
+
+law flag_present_at_known_lowest:
+  for +w: Word(32n)
+  for +index: U32
+  for seen: {lowest_bit(U32{w}) == flag_bit_at(index) : U32}
+  {U32.and(flag_bit_at(index),U32{w}) == flag_bit_at(index) : U32}
+
+law first_flag_pack:
+  for +w: Word(32n)
+  for +index: U32
+  for bound: {(index < 32 : U32) == True{} : Bool}
+  for offset: {flag_offset(U32{w}) == index : U32}
+  for seen: {lowest_bit(U32{w}) == flag_bit_at(index) : U32}
+  FirstFlag(U32{w})
+
+law first_flag_from_lowest_pair:
+  for +w: Word(32n)
+  for +index: U32
+  for bound: {(index < 32 : U32) == True{} : Bool}
+  for seen: ({lowest_bit(U32{w}) == flag_bit_at(index) : U32} & {lowest_bit(U32{w}) == flag_bit_at(index) : U32})
+  for math: {Q.trailing(U32.shrn((flag_bit_at(index) * 125613361 : U32),27n)) == index : U32}
+  FirstFlag(U32{w})
+
+law first_flag_at_known_index:
+  for +w: Word(32n)
+  for +index: U32
+  for bound: {(index < 32 : U32) == True{} : Bool}
+  for first: {U32{first_one_word(32n,w)} == flag_bit_at(index) : U32}
+  for math: {Q.trailing(U32.shrn((flag_bit_at(index) * 125613361 : U32),27n)) == index : U32}
+  FirstFlag(U32{w})
+
+law queued_urgent_math_selects_present_flag:
+  for +bits: U32
+  for nonzero: {U32.is_eq(bits,0) == False{} : Bool}
+  FirstFlag(bits)
+
+def QueuedVacantAt(-board: Array<U32>, +pos: U32) -> Type:
+  ({(pos < 81 : U32) == True{} : Bool} & {(cell_value(board,pos) < 1024 : U32) == True{} : Bool})
+
+def FlaggedVacancies(-board: Array<U32>, +base: U32, +bits: U32) -> Type:
+  @i:U32 -> {(i < 32 : U32) == True{} : Bool} ->
+  {U32.and(flag_bit_at(i),bits) == flag_bit_at(i) : U32} ->
+  QueuedVacantAt(board,(base + i : U32))
+
+law urgent_position_from_flag_witness:
+  for -board: Array<U32>
+  for +base: U32
+  for +bits: U32
+  for flags: FlaggedVacancies(board,base,bits)
+  for chosen: FirstFlag(bits)
+  QueuedVacantAt(board,urgent_pos(base,bits))
+
+law sound_flags_point_to_vacancy:
+  for -board: Array<U32>
+  for +base: U32
+  for +bits: U32
+  for flags: FlaggedVacancies(board,base,bits)
+  for nonempty: {U32.is_eq(bits,0) == False{} : Bool}
+  QueuedVacantAt(board,urgent_pos(base,bits))
