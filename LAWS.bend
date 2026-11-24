@@ -6898,3 +6898,108 @@ law queued_visible_normalized_word_prevents_completion:
   for normalized: {U32.and(1022,cell_value(b,walk_position(before,start))) == cell_value(b,walk_position(before,start)) : U32}
   NotCompleted(selector_position(Q.scan(with_center(before,after),start,QueueInitial(b))))
 
+
+# The real cache inversion and the actual blank encoder produce bits 1..9.
+def NormalizedQueueMask(+mask: U32) -> Type:
+  {U32.and(1022,mask) == mask : U32}
+
+law word_clip_repeat:
+  for +n: Nat
+  for +clip: Word(n)
+  for +word: Word(n)
+  {Word.and(n,clip,Word.and(n,clip,word)) == Word.and(n,clip,word) : Word(n)}
+
+law trim_is_normalized:
+  for +raw: U32
+  NormalizedQueueMask(U32.and(1022,raw))
+
+law inverted_mask_is_normalized:
+  for cells: Array<U32> & U32
+  NormalizedQueueMask(Pair.snd(Array<U32>,U32,C.invert(cells)))
+
+law cached_mask_is_normalized:
+  for b: Array<U32>
+  for +p: U32
+  NormalizedQueueMask(cached_word(b,p))
+
+def EncodedBlankMask(-b: Array<U32>, +p: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) ->
+  NormalizedQueueMask(cell_value(Q.encoded(p,(b,0)),p))
+
+law encoded_blank_mask_image:
+  for +image: BoardImage
+  for +p: U32
+  EncodedBlankMask(image_board(image),p)
+
+law encoded_blank_mask:
+  for b: Array<U32>
+  for +p: U32
+  EncodedBlankMask(b,p)
+
+def ActualEncodedBlankMask(-b: Array<U32>, +p: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) -> {cell_value(b,p) == 0 : U32} ->
+  NormalizedQueueMask(cell_value(actual_encoded_step(b,p),p))
+
+law actual_encoded_blank_mask_image:
+  for +image: BoardImage
+  for +p: U32
+  ActualEncodedBlankMask(image_board(image),p)
+
+law actual_encoded_blank_mask:
+  for b: Array<U32>
+  for +p: U32
+  ActualEncodedBlankMask(b,p)
+
+law word_clip_and_interchange:
+  for +n: Nat
+  for +clip: Word(n)
+  for +a: Word(n)
+  for +b: Word(n)
+  {Word.and(n,clip,Word.and(n,a,b)) == Word.and(n,Word.and(n,clip,a),b) : Word(n)}
+
+law normalized_word_intersect:
+  for +a: U32
+  for +b: U32
+  for normalized: NormalizedQueueMask(a)
+  NormalizedQueueMask(U32.and(a,b))
+
+law peer_mask_keeps_normalized:
+  for +old: U32
+  for +bit: U32
+  for normalized: NormalizedQueueMask(old)
+  NormalizedQueueMask(peer_mask(old,bit))
+
+law changed_peer_word_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(flag_slot(p),p)
+  {cell_value(Q.changed(True{},p,bit,image_board(image),old),p) == peer_mask(old,bit) : U32}
+
+def PeerKeepsNormalized(-b: Array<U32>, +p: U32, +bit: U32) -> Type:
+  Board128(b) -> RoutedApart(flag_slot(p),p) -> NormalizedQueueMask(cell_value(b,p)) ->
+  NormalizedQueueMask(cell_value(actual_peer(b,p,bit),p))
+
+law peer_keeps_normalized_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  PeerKeepsNormalized(image_board(image),p,bit)
+
+law peer_keeps_normalized:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  PeerKeepsNormalized(b,p,bit)
+
+law peer_changed_word_keeps_normalized:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(flag_slot(p),p)
+  for normalized: NormalizedQueueMask(cell_value(image_board(image),p))
+  NormalizedQueueMask(cell_value(Q.changed(needed,p,bit,image_board(image),cell_value(image_board(image),p)),p))

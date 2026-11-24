@@ -8090,3 +8090,139 @@ def L.queued_visible_normalized_word_prevents_completion(b,start,before,after,in
         L.NotCompleted(L.selector_position(Q.scan(L.with_center(before,after),start,L.QueueInitial(x))))),
       L.reify_board(b),image => L.queued_visible_normalized_word_board_image(image,start,before,after,interval))
   proof(normalized)
+def queue_word_bits(+u: U32) -> Word(32n):
+  match u:
+    case U32{bits}:
+      bits
+
+
+def L.word_clip_repeat(n,clip,word):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      match clip word:
+        case WCon{False{},ct} WCon{False{},wt}:
+          Equal.cong(Word(k),Word(1n+k),t => WCon{False{},t},Word.and(k,ct,Word.and(k,ct,wt)),Word.and(k,ct,wt),L.word_clip_repeat(k,ct,wt))
+        case WCon{False{},ct} WCon{True{},wt}:
+          Equal.cong(Word(k),Word(1n+k),t => WCon{False{},t},Word.and(k,ct,Word.and(k,ct,wt)),Word.and(k,ct,wt),L.word_clip_repeat(k,ct,wt))
+        case WCon{True{},ct} WCon{False{},wt}:
+          Equal.cong(Word(k),Word(1n+k),t => WCon{False{},t},Word.and(k,ct,Word.and(k,ct,wt)),Word.and(k,ct,wt),L.word_clip_repeat(k,ct,wt))
+        case WCon{True{},ct} WCon{True{},wt}:
+          Equal.cong(Word(k),Word(1n+k),t => WCon{True{},t},Word.and(k,ct,Word.and(k,ct,wt)),Word.and(k,ct,wt),L.word_clip_repeat(k,ct,wt))
+
+def L.trim_is_normalized(raw):
+  match raw:
+    case U32{bits}:
+      Equal.cong(Word(32n),U32,t => U32{t},
+        Word.and(32n,queue_word_bits(1022),Word.and(32n,queue_word_bits(1022),bits)),
+        Word.and(32n,queue_word_bits(1022),bits),L.word_clip_repeat(32n,queue_word_bits(1022),bits))
+
+def L.inverted_mask_is_normalized(cells):
+  (b,+used) = cells
+  L.trim_is_normalized(U32.not(used))
+
+def L.cached_mask_is_normalized(b,p):
+  L.inverted_mask_is_normalized(C.cached_add((99 + Board.box_of(p) : U32),C.cached_add((90 + M.rem9(p) : U32),Array.get(U32,b,(81 + M.div9(p) : U32)))))
+
+def L.encoded_blank_mask_image(image,p,shape,apart):
+  b = L.image_board(image)
+  +mask = L.cached_word(L.image_board(image),p)
+  %Equal.sym(Array<U32>,Q.encoded(p,(b,0)),Q.encoded_mask(p,(b,mask)),
+    L.encoded_blank_normalized(b,p,L.cached_at_observed(L.image_board(image),p))) :
+    L.NormalizedQueueMask(L.cell_value(_,p))
+  %Equal.sym(U32,L.cell_value(Q.encoded_mask(p,(b,mask)),p),mask,
+    L.encoded_mask_writes_cell(L.image_board(image),p,mask)(shape,apart)) :
+    L.NormalizedQueueMask(_)
+  L.cached_mask_is_normalized(L.image_board(image),p)
+
+def L.encoded_blank_mask(b,p):
+  L.on_reified_board(b,x => L.EncodedBlankMask(x,p),L.reify_board(b),image => L.encoded_blank_mask_image(image,p))
+
+def L.actual_encoded_blank_mask_image(image,p,shape,apart,is_blank):
+  b = L.image_board(image)
+  +raw = L.cell_value(L.image_board(image),p)
+  %Equal.sym(Array<U32>,L.actual_encoded_step(b,p),Q.encoded(p,(b,raw)),
+    L.encode_step_normalized(b,p,L.board_read_witness(L.image_board(image),p))) :
+    L.NormalizedQueueMask(L.cell_value(_,p))
+  %Equal.sym(U32,raw,0,is_blank) :
+    L.NormalizedQueueMask(L.cell_value(Q.encoded(p,(b,_)),p))
+  L.encoded_blank_mask(L.image_board(image),p)(shape,apart)
+
+def L.actual_encoded_blank_mask(b,p):
+  L.on_reified_board(b,x => L.ActualEncodedBlankMask(x,p),L.reify_board(b),image => L.actual_encoded_blank_mask_image(image,p))
+
+def L.word_clip_and_interchange(n,clip,a,b):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      match clip a b:
+        case WCon{False{},ct} WCon{False{},at} WCon{False{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{False{},ct} WCon{False{},at} WCon{True{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{False{},ct} WCon{True{},at} WCon{False{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{False{},ct} WCon{True{},at} WCon{True{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{True{},ct} WCon{False{},at} WCon{False{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{True{},ct} WCon{False{},at} WCon{True{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{True{},ct} WCon{True{},at} WCon{False{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{False{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+        case WCon{True{},ct} WCon{True{},at} WCon{True{},bt}:
+          Equal.cong(Word(k),Word(1n+k),w => WCon{True{},w},
+            Word.and(k,ct,Word.and(k,at,bt)),Word.and(k,Word.and(k,ct,at),bt),L.word_clip_and_interchange(k,ct,at,bt))
+
+def L.normalized_word_intersect(old,other,normalized):
+  match old other:
+    case U32{a} U32{b}:
+      +clip = queue_word_bits(1022)
+      Equal.trans(U32,U32{Word.and(32n,clip,Word.and(32n,a,b))},U32{Word.and(32n,Word.and(32n,clip,a),b)},U32{Word.and(32n,a,b)},
+        Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,clip,Word.and(32n,a,b)),Word.and(32n,Word.and(32n,clip,a),b),L.word_clip_and_interchange(32n,clip,a,b)),
+        Equal.cong(U32,U32,w => U32.and(w,U32{b}),U32{Word.and(32n,clip,a)},U32{a},normalized))
+
+def L.peer_mask_keeps_normalized(old,bit,normalized):
+  L.normalized_word_intersect(old,U32.not(bit),normalized)
+
+def L.changed_peer_word_image(image,p,bit,old,shape,apart):
+  b = L.image_board(image)
+  +mask = L.peer_mask(old,bit)
+  changed = Board.set_cell(L.image_board(image),p,mask)
+  Equal.trans(U32,L.cell_value(Q.changed(True{},p,bit,b,old),p),L.cell_value(changed,p),mask,
+    L.queue_changed_flag_keeps(changed,L.peer_reflag(old,bit),p,p,apart,L.board_set_keeps_perfect(L.image_board(image),p,mask,7n,shape)),
+    L.board_set_get(L.image_board(image),p,mask))
+
+def L.peer_changed_word_keeps_normalized(image,needed,p,bit,shape,apart,normalized):
+  match needed:
+    case False{}:
+      normalized
+    case True{}:
+      b = L.image_board(image)
+      +old = L.cell_value(L.image_board(image),p)
+      +mask = L.peer_mask(old,bit)
+      %Equal.sym(U32,L.cell_value(Q.changed(True{},p,bit,b,old),p),mask,
+        L.changed_peer_word_image(image,p,bit,old,shape,apart)) :
+        L.NormalizedQueueMask(_)
+      L.peer_mask_keeps_normalized(old,bit,normalized)
+
+def L.peer_keeps_normalized_image(image,p,bit,shape,apart,normalized):
+  b = L.image_board(image)
+  +old = L.cell_value(L.image_board(image),p)
+  +needed = U32.is_ne(U32.and(old,bit),0)
+  %Equal.sym(Array<U32>,L.actual_peer(b,p,bit),Q.changed(needed,p,bit,b,old),
+    L.peer_normalized(b,p,bit,L.board_read_witness(L.image_board(image),p))) :
+    L.NormalizedQueueMask(L.cell_value(_,p))
+  L.peer_changed_word_keeps_normalized(image,needed,p,bit,shape,apart,normalized)
+
+def L.peer_keeps_normalized(b,p,bit):
+  L.on_reified_board(b,x => L.PeerKeepsNormalized(x,p,bit),L.reify_board(b),image => L.peer_keeps_normalized_image(image,p,bit))

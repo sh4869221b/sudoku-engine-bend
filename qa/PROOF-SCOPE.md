@@ -455,3 +455,17 @@ claim about reachable search caches or prove solver soundness.
   must start no later than any of the blanks. This declaration does
   not prove those invariants or that each stored bit is Sudoku-legal
   for the neighboring digits.
+
+## Production queued mask writes
+
+- Cache inversion clips to bits 1–9 for arbitrary cached occupancy
+  words. The actual queued encoder step reads a blank and writes a
+  normalized mask at that cell on a 128-slot board when its separate
+  flag slot does not alias the cell.
+- On the same board shape and separation condition, the actual queued
+  peer update preserves normalization at a cell that already has a
+  normalized mask, whether it writes a changed mask or is a no-op.
+  An update clears bits and cannot introduce an out-of-range bit.
+- These are local transition laws. They are not yet an inductive
+  invariant for the complete encoder, placement chain, and undo paths.
+  They do not establish pointer coverage or mask legality.
