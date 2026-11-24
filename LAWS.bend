@@ -7003,3 +7003,151 @@ law peer_changed_word_keeps_normalized:
   for apart: RoutedApart(flag_slot(p),p)
   for normalized: NormalizedQueueMask(cell_value(image_board(image),p))
   NormalizedQueueMask(cell_value(Q.changed(needed,p,bit,image_board(image),cell_value(image_board(image),p)),p))
+
+# Full actual encoder preserves normalized-mask shape for every input blank.
+def EncodeMiddleMask(-b: Array<U32>, +prefix: Nat, +suffix: Nat, +p: U32) -> Type:
+  Board128(b) ->
+  EncodeApart(prefix,p,walk_position(prefix,p)) ->
+  RoutedApart(flag_slot(walk_position(prefix,p)),walk_position(prefix,p)) ->
+  EncodeApart(suffix,(walk_position(prefix,p) + 1 : U32),walk_position(prefix,p)) ->
+  {cell_value(b,walk_position(prefix,p)) == 0 : U32} ->
+  NormalizedQueueMask(cell_value(Q.encode_go(with_center(prefix,suffix),p,b),walk_position(prefix,p)))
+
+def EncodeMiddleMaskProof(+prefix: Nat, +suffix: Nat, +p: U32) -> Type:
+  @b:Array<U32> -> EncodeMiddleMask(b,prefix,suffix,p)
+
+law encode_mask_middle_base_image:
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for safe: RoutedApart(flag_slot(p),p)
+  for tail: EncodeApart(suffix,(p + 1 : U32),p)
+  for digit: {cell_value(image_board(image),p) == 0 : U32}
+  NormalizedQueueMask(cell_value(Q.encode_go(1n+suffix,p,image_board(image)),p))
+
+law encode_mask_middle_base:
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  EncodeMiddleMask(image_board(image),0n,suffix,p)
+
+law encode_mask_middle_step_image:
+  for +image: BoardImage
+  for +k: Nat
+  for +suffix: Nat
+  for +p: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for before: EncodeApart(1n+k,p,walk_position(1n+k,p))
+  for safe: RoutedApart(flag_slot(walk_position(1n+k,p)),walk_position(1n+k,p))
+  for after: EncodeApart(suffix,(walk_position(1n+k,p) + 1 : U32),walk_position(1n+k,p))
+  for digit: {cell_value(image_board(image),walk_position(1n+k,p)) == 0 : U32}
+  for next: EncodeMiddleMaskProof(k,suffix,(p + 1 : U32))
+  NormalizedQueueMask(cell_value(Q.encode_go(with_center(1n+k,suffix),p,image_board(image)),walk_position(1n+k,p)))
+
+law encode_mask_middle_step:
+  for +image: BoardImage
+  for +k: Nat
+  for +suffix: Nat
+  for +p: U32
+  for next: EncodeMiddleMaskProof(k,suffix,(p + 1 : U32))
+  EncodeMiddleMask(image_board(image),1n+k,suffix,p)
+
+law encode_mask_middle_from_image:
+  for +prefix: Nat
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  EncodeMiddleMask(image_board(image),prefix,suffix,p)
+
+law encode_mask_middle_value:
+  for b: Array<U32>
+  for +prefix: Nat
+  for +suffix: Nat
+  for +p: U32
+  EncodeMiddleMask(b,prefix,suffix,p)
+
+
+def Encode81BlankMask(-b: Array<U32>, +before: Nat, +after: Nat) -> Type:
+  Board128(b) ->
+  RoutedApart(109,walk_position(before,0)) ->
+  RoutedApart(110,walk_position(before,0)) ->
+  RoutedApart(111,walk_position(before,0)) ->
+  EncodeApart(before,0,walk_position(before,0)) ->
+  RoutedApart(flag_slot(walk_position(before,0)),walk_position(before,0)) ->
+  EncodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0)) ->
+  {with_center(before,after) == 81n : Nat} ->
+  {cell_value(b,walk_position(before,0)) == 0 : U32} ->
+  NormalizedQueueMask(cell_value(Q.encode(b),walk_position(before,0)))
+
+law encode81_blank_mask_step:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for r9: RoutedApart(109,walk_position(before,0))
+  for r10: RoutedApart(110,walk_position(before,0))
+  for r11: RoutedApart(111,walk_position(before,0))
+  for ep: EncodeApart(before,0,walk_position(before,0))
+  for safe: RoutedApart(flag_slot(walk_position(before,0)),walk_position(before,0))
+  for es: EncodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0))
+  for count: {with_center(before,after) == 81n : Nat}
+  for digit: {cell_value(image_board(image),walk_position(before,0)) == 0 : U32}
+  NormalizedQueueMask(cell_value(Q.encode(image_board(image)),walk_position(before,0)))
+
+law encode81_blank_mask_image:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  Encode81BlankMask(image_board(image),before,after)
+
+law public_queue_encode_blank_mask_at:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  Encode81BlankMask(b,before,after)
+
+law public_encode_blank_mask_routes:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for shape: Board128(b)
+  for routes: WindowRoutes(before,after,walk_position(before,0),(walk_position(before,0) + 1 : U32))
+  for count: {with_center(before,after) == 81n : Nat}
+  for digit: {cell_value(b,walk_position(before,0)) == 0 : U32}
+  NormalizedQueueMask(cell_value(Q.encode(b),walk_position(before,0)))
+
+law public_encode_blank_mask_checked:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for shape: Board128(b)
+  for window: VerifiedWindow(before,after)
+  for digit: {cell_value(b,walk_position(before,0)) == 0 : U32}
+  NormalizedQueueMask(cell_value(Q.encode(b),walk_position(before,0)))
+
+law any_logical_cell_encode_blank_mask:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(b)
+  for digit: {cell_value(b,logical_position(row,col)) == 0 : U32}
+  NormalizedQueueMask(cell_value(Q.encode(b),logical_position(row,col)))
+
+
+
+law adaptive_activation_blank_is_eligible_image:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  for blank: {cell_value(image_board(image),logical_position(row,col)) == 0 : U32}
+  QueueEligibleWord(cell_value(Fast.activated(False{},image_board(image)),logical_position(row,col)))
+
+law adaptive_activation_blank_is_eligible:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(b)
+  for blank: {cell_value(b,logical_position(row,col)) == 0 : U32}
+  QueueEligibleWord(cell_value(Fast.activated(False{},b),logical_position(row,col)))

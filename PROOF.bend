@@ -8226,3 +8226,97 @@ def L.peer_keeps_normalized_image(image,p,bit,shape,apart,normalized):
 
 def L.peer_keeps_normalized(b,p,bit):
   L.on_reified_board(b,x => L.PeerKeepsNormalized(x,p,bit),L.reify_board(b),image => L.peer_keeps_normalized_image(image,p,bit))
+
+def L.encode_mask_middle_base_image(image,suffix,p,shapes,safe,tail,digit):
+  (s0,s1) = shapes
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  +final = L.cell_value(Q.encode_go(suffix,p1,L.actual_encoded_step(L.image_board(image),p)),p)
+  +current = L.cell_value(L.actual_encoded_step(L.image_board(image),p),p)
+  %Equal.sym(U32,final,current,
+    L.encode_sweep_keeps(suffix,p1,p,step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail)) :
+    L.NormalizedQueueMask(_)
+  L.actual_encoded_blank_mask(L.image_board(image),p)(s1,safe,digit)
+
+def L.encode_mask_middle_base(image,suffix,p,shape,before,safe,after,digit):
+  L.encode_mask_middle_base_image(image,suffix,p,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),safe,after,digit)
+
+def L.encode_mask_middle_step_image(image,k,suffix,p,shapes,before,safe,after,digit,next):
+  (s0,s1) = shapes
+  (cell,(flag,tail)) = before
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  +q = L.walk_position(k,p1)
+  next(step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail,safe,after,
+    Equal.trans(U32,L.cell_value(step,q),L.cell_value(L.image_board(image),q),0,
+      L.encode_step_keeps(L.image_board(image),p,q)(s1,cell,flag),digit))
+
+def L.encode_mask_middle_step(image,k,suffix,p,next,shape,before,safe,after,digit):
+  L.encode_mask_middle_step_image(image,k,suffix,p,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),before,safe,after,digit,next)
+
+def L.encode_mask_middle_from_image(prefix,image,suffix,p,shape,before,safe,after,digit):
+  match prefix:
+    case 0n:
+      L.encode_mask_middle_base(image,suffix,p,shape,before,safe,after,digit)
+    case 1n+k:
+      L.encode_mask_middle_step(image,k,suffix,p,
+        sub => L.on_reified_board(sub,x => L.EncodeMiddleMask(x,k,suffix,(p + 1 : U32)),
+          L.reify_board(sub),im => L.encode_mask_middle_from_image(k,im,suffix,(p + 1 : U32))),
+        shape,before,safe,after,digit)
+
+def L.encode_mask_middle_value(b,prefix,suffix,p):
+  L.on_reified_board(b,x => L.EncodeMiddleMask(x,prefix,suffix,p),
+    L.reify_board(b),image => L.encode_mask_middle_from_image(prefix,image,suffix,p))
+
+
+def L.encode81_blank_mask_step(image,before,after,shapes,r9,r10,r11,ep,safe,es,count,digit):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  seed = L.queue_seed(L.image_board(image))
+  +q = L.walk_position(before,0)
+  %count :
+    L.NormalizedQueueMask(L.cell_value(Q.encode_go(_,0,L.queue_seed(b)),q))
+  L.encode_mask_middle_value(seed,before,after,0)(
+    L.queue_seed_perfect(L.image_board(image),s0),ep,safe,es,
+    Equal.trans(U32,L.cell_value(seed,q),L.cell_value(b,q),0,
+      L.queue_seed_keeps_cell(L.image_board(image),q)(s1,r9,r10,r11),digit))
+
+def L.encode81_blank_mask_image(image,before,after,shape,r9,r10,r11,ep,safe,es,count,digit):
+  L.encode81_blank_mask_step(image,before,after,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),
+    r9,r10,r11,ep,safe,es,count,digit)
+
+def L.public_queue_encode_blank_mask_at(b,before,after):
+  L.on_reified_board(b,x => L.Encode81BlankMask(x,before,after),
+    L.reify_board(b),image => L.encode81_blank_mask_image(image,before,after))
+
+def L.public_encode_blank_mask_routes(b,before,after,shape,routes,count,digit):
+  (r9,(r10,(r11,(safe,((ep,dp),(es,ds)))))) = routes
+  L.public_queue_encode_blank_mask_at(b,before,after)(shape,r9,r10,r11,ep,safe,es,count,digit)
+
+def L.public_encode_blank_mask_checked(b,before,after,shape,window,digit):
+  (guard,count) = window
+  +q = L.walk_position(before,0)
+  L.public_encode_blank_mask_routes(b,before,after,shape,
+    L.window_routes(before,after,q,(q + 1 : U32),guard),count,digit)
+
+def L.any_logical_cell_encode_blank_mask(b,row,col,shape,digit):
+  L.public_encode_blank_mask_checked(b,L.logical_offset(row,col),L.logical_tail(row,col),shape,L.every_cell_window(row,col),digit)
+
+
+
+def L.adaptive_activation_blank_is_eligible_image(image,row,col,shape,blank):
+  +p = L.logical_position(row,col)
+  L.normalized_masks_are_eligible(L.cell_value(Q.encode(L.image_board(image)),p),
+    L.any_logical_cell_encode_blank_mask(L.image_board(image),row,col,shape,blank))
+
+def L.adaptive_activation_blank_is_eligible(b,row,col,shape,blank):
+  +p = L.logical_position(row,col)
+  proof : (L.Board128(b) -> {L.cell_value(b,p) == 0 : U32} ->
+    L.QueueEligibleWord(L.cell_value(Fast.activated(False{},b),p))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> {L.cell_value(x,p) == 0 : U32} ->
+      L.QueueEligibleWord(L.cell_value(Fast.activated(False{},x),p))),
+      L.reify_board(b),image => L.adaptive_activation_blank_is_eligible_image(image,row,col))
+  proof(shape,blank)

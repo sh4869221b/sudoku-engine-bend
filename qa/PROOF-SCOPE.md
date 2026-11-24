@@ -469,3 +469,15 @@ claim about reachable search caches or prove solver soundness.
 - These are local transition laws. They are not yet an inductive
   invariant for the complete encoder, placement chain, and undo paths.
   They do not establish pointer coverage or mask legality.
+
+## Blank candidates after complete queued activation
+
+- For any of the 81 logical cells of a 128-slot board, if the input cell
+  is zero, the full production `Q.encode` leaves it with a normalized
+  candidate mask. This covers the seed writes, the earlier and later
+  encoder iterations, the actual targeted write, and all 81 physical
+  routes, not solely the isolated encoder step.
+- The actual adaptive activation from ordinary mode therefore creates
+  an eligible queued candidate at every input blank. This proves
+  representation eligibility, not cache legality, scan-pointer coverage
+  or preservation after subsequent placements and backtracking.
