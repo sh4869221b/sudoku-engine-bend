@@ -2727,3 +2727,323 @@ def L.queue_first_pointer_keeps_clue(b,n,p,q,open):
   L.on_reified_board(b,x => (L.Board128(x) -> L.RoutedApart(108,q) ->
       {L.cell_value(Q.first_step(n,p,(x,open)),q) == L.cell_value(x,q) : U32}),
     L.reify_board(b),image => L.queue_first_pointer_keeps_clue_image(image,n,p,q,open))
+
+def L.queue_flag_perfect(b,p,present,shape):
+  Equal.trans(L.ArrayShape,L.array_shape(Q.flag(b,p,present)),L.array_shape(b),L.perfect_shape(7n),
+    L.project_shape_transition(b,Q.flag(b,p,present),L.flag_shape(b,p,present)),shape)
+
+def L.queue_changed_flag_perfect(b,p,needed,shape):
+  match needed:
+    case False{}:
+      shape
+    case True{}:
+      L.queue_flag_perfect(b,p,True{},shape)
+
+def L.queue_changed_flag_keeps(b,needed,p,q,sep,shape):
+  match needed:
+    case False{}:
+      {==}
+    case True{}:
+      L.flag_keeps_cell(b,p,True{},q)(shape,sep)
+
+def L.queue_changed_perfect_image(image,needed,p,bit,old,shape):
+  match needed:
+    case False{}:
+      shape
+    case True{}:
+      L.queue_changed_flag_perfect(Board.set_cell(L.image_board(image),p,L.peer_mask(old,bit)),p,L.peer_reflag(old,bit),
+        L.board_set_keeps_perfect(L.image_board(image),p,L.peer_mask(old,bit),7n,shape))
+
+def L.queue_changed_perfect(b,needed,p,bit,old,shape):
+  proof : (L.Board128(b) -> L.Board128(Q.changed(needed,p,bit,b,old))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.Board128(Q.changed(needed,p,bit,x,old))),
+      L.reify_board(b),image => L.queue_changed_perfect_image(image,needed,p,bit,old))
+  proof(shape)
+
+def L.queue_changed_keeps_yes(image,p,bit,old,q,shapes,apart,flag):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  +mask = L.peer_mask(old,bit)
+  changed = Board.set_cell(L.image_board(image),p,mask)
+  Equal.trans(U32,L.cell_value(Q.changed(True{},p,bit,b,old),q),L.cell_value(changed,q),L.cell_value(b,q),
+    L.queue_changed_flag_keeps(changed,L.peer_reflag(old,bit),p,q,flag,L.board_set_keeps_perfect(L.image_board(image),p,mask,7n,s0)),
+    L.perfect_write_keeps_cell(L.image_board(image),p,q,mask,s1,apart))
+
+def L.queue_changed_keeps_image(image,needed,p,bit,old,q,shape,apart,flag):
+  match needed:
+    case False{}:
+      {==}
+    case True{}:
+      L.queue_changed_keeps_yes(image,p,bit,old,q,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),apart,flag)
+
+def L.queue_changed_keeps(b,needed,p,bit,old,q):
+  L.on_reified_board(b,x => L.ChangedKeeps(x,needed,p,bit,old,q),
+    L.reify_board(b),image => L.queue_changed_keeps_image(image,needed,p,bit,old,q))
+
+def L.peer_normalized_observed(b,p,bit,same,old,kept,read):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,old),read) :
+    {Q.peer(p,bit,_) == Q.changed(U32.is_ne(U32.and(Pair.snd(Array<U32>,U32,_),bit),0),p,bit,b,Pair.snd(Array<U32>,U32,_)) : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,kept) :
+    {Q.changed(U32.is_ne(U32.and(old,bit),0),p,bit,_,old) == Q.changed(U32.is_ne(U32.and(old,bit),0),p,bit,b,old) : Array<U32>}
+  {==}
+
+def L.peer_normalized(b,p,bit,rd):
+  (same,+old,(kept,read)) = rd
+  L.peer_normalized_observed(b,p,bit,same,old,kept,read)
+
+def L.peer_keeps_image(image,p,bit,q,shape,apart,flag):
+  b = L.image_board(image)
+  +old = L.cell_value(L.image_board(image),p)
+  +needed = U32.is_ne(U32.and(old,bit),0)
+  %Equal.sym(Array<U32>,L.actual_peer(b,p,bit),Q.changed(needed,p,bit,b,old),
+    L.peer_normalized(b,p,bit,L.board_read_witness(L.image_board(image),p))) :
+    {L.cell_value(_,q) == L.cell_value(b,q) : U32}
+  L.queue_changed_keeps(L.image_board(image),needed,p,bit,old,q)(shape,apart,flag)
+
+def L.peer_keeps(b,p,bit,q):
+  L.on_reified_board(b,x => L.PeerKeeps(x,p,bit,q),
+    L.reify_board(b),image => L.peer_keeps_image(image,p,bit,q))
+
+def L.peer_perfect_image(image,p,bit,shape):
+  b = L.image_board(image)
+  +old = L.cell_value(L.image_board(image),p)
+  +needed = U32.is_ne(U32.and(old,bit),0)
+  %Equal.sym(Array<U32>,L.actual_peer(b,p,bit),Q.changed(needed,p,bit,b,old),
+    L.peer_normalized(b,p,bit,L.board_read_witness(L.image_board(image),p))) :
+    L.Board128(_)
+  L.queue_changed_perfect(L.image_board(image),needed,p,bit,old,shape)
+
+def L.peer_perfect(b,p,bit):
+  L.on_reified_board(b,x => (L.Board128(x) -> L.Board128(L.actual_peer(x,p,bit))),
+    L.reify_board(b),image => L.peer_perfect_image(image,p,bit))
+
+def L.copy_word_eq(word,expected,known):
+  %known : ({word == _ : U32} & {word == _ : U32})
+  ({==},{==})
+
+def L.peer_keeps_same_step(image,q,fixed,placed,shape,given):
+  (g0,g1) = given
+  b = L.image_board(image)
+  +bit = Board.bit(L.digit_word(placed))
+  %Equal.sym(Array<U32>,L.actual_peer(b,q,bit),b,L.queue_actual_peer_fixed(L.image_board(image),q,fixed,placed)(g0)) :
+    L.FixedClue(_,q,fixed)
+  (shape,g1)
+
+def L.peer_keeps_same_image(image,q,fixed,placed,state):
+  (shape,given) = state
+  L.peer_keeps_same_step(image,q,fixed,placed,shape,
+    L.copy_word_eq(L.cell_value(L.image_board(image),q),L.fixed_word(fixed),given))
+
+def L.peer_keeps_separate_step(image,p,q,fixed,placed,shapes,given,sep,flag):
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(placed))
+  (L.peer_perfect(L.image_board(image),p,bit)(s0),
+    Equal.trans(U32,L.cell_value(L.actual_peer(L.image_board(image),p,bit),q),L.cell_value(L.image_board(image),q),L.fixed_word(fixed),
+      L.peer_keeps(L.image_board(image),p,bit,q)(s1,sep,flag),given))
+
+def L.peer_keeps_separate_image(image,p,q,fixed,placed,apart,state):
+  (sep,flag) = apart
+  (shape,given) = state
+  L.peer_keeps_separate_step(image,p,q,fixed,placed,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),given,sep,flag)
+
+def L.peer_clue_transition_image(image,p,q,fixed,placed,route,state):
+  match route:
+    case Inl{same}:
+      %Equal.sym(U32,p,q,same) :
+        L.FixedClue(L.actual_peer(L.image_board(image),_,Board.bit(L.digit_word(placed))),q,fixed)
+      L.peer_keeps_same_image(image,q,fixed,placed,state)
+    case Inr{apart}:
+      L.peer_keeps_separate_image(image,p,q,fixed,placed,apart,state)
+
+def L.peer_clue_transition(b,p,q,fixed,placed):
+  L.on_reified_board(b,x => L.PeerClueTransition(x,p,q,fixed,placed),
+    L.reify_board(b),image => L.peer_clue_transition_image(image,p,q,fixed,placed))
+
+def L.row_clue_step_image(image,n,j,base,placed,q,fixed,d,routes,state,next):
+  (here,tail) = routes
+  +p = (base + j : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_clue_transition(L.image_board(image),p,q,fixed,d)(here,state))
+
+def L.row_clue_step(b,n,j,base,placed,q,fixed,d):
+  L.on_reified_board(b,x => L.RowClueStep(x,n,j,base,placed,q,fixed,d),
+    L.reify_board(b),image => L.row_clue_step_image(image,n,j,base,placed,q,fixed,d))
+
+def L.row_clue_line(n,j,base,placed,q,fixed,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.row_clue_step(b,k,j,base,placed,q,fixed,d)(routes,state,
+        sub => rest => witness => L.row_clue_line(k,(j + 1 : U32),base,placed,q,fixed,d,sub,rest,witness))
+
+def L.column_clue_step_image(image,n,j,col,placed,q,fixed,d,routes,state,next):
+  (here,tail) = routes
+  +p = (j * 9 + col : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_clue_transition(L.image_board(image),p,q,fixed,d)(here,state))
+
+def L.column_clue_step(b,n,j,col,placed,q,fixed,d):
+  L.on_reified_board(b,x => L.ColumnClueStep(x,n,j,col,placed,q,fixed,d),
+    L.reify_board(b),image => L.column_clue_step_image(image,n,j,col,placed,q,fixed,d))
+
+def L.column_clue_line(n,j,col,placed,q,fixed,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.column_clue_step(b,k,j,col,placed,q,fixed,d)(routes,state,
+        sub => rest => witness => L.column_clue_line(k,(j + 1 : U32),col,placed,q,fixed,d,sub,rest,witness))
+
+def L.peer_list_step_image(image,p,tail,q,fixed,d,routes,state,next):
+  (here,later) = routes
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),later,
+    L.peer_clue_transition(L.image_board(image),p,q,fixed,d)(here,state))
+
+def L.peer_list_step(b,p,tail,q,fixed,d,routes,state,next):
+  proof : (L.PeerListRoutes(p <> tail,q) -> L.FixedClue(b,q,fixed) ->
+    L.PeerListProof(tail,q,fixed,d) -> L.FixedClue(L.run_peer_list(p <> tail,b,Board.bit(L.digit_word(d))),q,fixed)) =
+    L.on_reified_board(b,x => (L.PeerListRoutes(p <> tail,q) -> L.FixedClue(x,q,fixed) ->
+      L.PeerListProof(tail,q,fixed,d) -> L.FixedClue(L.run_peer_list(p <> tail,x,Board.bit(L.digit_word(d))),q,fixed)),
+      L.reify_board(b),image => L.peer_list_step_image(image,p,tail,q,fixed,d))
+  proof(routes,state,next)
+
+def L.peer_list_clue(positions,q,fixed,d,b,routes,state):
+  match positions:
+    case Nil{}:
+      state
+    case +p <> tail:
+      L.peer_list_step(b,p,tail,q,fixed,d,routes,state,sub => rest => witness => L.peer_list_clue(tail,q,fixed,d,sub,rest,witness))
+
+def L.box_four_keeps_clue(b,base,r1,r2,c1,c2,q,fixed,d,routes,state):
+  L.peer_list_clue(L.box_positions(base,r1,r2,c1,c2),q,fixed,d,b,routes,state)
+
+def L.fixed_after_pointer_write(image,out,q,d,shapes,known,apart,witness):
+  (s0,s1) = shapes
+  (+ptr,actual) = witness
+  b = L.image_board(image)
+  %Equal.sym(Array<U32>,out,Board.set_cell(b,108,ptr),actual) :
+    L.FixedClue(_,q,d)
+  (L.board_set_keeps_perfect(L.image_board(image),108,ptr,7n,s0),
+    Equal.trans(U32,L.cell_value(Board.set_cell(b,108,ptr),q),L.cell_value(b,q),L.fixed_word(d),
+      L.perfect_write_keeps_cell(L.image_board(image),108,q,ptr,s1,apart),known))
+
+def L.first_step_keeps_fixed_image(image,n,p,open,q,d,apart,state):
+  (shape,known) = state
+  L.fixed_after_pointer_write(image,Q.first_step(n,p,(L.image_board(image),open)),q,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known,apart,
+    L.queued_first_pointer(n,p,L.image_board(image),open))
+
+def L.first_actual_from_read(n,p,b,same,word,kept,observed,recurse):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),observed) :
+    L.FirstOnlyWritesPointer(b,Q.first_step(n,p,Q.first_read(_)))
+  %kept :
+    L.FirstOnlyWritesPointer(_,Q.first_step(n,p,(same,(word < 1024 : U32))))
+  recurse(same,(word < 1024 : U32))
+
+def L.first_actual_pointer(n,p,b,read):
+  (same,+word,(kept,observed)) = read
+  L.first_actual_from_read(n,p,b,same,word,kept,observed,sub => open => L.queued_first_pointer(n,p,sub,open))
+
+def L.refresh_needed_clue_image(image,needed,start,q,d,apart,state):
+  match needed:
+    case False{}:
+      state
+    case True{}:
+      (shape,known) = state
+      +n = U32.to_nat((81 - start : U32))
+      L.fixed_after_pointer_write(image,L.first_actual(L.image_board(image),n,start),q,d,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known,apart,
+        L.first_actual_pointer(n,start,L.image_board(image),L.board_read_witness(L.image_board(image),start)))
+
+def L.refresh_normalized_read(b,p,same,start,kept,observed):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,108),(same,start),observed) :
+    {Q.refresh(p,_) == Q.refresh_needed(U32.is_eq(p,Pair.snd(Array<U32>,U32,_)),b,Pair.snd(Array<U32>,U32,_)) : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,kept) :
+    {Q.refresh_needed(U32.is_eq(p,start),_,start) == Q.refresh_needed(U32.is_eq(p,start),b,start) : Array<U32>}
+  {==}
+
+def L.refresh_normalized(b,p,read):
+  (same,+start,(kept,observed)) = read
+  L.refresh_normalized_read(b,p,same,start,kept,observed)
+
+def L.refresh_keeps_clue_image(image,p,q,d,apart,state):
+  b = L.image_board(image)
+  +start = L.cell_value(L.image_board(image),108)
+  +needed = U32.is_eq(p,start)
+  %Equal.sym(Array<U32>,L.refresh_actual(b,p),Q.refresh_needed(needed,b,start),
+    L.refresh_normalized(b,p,L.board_read_witness(L.image_board(image),108))) :
+    L.FixedClue(_,q,d)
+  L.refresh_needed_clue_image(image,needed,start,q,d,apart,state)
+
+def L.refresh_keeps_clue(b,p,q,d):
+  L.on_reified_board(b,x => L.RefreshClue(x,p,q,d),
+    L.reify_board(b),image => L.refresh_keeps_clue_image(image,p,q,d))
+
+def L.clear_forced_clue_image_step(image,p,q,d,flag,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  (L.queue_flag_perfect(L.image_board(image),p,False{},s0),
+    Equal.trans(U32,L.cell_value(Q.flag(b,p,False{}),q),L.cell_value(b,q),L.fixed_word(d),
+      L.flag_keeps_cell(L.image_board(image),p,False{},q)(s1,flag),known))
+
+def L.clear_forced_clue_image(image,guess,p,q,d,flag,state):
+  match guess:
+    case True{}:
+      state
+    case False{}:
+      (shape,known) = state
+      L.clear_forced_clue_image_step(image,p,q,d,flag,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.clear_forced_clue(b,guess,p,q,d,flag,state):
+  proof : (L.RoutedApart(L.flag_slot(p),q) -> L.FixedClue(b,q,d) ->
+    L.FixedClue(Q.clear_forced(guess,b,p),q,d)) =
+    L.on_reified_board(b,x => (L.RoutedApart(L.flag_slot(p),q) -> L.FixedClue(x,q,d) ->
+      L.FixedClue(Q.clear_forced(guess,x,p),q,d)),L.reify_board(b),
+      image => L.clear_forced_clue_image(image,guess,p,q,d))
+  proof(flag,state)
+
+def L.write_fixed_other_step(image,p,value,q,fixed,apart,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  (L.board_set_keeps_perfect(L.image_board(image),p,value,7n,s0),
+    Equal.trans(U32,L.cell_value(Board.set_cell(b,p,value),q),L.cell_value(b,q),L.fixed_word(fixed),
+      L.perfect_write_keeps_cell(L.image_board(image),p,q,value,s1,apart),known))
+
+def L.write_fixed_other_image(image,p,value,q,fixed,apart,state):
+  (shape,known) = state
+  L.write_fixed_other_step(image,p,value,q,fixed,apart,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.write_fixed_other(b,p,value,q,fixed,apart,state):
+  proof : (L.RoutedApart(p,q) -> L.FixedClue(b,q,fixed) ->
+    L.FixedClue(Board.set_cell(b,p,value),q,fixed)) =
+    L.on_reified_board(b,x => (L.RoutedApart(p,q) -> L.FixedClue(x,q,fixed) ->
+      L.FixedClue(Board.set_cell(x,p,value),q,fixed)),L.reify_board(b),
+      image => L.write_fixed_other_image(image,p,value,q,fixed))
+  proof(apart,state)
+
+def L.place_peers_image(image,p,q,fixed,d,routes,state):
+  (row,(col,(box,ptr))) = routes
+  L.refresh_keeps_clue(L.place_boxes(L.image_board(image),p,d),p,q,fixed)(ptr,
+    L.box_four_keeps_clue(L.place_columns(L.image_board(image),p,d),L.place_box_base(p),L.place_box_r1(p),L.place_box_r2(p),L.place_box_c1(p),L.place_box_c2(p),q,fixed,d,box,
+      L.column_clue_line(9n,0,M.rem9(p),p,q,fixed,d,L.place_rows(L.image_board(image),p,d),col,
+        L.row_clue_line(9n,0,L.place_row_base(p),p,q,fixed,d,L.image_board(image),row,state))))
+
+def L.place_peers_keeps(b,p,q,fixed,d):
+  L.on_reified_board(b,x => L.PlacePeersKeeps(x,p,q,fixed,d),
+    L.reify_board(b),image => L.place_peers_image(image,p,q,fixed,d))
+
+def L.place_keeps_clue_image(image,guess,p,q,fixed,d,apart,flag,routes,state):
+  after_clear = Q.clear_forced(guess,L.image_board(image),p)
+  after_write = Board.set_cell(Q.clear_forced(guess,L.image_board(image),p),p,L.fixed_word(d))
+  L.place_peers_keeps(after_write,p,q,fixed,d)(routes,
+    L.write_fixed_other(after_clear,p,L.fixed_word(d),q,fixed,apart,
+      L.clear_forced_clue(L.image_board(image),guess,p,q,fixed,flag,state)))
+
+def L.queued_place_keeps_clue(b,guess,p,q,fixed,d):
+  L.on_reified_board(b,x => L.PlaceClueKeeps(x,guess,p,q,fixed,d),
+    L.reify_board(b),image => L.place_keeps_clue_image(image,guess,p,q,fixed,d))

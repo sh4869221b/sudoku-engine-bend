@@ -231,3 +231,20 @@ claim about reachable search caches or prove solver soundness.
 - These facts do not yet show that the selector always chooses an empty
   cell on every reachable board, that a whole placement preserves all
   earlier clues, or that all reachable snapshots have the clue invariant.
+
+## Whole queued placement preserves a separately routed fixed clue
+
+- The production peer edit preserves the regular board shape. It leaves a
+  fixed word unchanged when the peer is the observed clue itself, and
+  preserves that word at a separate route when both its data and possible
+  flag writes route elsewhere.
+- These cases compose over the actual row and column loops and the four
+  box-peer updates. A first-empty pointer refresh only affects metadata
+  at slot 108. The theorem combines them with the production fixed-word
+  write and (when applicable) the flag clear in `Q.place`.
+- The result is conditional: the starting board must have the fixed digit
+  at the watched cell, the placement must be routed separately, and the
+  logical and metadata peer routes must have the stated certificates.
+  This section does not prove those certificates for every reachable
+  selection or show that the inactive cache path satisfies the same
+  invariant. It is not a claim about candidate legality or solution count.

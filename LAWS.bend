@@ -1,4 +1,5 @@
 import Base
+import ./sudoku/arithmetic.bend as M
 import ./sudoku/board.bend as B
 import ./sudoku/counter.bend as K
 import ./sudoku/types.bend as T
@@ -3205,3 +3206,592 @@ law queue_first_pointer_keeps_clue:
   for +open: Bool
   Board128(b) -> RoutedApart(108,q) ->
   {cell_value(Q.first_step(n,p,(b,open)),q) == cell_value(b,q) : U32}
+
+def KeepsWord(-b: Array<U32>, -out: Array<U32>, +q: U32) -> Type:
+  Board128(b) -> {cell_value(out,q) == cell_value(b,q) : U32}
+
+law queue_flag_perfect:
+  for b: Array<U32>
+  for +p: U32
+  for +present: Bool
+  for shape: Board128(b)
+  Board128(Q.flag(b,p,present))
+
+law queue_changed_flag_perfect:
+  for b: Array<U32>
+  for +p: U32
+  for +needed: Bool
+  for shape: Board128(b)
+  Board128(Q.changed_flag(needed,b,p))
+
+law queue_changed_flag_keeps:
+  for b: Array<U32>
+  for +needed: Bool
+  for +p: U32
+  for +q: U32
+  for sep: RoutedApart(flag_slot(p),q)
+  KeepsWord(b,Q.changed_flag(needed,b,p),q)
+
+def peer_mask(+old: U32, +bit: U32) -> U32:
+  U32.and(old,U32.not(bit))
+
+def peer_reflag(+old: U32, +bit: U32) -> Bool:
+  U32.is_ne(U32.and(old,(old - 1 : U32)),0) && Q.zero_or_single(peer_mask(old,bit))
+
+law queue_changed_perfect_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  Board128(image_board(image)) -> Board128(Q.changed(needed,p,bit,image_board(image),old))
+
+law queue_changed_perfect:
+  for b: Array<U32>
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  for shape: Board128(b)
+  Board128(Q.changed(needed,p,bit,b,old))
+
+def ChangedKeeps(-b: Array<U32>, +needed: Bool, +p: U32, +bit: U32, +old: U32, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) ->
+  {cell_value(Q.changed(needed,p,bit,b,old),q) == cell_value(b,q) : U32}
+
+law queue_changed_keeps_yes:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  for +q: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for apart: RoutedApart(p,q)
+  for flag: RoutedApart(flag_slot(p),q)
+  {cell_value(Q.changed(True{},p,bit,image_board(image),old),q) == cell_value(image_board(image),q) : U32}
+
+law queue_changed_keeps_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  for +q: U32
+  ChangedKeeps(image_board(image),needed,p,bit,old,q)
+
+law queue_changed_keeps:
+  for b: Array<U32>
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  for +q: U32
+  ChangedKeeps(b,needed,p,bit,old,q)
+
+def actual_peer(b: Array<U32>, +p: U32, +bit: U32) -> Array<U32>:
+  Q.peer(p,bit,B.get_cell(b,p))
+
+law peer_normalized_observed:
+  for -b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  for -same: Array<U32>
+  for +old: U32
+  for kept: {same == b : Array<U32>}
+  for read: {B.get_cell(b,p) == (same,old) : Array<U32> & U32}
+  {actual_peer(b,p,bit) == Q.changed(U32.is_ne(U32.and(cell_value(b,p),bit),0),p,bit,b,cell_value(b,p)) : Array<U32>}
+
+law peer_normalized:
+  for -b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  for rd: BoardReadWitness(b,p)
+  {actual_peer(b,p,bit) == Q.changed(U32.is_ne(U32.and(cell_value(b,p),bit),0),p,bit,b,cell_value(b,p)) : Array<U32>}
+
+def PeerKeeps(-b: Array<U32>, +p: U32, +bit: U32, +q: U32) -> Type:
+  Board128(b) -> RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) ->
+  {cell_value(actual_peer(b,p,bit),q) == cell_value(b,q) : U32}
+
+law peer_keeps_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  for +q: U32
+  PeerKeeps(image_board(image),p,bit,q)
+
+law peer_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  for +q: U32
+  PeerKeeps(b,p,bit,q)
+
+law peer_perfect_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  Board128(image_board(image)) -> Board128(actual_peer(image_board(image),p,bit))
+
+law peer_perfect:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  Board128(b) -> Board128(actual_peer(b,p,bit))
+
+def fixed_word(+d: BoardDigit) -> U32:
+  U32.shln(digit_word(d),10n)
+
+def FixedClue(-b: Array<U32>, +q: U32, +d: BoardDigit) -> Type:
+  (Board128(b) & {cell_value(b,q) == fixed_word(d) : U32})
+
+def PeerRoute(+p: U32, +q: U32) -> Type:
+  Either<&1,&1,{p == q : U32},(RoutedApart(p,q) & RoutedApart(flag_slot(p),q))>
+
+law copy_word_eq:
+  for -word: U32
+  for -expected: U32
+  for known: {word == expected : U32}
+  ({word == expected : U32} & {word == expected : U32})
+
+law peer_keeps_same_step:
+  for +image: BoardImage
+  for +q: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  for shape: Board128(image_board(image))
+  for given: ({cell_value(image_board(image),q) == fixed_word(fixed) : U32} & {cell_value(image_board(image),q) == fixed_word(fixed) : U32})
+  FixedClue(actual_peer(image_board(image),q,B.bit(digit_word(placed))),q,fixed)
+
+law peer_keeps_same_image:
+  for +image: BoardImage
+  for +q: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  FixedClue(image_board(image),q,fixed) ->
+  FixedClue(actual_peer(image_board(image),q,B.bit(digit_word(placed))),q,fixed)
+
+law peer_keeps_separate_step:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for given: {cell_value(image_board(image),q) == fixed_word(fixed) : U32}
+  for sep: RoutedApart(p,q)
+  for flag: RoutedApart(flag_slot(p),q)
+  FixedClue(actual_peer(image_board(image),p,B.bit(digit_word(placed))),q,fixed)
+
+law peer_keeps_separate_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  for apart: (RoutedApart(p,q) & RoutedApart(flag_slot(p),q))
+  FixedClue(image_board(image),q,fixed) ->
+  FixedClue(actual_peer(image_board(image),p,B.bit(digit_word(placed))),q,fixed)
+
+def PeerClueTransition(-b: Array<U32>, +p: U32, +q: U32, +fixed: BoardDigit, +placed: BoardDigit) -> Type:
+  PeerRoute(p,q) -> FixedClue(b,q,fixed) ->
+  FixedClue(actual_peer(b,p,B.bit(digit_word(placed))),q,fixed)
+
+law peer_clue_transition_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  PeerClueTransition(image_board(image),p,q,fixed,placed)
+
+law peer_clue_transition:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  PeerClueTransition(b,p,q,fixed,placed)
+
+def RowClueRoutes(+n: Nat, +j: U32, +base: U32, +q: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      PeerRoute((base + j : U32),q) & RowClueRoutes(k,(j + 1 : U32),base,q)
+
+def RowClueProof(+n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> RowClueRoutes(n,j,base,q) -> FixedClue(b,q,fixed) ->
+  FixedClue(Q.row_line(n,j,base,placed,B.bit(digit_word(d)),b),q,fixed)
+
+def RowClueStep(-b: Array<U32>, +n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  RowClueRoutes(1n+n,j,base,q) -> FixedClue(b,q,fixed) ->
+  RowClueProof(n,(j + 1 : U32),base,placed,q,fixed,d) ->
+  FixedClue(Q.row_line(1n+n,j,base,placed,B.bit(digit_word(d)),b),q,fixed)
+
+law row_clue_step_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  RowClueStep(image_board(image),n,j,base,placed,q,fixed,d)
+
+law row_clue_step:
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  RowClueStep(b,n,j,base,placed,q,fixed,d)
+
+law row_clue_line:
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  RowClueProof(n,j,base,placed,q,fixed,d)
+
+def ColumnClueRoutes(+n: Nat, +j: U32, +col: U32, +q: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      PeerRoute((j * 9 + col : U32),q) & ColumnClueRoutes(k,(j + 1 : U32),col,q)
+
+def ColumnClueProof(+n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> ColumnClueRoutes(n,j,col,q) -> FixedClue(b,q,fixed) ->
+  FixedClue(Q.column_line(n,j,col,placed,B.bit(digit_word(d)),b),q,fixed)
+
+def ColumnClueStep(-b: Array<U32>, +n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  ColumnClueRoutes(1n+n,j,col,q) -> FixedClue(b,q,fixed) ->
+  ColumnClueProof(n,(j + 1 : U32),col,placed,q,fixed,d) ->
+  FixedClue(Q.column_line(1n+n,j,col,placed,B.bit(digit_word(d)),b),q,fixed)
+
+law column_clue_step_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  ColumnClueStep(image_board(image),n,j,col,placed,q,fixed,d)
+
+law column_clue_step:
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  ColumnClueStep(b,n,j,col,placed,q,fixed,d)
+
+law column_clue_line:
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  ColumnClueProof(n,j,col,placed,q,fixed,d)
+
+def run_peer_list(positions: List<&2,U32>, b: Array<U32>, +bit: U32) -> Array<U32>:
+  match positions:
+    case Nil{}:
+      b
+    case +p <> tail:
+      run_peer_list(tail,actual_peer(b,p,bit),bit)
+
+def PeerListRoutes(positions: List<&2,U32>, +q: U32) -> Type:
+  match positions:
+    case Nil{}:
+      {True{} == True{} : Bool}
+    case +p <> tail:
+      PeerRoute(p,q) & PeerListRoutes(tail,q)
+
+def PeerListProof(-positions: List<&2,U32>, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> PeerListRoutes(positions,q) -> FixedClue(b,q,fixed) ->
+  FixedClue(run_peer_list(positions,b,B.bit(digit_word(d))),q,fixed)
+
+law peer_list_step_image:
+  for +image: BoardImage
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  for routes: PeerListRoutes(p <> tail,q)
+  for state: FixedClue(image_board(image),q,fixed)
+  for next: PeerListProof(tail,q,fixed,d)
+  FixedClue(run_peer_list(p <> tail,image_board(image),B.bit(digit_word(d))),q,fixed)
+
+law peer_list_step:
+  for b: Array<U32>
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  for routes: PeerListRoutes(p <> tail,q)
+  for state: FixedClue(b,q,fixed)
+  for next: PeerListProof(tail,q,fixed,d)
+  FixedClue(run_peer_list(p <> tail,b,B.bit(digit_word(d))),q,fixed)
+
+law peer_list_clue:
+  for positions: List<&2,U32>
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  PeerListProof(positions,q,fixed,d)
+
+def box_positions(+base: U32, +r1: U32, +r2: U32, +c1: U32, +c2: U32) -> List<&2,U32>:
+  [(base + r1 * 9 + c1 : U32),(base + r1 * 9 + c2 : U32),(base + r2 * 9 + c1 : U32),(base + r2 * 9 + c2 : U32)]
+
+law box_four_keeps_clue:
+  for b: Array<U32>
+  for +base: U32
+  for +r1: U32
+  for +r2: U32
+  for +c1: U32
+  for +c2: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  for routes: PeerListRoutes(box_positions(base,r1,r2,c1,c2),q)
+  for state: FixedClue(b,q,fixed)
+  FixedClue(Q.box_four(base,r1,r2,c1,c2,B.bit(digit_word(d)),b),q,fixed)
+
+law fixed_after_pointer_write:
+  for +image: BoardImage
+  for -out: Array<U32>
+  for +q: U32
+  for +d: BoardDigit
+  for shape: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: {cell_value(image_board(image),q) == fixed_word(d) : U32}
+  for apart: RoutedApart(108,q)
+  for witness: FirstOnlyWritesPointer(image_board(image),out)
+  FixedClue(out,q,d)
+
+law first_step_keeps_fixed_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +p: U32
+  for +open: Bool
+  for +q: U32
+  for +d: BoardDigit
+  for apart: RoutedApart(108,q)
+  for state: FixedClue(image_board(image),q,d)
+  FixedClue(Q.first_step(n,p,(image_board(image),open)),q,d)
+
+def first_actual(b: Array<U32>, +n: Nat, +p: U32) -> Array<U32>:
+  Q.first_step(n,p,Q.first_read(B.get_cell(b,p)))
+
+law first_actual_from_read:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for same: Array<U32>
+  for +word: U32
+  for kept: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  for recurse: PointerTail(n,p)
+  FirstOnlyWritesPointer(b,first_actual(b,n,p))
+
+law first_actual_pointer:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for read: BoardReadWitness(b,p)
+  FirstOnlyWritesPointer(b,first_actual(b,n,p))
+
+law refresh_needed_clue_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +start: U32
+  for +q: U32
+  for +d: BoardDigit
+  for apart: RoutedApart(108,q)
+  for state: FixedClue(image_board(image),q,d)
+  FixedClue(Q.refresh_needed(needed,image_board(image),start),q,d)
+
+def refresh_actual(b: Array<U32>, +p: U32) -> Array<U32>:
+  Q.refresh(p,B.get_cell(b,108))
+
+law refresh_normalized_read:
+  for -b: Array<U32>
+  for +p: U32
+  for -same: Array<U32>
+  for +start: U32
+  for kept: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,108) == (same,start) : Array<U32> & U32}
+  {refresh_actual(b,p) == Q.refresh_needed(U32.is_eq(p,cell_value(b,108)),b,cell_value(b,108)) : Array<U32>}
+
+law refresh_normalized:
+  for -b: Array<U32>
+  for +p: U32
+  for read: BoardReadWitness(b,108)
+  {refresh_actual(b,p) == Q.refresh_needed(U32.is_eq(p,cell_value(b,108)),b,cell_value(b,108)) : Array<U32>}
+
+def RefreshClue(-b: Array<U32>, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  RoutedApart(108,q) -> FixedClue(b,q,d) -> FixedClue(refresh_actual(b,p),q,d)
+
+law refresh_keeps_clue_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  RefreshClue(image_board(image),p,q,d)
+
+law refresh_keeps_clue:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  RefreshClue(b,p,q,d)
+
+law clear_forced_clue_image_step:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  for flag: RoutedApart(flag_slot(p),q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: {cell_value(image_board(image),q) == fixed_word(d) : U32}
+  FixedClue(Q.clear_forced(False{},image_board(image),p),q,d)
+
+law clear_forced_clue_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: FixedClue(image_board(image),q,d)
+  FixedClue(Q.clear_forced(guess,image_board(image),p),q,d)
+
+law clear_forced_clue:
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: FixedClue(b,q,d)
+  FixedClue(Q.clear_forced(guess,b,p),q,d)
+
+law write_fixed_other_step:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for apart: RoutedApart(p,q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: {cell_value(image_board(image),q) == fixed_word(fixed) : U32}
+  FixedClue(B.set_cell(image_board(image),p,value),q,fixed)
+
+law write_fixed_other_image:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for apart: RoutedApart(p,q)
+  for state: FixedClue(image_board(image),q,fixed)
+  FixedClue(B.set_cell(image_board(image),p,value),q,fixed)
+
+law write_fixed_other:
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for apart: RoutedApart(p,q)
+  for state: FixedClue(b,q,fixed)
+  FixedClue(B.set_cell(b,p,value),q,fixed)
+
+def place_row_base(+pos: U32) -> U32:
+  (M.div9(pos) * 9 : U32)
+
+def place_box_base(+pos: U32) -> U32:
+  (M.div3(M.div9(pos)) * 27 + M.div3(M.rem9(pos)) * 3 : U32)
+
+def place_box_r1(+pos: U32) -> U32:
+  M.rem3((M.div9(pos) + 1 : U32))
+
+def place_box_r2(+pos: U32) -> U32:
+  M.rem3((M.div9(pos) + 2 : U32))
+
+def place_box_c1(+pos: U32) -> U32:
+  M.rem3((M.rem9(pos) + 1 : U32))
+
+def place_box_c2(+pos: U32) -> U32:
+  M.rem3((M.rem9(pos) + 2 : U32))
+
+def PlacePeerRoutes(+p: U32, +q: U32) -> Type:
+  (RowClueRoutes(9n,0,place_row_base(p),q) & ColumnClueRoutes(9n,0,M.rem9(p),q)
+   & PeerListRoutes(box_positions(place_box_base(p),place_box_r1(p),place_box_r2(p),place_box_c1(p),place_box_c2(p)),q)
+   & RoutedApart(108,q))
+
+def place_rows(b: Array<U32>, +p: U32, +d: BoardDigit) -> Array<U32>:
+  Q.row_line(9n,0,place_row_base(p),p,B.bit(digit_word(d)),b)
+
+def place_columns(b: Array<U32>, +p: U32, +d: BoardDigit) -> Array<U32>:
+  Q.column_line(9n,0,M.rem9(p),p,B.bit(digit_word(d)),place_rows(b,p,d))
+
+def place_boxes(b: Array<U32>, +p: U32, +d: BoardDigit) -> Array<U32>:
+  Q.box_four(place_box_base(p),place_box_r1(p),place_box_r2(p),place_box_c1(p),place_box_c2(p),B.bit(digit_word(d)),place_columns(b,p,d))
+
+def PlacePeersKeeps(-b: Array<U32>, +p: U32, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  PlacePeerRoutes(p,q) -> FixedClue(b,q,fixed) -> FixedClue(refresh_actual(place_boxes(b,p,d),p),q,fixed)
+
+law place_peers_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  PlacePeersKeeps(image_board(image),p,q,fixed,d)
+
+law place_peers_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  PlacePeersKeeps(b,p,q,fixed,d)
+
+def PlaceClueKeeps(-b: Array<U32>, +guess: Bool, +p: U32, +q: U32, +fixed: BoardDigit, +d: BoardDigit) -> Type:
+  RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) -> PlacePeerRoutes(p,q) -> FixedClue(b,q,fixed) ->
+  FixedClue(Q.place(guess,p,digit_word(d),b),q,fixed)
+
+law place_keeps_clue_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  PlaceClueKeeps(image_board(image),guess,p,q,fixed,d)
+
+law queued_place_keeps_clue:
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +d: BoardDigit
+  PlaceClueKeeps(b,guess,p,q,fixed,d)
