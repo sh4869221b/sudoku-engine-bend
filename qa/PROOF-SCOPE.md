@@ -545,3 +545,48 @@ claim about reachable search caches or prove solver soundness.
 - The full queued encoder retains the initial pointer word in slot
   108, including its three flag resets and all 81 encoding steps.
   It does not establish that the initial pointer was accurate.
+
+## Placement can refresh only at the previous pointer
+
+- Neither the target write nor any flag, row, column or block update
+  can write slot 108 for a logical placement. The proof constructs
+  distinct array routes for all logical placements.
+- The actual full placement preserves the exact slot-108 word when
+  the target differs from the previous pointer. When equal, the
+  existing refresh law applies to the suffix of the pre-refresh board.
+  Initial pointer accuracy and the global prefix invariant are separate.
+
+## Exact one-cell urgency update algebra
+
+- For all 512 normalized blank-candidate masks and all nine placement
+  digits, array-independent reflection checks the real peer guard and
+  reflag predicate. If the previous bit agrees with zero-or-singleton
+  status, keeping it or setting it as specified by the production
+  update yields exactly the new zero-or-singleton status. The no-op
+  digit-zero bit case is checked as well.
+- This is the local word relation used to prove the global urgency-flag
+  invariant. The flag-word writes, placement/restore transitions, and
+  absence of padding flags have not yet been composed into that invariant.
+
+## Actual flag-word update
+
+- Reading the written flag slot after `Q.flag` returns the exact
+  masked set/clear word. After the actual peer update, the observed
+  flag word is either that exact set word or the prior unchanged word
+  according to the production guard and reflag condition, on a
+  128-slot board with nonaliasing cell and flag routes.
+- This connects the local guard to array behavior, not yet the full
+  per-bit invariant for adjacent flags, all positions, or snapshots.
+
+## Exact urgency of the observed cell after an actual peer update
+
+- For every logical cell, the actual peer update preserves the
+  equivalence between that cell's observed urgency bit and its
+  production zero-or-singleton predicate, assuming that before the
+  update the cell had a normalized blank mask and a correct flag.
+  The proof reads both the candidate word and actual flag-slot bit
+  after the operation, including the guard's no-op branch.
+- The flag mask is nonzero for every U32 input, and the target cell
+  and its flag slot are proven nonaliasing at all logical positions.
+  This remains a local theorem: other-position flags, flag padding,
+  and reachability of the premises are separate obligations.

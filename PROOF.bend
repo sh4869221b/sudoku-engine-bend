@@ -9160,3 +9160,1705 @@ def L.queued_encode_keeps_pointer_image(image,shape):
 def L.queued_encode_keeps_pointer(b):
   L.on_reified_board(b,x => L.QueueEncodeKeepsPointer(x),
     L.reify_board(b),image => L.queued_encode_keeps_pointer_image(image))
+def L.peer_keeps_pointer_word_separate_step(expect,image,p,q,safe,placed,shapes,given,sep,flag):
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(placed))
+  preserved : L.PointerWordValue(expect,L.cell_value(L.actual_peer(L.image_board(image),p,bit),q)) =
+    %Equal.sym(U32,L.cell_value(L.actual_peer(L.image_board(image),p,bit),q),L.cell_value(L.image_board(image),q),
+      L.peer_keeps(L.image_board(image),p,bit,q)(s1,sep,flag)) :
+      L.PointerWordValue(expect,_)
+    given
+  (safe,(L.peer_perfect(L.image_board(image),p,bit)(s0),preserved))
+
+def L.peer_keeps_pointer_word_separate_image(expect,image,p,q,placed,apart,state):
+  (sep,flag) = apart
+  (safe,(shape,given)) = state
+  L.peer_keeps_pointer_word_separate_step(expect,image,p,q,safe,placed,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),given,sep,flag)
+
+def L.peer_pointer_word_transition_image(expect,image,p,q,placed,route,state):
+  L.peer_keeps_pointer_word_separate_image(expect,image,p,q,placed,route,state)
+
+def L.peer_pointer_word_transition(expect,b,p,q,placed):
+  L.on_reified_board(b,x => L.PeerPointerWordTransition(expect,x,p,q,placed),
+    L.reify_board(b),image => L.peer_pointer_word_transition_image(expect,image,p,q,placed))
+
+def L.row_pointer_word_step_image(expect,image,n,j,base,placed,q,d,routes,state,next):
+  (here,tail) = routes
+  +p = (base + j : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_pointer_word_transition(expect,L.image_board(image),p,q,d)(here,state))
+
+def L.row_pointer_word_step(expect,b,n,j,base,placed,q,d):
+  L.on_reified_board(b,x => L.RowPointerWordStep(expect,x,n,j,base,placed,q,d),
+    L.reify_board(b),image => L.row_pointer_word_step_image(expect,image,n,j,base,placed,q,d))
+
+def L.row_pointer_word_line(expect,n,j,base,placed,q,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.row_pointer_word_step(expect,b,k,j,base,placed,q,d)(routes,state,
+        sub => rest => witness => L.row_pointer_word_line(expect,k,(j + 1 : U32),base,placed,q,d,sub,rest,witness))
+
+def L.column_pointer_word_step_image(expect,image,n,j,col,placed,q,d,routes,state,next):
+  (here,tail) = routes
+  +p = (j * 9 + col : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_pointer_word_transition(expect,L.image_board(image),p,q,d)(here,state))
+
+def L.column_pointer_word_step(expect,b,n,j,col,placed,q,d):
+  L.on_reified_board(b,x => L.ColumnPointerWordStep(expect,x,n,j,col,placed,q,d),
+    L.reify_board(b),image => L.column_pointer_word_step_image(expect,image,n,j,col,placed,q,d))
+
+def L.column_pointer_word_line(expect,n,j,col,placed,q,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.column_pointer_word_step(expect,b,k,j,col,placed,q,d)(routes,state,
+        sub => rest => witness => L.column_pointer_word_line(expect,k,(j + 1 : U32),col,placed,q,d,sub,rest,witness))
+
+def L.pointer_word_peer_list_step_image(expect,image,p,tail,q,d,routes,state,next):
+  (here,later) = routes
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),later,
+    L.peer_pointer_word_transition(expect,L.image_board(image),p,q,d)(here,state))
+
+def L.pointer_word_peer_list_step(expect,b,p,tail,q,d,routes,state,next):
+  proof : (L.DistinctPeerListRoutes(p <> tail,q) -> L.SafePointerWordAt(expect,b,q) ->
+    L.PointerWordPeerListProof(expect,tail,q,d) -> L.SafePointerWordAt(expect,L.run_peer_list(p <> tail,b,Board.bit(L.digit_word(d))),q)) =
+    L.on_reified_board(b,x => (L.DistinctPeerListRoutes(p <> tail,q) -> L.SafePointerWordAt(expect,x,q) ->
+      L.PointerWordPeerListProof(expect,tail,q,d) -> L.SafePointerWordAt(expect,L.run_peer_list(p <> tail,x,Board.bit(L.digit_word(d))),q)),
+      L.reify_board(b),image => L.pointer_word_peer_list_step_image(expect,image,p,tail,q,d))
+  proof(routes,state,next)
+
+def L.peer_list_pointer_word(expect,positions,q,d,b,routes,state):
+  match positions:
+    case Nil{}:
+      state
+    case +p <> tail:
+      L.pointer_word_peer_list_step(expect,b,p,tail,q,d,routes,state,sub => rest => witness => L.peer_list_pointer_word(expect,tail,q,d,sub,rest,witness))
+
+def L.box_four_keeps_pointer_word(expect,b,base,r1,r2,c1,c2,q,d,routes,state):
+  L.peer_list_pointer_word(expect,L.box_positions(base,r1,r2,c1,c2),q,d,b,routes,state)
+
+def L.clear_forced_pointer_word_image_step(expect,image,p,q,safe,flag,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  preserved : L.PointerWordValue(expect,L.cell_value(Q.flag(b,p,False{}),q)) =
+    %Equal.sym(U32,L.cell_value(Q.flag(b,p,False{}),q),L.cell_value(b,q),
+      L.flag_keeps_cell(L.image_board(image),p,False{},q)(s1,flag)) :
+      L.PointerWordValue(expect,_)
+    known
+  (safe,(L.queue_flag_perfect(L.image_board(image),p,False{},s0),preserved))
+
+def L.clear_forced_pointer_word_image(expect,image,guess,p,q,flag,state):
+  match guess:
+    case True{}:
+      state
+    case False{}:
+      (safe,(shape,known)) = state
+      L.clear_forced_pointer_word_image_step(expect,image,p,q,safe,flag,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.clear_forced_pointer_word(expect,b,guess,p,q,flag,state):
+  proof : (L.RoutedApart(L.flag_slot(p),q) -> L.SafePointerWordAt(expect,b,q) ->
+    L.SafePointerWordAt(expect,Q.clear_forced(guess,b,p),q)) =
+    L.on_reified_board(b,x => (L.RoutedApart(L.flag_slot(p),q) -> L.SafePointerWordAt(expect,x,q) ->
+      L.SafePointerWordAt(expect,Q.clear_forced(guess,x,p),q)),L.reify_board(b),
+      image => L.clear_forced_pointer_word_image(expect,image,guess,p,q))
+  proof(flag,state)
+
+def L.write_pointer_word_other_step(expect,image,p,value,q,safe,apart,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  preserved : L.PointerWordValue(expect,L.cell_value(Board.set_cell(b,p,value),q)) =
+    %Equal.sym(U32,L.cell_value(Board.set_cell(b,p,value),q),L.cell_value(b,q),
+      L.perfect_write_keeps_cell(L.image_board(image),p,q,value,s1,apart)) :
+      L.PointerWordValue(expect,_)
+    known
+  (safe,(L.board_set_keeps_perfect(L.image_board(image),p,value,7n,s0),preserved))
+
+def L.write_pointer_word_other_image(expect,image,p,value,q,apart,state):
+  (safe,(shape,known)) = state
+  L.write_pointer_word_other_step(expect,image,p,value,q,safe,apart,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.write_pointer_word_other(expect,b,p,value,q,apart,state):
+  proof : (L.RoutedApart(p,q) -> L.SafePointerWordAt(expect,b,q) ->
+    L.SafePointerWordAt(expect,Board.set_cell(b,p,value),q)) =
+    L.on_reified_board(b,x => (L.RoutedApart(p,q) -> L.SafePointerWordAt(expect,x,q) ->
+      L.SafePointerWordAt(expect,Board.set_cell(x,p,value),q)),L.reify_board(b),
+      image => L.write_pointer_word_other_image(expect,image,p,value,q))
+  proof(apart,state)
+
+def L.place_pointer_word_peers_image(expect,image,p,q,d,routes,state):
+  (row,(col,box)) = routes
+  L.box_four_keeps_pointer_word(expect,L.place_columns(L.image_board(image),p,d),L.place_box_base(p),L.place_box_r1(p),L.place_box_r2(p),L.place_box_c1(p),L.place_box_c2(p),q,d,box,
+    L.column_pointer_word_line(expect,9n,0,M.rem9(p),p,q,d,L.place_rows(L.image_board(image),p,d),col,
+      L.row_pointer_word_line(expect,9n,0,L.place_row_base(p),p,q,d,L.image_board(image),row,state)))
+
+def L.place_peers_keep_pointer_word(expect,b,p,q,d):
+  L.on_reified_board(b,x => L.PlacePeersPointerWord(expect,x,p,q,d),
+    L.reify_board(b),image => L.place_pointer_word_peers_image(expect,image,p,q,d))
+
+def L.place_keeps_pointer_word_image(expect,image,guess,p,q,d,apart,flag,routes,state):
+  after_clear = Q.clear_forced(guess,L.image_board(image),p)
+  after_write = Board.set_cell(Q.clear_forced(guess,L.image_board(image),p),p,L.fixed_word(d))
+  L.place_peers_keep_pointer_word(expect,after_write,p,q,d)(routes,
+    L.write_pointer_word_other(expect,after_clear,p,L.fixed_word(d),q,apart,
+      L.clear_forced_pointer_word(expect,L.image_board(image),guess,p,q,flag,state)))
+
+def L.queued_place_keeps_pointer_word(expect,b,guess,p,q,d):
+  L.on_reified_board(b,x => L.PlaceKeepsPointerWord(expect,x,guess,p,q,d),
+    L.reify_board(b),image => L.place_keeps_pointer_word_image(expect,image,guess,p,q,d))
+
+
+
+def L.logical_target_routes_to_pointer(row,col):
+  match row col:
+    case L.Coordinate0{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_routes_to_pointer(source):
+  match source:
+    case L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate8{}),
+        {==})))))))))
+    case L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate8{}),
+        {==})))))))))
+
+def L.column_routes_to_pointer(source):
+  match source:
+    case L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate0{}),
+        {==})))))))))
+    case L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate1{}),
+        {==})))))))))
+    case L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate2{}),
+        {==})))))))))
+    case L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate3{}),
+        {==})))))))))
+    case L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate4{}),
+        {==})))))))))
+    case L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate5{}),
+        {==})))))))))
+    case L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate6{}),
+        {==})))))))))
+    case L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate7{}),
+        {==})))))))))
+    case L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate8{}),
+        {==})))))))))
+
+def L.box_routes_to_pointer(sr,sc):
+  match sr sc:
+    case L.Coordinate0{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate2{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate0{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate1{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate5{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate3{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate4{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate8{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate7{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate0{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate2{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate1{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate2{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate0{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate2{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate1{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate0{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate1{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate3{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate5{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate4{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate5{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate3{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate5{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate4{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate3{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate4{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate6{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate8{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate7{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate8{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate6{}),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate8{}:
+      (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate6{},L.Coordinate7{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate6{}),
+        (L.logical_target_routes_to_pointer(L.Coordinate7{},L.Coordinate7{}),
+        {==}))))
+
+def L.placement_routes_to_pointer_with_geometry(sr,sc,geometry):
+  (row_eq,col_eq) = geometry
+  +p = L.logical_position(sr,sc)
+  +q : U32 = 108
+  %Equal.sym(U32,L.place_row_base(p),L.row_origin(sr),row_eq) :
+    (L.RowDistinctRoutes(9n,0,_,q) & L.ColumnDistinctRoutes(9n,0,M.rem9(p),q)
+     & L.DistinctPeerListRoutes(L.placed_box_positions(p),q))
+  %Equal.sym(U32,M.rem9(p),L.coord_u32(sc),col_eq) :
+    (L.RowDistinctRoutes(9n,0,L.row_origin(sr),q) & L.ColumnDistinctRoutes(9n,0,_,q)
+     & L.DistinctPeerListRoutes(L.placed_box_positions(p),q))
+  (L.row_routes_to_pointer(sr),
+    (L.column_routes_to_pointer(sc),
+      L.box_routes_to_pointer(sr,sc)))
+
+
+def L.read_pointer_word_witness(b,expect,state):
+  (unused,(unused_shape,word)) = state
+  word
+
+def L.actual_pre_refresh_keeps_pointer_routes(image,guess,p,d,shape,target,passes):
+  (target_apart,flag_apart) = target
+  +expect = L.cell_value(L.image_board(image),108)
+  L.read_pointer_word_witness(L.placement_before_refresh(guess,L.image_board(image),p,d),expect,
+    L.queued_place_keeps_pointer_word(expect,L.image_board(image),guess,p,108,d)(target_apart,flag_apart,passes,({==},(shape,{==}))))
+
+def L.actual_pre_refresh_keeps_pointer_image(image,guess,row,col,d,shape):
+  +p = L.logical_position(row,col)
+  L.actual_pre_refresh_keeps_pointer_routes(image,guess,p,d,shape,L.logical_target_routes_to_pointer(row,col),
+    L.placement_routes_to_pointer_with_geometry(row,col,L.source_place_geometry(row,col)))
+
+def L.actual_pre_refresh_keeps_pointer(b,guess,row,col,d):
+  L.on_reified_board(b,x => L.PreRefreshKeepsPointer(x,guess,row,col,d),
+    L.reify_board(b),image => L.actual_pre_refresh_keeps_pointer_image(image,guess,row,col,d))
+
+def L.refresh_keeps_known_pointer_parts(image,p,start,known,miss):
+  (for_refresh,for_trans) = known
+  +old = L.cell_value(L.image_board(image),108)
+  Equal.trans(U32,L.cell_value(L.refresh_actual(L.image_board(image),p),108),old,start,
+    Equal.cong(Array<U32>,U32,a => L.cell_value(a,108),L.refresh_actual(L.image_board(image),p),L.image_board(image),
+      L.refresh_away_from_pointer_leaves_board(image,p,start,for_refresh,miss)),for_trans)
+
+def L.refresh_keeps_known_pointer_image(image,p,start,known,miss):
+  L.refresh_keeps_known_pointer_parts(image,p,start,L.copy_word_eq(L.cell_value(L.image_board(image),108),start,known),miss)
+
+def L.refresh_keeps_known_pointer(b,p,start):
+  L.on_reified_board(b,x => L.RefreshKeepsKnownPointer(x,p,start),
+    L.reify_board(b),image => L.refresh_keeps_known_pointer_image(image,p,start))
+
+def L.queued_place_away_keeps_pointer_image(image,guess,row,col,d,shape,miss):
+  +p = L.logical_position(row,col)
+  +start = L.cell_value(L.image_board(image),108)
+  L.refresh_keeps_known_pointer(L.placement_before_refresh(guess,L.image_board(image),p,d),p,start)(
+    L.actual_pre_refresh_keeps_pointer(L.image_board(image),guess,row,col,d)(shape),miss)
+
+def L.queued_place_away_keeps_pointer(b,guess,row,col,d):
+  L.on_reified_board(b,x => L.PlaceAwayKeepsPointer(x,guess,row,col,d),
+    L.reify_board(b),image => L.queued_place_away_keeps_pointer_image(image,guess,row,col,d))
+
+def L.check_urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,b8,suffix,checked):
+  match suffix:
+    case WNil{}:
+      checked
+
+def L.select_urgency_subtree_8(placed,b0,b1,b2,b3,b4,b5,b6,b7,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,False{}) == True{} : Bool},{L.urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,False{}) == True{} : Bool},{L.urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,b7,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,bit,rest,
+        L.select_urgency_subtree_8(placed,b0,b1,b2,b3,b4,b5,b6,b7,bit,
+          L.both_true(L.urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,False{}),L.urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,True{}),checked)))
+
+def L.select_urgency_subtree_7(placed,b0,b1,b2,b3,b4,b5,b6,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,False{}) == True{} : Bool},{L.urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,False{}) == True{} : Bool},{L.urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,b6,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,bit,rest,
+        L.select_urgency_subtree_7(placed,b0,b1,b2,b3,b4,b5,b6,bit,
+          L.both_true(L.urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,False{}),L.urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,True{}),checked)))
+
+def L.select_urgency_subtree_6(placed,b0,b1,b2,b3,b4,b5,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,False{}) == True{} : Bool},{L.urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,False{}) == True{} : Bool},{L.urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,b5,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,bit,rest,
+        L.select_urgency_subtree_6(placed,b0,b1,b2,b3,b4,b5,bit,
+          L.both_true(L.urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,False{}),L.urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,True{}),checked)))
+
+def L.select_urgency_subtree_5(placed,b0,b1,b2,b3,b4,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,False{}) == True{} : Bool},{L.urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,False{}) == True{} : Bool},{L.urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_5(placed,b0,b1,b2,b3,b4,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,bit,rest,
+        L.select_urgency_subtree_5(placed,b0,b1,b2,b3,b4,bit,
+          L.both_true(L.urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,False{}),L.urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,True{}),checked)))
+
+def L.select_urgency_subtree_4(placed,b0,b1,b2,b3,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_5(placed,b0,b1,b2,b3,False{}) == True{} : Bool},{L.urgency_flag_tree_5(placed,b0,b1,b2,b3,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_5(placed,b0,b1,b2,b3,False{}) == True{} : Bool},{L.urgency_flag_tree_5(placed,b0,b1,b2,b3,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_4(placed,b0,b1,b2,b3,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_5(placed,b0,b1,b2,b3,bit,rest,
+        L.select_urgency_subtree_4(placed,b0,b1,b2,b3,bit,
+          L.both_true(L.urgency_flag_tree_5(placed,b0,b1,b2,b3,False{}),L.urgency_flag_tree_5(placed,b0,b1,b2,b3,True{}),checked)))
+
+def L.select_urgency_subtree_3(placed,b0,b1,b2,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_4(placed,b0,b1,b2,False{}) == True{} : Bool},{L.urgency_flag_tree_4(placed,b0,b1,b2,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_4(placed,b0,b1,b2,False{}) == True{} : Bool},{L.urgency_flag_tree_4(placed,b0,b1,b2,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_3(placed,b0,b1,b2,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_4(placed,b0,b1,b2,bit,rest,
+        L.select_urgency_subtree_3(placed,b0,b1,b2,bit,
+          L.both_true(L.urgency_flag_tree_4(placed,b0,b1,b2,False{}),L.urgency_flag_tree_4(placed,b0,b1,b2,True{}),checked)))
+
+def L.select_urgency_subtree_2(placed,b0,b1,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_3(placed,b0,b1,False{}) == True{} : Bool},{L.urgency_flag_tree_3(placed,b0,b1,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_3(placed,b0,b1,False{}) == True{} : Bool},{L.urgency_flag_tree_3(placed,b0,b1,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_2(placed,b0,b1,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_3(placed,b0,b1,bit,rest,
+        L.select_urgency_subtree_2(placed,b0,b1,bit,
+          L.both_true(L.urgency_flag_tree_3(placed,b0,b1,False{}),L.urgency_flag_tree_3(placed,b0,b1,True{}),checked)))
+
+def L.select_urgency_subtree_1(placed,b0,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_2(placed,b0,False{}) == True{} : Bool},{L.urgency_flag_tree_2(placed,b0,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_2(placed,b0,False{}) == True{} : Bool},{L.urgency_flag_tree_2(placed,b0,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_1(placed,b0,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_2(placed,b0,bit,rest,
+        L.select_urgency_subtree_1(placed,b0,bit,
+          L.both_true(L.urgency_flag_tree_2(placed,b0,False{}),L.urgency_flag_tree_2(placed,b0,True{}),checked)))
+
+def L.select_urgency_subtree_0(placed,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.urgency_flag_tree_1(placed,False{}) == True{} : Bool},{L.urgency_flag_tree_1(placed,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.urgency_flag_tree_1(placed,False{}) == True{} : Bool},{L.urgency_flag_tree_1(placed,True{}) == True{} : Bool},both)
+
+def L.check_urgency_flag_tree_0(placed,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_urgency_flag_tree_1(placed,bit,rest,
+        L.select_urgency_subtree_0(placed,bit,
+          L.both_true(L.urgency_flag_tree_1(placed,False{}),L.urgency_flag_tree_1(placed,True{}),checked)))
+
+def L.equal_urgency_sound(a,b,yes):
+  match a b:
+    case False{} False{}:
+      {==}
+    case False{} True{}:
+      Empty.absurd({False{} == True{} : Bool},L.false_is_not_true(yes))
+    case True{} False{}:
+      Empty.absurd({True{} == False{} : Bool},L.false_is_not_true(yes))
+    case True{} True{}:
+      {==}
+
+def L.all_masks_keep_urgency(placed):
+  match placed:
+    case L.D0{}:
+      {==}
+    case L.D1{}:
+      {==}
+    case L.D2{}:
+      {==}
+    case L.D3{}:
+      {==}
+    case L.D4{}:
+      {==}
+    case L.D5{}:
+      {==}
+    case L.D6{}:
+      {==}
+    case L.D7{}:
+      {==}
+    case L.D8{}:
+      {==}
+    case L.D9{}:
+      {==}
+
+def L.normalized_bits_keep_exact_urgency(placed,bits):
+  +old = L.candidate_bits_word(bits)
+  +bit = Board.bit(L.digit_word(placed))
+  L.equal_urgency_sound(L.urgency_after_peer(old,bit,Q.zero_or_single(old)),
+    Q.zero_or_single(L.blank_after_peer(old,bit)),
+    L.check_urgency_flag_tree_0(placed,bits,L.all_masks_keep_urgency(placed)))
+
+def L.urgency_from_candidate_image(placed,old,image):
+  (+bits,form) = image
+  %Equal.sym(U32,U32.and(1022,old),L.candidate_bits_word(bits),form) : L.UrgencyConsistent(placed,_)
+  L.normalized_bits_keep_exact_urgency(placed,bits)
+
+def L.normalized_blank_keeps_exact_urgency(placed,old,normalized):
+  %normalized : L.UrgencyConsistent(placed,_)
+  L.urgency_from_candidate_image(placed,old,L.low_candidate_mask_image(old))
+
+def L.flag_writes_slot_word_image(image,p,on):
+  b = L.image_board(image)
+  +slot = L.flag_slot(p)
+  +word = L.flag_word(p,on,L.cell_value(L.image_board(image),slot))
+  %Equal.sym(Array<U32>,Q.flag(b,p,on),Board.set_cell(b,slot,word),
+    L.flag_normalized(b,p,on,L.board_read_witness(L.image_board(image),slot))) :
+    {L.cell_value(_,slot) == word : U32}
+  L.board_set_get(L.image_board(image),slot,word)
+
+def L.flag_writes_slot_word(b,p,on):
+  L.on_reified_board(b,x => L.FlagWrittenWord(x,p,on),
+    L.reify_board(b),image => L.flag_writes_slot_word_image(image,p,on))
+
+def L.changed_flag_slot_word(b,p,needed):
+  match needed:
+    case False{}:
+      {==}
+    case True{}:
+      L.flag_writes_slot_word(b,p,True{})
+
+def L.pick_flag_word_rewrite(p,change,before,after,eq):
+  %Equal.sym(U32,after,before,eq) :
+    {Bool.pick(U32,change,L.flag_word(p,True{},_),_) ==
+     Bool.pick(U32,change,L.flag_word(p,True{},before),before) : U32}
+  {==}
+
+def L.peer_flag_word_change_step(image,needed,p,bit,old,shape,apart):
+  match needed:
+    case False{}:
+      {==}
+    case True{}:
+      +slot = L.flag_slot(p)
+      +candidate = L.peer_mask(old,bit)
+      +update = L.peer_reflag(old,bit)
+      written = Board.set_cell(L.image_board(image),p,candidate)
+      +word_after_write = L.cell_value(Board.set_cell(L.image_board(image),p,candidate),slot)
+      +word_before_write = L.cell_value(L.image_board(image),slot)
+      Equal.trans(U32,L.cell_value(Q.changed(True{},p,bit,L.image_board(image),old),slot),
+        Bool.pick(U32,update,L.flag_word(p,True{},word_after_write),word_after_write),
+        Bool.pick(U32,update,L.flag_word(p,True{},word_before_write),word_before_write),
+        L.changed_flag_slot_word(written,p,update),
+        L.pick_flag_word_rewrite(p,update,word_before_write,word_after_write,
+          L.perfect_write_keeps_cell(L.image_board(image),p,slot,candidate,shape,apart)))
+
+def L.actual_peer_flag_word_image(image,p,bit,shape,apart):
+  b = L.image_board(image)
+  +old = L.cell_value(L.image_board(image),p)
+  +needed = U32.is_ne(U32.and(old,bit),0)
+  +slot = L.flag_slot(p)
+  %Equal.sym(Array<U32>,L.actual_peer(b,p,bit),Q.changed(needed,p,bit,b,old),
+    L.peer_normalized(b,p,bit,L.board_read_witness(L.image_board(image),p))) :
+    {L.cell_value(_,slot) == L.peer_flag_word_model(p,old,bit,L.cell_value(b,slot)) : U32}
+  L.peer_flag_word_change_step(image,needed,p,bit,old,shape,apart)
+
+def L.actual_peer_flag_word(b,p,bit):
+  L.on_reified_board(b,x => L.PeerFlagWord(x,p,bit),
+    L.reify_board(b),image => L.actual_peer_flag_word_image(image,p,bit))
+
+def L.bit_mask_set_is_set(old,mask):
+  match old mask:
+    case False{} False{}:
+      {==}
+    case False{} True{}:
+      {==}
+    case True{} False{}:
+      {==}
+    case True{} True{}:
+      {==}
+
+def L.bit_mask_clear_is_clear(old,mask):
+  match old mask:
+    case False{} False{}:
+      {==}
+    case False{} True{}:
+      {==}
+    case True{} False{}:
+      {==}
+    case True{} True{}:
+      {==}
+
+def L.word_mask_set_is_set(n,old,mask):
+  match n old mask:
+    case 0n WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{+a,+tail_a} WCon{+b,+tail_b}:
+      %Equal.sym(Bool,Bool.and(b,Bool.or(a,b)),b,L.bit_mask_set_is_set(a,b)) :
+        {WCon{_,Word.and(k,tail_b,Word.or(k,tail_a,tail_b))} == WCon{b,tail_b} : Word(1n+k)}
+      Equal.cong(Word(k),Word(1n+k),r => WCon{b,r},
+        Word.and(k,tail_b,Word.or(k,tail_a,tail_b)),tail_b,L.word_mask_set_is_set(k,tail_a,tail_b))
+
+def L.word_mask_clear_is_clear(n,old,mask):
+  match n old mask:
+    case 0n WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{+a,+tail_a} WCon{+b,+tail_b}:
+      %Equal.sym(Bool,Bool.and(b,Bool.and(a,Bool.not(b))),False{},L.bit_mask_clear_is_clear(a,b)) :
+        {WCon{_,Word.and(k,tail_b,Word.and(k,tail_a,Word.not(k,tail_b)))} == Word.zero(1n+k) : Word(1n+k)}
+      Equal.cong(Word(k),Word(1n+k),r => WCon{False{},r},
+        Word.and(k,tail_b,Word.and(k,tail_a,Word.not(k,tail_b))),Word.zero(k),L.word_mask_clear_is_clear(k,tail_a,tail_b))
+
+def L.u32_mask_set_is_set(old,mask):
+  match old mask:
+    case U32{+a} U32{+b}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,b,Word.or(32n,a,b)),b,L.word_mask_set_is_set(32n,a,b))
+
+def L.u32_mask_clear_is_clear(old,mask):
+  match old mask:
+    case U32{+a} U32{+b}:
+      Equal.cong(Word(32n),U32,w => U32{w},Word.and(32n,b,Word.and(32n,a,Word.not(32n,b))),Word.zero(32n),
+        L.word_mask_clear_is_clear(32n,a,b))
+
+def L.flag_word_set_is_present(p,flags,nonzero):
+  +mask = L.own_queue_flag_mask(p)
+  %Equal.sym(U32,U32.and(mask,U32.or(flags,mask)),mask,L.u32_mask_set_is_set(flags,mask)) :
+    {U32.is_ne(_,0) == True{} : Bool}
+  nonzero
+
+def L.flag_word_clear_is_absent(p,flags):
+  +mask = L.own_queue_flag_mask(p)
+  %Equal.sym(U32,U32.and(mask,U32.and(flags,U32.not(mask))),0,L.u32_mask_clear_is_clear(flags,mask)) :
+    {U32.is_ne(_,0) == False{} : Bool}
+  {==}
+
+def L.flag_word_flag_matches_value(p,on,flags,nonzero):
+  match on:
+    case False{}:
+      L.flag_word_clear_is_absent(p,flags)
+    case True{}:
+      L.flag_word_set_is_present(p,flags,nonzero)
+
+def L.bool_or_right_false_at(value):
+  match value:
+    case False{}:
+      {==}
+    case True{}:
+      {==}
+
+def L.bool_or_right_true_from(value):
+  match value:
+    case False{}:
+      {==}
+    case True{}:
+      {==}
+
+def L.actual_peer_flag_model_bits(p,change,flags,nonzero):
+  match change:
+    case False{}:
+      L.bool_or_right_false_at(L.queue_flag_present(p,flags))
+    case True{}:
+      Equal.trans(Bool,L.queue_flag_present(p,L.flag_word(p,True{},flags)),True{},Bool.or(L.queue_flag_present(p,flags),True{}),
+        L.flag_word_set_is_present(p,flags,nonzero),L.bool_or_right_true_from(L.queue_flag_present(p,flags)))
+
+def L.actual_peer_flag_model_observable(p,old,bit,flags,nonzero):
+  L.actual_peer_flag_model_bits(p,Bool.and(U32.is_ne(U32.and(old,bit),0),L.peer_reflag(old,bit)),flags,nonzero)
+
+def L.actual_peer_observed_flag_image(image,p,bit,shape,apart,nonzero):
+  b = L.image_board(image)
+  +slot = L.flag_slot(p)
+  +old = L.cell_value(L.image_board(image),p)
+  +flags = L.cell_value(L.image_board(image),slot)
+  +model = L.peer_flag_word_model(p,old,bit,flags)
+  %Equal.sym(U32,L.cell_value(L.actual_peer(b,p,bit),slot),model,L.actual_peer_flag_word(L.image_board(image),p,bit)(shape,apart)) :
+    {L.queue_flag_present(p,_) == L.urgency_after_peer(old,bit,L.queue_flag_present(p,flags)) : Bool}
+  L.actual_peer_flag_model_observable(p,old,bit,flags,nonzero)
+
+def L.actual_changed_candidate_image(image,needed,p,bit,shape,apart):
+  match needed:
+    case False{}:
+      {==}
+    case True{}:
+      L.changed_peer_word_image(image,p,bit,L.cell_value(L.image_board(image),p),shape,apart)
+
+def L.actual_peer_candidate_image(image,p,bit,shape,apart):
+  b = L.image_board(image)
+  +old = L.cell_value(L.image_board(image),p)
+  +needed = U32.is_ne(U32.and(old,bit),0)
+  %Equal.sym(Array<U32>,L.actual_peer(b,p,bit),Q.changed(needed,p,bit,b,old),
+    L.peer_normalized(b,p,bit,L.board_read_witness(L.image_board(image),p))) :
+    {L.cell_value(_,p) == L.blank_after_peer(old,bit) : U32}
+  L.actual_changed_candidate_image(image,needed,p,bit,shape,apart)
+
+def L.prior_flag_urgency_agrees(placed,old,prior,observed,norm):
+  +bit = Board.bit(L.digit_word(placed))
+  %Equal.sym(Bool,prior,Q.zero_or_single(old),observed) :
+    {L.urgency_after_peer(old,bit,_) == Q.zero_or_single(L.blank_after_peer(old,bit)) : Bool}
+  L.normalized_blank_keeps_exact_urgency(placed,old,norm)
+
+def L.actual_peer_normalized_urgency_parts(image,p,placed,shapes,flag_route,cell_route,nonzero,observed,norm):
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(placed))
+  +old = L.cell_value(L.image_board(image),p)
+  +prior = L.actual_flag_at(L.image_board(image),p)
+  result = L.actual_peer(L.image_board(image),p,bit)
+  %Equal.sym(U32,L.cell_value(result,p),L.blank_after_peer(old,bit),L.actual_peer_candidate_image(image,p,bit,s0,cell_route)) :
+    {L.actual_flag_at(result,p) == Q.zero_or_single(_) : Bool}
+  Equal.trans(Bool,L.actual_flag_at(result,p),L.urgency_after_peer(old,bit,prior),Q.zero_or_single(L.blank_after_peer(old,bit)),
+    L.actual_peer_observed_flag_image(image,p,bit,s1,flag_route,nonzero),
+    L.prior_flag_urgency_agrees(placed,old,prior,observed,norm))
+
+def L.actual_peer_normalized_urgency_image(image,p,placed,shape):
+  L.actual_peer_normalized_urgency_parts(image,p,placed,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape))
+
+def L.actual_peer_normalized_urgency(b,p,placed):
+  L.on_reified_board(b,x => L.ActualPeerKeepsUrgency(x,p,placed),
+    L.reify_board(b),image => L.actual_peer_normalized_urgency_image(image,p,placed))
+
+def L.low_five_flag_is_nonzero(b0,b1,b2,b3,b4):
+  match b0 b1 b2 b3 b4:
+    case False{} False{} False{} False{} False{}:
+      {==}
+    case False{} False{} False{} False{} True{}:
+      {==}
+    case False{} False{} False{} True{} False{}:
+      {==}
+    case False{} False{} False{} True{} True{}:
+      {==}
+    case False{} False{} True{} False{} False{}:
+      {==}
+    case False{} False{} True{} False{} True{}:
+      {==}
+    case False{} False{} True{} True{} False{}:
+      {==}
+    case False{} False{} True{} True{} True{}:
+      {==}
+    case False{} True{} False{} False{} False{}:
+      {==}
+    case False{} True{} False{} False{} True{}:
+      {==}
+    case False{} True{} False{} True{} False{}:
+      {==}
+    case False{} True{} False{} True{} True{}:
+      {==}
+    case False{} True{} True{} False{} False{}:
+      {==}
+    case False{} True{} True{} False{} True{}:
+      {==}
+    case False{} True{} True{} True{} False{}:
+      {==}
+    case False{} True{} True{} True{} True{}:
+      {==}
+    case True{} False{} False{} False{} False{}:
+      {==}
+    case True{} False{} False{} False{} True{}:
+      {==}
+    case True{} False{} False{} True{} False{}:
+      {==}
+    case True{} False{} False{} True{} True{}:
+      {==}
+    case True{} False{} True{} False{} False{}:
+      {==}
+    case True{} False{} True{} False{} True{}:
+      {==}
+    case True{} False{} True{} True{} False{}:
+      {==}
+    case True{} False{} True{} True{} True{}:
+      {==}
+    case True{} True{} False{} False{} False{}:
+      {==}
+    case True{} True{} False{} False{} True{}:
+      {==}
+    case True{} True{} False{} True{} False{}:
+      {==}
+    case True{} True{} False{} True{} True{}:
+      {==}
+    case True{} True{} True{} False{} False{}:
+      {==}
+    case True{} True{} True{} False{} True{}:
+      {==}
+    case True{} True{} True{} True{} False{}:
+      {==}
+    case True{} True{} True{} True{} True{}:
+      {==}
+
+def L.own_queue_flag_mask_is_nonzero(p):
+  match p:
+    case U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,tail}}}}}}:
+      %Equal.sym(Word(27n),Word.and(27n,tail,Word.zero(27n)),Word.zero(27n),L.word_and_zero(27n,tail)) :
+        {U32.is_ne(L.flag_bit_at(L.low_five_word(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}),_)),0) == True{} : Bool}
+      L.low_five_flag_is_nonzero(Bool.and(b0,True{}),Bool.and(b1,True{}),Bool.and(b2,True{}),Bool.and(b3,True{}),Bool.and(b4,True{}))
+
+def L.logical_cell_and_flag_are_apart(row,col):
+  match row col:
+    case L.Coordinate0{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate8{}:
+      {==}
+
+def L.logical_peer_preserves_exact_urgency(b,row,col,placed,shape,observed,norm):
+  +p = L.logical_position(row,col)
+  L.actual_peer_normalized_urgency(b,p,placed)(shape,L.logical_cell_and_flag_are_apart(row,col),
+    L.any_logical_flag_route(row,col,row,col),L.own_queue_flag_mask_is_nonzero(p),observed,norm)

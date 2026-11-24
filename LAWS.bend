@@ -8162,3 +8162,955 @@ law queued_encode_keeps_pointer_image:
 law queued_encode_keeps_pointer:
   for b: Array<U32>
   QueueEncodeKeepsPointer(b)
+
+def DistinctPeerRoute(+p: U32, +q: U32) -> Type:
+  (RoutedApart(p,q) & RoutedApart(flag_slot(p),q))
+
+def RowDistinctRoutes(+n: Nat, +j: U32, +base: U32, +q: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      DistinctPeerRoute((base + j : U32),q) & RowDistinctRoutes(k,(j + 1 : U32),base,q)
+
+def ColumnDistinctRoutes(+n: Nat, +j: U32, +col: U32, +q: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      DistinctPeerRoute((j * 9 + col : U32),q) & ColumnDistinctRoutes(k,(j + 1 : U32),col,q)
+
+def DistinctPeerListRoutes(positions: List<&2,U32>, +q: U32) -> Type:
+  match positions:
+    case Nil{}:
+      {True{} == True{} : Bool}
+    case +p <> tail:
+      DistinctPeerRoute(p,q) & DistinctPeerListRoutes(tail,q)
+
+def PlaceDistinctRoutes(+p: U32, +q: U32) -> Type:
+  (RowDistinctRoutes(9n,0,place_row_base(p),q) & ColumnDistinctRoutes(9n,0,M.rem9(p),q)
+   & DistinctPeerListRoutes(placed_box_positions(p),q))
+
+def placement_before_refresh(+guess: Bool, b: Array<U32>, +p: U32, +d: BoardDigit) -> Array<U32>:
+  place_boxes(B.set_cell(Q.clear_forced(guess,b,p),p,fixed_word(d)),p,d)
+
+def PointerWordValue(+expect: U32, +raw: U32) -> Type:
+  {raw == expect : U32}
+
+# The pointwise invariant carries its own distinct flag route for peer self visits.
+def SafePointerWordAt(+expect: U32, -b: Array<U32>, +q: U32) -> Type:
+  (RoutedApart(flag_slot(q),q) & Board128(b) & PointerWordValue(expect,cell_value(b,q)))
+
+law peer_keeps_pointer_word_separate_step:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for +placed: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for given: PointerWordValue(expect,cell_value(image_board(image),q))
+  for sep: RoutedApart(p,q)
+  for flag: RoutedApart(flag_slot(p),q)
+  SafePointerWordAt(expect,actual_peer(image_board(image),p,B.bit(digit_word(placed))),q)
+
+law peer_keeps_pointer_word_separate_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  for apart: (RoutedApart(p,q) & RoutedApart(flag_slot(p),q))
+  SafePointerWordAt(expect,image_board(image),q) ->
+  SafePointerWordAt(expect,actual_peer(image_board(image),p,B.bit(digit_word(placed))),q)
+
+def PeerPointerWordTransition(+expect: U32, -b: Array<U32>, +p: U32, +q: U32, +placed: BoardDigit) -> Type:
+  DistinctPeerRoute(p,q) -> SafePointerWordAt(expect,b,q) ->
+  SafePointerWordAt(expect,actual_peer(b,p,B.bit(digit_word(placed))),q)
+
+law peer_pointer_word_transition_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  PeerPointerWordTransition(expect,image_board(image),p,q,placed)
+
+law peer_pointer_word_transition:
+  for +expect: U32
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  PeerPointerWordTransition(expect,b,p,q,placed)
+
+
+def RowPointerWordProof(+expect: U32, +n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> RowDistinctRoutes(n,j,base,q) -> SafePointerWordAt(expect,b,q) ->
+  SafePointerWordAt(expect,Q.row_line(n,j,base,placed,B.bit(digit_word(d)),b),q)
+
+def RowPointerWordStep(+expect: U32, -b: Array<U32>, +n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  RowDistinctRoutes(1n+n,j,base,q) -> SafePointerWordAt(expect,b,q) ->
+  RowPointerWordProof(expect,n,(j + 1 : U32),base,placed,q,d) ->
+  SafePointerWordAt(expect,Q.row_line(1n+n,j,base,placed,B.bit(digit_word(d)),b),q)
+
+law row_pointer_word_step_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowPointerWordStep(expect,image_board(image),n,j,base,placed,q,d)
+
+law row_pointer_word_step:
+  for +expect: U32
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowPointerWordStep(expect,b,n,j,base,placed,q,d)
+
+law row_pointer_word_line:
+  for +expect: U32
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowPointerWordProof(expect,n,j,base,placed,q,d)
+
+
+def ColumnPointerWordProof(+expect: U32, +n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> ColumnDistinctRoutes(n,j,col,q) -> SafePointerWordAt(expect,b,q) ->
+  SafePointerWordAt(expect,Q.column_line(n,j,col,placed,B.bit(digit_word(d)),b),q)
+
+def ColumnPointerWordStep(+expect: U32, -b: Array<U32>, +n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  ColumnDistinctRoutes(1n+n,j,col,q) -> SafePointerWordAt(expect,b,q) ->
+  ColumnPointerWordProof(expect,n,(j + 1 : U32),col,placed,q,d) ->
+  SafePointerWordAt(expect,Q.column_line(1n+n,j,col,placed,B.bit(digit_word(d)),b),q)
+
+law column_pointer_word_step_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnPointerWordStep(expect,image_board(image),n,j,col,placed,q,d)
+
+law column_pointer_word_step:
+  for +expect: U32
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnPointerWordStep(expect,b,n,j,col,placed,q,d)
+
+law column_pointer_word_line:
+  for +expect: U32
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnPointerWordProof(expect,n,j,col,placed,q,d)
+
+
+def PointerWordPeerListProof(+expect: U32, -positions: List<&2,U32>, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> DistinctPeerListRoutes(positions,q) -> SafePointerWordAt(expect,b,q) ->
+  SafePointerWordAt(expect,run_peer_list(positions,b,B.bit(digit_word(d))),q)
+
+law pointer_word_peer_list_step_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  for routes: DistinctPeerListRoutes(p <> tail,q)
+  for state: SafePointerWordAt(expect,image_board(image),q)
+  for next: PointerWordPeerListProof(expect,tail,q,d)
+  SafePointerWordAt(expect,run_peer_list(p <> tail,image_board(image),B.bit(digit_word(d))),q)
+
+law pointer_word_peer_list_step:
+  for +expect: U32
+  for b: Array<U32>
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  for routes: DistinctPeerListRoutes(p <> tail,q)
+  for state: SafePointerWordAt(expect,b,q)
+  for next: PointerWordPeerListProof(expect,tail,q,d)
+  SafePointerWordAt(expect,run_peer_list(p <> tail,b,B.bit(digit_word(d))),q)
+
+law peer_list_pointer_word:
+  for +expect: U32
+  for positions: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  PointerWordPeerListProof(expect,positions,q,d)
+
+
+law box_four_keeps_pointer_word:
+  for +expect: U32
+  for b: Array<U32>
+  for +base: U32
+  for +r1: U32
+  for +r2: U32
+  for +c1: U32
+  for +c2: U32
+  for +q: U32
+  for +d: BoardDigit
+  for routes: DistinctPeerListRoutes(box_positions(base,r1,r2,c1,c2),q)
+  for state: SafePointerWordAt(expect,b,q)
+  SafePointerWordAt(expect,Q.box_four(base,r1,r2,c1,c2,B.bit(digit_word(d)),b),q)
+
+law clear_forced_pointer_word_image_step:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for flag: RoutedApart(flag_slot(p),q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: PointerWordValue(expect,cell_value(image_board(image),q))
+  SafePointerWordAt(expect,Q.clear_forced(False{},image_board(image),p),q)
+
+law clear_forced_pointer_word_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: SafePointerWordAt(expect,image_board(image),q)
+  SafePointerWordAt(expect,Q.clear_forced(guess,image_board(image),p),q)
+
+law clear_forced_pointer_word:
+  for +expect: U32
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: SafePointerWordAt(expect,b,q)
+  SafePointerWordAt(expect,Q.clear_forced(guess,b,p),q)
+
+law write_pointer_word_other_step:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for apart: RoutedApart(p,q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: PointerWordValue(expect,cell_value(image_board(image),q))
+  SafePointerWordAt(expect,B.set_cell(image_board(image),p,value),q)
+
+law write_pointer_word_other_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for state: SafePointerWordAt(expect,image_board(image),q)
+  SafePointerWordAt(expect,B.set_cell(image_board(image),p,value),q)
+
+law write_pointer_word_other:
+  for +expect: U32
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for state: SafePointerWordAt(expect,b,q)
+  SafePointerWordAt(expect,B.set_cell(b,p,value),q)
+
+
+def PlacePeersPointerWord(+expect: U32, -b: Array<U32>, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  PlaceDistinctRoutes(p,q) -> SafePointerWordAt(expect,b,q) -> SafePointerWordAt(expect,place_boxes(b,p,d),q)
+
+law place_pointer_word_peers_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlacePeersPointerWord(expect,image_board(image),p,q,d)
+
+law place_peers_keep_pointer_word:
+  for +expect: U32
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlacePeersPointerWord(expect,b,p,q,d)
+
+def PlaceKeepsPointerWord(+expect: U32, -b: Array<U32>, +guess: Bool, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) -> PlaceDistinctRoutes(p,q) -> SafePointerWordAt(expect,b,q) ->
+  SafePointerWordAt(expect,placement_before_refresh(guess,b,p,d),q)
+
+law place_keeps_pointer_word_image:
+  for +expect: U32
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlaceKeepsPointerWord(expect,image_board(image),guess,p,q,d)
+
+law queued_place_keeps_pointer_word:
+  for +expect: U32
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlaceKeepsPointerWord(expect,b,guess,p,q,d)
+
+
+
+law row_routes_to_pointer:
+  for +source: CellCoordinate
+  RowDistinctRoutes(9n,0,row_origin(source),108)
+
+law column_routes_to_pointer:
+  for +source: CellCoordinate
+  ColumnDistinctRoutes(9n,0,coord_u32(source),108)
+
+law box_routes_to_pointer:
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  DistinctPeerListRoutes(placed_box_positions(logical_position(source_row,source_col)),108)
+
+law logical_target_routes_to_pointer:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  DistinctPeerRoute(logical_position(row,col),108)
+
+law placement_routes_to_pointer_with_geometry:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for geometry: PlaceGeometry(row,col)
+  PlaceDistinctRoutes(logical_position(row,col),108)
+
+law read_pointer_word_witness:
+  for -b: Array<U32>
+  for +expect: U32
+  for state: SafePointerWordAt(expect,b,108)
+  {cell_value(b,108) == expect : U32}
+
+law actual_pre_refresh_keeps_pointer_routes:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +d: BoardDigit
+  for shape: Board128(image_board(image))
+  for target: DistinctPeerRoute(p,108)
+  for passes: PlaceDistinctRoutes(p,108)
+  {cell_value(placement_before_refresh(guess,image_board(image),p,d),108) == cell_value(image_board(image),108) : U32}
+
+def PreRefreshKeepsPointer(-b: Array<U32>, +guess: Bool, +row: CellCoordinate, +col: CellCoordinate, +d: BoardDigit) -> Type:
+  Board128(b) -> {cell_value(placement_before_refresh(guess,b,logical_position(row,col),d),108) == cell_value(b,108) : U32}
+
+law actual_pre_refresh_keeps_pointer_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  PreRefreshKeepsPointer(image_board(image),guess,row,col,d)
+
+law actual_pre_refresh_keeps_pointer:
+  for b: Array<U32>
+  for +guess: Bool
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  PreRefreshKeepsPointer(b,guess,row,col,d)
+
+def RefreshKeepsKnownPointer(-b: Array<U32>, +p: U32, +start: U32) -> Type:
+  {cell_value(b,108) == start : U32} ->
+  {U32.is_eq(p,start) == False{} : Bool} ->
+  {cell_value(refresh_actual(b,p),108) == start : U32}
+
+law refresh_keeps_known_pointer_parts:
+  for +image: BoardImage
+  for +p: U32
+  for +start: U32
+  for known: ({cell_value(image_board(image),108) == start : U32} & {cell_value(image_board(image),108) == start : U32})
+  for miss: {U32.is_eq(p,start) == False{} : Bool}
+  {cell_value(refresh_actual(image_board(image),p),108) == start : U32}
+
+law refresh_keeps_known_pointer_image:
+  for +image: BoardImage
+  for +p: U32
+  for +start: U32
+  RefreshKeepsKnownPointer(image_board(image),p,start)
+
+law refresh_keeps_known_pointer:
+  for b: Array<U32>
+  for +p: U32
+  for +start: U32
+  RefreshKeepsKnownPointer(b,p,start)
+
+def PlaceAwayKeepsPointer(-b: Array<U32>, +guess: Bool, +row: CellCoordinate, +col: CellCoordinate, +d: BoardDigit) -> Type:
+  Board128(b) ->
+  {U32.is_eq(logical_position(row,col),cell_value(b,108)) == False{} : Bool} ->
+  {cell_value(Q.place(guess,logical_position(row,col),digit_word(d),b),108) == cell_value(b,108) : U32}
+
+law queued_place_away_keeps_pointer_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  PlaceAwayKeepsPointer(image_board(image),guess,row,col,d)
+
+law queued_place_away_keeps_pointer:
+  for b: Array<U32>
+  for +guess: Bool
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  PlaceAwayKeepsPointer(b,guess,row,col,d)
+
+def equal_urgency(+a: Bool, +b: Bool) -> Bool:
+  Bool.pick(Bool,a,b,Bool.not(b))
+
+def blank_after_peer(+old: U32, +bit: U32) -> U32:
+  Bool.pick(U32,U32.is_ne(U32.and(old,bit),0),peer_mask(old,bit),old)
+
+def urgency_after_peer(+old: U32, +bit: U32, +prior: Bool) -> Bool:
+  Bool.or(prior,Bool.and(U32.is_ne(U32.and(old,bit),0),peer_reflag(old,bit)))
+
+def urgency_preserved_for_bits(+placed: BoardDigit, +bits: Word(9n)) -> Bool:
+  +old = candidate_bits_word(bits)
+  +bit = B.bit(digit_word(placed))
+  equal_urgency(urgency_after_peer(old,bit,Q.zero_or_single(old)),Q.zero_or_single(blank_after_peer(old,bit)))
+
+def urgency_flag_tree_9(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool,+b6: Bool,+b7: Bool,+b8: Bool) -> Bool:
+  urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WNil{}}}}}}}}}})
+
+def urgency_flag_tree_8(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool,+b6: Bool,+b7: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,False{}),urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,True{}))
+
+def urgency_flag_tree_7(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool,+b6: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,False{}),urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,True{}))
+
+def urgency_flag_tree_6(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,False{}),urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,True{}))
+
+def urgency_flag_tree_5(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,False{}),urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,True{}))
+
+def urgency_flag_tree_4(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_5(placed,b0,b1,b2,b3,False{}),urgency_flag_tree_5(placed,b0,b1,b2,b3,True{}))
+
+def urgency_flag_tree_3(+placed: BoardDigit,+b0: Bool,+b1: Bool,+b2: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_4(placed,b0,b1,b2,False{}),urgency_flag_tree_4(placed,b0,b1,b2,True{}))
+
+def urgency_flag_tree_2(+placed: BoardDigit,+b0: Bool,+b1: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_3(placed,b0,b1,False{}),urgency_flag_tree_3(placed,b0,b1,True{}))
+
+def urgency_flag_tree_1(+placed: BoardDigit,+b0: Bool) -> Bool:
+  Bool.and(urgency_flag_tree_2(placed,b0,False{}),urgency_flag_tree_2(placed,b0,True{}))
+
+def urgency_flag_tree_0(+placed: BoardDigit) -> Bool:
+  Bool.and(urgency_flag_tree_1(placed,False{}),urgency_flag_tree_1(placed,True{}))
+
+law check_urgency_flag_tree_9:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +b8: Bool
+  for +suffix: Word(0n)
+  for checked: {urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,b8) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,suffix}}}}}}}}}) == True{} : Bool}
+
+law select_urgency_subtree_8:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,False{}) == True{} : Bool} & {urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,True{}) == True{} : Bool})
+  {urgency_flag_tree_9(placed,b0,b1,b2,b3,b4,b5,b6,b7,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_8:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +suffix: Word(1n)
+  for checked: {urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,b7) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,suffix}}}}}}}}) == True{} : Bool}
+
+law select_urgency_subtree_7:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,False{}) == True{} : Bool} & {urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,True{}) == True{} : Bool})
+  {urgency_flag_tree_8(placed,b0,b1,b2,b3,b4,b5,b6,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_7:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +suffix: Word(2n)
+  for checked: {urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,b6) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,suffix}}}}}}}) == True{} : Bool}
+
+law select_urgency_subtree_6:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,False{}) == True{} : Bool} & {urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,True{}) == True{} : Bool})
+  {urgency_flag_tree_7(placed,b0,b1,b2,b3,b4,b5,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_6:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +suffix: Word(3n)
+  for checked: {urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,b5) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,suffix}}}}}}) == True{} : Bool}
+
+law select_urgency_subtree_5:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,False{}) == True{} : Bool} & {urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,True{}) == True{} : Bool})
+  {urgency_flag_tree_6(placed,b0,b1,b2,b3,b4,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_5:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +suffix: Word(4n)
+  for checked: {urgency_flag_tree_5(placed,b0,b1,b2,b3,b4) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,suffix}}}}}) == True{} : Bool}
+
+law select_urgency_subtree_4:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_5(placed,b0,b1,b2,b3,False{}) == True{} : Bool} & {urgency_flag_tree_5(placed,b0,b1,b2,b3,True{}) == True{} : Bool})
+  {urgency_flag_tree_5(placed,b0,b1,b2,b3,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_4:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +suffix: Word(5n)
+  for checked: {urgency_flag_tree_4(placed,b0,b1,b2,b3) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,WCon{b3,suffix}}}}) == True{} : Bool}
+
+law select_urgency_subtree_3:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_4(placed,b0,b1,b2,False{}) == True{} : Bool} & {urgency_flag_tree_4(placed,b0,b1,b2,True{}) == True{} : Bool})
+  {urgency_flag_tree_4(placed,b0,b1,b2,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_3:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +suffix: Word(6n)
+  for checked: {urgency_flag_tree_3(placed,b0,b1,b2) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,WCon{b2,suffix}}}) == True{} : Bool}
+
+law select_urgency_subtree_2:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_3(placed,b0,b1,False{}) == True{} : Bool} & {urgency_flag_tree_3(placed,b0,b1,True{}) == True{} : Bool})
+  {urgency_flag_tree_3(placed,b0,b1,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_2:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +b1: Bool
+  for +suffix: Word(7n)
+  for checked: {urgency_flag_tree_2(placed,b0,b1) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,WCon{b1,suffix}}) == True{} : Bool}
+
+law select_urgency_subtree_1:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +bit: Bool
+  for both: ({urgency_flag_tree_2(placed,b0,False{}) == True{} : Bool} & {urgency_flag_tree_2(placed,b0,True{}) == True{} : Bool})
+  {urgency_flag_tree_2(placed,b0,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_1:
+  for +placed: BoardDigit
+  for +b0: Bool
+  for +suffix: Word(8n)
+  for checked: {urgency_flag_tree_1(placed,b0) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,WCon{b0,suffix}) == True{} : Bool}
+
+law select_urgency_subtree_0:
+  for +placed: BoardDigit
+  for +bit: Bool
+  for both: ({urgency_flag_tree_1(placed,False{}) == True{} : Bool} & {urgency_flag_tree_1(placed,True{}) == True{} : Bool})
+  {urgency_flag_tree_1(placed,bit) == True{} : Bool}
+
+law check_urgency_flag_tree_0:
+  for +placed: BoardDigit
+  for +suffix: Word(9n)
+  for checked: {urgency_flag_tree_0(placed) == True{} : Bool}
+  {urgency_preserved_for_bits(placed,suffix) == True{} : Bool}
+
+law equal_urgency_sound:
+  for +a: Bool
+  for +b: Bool
+  for yes: {equal_urgency(a,b) == True{} : Bool}
+  {a == b : Bool}
+
+law all_masks_keep_urgency:
+  for +placed: BoardDigit
+  {urgency_flag_tree_0(placed) == True{} : Bool}
+
+law normalized_bits_keep_exact_urgency:
+  for +placed: BoardDigit
+  for +bits: Word(9n)
+  {urgency_after_peer(candidate_bits_word(bits),B.bit(digit_word(placed)),Q.zero_or_single(candidate_bits_word(bits))) ==
+    Q.zero_or_single(blank_after_peer(candidate_bits_word(bits),B.bit(digit_word(placed)))) : Bool}
+
+def UrgencyConsistent(+placed: BoardDigit, +old: U32) -> Type:
+  {urgency_after_peer(old,B.bit(digit_word(placed)),Q.zero_or_single(old)) ==
+    Q.zero_or_single(blank_after_peer(old,B.bit(digit_word(placed)))) : Bool}
+
+law urgency_from_candidate_image:
+  for +placed: BoardDigit
+  for +old: U32
+  for image: CandidateMaskImage(old)
+  UrgencyConsistent(placed,U32.and(1022,old))
+
+law normalized_blank_keeps_exact_urgency:
+  for +placed: BoardDigit
+  for +old: U32
+  for normalized: NormalizedQueueMask(old)
+  UrgencyConsistent(placed,old)
+
+def FlagWrittenWord(-b: Array<U32>, +p: U32, +on: Bool) -> Type:
+  {cell_value(Q.flag(b,p,on),flag_slot(p)) == flag_word(p,on,cell_value(b,flag_slot(p))) : U32}
+
+law flag_writes_slot_word_image:
+  for +image: BoardImage
+  for +p: U32
+  for +on: Bool
+  FlagWrittenWord(image_board(image),p,on)
+
+law flag_writes_slot_word:
+  for b: Array<U32>
+  for +p: U32
+  for +on: Bool
+  FlagWrittenWord(b,p,on)
+
+def ChangedFlagWord(-b: Array<U32>, +p: U32, +needed: Bool) -> Type:
+  {cell_value(Q.changed_flag(needed,b,p),flag_slot(p)) ==
+    Bool.pick(U32,needed,flag_word(p,True{},cell_value(b,flag_slot(p))),cell_value(b,flag_slot(p))) : U32}
+
+law changed_flag_slot_word:
+  for b: Array<U32>
+  for +p: U32
+  for +needed: Bool
+  ChangedFlagWord(b,p,needed)
+
+def peer_flag_word_model(+p: U32, +old: U32, +bit: U32, +flags: U32) -> U32:
+  Bool.pick(U32,Bool.and(U32.is_ne(U32.and(old,bit),0),peer_reflag(old,bit)),flag_word(p,True{},flags),flags)
+
+law pick_flag_word_rewrite:
+  for +p: U32
+  for +change: Bool
+  for +before: U32
+  for +after: U32
+  for eq: {after == before : U32}
+  {Bool.pick(U32,change,flag_word(p,True{},after),after) ==
+    Bool.pick(U32,change,flag_word(p,True{},before),before) : U32}
+
+law peer_flag_word_change_step:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for +old: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(p,flag_slot(p))
+  {cell_value(Q.changed(needed,p,bit,image_board(image),old),flag_slot(p)) ==
+    Bool.pick(U32,Bool.and(needed,peer_reflag(old,bit)),
+      flag_word(p,True{},cell_value(image_board(image),flag_slot(p))),
+      cell_value(image_board(image),flag_slot(p))) : U32}
+
+def PeerFlagWord(-b: Array<U32>, +p: U32, +bit: U32) -> Type:
+  Board128(b) -> RoutedApart(p,flag_slot(p)) ->
+  {cell_value(actual_peer(b,p,bit),flag_slot(p)) ==
+    peer_flag_word_model(p,cell_value(b,p),bit,cell_value(b,flag_slot(p))) : U32}
+
+law actual_peer_flag_word_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  PeerFlagWord(image_board(image),p,bit)
+
+law actual_peer_flag_word:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  PeerFlagWord(b,p,bit)
+
+law bit_mask_set_is_set:
+  for +old: Bool
+  for +mask: Bool
+  {Bool.and(mask,Bool.or(old,mask)) == mask : Bool}
+
+law bit_mask_clear_is_clear:
+  for +old: Bool
+  for +mask: Bool
+  {Bool.and(mask,Bool.and(old,Bool.not(mask))) == False{} : Bool}
+
+law word_mask_set_is_set:
+  for +n: Nat
+  for +old: Word(n)
+  for +mask: Word(n)
+  {Word.and(n,mask,Word.or(n,old,mask)) == mask : Word(n)}
+
+law word_mask_clear_is_clear:
+  for +n: Nat
+  for +old: Word(n)
+  for +mask: Word(n)
+  {Word.and(n,mask,Word.and(n,old,Word.not(n,mask))) == Word.zero(n) : Word(n)}
+
+law u32_mask_set_is_set:
+  for +old: U32
+  for +mask: U32
+  {U32.and(mask,U32.or(old,mask)) == mask : U32}
+
+law u32_mask_clear_is_clear:
+  for +old: U32
+  for +mask: U32
+  {U32.and(mask,U32.and(old,U32.not(mask))) == 0 : U32}
+
+def own_queue_flag_mask(+p: U32) -> U32:
+  flag_bit_at(U32.and(p,31))
+
+def queue_flag_present(+p: U32, +flags: U32) -> Bool:
+  U32.is_ne(U32.and(own_queue_flag_mask(p),flags),0)
+
+law flag_word_set_is_present:
+  for +p: U32
+  for +flags: U32
+  for nonzero: {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+  {queue_flag_present(p,flag_word(p,True{},flags)) == True{} : Bool}
+
+law flag_word_clear_is_absent:
+  for +p: U32
+  for +flags: U32
+  {queue_flag_present(p,flag_word(p,False{},flags)) == False{} : Bool}
+
+law flag_word_flag_matches_value:
+  for +p: U32
+  for +on: Bool
+  for +flags: U32
+  for nonzero: {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+  {queue_flag_present(p,flag_word(p,on,flags)) == on : Bool}
+
+law bool_or_right_false_at:
+  for +value: Bool
+  {value == Bool.or(value,False{}) : Bool}
+
+law bool_or_right_true_from:
+  for +value: Bool
+  {True{} == Bool.or(value,True{}) : Bool}
+
+law actual_peer_flag_model_bits:
+  for +p: U32
+  for +change: Bool
+  for +flags: U32
+  for nonzero: {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+  {queue_flag_present(p,Bool.pick(U32,change,flag_word(p,True{},flags),flags)) ==
+    Bool.or(queue_flag_present(p,flags),change) : Bool}
+
+law actual_peer_flag_model_observable:
+  for +p: U32
+  for +old: U32
+  for +bit: U32
+  for +flags: U32
+  for nonzero: {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+  {queue_flag_present(p,peer_flag_word_model(p,old,bit,flags)) ==
+    urgency_after_peer(old,bit,queue_flag_present(p,flags)) : Bool}
+
+def actual_flag_at(b: Array<U32>, +p: U32) -> Bool:
+  queue_flag_present(p,cell_value(b,flag_slot(p)))
+
+law actual_peer_observed_flag_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(p,flag_slot(p))
+  for nonzero: {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+  {actual_flag_at(actual_peer(image_board(image),p,bit),p) ==
+    urgency_after_peer(cell_value(image_board(image),p),bit,actual_flag_at(image_board(image),p)) : Bool}
+
+law actual_changed_candidate_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +p: U32
+  for +bit: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(flag_slot(p),p)
+  {cell_value(Q.changed(needed,p,bit,image_board(image),cell_value(image_board(image),p)),p) ==
+    Bool.pick(U32,needed,peer_mask(cell_value(image_board(image),p),bit),cell_value(image_board(image),p)) : U32}
+
+law actual_peer_candidate_image:
+  for +image: BoardImage
+  for +p: U32
+  for +bit: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(flag_slot(p),p)
+  {cell_value(actual_peer(image_board(image),p,bit),p) ==
+    blank_after_peer(cell_value(image_board(image),p),bit) : U32}
+
+law prior_flag_urgency_agrees:
+  for +placed: BoardDigit
+  for +old: U32
+  for +prior: Bool
+  for observed: {prior == Q.zero_or_single(old) : Bool}
+  for norm: NormalizedQueueMask(old)
+  {urgency_after_peer(old,B.bit(digit_word(placed)),prior) ==
+    Q.zero_or_single(blank_after_peer(old,B.bit(digit_word(placed)))) : Bool}
+
+law actual_peer_normalized_urgency_parts:
+  for +image: BoardImage
+  for +p: U32
+  for +placed: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for flag_route: RoutedApart(p,flag_slot(p))
+  for cell_route: RoutedApart(flag_slot(p),p)
+  for nonzero: {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+  for observed: {actual_flag_at(image_board(image),p) == Q.zero_or_single(cell_value(image_board(image),p)) : Bool}
+  for norm: NormalizedQueueMask(cell_value(image_board(image),p))
+  {actual_flag_at(actual_peer(image_board(image),p,B.bit(digit_word(placed))),p) ==
+    Q.zero_or_single(cell_value(actual_peer(image_board(image),p,B.bit(digit_word(placed))),p)) : Bool}
+
+def ActualPeerKeepsUrgency(-b: Array<U32>, +p: U32, +placed: BoardDigit) -> Type:
+  Board128(b) -> RoutedApart(p,flag_slot(p)) -> RoutedApart(flag_slot(p),p) ->
+  {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool} ->
+  {actual_flag_at(b,p) == Q.zero_or_single(cell_value(b,p)) : Bool} ->
+  NormalizedQueueMask(cell_value(b,p)) ->
+  {actual_flag_at(actual_peer(b,p,B.bit(digit_word(placed))),p) ==
+    Q.zero_or_single(cell_value(actual_peer(b,p,B.bit(digit_word(placed))),p)) : Bool}
+
+law actual_peer_normalized_urgency_image:
+  for +image: BoardImage
+  for +p: U32
+  for +placed: BoardDigit
+  ActualPeerKeepsUrgency(image_board(image),p,placed)
+
+law actual_peer_normalized_urgency:
+  for b: Array<U32>
+  for +p: U32
+  for +placed: BoardDigit
+  ActualPeerKeepsUrgency(b,p,placed)
+
+def low_five_word(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+tail: Word(27n)) -> U32:
+  U32{WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,tail}}}}}}
+
+law low_five_flag_is_nonzero:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  {U32.is_ne(flag_bit_at(low_five_word(b0,b1,b2,b3,b4,Word.zero(27n))),0) == True{} : Bool}
+
+law own_queue_flag_mask_is_nonzero:
+  for +p: U32
+  {U32.is_ne(own_queue_flag_mask(p),0) == True{} : Bool}
+
+law logical_cell_and_flag_are_apart:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  RoutedApart(logical_position(row,col),flag_slot(logical_position(row,col)))
+
+law logical_peer_preserves_exact_urgency:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +placed: BoardDigit
+  for shape: Board128(b)
+  for observed: {actual_flag_at(b,logical_position(row,col)) == Q.zero_or_single(cell_value(b,logical_position(row,col))) : Bool}
+  for norm: NormalizedQueueMask(cell_value(b,logical_position(row,col)))
+  {actual_flag_at(actual_peer(b,logical_position(row,col),B.bit(digit_word(placed))),logical_position(row,col)) ==
+    Q.zero_or_single(cell_value(actual_peer(b,logical_position(row,col),B.bit(digit_word(placed))),logical_position(row,col))) : Bool}
