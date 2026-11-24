@@ -1504,3 +1504,316 @@ law cached_at_decodes_blank:
   for board: Array<U32>
   for +pos: U32
   {U32.shrn(Pair.snd(Array<U32>, U32, C.cached_at(board, pos)), 10n) == 0 : U32}
+
+# Size follows the left spine. This is not a regular 128-slot board;
+# positions 80 and 109 both fall through to its lone right leaf.
+def irregular_board() -> Array<U32>:
+  ANode{[0 : U32*64n], ALeaf{0}}
+
+law irregular_board_size:
+  {Pair.snd(Array<U32>, U32, Array.size(U32, irregular_board())) == 128 : U32}
+
+law irregular_board_alias:
+  for +value: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(B.set_cell(irregular_board(), 109, value), 80)) == value : U32}
+
+law irregular_board_does_not_separate:
+  {routes_separate(irregular_board(), 128, 109, 80, False{}, False{}) == False{} : Bool}
+
+type ArrayShape is Data:
+  ShapeLeaf{}
+  ShapeNode{left: ArrayShape, right: ArrayShape}
+
+def array_shape(a: Array<U32>) -> ArrayShape:
+  match a:
+    case ALeaf{v}:
+      ShapeLeaf{}
+    case ANode{x,y}:
+      ShapeNode{array_shape(x), array_shape(y)}
+
+def ShapeWrite(-a: Array<U32>, -n: U32, -i: U32, -v: U32, -z: Bool) -> Type:
+  Sigma<&1, &1, Array<U32>, next =>
+  Sigma<&1, &1, U32, old =>
+    ({Array.swap.go(U32, a, n, i, v, z) == (next, old) : Array<U32> & U32}
+     & {array_shape(next) == array_shape(a) : ArrayShape})>>
+
+law shape_write_left:
+  for -x: Array<U32>
+  for y: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for w: ShapeWrite(x, U32.shr(n), i, v, U32.is_lt(i, U32.shr(U32.shr(n))))
+  ShapeWrite(ANode{x,y}, n, i, v, True{})
+
+law shape_write_right:
+  for x: Array<U32>
+  for -y: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for w: ShapeWrite(y, U32.shr(n), U32.sub(i, U32.shr(n)), v, U32.is_lt(U32.sub(i, U32.shr(n)), U32.shr(U32.shr(n))))
+  ShapeWrite(ANode{x,y}, n, i, v, False{})
+
+law shape_write_witness:
+  for a: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for +z: Bool
+  ShapeWrite(a,n,i,v,z)
+
+def SameShape(-a: Array<U32>, -i: U32, -v: U32) -> Type:
+  {array_shape(B.set_cell(a,i,v)) == array_shape(a) : ArrayShape}
+
+law shape_aligned:
+  for -a: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for w: ShapeWrite(a,n,U32.and(i,U32.sub(n,1)),v,U32.is_lt(U32.and(i,U32.sub(n,1)),U32.shr(n)))
+  {array_shape(Array.set.fin(U32, Array.swap.at(U32,i,v,(a,n)))) == array_shape(a) : ArrayShape}
+
+law shape_from_size:
+  for -a: Array<U32>
+  for +i: U32
+  for +v: U32
+  for s: ArraySizeWitness(a)
+  SameShape(a,i,v)
+
+law board_set_keeps_shape:
+  for a: Array<U32>
+  for +i: U32
+  for +v: U32
+  SameShape(a,i,v)
+
+def perfect_shape(+height: Nat) -> ArrayShape:
+  match height:
+    case 0n:
+      ShapeLeaf{}
+    case 1n+h:
+      ShapeNode{perfect_shape(h), perfect_shape(h)}
+
+law empty_board_depth_seven:
+  {array_shape(B.empty()) == perfect_shape(7n) : ArrayShape}
+
+law board_set_keeps_perfect:
+  for a: Array<U32>
+  for +i: U32
+  for +v: U32
+  for +height: Nat
+  for perfect: {array_shape(a) == perfect_shape(height) : ArrayShape}
+  {array_shape(B.set_cell(a,i,v)) == perfect_shape(height) : ArrayShape}
+
+# Compare routes without depending on cell contents. Equality with this
+# observer makes a separation certificate reusable after a shape-preserving write.
+def shape_routes(shape: ArrayShape, +n: U32, +i: U32, +j: U32, +wz: Bool, +rz: Bool) -> Bool:
+  match shape wz rz:
+    case ShapeLeaf{} _ _:
+      False{}
+    case ShapeNode{left,right} True{} False{}:
+      True{}
+    case ShapeNode{left,right} False{} True{}:
+      True{}
+    case ShapeNode{left,right} True{} True{}:
+      +half = U32.shr(n)
+      shape_routes(left,half,i,j,U32.is_lt(i,U32.shr(half)),U32.is_lt(j,U32.shr(half)))
+    case ShapeNode{left,right} False{} False{}:
+      +half = U32.shr(n)
+      +wi = U32.sub(i,half)
+      +ri = U32.sub(j,half)
+      shape_routes(right,half,wi,ri,U32.is_lt(wi,U32.shr(half)),U32.is_lt(ri,U32.shr(half)))
+
+law routes_depend_on_shape:
+  for tree: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +wz: Bool
+  for +rz: Bool
+  {routes_separate(tree,n,i,j,wz,rz) == shape_routes(array_shape(tree),n,i,j,wz,rz) : Bool}
+
+# Normalized 128-slot production addresses. Prove all logical/flag pairs as
+# one bounded family; no assumption about metadata or the values in the tree.
+def regular_routes(+i: U32, +j: U32) -> Bool:
+  shape_routes(perfect_shape(7n),128,i,j,(i < 64 : U32),(j < 64 : U32))
+
+def logical_vs_metadata(+count: Nat, +q: U32) -> Bool:
+  match count:
+    case 0n:
+      True{}
+    case 1n+k:
+      regular_routes(108,q) && regular_routes(109,q) && regular_routes(110,q) && regular_routes(111,q)
+        && regular_routes(q,108) && regular_routes(q,109) && regular_routes(q,110) && regular_routes(q,111)
+        && logical_vs_metadata(k,(q + 1 : U32))
+
+law routes_from_perfect_shape:
+  for tree: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +j: U32
+  for +wz: Bool
+  for +rz: Bool
+  for +height: Nat
+  for perfect: {array_shape(tree) == perfect_shape(height) : ArrayShape}
+  {routes_separate(tree,n,i,j,wz,rz) == shape_routes(perfect_shape(height),n,i,j,wz,rz) : Bool}
+
+law logical_metadata_routes_00:
+  {logical_vs_metadata(9n,0) == True{} : Bool}
+
+law logical_metadata_routes_09:
+  {logical_vs_metadata(9n,9) == True{} : Bool}
+
+law logical_metadata_routes_18:
+  {logical_vs_metadata(9n,18) == True{} : Bool}
+
+law logical_metadata_routes_27:
+  {logical_vs_metadata(9n,27) == True{} : Bool}
+
+law logical_metadata_routes_36:
+  {logical_vs_metadata(9n,36) == True{} : Bool}
+
+law logical_metadata_routes_45:
+  {logical_vs_metadata(9n,45) == True{} : Bool}
+
+law logical_metadata_routes_54:
+  {logical_vs_metadata(9n,54) == True{} : Bool}
+
+law logical_metadata_routes_63:
+  {logical_vs_metadata(9n,63) == True{} : Bool}
+
+law logical_metadata_routes_72:
+  {logical_vs_metadata(9n,72) == True{} : Bool}
+
+# Finite complete table for the logical 81×81 domain, independently expected
+# to be true exactly when the two logical coordinates differ.
+def logical_row(+count: Nat, +i: U32, +j: U32) -> Bool:
+  match count:
+    case 0n:
+      True{}
+    case 1n+k:
+      Bool.pick(Bool, U32.is_eq(i,j), Bool.not(regular_routes(i,j)), regular_routes(i,j))
+        && logical_row(k,i,(j + 1 : U32))
+
+def logical_rows(+count: Nat, +i: U32) -> Bool:
+  match count:
+    case 0n:
+      True{}
+    case 1n+k:
+      logical_row(81n,i,0) && logical_rows(k,(i + 1 : U32))
+
+law logical_routes_00:
+  {logical_rows(9n,0) == True{} : Bool}
+
+law logical_routes_09:
+  {logical_rows(9n,9) == True{} : Bool}
+
+law logical_routes_18:
+  {logical_rows(9n,18) == True{} : Bool}
+
+law logical_routes_27:
+  {logical_rows(9n,27) == True{} : Bool}
+
+law logical_routes_36:
+  {logical_rows(9n,36) == True{} : Bool}
+
+law logical_routes_45:
+  {logical_rows(9n,45) == True{} : Bool}
+
+law logical_routes_54:
+  {logical_rows(9n,54) == True{} : Bool}
+
+law logical_routes_63:
+  {logical_rows(9n,63) == True{} : Bool}
+
+law logical_routes_72:
+  {logical_rows(9n,72) == True{} : Bool}
+
+def shape_capacity(shape: ArrayShape) -> U32:
+  match shape:
+    case ShapeLeaf{}:
+      1
+    case ShapeNode{left,right}:
+      U32.shl(shape_capacity(left))
+
+law shape_measure_lift:
+  for -x: Array<U32>
+  for -y: Array<U32>
+  for measured: {Array.size(U32,x) == (x,shape_capacity(array_shape(x))) : Array<U32> & U32}
+  {Array.size(U32,ANode{x,y}) == (ANode{x,y},shape_capacity(array_shape(ANode{x,y}))) : Array<U32> & U32}
+
+law array_size_follows_shape:
+  for a: Array<U32>
+  {Array.size(U32,a) == (a,shape_capacity(array_shape(a))) : Array<U32> & U32}
+
+law perfect_board_has_128_slots:
+  for a: Array<U32>
+  for perfect: {array_shape(a) == perfect_shape(7n) : ArrayShape}
+  {Array.size(U32,a) == (a,128) : Array<U32> & U32}
+
+def PublicShapeWrite(-a: Array<U32>, -i: U32, -v: U32) -> Type:
+  Sigma<&1,&1,Array<U32>,next =>
+    ({B.set_cell(a,i,v) == next : Array<U32>}
+     & {array_shape(next) == array_shape(a) : ArrayShape})>
+
+law set_shape_write_aligned:
+  for -a: Array<U32>
+  for +n: U32
+  for +i: U32
+  for +v: U32
+  for actual: {Array.size(U32,a) == (a,n) : Array<U32> & U32}
+  for witness: ShapeWrite(a,n,U32.and(i,U32.sub(n,1)),v,U32.is_lt(U32.and(i,U32.sub(n,1)),U32.shr(n)))
+  PublicShapeWrite(a,i,v)
+
+law set_shape_write_sized:
+  for -a: Array<U32>
+  for +i: U32
+  for +v: U32
+  for s: ArraySizeWitness(a)
+  PublicShapeWrite(a,i,v)
+
+law set_shape_write:
+  for a: Array<U32>
+  for +i: U32
+  for +v: U32
+  PublicShapeWrite(a,i,v)
+
+law decode_shape_join:
+  for +n: Nat
+  for +pos: U32
+  for -board: Array<U32>
+  for -read_board: Array<U32>
+  for +word: U32
+  for -next: Array<U32>
+  for unchanged: {read_board == board : Array<U32>}
+  for rd: {Array.get(U32,board,pos) == (read_board,word) : Array<U32> & U32}
+  for write: {B.set_cell(read_board,pos,U32.shrn(word,10n)) == next : Array<U32>}
+  for next_shape: {array_shape(next) == array_shape(read_board) : ArrayShape}
+  for later: {array_shape(Q.decode(n,(pos + 1 : U32),next)) == array_shape(next) : ArrayShape}
+  {array_shape(Q.decode(1n+n,pos,board)) == array_shape(board) : ArrayShape}
+
+law decode_shape_written:
+  for +n: Nat
+  for +pos: U32
+  for -board: Array<U32>
+  for -read_board: Array<U32>
+  for +word: U32
+  for unchanged: {read_board == board : Array<U32>}
+  for read: {Array.get(U32,board,pos) == (read_board,word) : Array<U32> & U32}
+  for w: PublicShapeWrite(read_board,pos,U32.shrn(word,10n))
+  for prove: @sub:Array<U32> -> {array_shape(Q.decode(n,(pos + 1 : U32),sub)) == array_shape(sub) : ArrayShape}
+  {array_shape(Q.decode(1n+n,pos,board)) == array_shape(board) : ArrayShape}
+
+law decode_shape_read:
+  for +n: Nat
+  for +pos: U32
+  for -board: Array<U32>
+  for rd: BoardReadWitness(board,pos)
+  for prove: @sub:Array<U32> -> {array_shape(Q.decode(n,(pos + 1 : U32),sub)) == array_shape(sub) : ArrayShape}
+  {array_shape(Q.decode(1n+n,pos,board)) == array_shape(board) : ArrayShape}
+
+law queued_decode_preserves_shape:
+  for +n: Nat
+  for +pos: U32
+  for board: Array<U32>
+  {array_shape(Q.decode(n,pos,board)) == array_shape(board) : ArrayShape}

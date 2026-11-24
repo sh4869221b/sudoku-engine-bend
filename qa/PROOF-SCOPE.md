@@ -120,3 +120,31 @@ or compose the 81 iterations of production encode and decode. Full
 round-trip preservation, candidate/cache legality, and solver soundness still
 need those stronger invariants. Production and existing regression gates
 are unchanged.
+
+## Regular 128-slot board verification
+
+Measured capacity by itself does not certify that the array is balanced. A
+source-level counterexample has a 64-leaf left subtree and only one right
+leaf: its measured capacity is 128, but writing to metadata index 109 also
+changes the value seen at logical cell 80. This is separate from out-of-range
+wrapping on the regular board.
+
+- The actual empty board starts with the perfect depth-seven shape. Base
+  array swaps preserve the entire shape for arbitrary trees, data, indices,
+  and routing choices; the public board setter preserves this shape too.
+  The measured-size theorem relates the actual left-spine computation to the
+  shape and establishes 128 for every perfect depth-seven array.
+- Actual route separation depends only on tree shape, not on cell values.
+  The kernel checks the complete 81-by-81 logical-cell comparison: distinct
+  logical indices split to different leaves, while equal indices do not.
+  It also checks all 81 logical positions against metadata locations
+  108–111 in both directions.
+- The actual queued decoder preserves the entire array shape for every
+  starting offset, number of steps, and input array. This follows from the
+  source's read and write functions by induction over the decoder loop.
+  It does not assert that decoding preserves all logical cell values on an
+  arbitrary input; it only preserves their locations.
+
+The full encode/decode round trip still needs cell invariants over the
+encoder and decoder together. The verification does not make a global
+claim about reachable search caches or prove solver soundness.

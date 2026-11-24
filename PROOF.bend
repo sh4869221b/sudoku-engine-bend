@@ -1347,3 +1347,200 @@ def L.candidate_at_decodes_blank(board, pos):
 
 def L.cached_at_decodes_blank(board, pos):
   L.inverted_candidate_decodes_blank(C.cached_add((99 + Board.box_of(pos) : U32), C.cached_add((90 + M.rem9(pos) : U32), Array.get(U32, board, (81 + M.div9(pos) : U32)))))
+
+def L.irregular_board_size():
+  {==}
+
+def L.irregular_board_alias(value):
+  {==}
+
+def L.irregular_board_does_not_separate():
+  {==}
+
+def L.shape_write_left(x, y, n, i, v, w):
+  (next, +old, (written, same)) = w
+  (ANode{next,y}, old, (
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, r => Array.swap.lo(U32, y, r),
+      Array.swap.go(U32, x, U32.shr(n), i, v, U32.is_lt(i, U32.shr(U32.shr(n)))), (next,old), written),
+    Equal.cong(L.ArrayShape, L.ArrayShape, t => L.ShapeNode{t,L.array_shape(y)}, L.array_shape(next), L.array_shape(x), same)))
+
+def L.shape_write_right(x, y, n, i, v, w):
+  (next, +old, (written, same)) = w
+  +j = U32.sub(i, U32.shr(n))
+  (ANode{x,next}, old, (
+    Equal.cong(Array<U32> & U32, Array<U32> & U32, r => Array.swap.hi(U32, x, r),
+      Array.swap.go(U32, y, U32.shr(n), j, v, U32.is_lt(j, U32.shr(U32.shr(n)))), (next,old), written),
+    Equal.cong(L.ArrayShape, L.ArrayShape, t => L.ShapeNode{L.array_shape(x),t}, L.array_shape(next), L.array_shape(y), same)))
+
+def L.shape_write_witness(a,n,i,v,z):
+  match a z:
+    case ALeaf{x} _:
+      (ALeaf{v}, x, ({==},{==}))
+    case ANode{x,y} True{}:
+      L.shape_write_left(x,y,n,i,v,L.shape_write_witness(x,U32.shr(n),i,v,U32.is_lt(i,U32.shr(U32.shr(n)))))
+    case ANode{x,y} False{}:
+      +j = U32.sub(i,U32.shr(n))
+      L.shape_write_right(x,y,n,i,v,L.shape_write_witness(y,U32.shr(n),j,v,U32.is_lt(j,U32.shr(U32.shr(n)))))
+
+def L.shape_aligned(a,n,i,v,w):
+  (next, +old, (written, same)) = w
+  %Equal.sym(Array<U32> & U32, Array.swap.at(U32,i,v,(a,n)), (next,old), written) :
+    {L.array_shape(Array.set.fin(U32,_)) == L.array_shape(a) : L.ArrayShape}
+  same
+
+def L.shape_from_size(a,i,v,s):
+  (same, +n, (shape, measured)) = s
+  +j = U32.and(i,U32.sub(n,1))
+  finish : ({Array.size(U32, a) == (same,n) : Array<U32> & U32} -> L.SameShape(a,i,v)) = (
+    %shape : ({Array.size(U32, _) == (same,n) : Array<U32> & U32} -> L.SameShape(_,i,v))
+    eq =>
+      %Equal.sym(Array<U32> & U32, Array.size(U32,same), (same,n), eq) :
+        {L.array_shape(Array.set.fin(U32,Array.swap.at(U32,i,v,_))) == L.array_shape(same) : L.ArrayShape}
+      L.shape_aligned(same,n,i,v,L.shape_write_witness(same,n,j,v,U32.is_lt(j,U32.shr(n)))))
+  finish(measured)
+
+def L.board_set_keeps_shape(a,i,v):
+  L.shape_from_size(a,i,v,L.array_size_witness(a))
+
+def L.empty_board_depth_seven():
+  {==}
+
+def L.board_set_keeps_perfect(a,i,v,height,perfect):
+  Equal.trans(L.ArrayShape,L.array_shape(Board.set_cell(a,i,v)),L.array_shape(a),L.perfect_shape(height),L.board_set_keeps_shape(a,i,v),perfect)
+
+def L.routes_depend_on_shape(tree,n,i,j,wz,rz):
+  match tree wz rz:
+    case ALeaf{v} _ _:
+      {==}
+    case ANode{left,right} True{} False{}:
+      {==}
+    case ANode{left,right} False{} True{}:
+      {==}
+    case ANode{left,right} True{} True{}:
+      +h = U32.shr(n)
+      L.routes_depend_on_shape(left,h,i,j,U32.is_lt(i,U32.shr(h)),U32.is_lt(j,U32.shr(h)))
+    case ANode{left,right} False{} False{}:
+      +h = U32.shr(n)
+      +wi = U32.sub(i,h)
+      +ri = U32.sub(j,h)
+      L.routes_depend_on_shape(right,h,wi,ri,U32.is_lt(wi,U32.shr(h)),U32.is_lt(ri,U32.shr(h)))
+
+def L.routes_from_perfect_shape(tree,n,i,j,wz,rz,height,perfect):
+  Equal.trans(Bool,
+    L.routes_separate(tree,n,i,j,wz,rz), L.shape_routes(L.array_shape(tree),n,i,j,wz,rz),
+    L.shape_routes(L.perfect_shape(height),n,i,j,wz,rz),
+    L.routes_depend_on_shape(tree,n,i,j,wz,rz),
+    Equal.cong(L.ArrayShape,Bool,s => L.shape_routes(s,n,i,j,wz,rz),L.array_shape(tree),L.perfect_shape(height),perfect))
+
+def L.logical_metadata_routes_00():
+  {==}
+
+def L.logical_metadata_routes_09():
+  {==}
+
+def L.logical_metadata_routes_18():
+  {==}
+
+def L.logical_metadata_routes_27():
+  {==}
+
+def L.logical_metadata_routes_36():
+  {==}
+
+def L.logical_metadata_routes_45():
+  {==}
+
+def L.logical_metadata_routes_54():
+  {==}
+
+def L.logical_metadata_routes_63():
+  {==}
+
+def L.logical_metadata_routes_72():
+  {==}
+
+def L.logical_routes_00():
+  {==}
+
+def L.logical_routes_09():
+  {==}
+
+def L.logical_routes_18():
+  {==}
+
+def L.logical_routes_27():
+  {==}
+
+def L.logical_routes_36():
+  {==}
+
+def L.logical_routes_45():
+  {==}
+
+def L.logical_routes_54():
+  {==}
+
+def L.logical_routes_63():
+  {==}
+
+def L.logical_routes_72():
+  {==}
+
+def L.shape_measure_lift(x,y,measured):
+  Equal.cong(Array<U32> & U32,Array<U32> & U32,t => Array.size.node(U32,y,t),
+    Array.size(U32,x),(x,L.shape_capacity(L.array_shape(x))),measured)
+
+def L.array_size_follows_shape(a):
+  match a:
+    case ALeaf{v}:
+      {==}
+    case ANode{x,y}:
+      L.shape_measure_lift(x,y,L.array_size_follows_shape(x))
+
+def L.perfect_board_has_128_slots(a,perfect):
+  Equal.trans(Array<U32> & U32,Array.size(U32,a),(a,L.shape_capacity(L.array_shape(a))),(a,128),
+    L.array_size_follows_shape(a),
+    Equal.cong(L.ArrayShape,Array<U32> & U32,s => (a,L.shape_capacity(s)),L.array_shape(a),L.perfect_shape(7n),perfect))
+
+def L.set_shape_write_aligned(a,n,i,v,actual,witness):
+  (next, +old, (written, same)) = witness
+  (next, (
+    Equal.trans(Array<U32>, Board.set_cell(a,i,v), Array.set.fin(U32,Array.swap.at(U32,i,v,(a,n))), next,
+      Equal.cong(Array<U32> & U32, Array<U32>, p => Array.set.fin(U32,Array.swap.at(U32,i,v,p)), Array.size(U32,a), (a,n), actual),
+      Equal.cong(Array<U32> & U32, Array<U32>, p => Array.set.fin(U32,p), Array.swap.at(U32,i,v,(a,n)), (next,old), written)),
+    same))
+
+def L.set_shape_write_sized(a,i,v,s):
+  (same,+n,(shape,measured)) = s
+  +j = U32.and(i,U32.sub(n,1))
+  finish : ({Array.size(U32,a) == (same,n) : Array<U32> & U32} -> L.PublicShapeWrite(a,i,v)) = (
+    %shape : ({Array.size(U32,_) == (same,n) : Array<U32> & U32} -> L.PublicShapeWrite(_,i,v))
+    eq => L.set_shape_write_aligned(same,n,i,v,eq,L.shape_write_witness(same,n,j,v,U32.is_lt(j,U32.shr(n)))))
+  finish(measured)
+
+def L.set_shape_write(a,i,v):
+  L.set_shape_write_sized(a,i,v,L.array_size_witness(a))
+
+def L.decode_shape_join(n,pos,board,read_board,word,next,unchanged,rd,write,next_shape,later):
+  %Equal.sym(Array<U32> & U32,Array.get(U32,board,pos),(read_board,word),rd) :
+    {L.array_shape(Q.decode(n,(pos + 1 : U32),Q.decoded(pos,_))) == L.array_shape(board) : L.ArrayShape}
+  %Equal.sym(Array<U32>,Board.set_cell(read_board,pos,U32.shrn(word,10n)),next,write) :
+    {L.array_shape(Q.decode(n,(pos + 1 : U32),_)) == L.array_shape(board) : L.ArrayShape}
+  Equal.trans(L.ArrayShape,L.array_shape(Q.decode(n,(pos + 1 : U32),next)),L.array_shape(next),L.array_shape(board),later,
+    Equal.trans(L.ArrayShape,L.array_shape(next),L.array_shape(read_board),L.array_shape(board),next_shape,
+      Equal.cong(Array<U32>,L.ArrayShape,b => L.array_shape(b),read_board,board,unchanged)))
+
+def L.decode_shape_written(n,pos,board,read_board,word,unchanged,read,w,prove):
+  (next,(write,shape)) = w
+  L.decode_shape_join(n,pos,board,read_board,word,next,unchanged,read,write,shape,prove(next))
+
+def L.decode_shape_read(n,pos,board,rd,prove):
+  (read_board,+word,(unchanged,read)) = rd
+  L.decode_shape_written(n,pos,board,read_board,word,unchanged,read,L.set_shape_write(read_board,pos,U32.shrn(word,10n)),prove)
+
+def L.queued_decode_preserves_shape(n,pos,board):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      L.decode_shape_read(k,pos,board,L.board_read_witness(board,pos), b => L.queued_decode_preserves_shape(k,(pos + 1 : U32),b))
