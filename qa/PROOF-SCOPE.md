@@ -148,3 +148,18 @@ wrapping on the regular board.
 The full encode/decode round trip still needs cell invariants over the
 encoder and decoder together. The verification does not make a global
 claim about reachable search caches or prove solver soundness.
+
+## Queued encoder and cache-read shape
+
+- The actual cache reader returns the exact input board alongside its mask.
+  The proof follows all three production array reads and the merge and
+  inversion helpers. It does not assert that an arbitrary input's cached
+  masks are valid Sudoku candidates.
+- The actual flag writer, blank-cell encoder and filled-cell encoder each
+  preserve shape. The filled-cell proof splits the concrete U32 representation
+  into zero and the 32 possible positions of the first set bit.
+- The actual encoder loop preserves shape for any step count, offset and
+  input. The public encoder also preserves shape through metadata initialization
+  and its 81 iterations. Together with the decoder law this preserves the
+  certified logical and metadata routes through both passes. It does not
+  yet prove value-level encode/decode identity.

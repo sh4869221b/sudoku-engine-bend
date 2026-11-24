@@ -1817,3 +1817,158 @@ law queued_decode_preserves_shape:
   for +pos: U32
   for board: Array<U32>
   {array_shape(Q.decode(n,pos,board)) == array_shape(board) : ArrayShape}
+
+# Value transformations preserve the board owning the read.
+def SameBoardRead(-board: Array<U32>, -expr: Array<U32> & U32) -> Type:
+  Sigma<&1,&1,Array<U32>,same =>
+  Sigma<&1,&1,U32,value =>
+    ({same == board : Array<U32>} & {expr == (same,value) : Array<U32> & U32})>>
+
+law cached_merge_observed:
+  for -board: Array<U32>
+  for -expr: Array<U32> & U32
+  for +used: U32
+  for r: SameBoardRead(board,expr)
+  SameBoardRead(board,C.cached_merge(used,expr))
+
+law cached_add_observed_step:
+  for -board: Array<U32>
+  for -expr: Array<U32> & U32
+  for -read_board: Array<U32>
+  for +pos: U32
+  for +used: U32
+  for out: {expr == (read_board,used) : Array<U32> & U32}
+  for kept: {read_board == board : Array<U32>}
+  for r: SameBoardRead(read_board,C.cached_merge(used,Array.get(U32,read_board,pos)))
+  SameBoardRead(board,C.cached_add(pos,expr))
+
+law cached_add_observed:
+  for -board: Array<U32>
+  for -expr: Array<U32> & U32
+  for +pos: U32
+  for r: SameBoardRead(board,expr)
+  SameBoardRead(board,C.cached_add(pos,expr))
+
+law invert_observed:
+  for -board: Array<U32>
+  for -expr: Array<U32> & U32
+  for r: SameBoardRead(board,expr)
+  SameBoardRead(board,C.invert(expr))
+
+law cached_at_observed:
+  for board: Array<U32>
+  for +pos: U32
+  SameBoardRead(board,C.cached_at(board,pos))
+
+# A transition retains the concrete output tree and its unchanged shape so
+# the next induction step can use the single affine owner of that tree.
+def ShapeTransition(-board: Array<U32>, -expr: Array<U32>) -> Type:
+  Sigma<&1,&1,Array<U32>,next =>
+    ({expr == next : Array<U32>} & {array_shape(next) == array_shape(board) : ArrayShape})>
+
+law shape_transition_compose_finish:
+  for -a: Array<U32>
+  for -b: Array<U32>
+  for -x: Array<U32>
+  for -f: @b:Array<U32> -> Array<U32>
+  for ex: {x == b : Array<U32>}
+  for es: {array_shape(b) == array_shape(a) : ArrayShape}
+  for step: ShapeTransition(b,f(b))
+  ShapeTransition(a,f(x))
+
+law shape_transition_compose:
+  for -a: Array<U32>
+  for -x: Array<U32>
+  for -f: @b:Array<U32> -> Array<U32>
+  for first: ShapeTransition(a,x)
+  for next: @b:Array<U32> -> ShapeTransition(b,f(b))
+  ShapeTransition(a,f(x))
+
+law flag_from_observed:
+  for -board: Array<U32>
+  for +pos: U32
+  for +present: Bool
+  for -same: Array<U32>
+  for +old: U32
+  for unchanged: {same == board : Array<U32>}
+  for read: {B.get_cell(board,flag_slot(pos)) == (same,old) : Array<U32> & U32}
+  for step: ShapeTransition(same,Q.flagged(pos,present,(same,old)))
+  ShapeTransition(board,Q.flag(board,pos,present))
+
+law flag_shape_read:
+  for -board: Array<U32>
+  for +pos: U32
+  for +present: Bool
+  for read: BoardReadWitness(board,flag_slot(pos))
+  ShapeTransition(board,Q.flag(board,pos,present))
+
+law flag_shape:
+  for board: Array<U32>
+  for +pos: U32
+  for +present: Bool
+  ShapeTransition(board,Q.flag(board,pos,present))
+
+law encoded_mask_shape:
+  for +pos: U32
+  for cells: Array<U32> & U32
+  ShapeTransition(Pair.fst(Array<U32>,U32,cells),Q.encoded_mask(pos,cells))
+
+law encoded_blank_shape_observed:
+  for -board: Array<U32>
+  for +pos: U32
+  for obs: SameBoardRead(board,C.cached_at(board,pos))
+  ShapeTransition(board,Q.encoded(pos,(board,0)))
+
+law encoded_digit_shape:
+  for board: Array<U32>
+  for +pos: U32
+  for +digit: U32
+  ShapeTransition(board,Q.encoded(pos,(board,digit)))
+
+law encoded_shape:
+  for +pos: U32
+  for cells: Array<U32> & U32
+  ShapeTransition(Pair.fst(Array<U32>,U32,cells),Q.encoded(pos,cells))
+
+law encode_go_shape_step:
+  for +n: Nat
+  for +pos: U32
+  for -board: Array<U32>
+  for -same: Array<U32>
+  for +digit: U32
+  for shape: {same == board : Array<U32>}
+  for rd: {Array.get(U32,board,pos) == (same,digit) : Array<U32> & U32}
+  for result: ShapeTransition(same,Q.encode_go(n,(pos + 1 : U32),Q.encoded(pos,(same,digit))))
+  ShapeTransition(board,Q.encode_go(1n+n,pos,board))
+
+law encode_go_shape_read:
+  for +n: Nat
+  for +pos: U32
+  for -board: Array<U32>
+  for obs: BoardReadWitness(board,pos)
+  for recurse: @sub:Array<U32> -> ShapeTransition(sub,Q.encode_go(n,(pos + 1 : U32),sub))
+  ShapeTransition(board,Q.encode_go(1n+n,pos,board))
+
+law encode_loop_shape:
+  for +n: Nat
+  for +pos: U32
+  for board: Array<U32>
+  ShapeTransition(board,Q.encode_go(n,pos,board))
+
+law queue_seed_shape:
+  for board: Array<U32>
+  ShapeTransition(board,B.set_cell(B.set_cell(B.set_cell(board,109,0),110,0),111,0))
+
+law encoded_full_shape_witness:
+  for board: Array<U32>
+  ShapeTransition(board,Q.encode(board))
+
+law project_shape_transition:
+  for -board: Array<U32>
+  for -result: Array<U32>
+  for proof: ShapeTransition(board,result)
+  {array_shape(result) == array_shape(board) : ArrayShape}
+
+law queued_encode_preserves_shape:
+  for board: Array<U32>
+  {array_shape(Q.encode(board)) == array_shape(board) : ArrayShape}
