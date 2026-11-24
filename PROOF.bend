@@ -5201,3 +5201,229 @@ def L.inactive_clear_keeps_clue(b,sr,sc,qr,qc,clue,distinct,state):
 
 def L.inactive_swap_keeps_clue(b,sr,sc,qr,qc,value,clue,distinct,state):
   L.logical_ordinary_swap_keeps_clue(b,sr,sc,qr,qc,value,clue,distinct,state)
+
+def L.adaptive_guess_snapshot_word(b,frames,depth,found,snapshots,p,q,digit,remaining,active):
+  Equal.cong(Fast.State,U32,state => L.searching_snapshot_word(state,q),
+    Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,active,b),
+    Fast.guessed(p,digit,remaining,frames,depth,found,snapshots,active,
+      (Fast.activated(active,b),Fast.activated(active,b))),
+    L.adaptive_guess_saves_activated_board(p,digit,remaining,frames,depth,found,snapshots,active,b))
+
+def L.adaptive_active_guess_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,distinct,state):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  +d = L.digit_word(digit)
+  Equal.trans(U32,L.searching_word(Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,True{},L.image_board(image)),q),
+    L.cell_value(Q.place(True{},p,d,L.image_board(image)),q),L.fixed_word(fixed),
+    Equal.cong(Fast.State,U32,out => L.searching_word(out,q),
+      Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,True{},L.image_board(image)),
+      Fast.guessed(p,d,remaining,frames,depth,found,snapshots,True{},(L.image_board(image),L.image_board(image))),
+      L.adaptive_guess_saves_activated_board(p,d,remaining,frames,depth,found,snapshots,True{},L.image_board(image))),
+    L.fixed_clue_word(Q.place(True{},p,d,L.image_board(image)),q,fixed,
+      L.logical_placement_keeps_other_clue(L.image_board(image),True{},sr,sc,qr,qc,fixed,digit,distinct,state)))
+
+def L.adaptive_active_guess_keeps_clue(b,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,distinct,state):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  proof : (L.FixedClue(b,q,fixed) -> {L.searching_word(Fast.place(True{},p,L.digit_word(digit),remaining,frames,depth,found,snapshots,True{},b),q) == L.fixed_word(fixed) : U32}) =
+    L.on_reified_board(b,x => (L.FixedClue(x,q,fixed) -> {L.searching_word(Fast.place(True{},p,L.digit_word(digit),remaining,frames,depth,found,snapshots,True{},x),q) == L.fixed_word(fixed) : U32}),
+      L.reify_board(b),image => L.adaptive_active_guess_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,distinct))
+  proof(state)
+
+def L.adaptive_active_guess_snapshot_keeps_clue_image(image,frames,depth,found,snapshots,p,q,fixed,digit,remaining,state):
+  Equal.trans(U32,L.searching_snapshot_word(Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,True{},L.image_board(image)),q),
+    L.cell_value(L.image_board(image),q),L.fixed_word(fixed),
+    L.adaptive_guess_snapshot_word(L.image_board(image),frames,depth,found,snapshots,p,q,digit,remaining,True{}),
+    L.fixed_clue_word(L.image_board(image),q,fixed,state))
+
+def L.adaptive_active_guess_snapshot_keeps_clue(b,frames,depth,found,snapshots,p,q,fixed,digit,remaining,state):
+  proof : (L.FixedClue(b,q,fixed) -> {L.searching_snapshot_word(Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,True{},b),q) == L.fixed_word(fixed) : U32}) =
+    L.on_reified_board(b,x => (L.FixedClue(x,q,fixed) -> {L.searching_snapshot_word(Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,True{},x),q) == L.fixed_word(fixed) : U32}),
+      L.reify_board(b),image => L.adaptive_active_guess_snapshot_keeps_clue_image(image,frames,depth,found,snapshots,p,q,fixed,digit,remaining))
+  proof(state)
+
+def L.encoded_nonblank_word(d,b,p,nonblank):
+  match d:
+    case L.D0{}:
+      Empty.absurd({L.cell_value(Q.encoded(p,(b,0)),p) == 0 : U32},
+        L.false_is_not_true(Equal.sym(Bool,True{},False{},nonblank)))
+    case L.D1{}:
+      L.encode_fixed_cell_1(b,p)
+    case L.D2{}:
+      L.encode_fixed_cell_2(b,p)
+    case L.D3{}:
+      L.encode_fixed_cell_3(b,p)
+    case L.D4{}:
+      L.encode_fixed_cell_4(b,p)
+    case L.D5{}:
+      L.encode_fixed_cell_5(b,p)
+    case L.D6{}:
+      L.encode_fixed_cell_6(b,p)
+    case L.D7{}:
+      L.encode_fixed_cell_7(b,p)
+    case L.D8{}:
+      L.encode_fixed_cell_8(b,p)
+    case L.D9{}:
+      L.encode_fixed_cell_9(b,p)
+
+def L.actual_encode_nonblank_word(image,p,d,nonblank,word_is):
+  b = L.image_board(image)
+  +word = L.cell_value(L.image_board(image),p)
+  +digit = L.digit_word(d)
+  %Equal.sym(Array<U32>,L.actual_encoded_step(b,p),Q.encoded(p,(b,word)),
+    L.encode_step_normalized(b,p,L.board_read_witness(L.image_board(image),p))) :
+    {L.cell_value(_,p) == L.fixed_word(d) : U32}
+  %Equal.sym(U32,word,digit,word_is) :
+    {L.cell_value(Q.encoded(p,(b,_)),p) == L.fixed_word(d) : U32}
+  L.encoded_nonblank_word(d,L.image_board(image),p,nonblank)
+
+def L.encode_raw_middle_base_image(image,suffix,p,d,shapes,safe,tail,nonblank,digit):
+  (s0,s1) = shapes
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  +final = L.cell_value(Q.encode_go(suffix,p1,L.actual_encoded_step(L.image_board(image),p)),p)
+  +current = L.cell_value(L.actual_encoded_step(L.image_board(image),p),p)
+  Equal.trans(U32,final,current,L.fixed_word(d),
+    L.encode_sweep_keeps(suffix,p1,p,step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail),
+    L.actual_encode_nonblank_word(image,p,d,nonblank,digit))
+
+def L.encode_raw_middle_base(image,suffix,p,d,shape,before,safe,after,nonblank,digit):
+  L.encode_raw_middle_base_image(image,suffix,p,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),safe,after,nonblank,digit)
+
+def L.encode_raw_middle_step_image(image,k,suffix,p,d,shapes,before,safe,after,nonblank,digit,next):
+  (s0,s1) = shapes
+  (cell,(flag,tail)) = before
+  step = L.actual_encoded_step(L.image_board(image),p)
+  +p1 = (p + 1 : U32)
+  +q = L.walk_position(k,p1)
+  next(step,L.actual_encode_step_keeps_perfect(L.image_board(image),p,s0),tail,safe,after,nonblank,
+    Equal.trans(U32,L.cell_value(step,q),L.cell_value(L.image_board(image),q),L.digit_word(d),
+      L.encode_step_keeps(L.image_board(image),p,q)(s1,cell,flag),digit))
+
+def L.encode_raw_middle_step(image,k,suffix,p,d,next,shape,before,safe,after,nonblank,digit):
+  L.encode_raw_middle_step_image(image,k,suffix,p,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),before,safe,after,nonblank,digit,next)
+
+def L.encode_raw_middle_from_image(prefix,image,suffix,p,d,shape,before,safe,after,nonblank,digit):
+  match prefix:
+    case 0n:
+      L.encode_raw_middle_base(image,suffix,p,d,shape,before,safe,after,nonblank,digit)
+    case 1n+k:
+      L.encode_raw_middle_step(image,k,suffix,p,d,
+        sub => L.on_reified_board(sub,x => L.EncodeMiddleRaw(x,k,suffix,(p + 1 : U32),d),
+          L.reify_board(sub),im => L.encode_raw_middle_from_image(k,im,suffix,(p + 1 : U32),d)),
+        shape,before,safe,after,nonblank,digit)
+
+def L.encode_raw_middle_value(b,prefix,suffix,p,d):
+  L.on_reified_board(b,x => L.EncodeMiddleRaw(x,prefix,suffix,p,d),
+    L.reify_board(b),image => L.encode_raw_middle_from_image(prefix,image,suffix,p,d))
+
+
+def L.encode81_at_step(image,before,after,d,shapes,r9,r10,r11,ep,safe,es,count,nonblank,digit):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  seed = L.queue_seed(L.image_board(image))
+  +q = L.walk_position(before,0)
+  %count :
+    {L.cell_value(Q.encode_go(_,0,L.queue_seed(b)),q) == L.fixed_word(d) : U32}
+  L.encode_raw_middle_value(seed,before,after,0,d)(
+    L.queue_seed_perfect(L.image_board(image),s0),ep,safe,es,nonblank,
+    Equal.trans(U32,L.cell_value(seed,q),L.cell_value(b,q),L.digit_word(d),
+      L.queue_seed_keeps_cell(L.image_board(image),q)(s1,r9,r10,r11),digit))
+
+def L.encode81_at_image(image,before,after,d,shape,r9,r10,r11,ep,safe,es,count,nonblank,digit):
+  L.encode81_at_step(image,before,after,d,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),
+    r9,r10,r11,ep,safe,es,count,nonblank,digit)
+
+def L.public_queue_encode_nonblank_at(b,before,after,d):
+  L.on_reified_board(b,x => L.Encode81At(x,before,after,d),
+    L.reify_board(b),image => L.encode81_at_image(image,before,after,d))
+
+def L.public_encode_nonblank_routes(b,before,after,d,shape,routes,count,nonblank,digit):
+  (r9,(r10,(r11,(safe,((ep,dp),(es,ds)))))) = routes
+  L.public_queue_encode_nonblank_at(b,before,after,d)(shape,r9,r10,r11,ep,safe,es,count,nonblank,digit)
+
+def L.public_encode_nonblank_checked(b,before,after,d,shape,window,nonblank,digit):
+  (guard,count) = window
+  +q = L.walk_position(before,0)
+  L.public_encode_nonblank_routes(b,before,after,d,shape,
+    L.window_routes(before,after,q,(q + 1 : U32),guard),count,nonblank,digit)
+
+def L.any_logical_cell_encode_nonblank(b,row,col,d,shape,nonblank,digit):
+  L.public_encode_nonblank_checked(b,L.logical_offset(row,col),L.logical_tail(row,col),d,shape,L.every_cell_window(row,col),nonblank,digit)
+
+
+def L.activation_shape_and_word_parts(image,row,col,d,nonblank,shapes,word):
+  (s0,s1) = shapes
+  (Equal.trans(L.ArrayShape,L.array_shape(Q.encode(L.image_board(image))),L.array_shape(L.image_board(image)),L.perfect_shape(7n),
+      L.queued_encode_preserves_shape(L.image_board(image)),s0),
+    L.any_logical_cell_encode_nonblank(L.image_board(image),row,col,d,s1,nonblank,word))
+
+def L.activation_shape_and_word_image(image,row,col,d,nonblank,clue):
+  (shape,word) = clue
+  L.activation_shape_and_word_parts(image,row,col,d,nonblank,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),word)
+
+def L.adaptive_activation_fixed_clue(b,row,col,d,nonblank,clue):
+  +q = L.logical_position(row,col)
+  proof : (L.PlainWord(b,q,L.digit_word(d)) -> L.FixedClue(Fast.activated(False{},b),q,d)) =
+    L.on_reified_board(b,x => (L.PlainWord(x,q,L.digit_word(d)) -> L.FixedClue(Fast.activated(False{},x),q,d)),
+      L.reify_board(b),image => L.activation_shape_and_word_image(image,row,col,d,nonblank))
+  proof(clue)
+
+def L.guessed_ignores_supplied_mode(frames,depth,found,snapshots,p,digit,remaining,pair):
+  (saved,working) = pair
+  {==}
+
+def L.adaptive_first_guess_matches_queued(b,frames,depth,found,snapshots,p,digit,remaining):
+  L.guessed_ignores_supplied_mode(frames,depth,found,snapshots,p,digit,remaining,Array.clone(U32,Q.encode(b)))
+
+def L.adaptive_first_guess_live_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,nonblank,distinct,clue):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  +d = L.digit_word(digit)
+  Equal.trans(U32,L.searching_word(Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,False{},L.image_board(image)),q),
+    L.searching_word(Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,True{},Q.encode(L.image_board(image))),q),L.fixed_word(fixed),
+    Equal.cong(Fast.State,U32,out => L.searching_word(out,q),
+      Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,False{},L.image_board(image)),
+      Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,True{},Q.encode(L.image_board(image))),
+      L.adaptive_first_guess_matches_queued(L.image_board(image),frames,depth,found,snapshots,p,d,remaining)),
+    L.adaptive_active_guess_keeps_clue(Q.encode(L.image_board(image)),frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,distinct,
+      L.adaptive_activation_fixed_clue(L.image_board(image),qr,qc,fixed,nonblank,clue)))
+
+def L.adaptive_first_guess_live_keeps_clue(b,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,nonblank,distinct,clue):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  proof : (L.PlainWord(b,q,L.digit_word(fixed)) -> {L.searching_word(Fast.place(True{},p,L.digit_word(digit),remaining,frames,depth,found,snapshots,False{},b),q) == L.fixed_word(fixed) : U32}) =
+    L.on_reified_board(b,x => (L.PlainWord(x,q,L.digit_word(fixed)) -> {L.searching_word(Fast.place(True{},p,L.digit_word(digit),remaining,frames,depth,found,snapshots,False{},x),q) == L.fixed_word(fixed) : U32}),
+      L.reify_board(b),image => L.adaptive_first_guess_live_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,nonblank,distinct))
+  proof(clue)
+
+def L.adaptive_first_guess_snapshot_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,nonblank,clue):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  +d = L.digit_word(digit)
+  Equal.trans(U32,L.searching_snapshot_word(Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,False{},L.image_board(image)),q),
+    L.searching_snapshot_word(Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,True{},Q.encode(L.image_board(image))),q),L.fixed_word(fixed),
+    Equal.cong(Fast.State,U32,out => L.searching_snapshot_word(out,q),
+      Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,False{},L.image_board(image)),
+      Fast.place(True{},p,d,remaining,frames,depth,found,snapshots,True{},Q.encode(L.image_board(image))),
+      L.adaptive_first_guess_matches_queued(L.image_board(image),frames,depth,found,snapshots,p,d,remaining)),
+    L.adaptive_active_guess_snapshot_keeps_clue(Q.encode(L.image_board(image)),frames,depth,found,snapshots,p,q,fixed,d,remaining,
+      L.adaptive_activation_fixed_clue(L.image_board(image),qr,qc,fixed,nonblank,clue)))
+
+def L.adaptive_first_guess_snapshot_keeps_clue(b,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,nonblank,clue):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  proof : (L.PlainWord(b,q,L.digit_word(fixed)) -> {L.searching_snapshot_word(Fast.place(True{},p,L.digit_word(digit),remaining,frames,depth,found,snapshots,False{},b),q) == L.fixed_word(fixed) : U32}) =
+    L.on_reified_board(b,x => (L.PlainWord(x,q,L.digit_word(fixed)) -> {L.searching_snapshot_word(Fast.place(True{},p,L.digit_word(digit),remaining,frames,depth,found,snapshots,False{},x),q) == L.fixed_word(fixed) : U32}),
+      L.reify_board(b),image => L.adaptive_first_guess_snapshot_keeps_clue_image(image,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,remaining,nonblank))
+  proof(clue)
+
+def L.queued_stale_flag_can_select_clue():
+  ({==},{==})
+
+def L.ordinary_stale_bitmap_can_select_clue():
+  ({==},{==})

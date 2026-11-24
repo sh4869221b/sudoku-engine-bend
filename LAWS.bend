@@ -4724,3 +4724,403 @@ law inactive_swap_keeps_clue:
   for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
   for state: PlainWord(b,logical_position(qr,qc),clue)
   PlainWord(Pair.fst(Array<U32>,U32,Fast.swapped(False{},b,logical_position(sr,sc),value)),logical_position(qr,qc),clue)
+
+# The saved pre-choice board and the live post-choice board are distinct
+# observations of the actual adaptive search transition.
+def first_snapshot_word(snapshots: List<&1,Array<U32>>, +q: U32) -> U32:
+  match snapshots:
+    case saved <> tail:
+      cell_value(saved,q)
+    case Nil{}:
+      0
+
+def searching_snapshot_word(state: Fast.State, +q: U32) -> U32:
+  match state:
+    case Fast.Searching{board,frames,depth,found,snapshots,active}:
+      first_snapshot_word(snapshots,q)
+    case _:
+      0
+
+law adaptive_guess_snapshot_word:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +digit: U32
+  for +remaining: U32
+  for +active: Bool
+  {searching_snapshot_word(Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,active,b),q)
+    == cell_value(Fast.activated(active,b),q) : U32}
+
+law adaptive_active_guess_keeps_clue_image:
+  for +image: BoardImage
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +remaining: U32
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for state: FixedClue(image_board(image),logical_position(qr,qc),fixed)
+  {searching_word(Fast.place(True{},logical_position(sr,sc),digit_word(digit),remaining,frames,depth,found,snapshots,True{},image_board(image)),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_active_guess_keeps_clue:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +remaining: U32
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for state: FixedClue(b,logical_position(qr,qc),fixed)
+  {searching_word(Fast.place(True{},logical_position(sr,sc),digit_word(digit),remaining,frames,depth,found,snapshots,True{},b),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_active_guess_snapshot_keeps_clue_image:
+  for +image: BoardImage
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +digit: U32
+  for +remaining: U32
+  for state: FixedClue(image_board(image),q,fixed)
+  {searching_snapshot_word(Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,True{},image_board(image)),q)
+    == fixed_word(fixed) : U32}
+
+law adaptive_active_guess_snapshot_keeps_clue:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +q: U32
+  for +fixed: BoardDigit
+  for +digit: U32
+  for +remaining: U32
+  for state: FixedClue(b,q,fixed)
+  {searching_snapshot_word(Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,True{},b),q)
+    == fixed_word(fixed) : U32}
+
+def Nonblank(+d: BoardDigit) -> Type:
+  {U32.is_eq(digit_word(d),0) == False{} : Bool}
+
+law encoded_nonblank_word:
+  for +d: BoardDigit
+  for b: Array<U32>
+  for +p: U32
+  for nonblank: Nonblank(d)
+  {cell_value(Q.encoded(p,(b,digit_word(d))),p) == fixed_word(d) : U32}
+
+law actual_encode_nonblank_word:
+  for +image: BoardImage
+  for +p: U32
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  for word_is: {cell_value(image_board(image),p) == digit_word(d) : U32}
+  {cell_value(actual_encoded_step(image_board(image),p),p) == fixed_word(d) : U32}
+
+def EncodeMiddleRaw(-b: Array<U32>, +prefix: Nat, +suffix: Nat, +p: U32, +d: BoardDigit) -> Type:
+  Board128(b) ->
+  EncodeApart(prefix,p,walk_position(prefix,p)) ->
+  RoutedApart(flag_slot(walk_position(prefix,p)),walk_position(prefix,p)) ->
+  EncodeApart(suffix,(walk_position(prefix,p) + 1 : U32),walk_position(prefix,p)) ->
+  Nonblank(d) ->
+  {cell_value(b,walk_position(prefix,p)) == digit_word(d) : U32} ->
+  {cell_value(Q.encode_go(with_center(prefix,suffix),p,b),walk_position(prefix,p)) == fixed_word(d) : U32}
+
+def EncodeMiddleRawProof(+prefix: Nat, +suffix: Nat, +p: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> EncodeMiddleRaw(b,prefix,suffix,p,d)
+
+law encode_raw_middle_base_image:
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for safe: RoutedApart(flag_slot(p),p)
+  for tail: EncodeApart(suffix,(p + 1 : U32),p)
+  for nonblank: Nonblank(d)
+  for digit: {cell_value(image_board(image),p) == digit_word(d) : U32}
+  {cell_value(Q.encode_go(1n+suffix,p,image_board(image)),p) == fixed_word(d) : U32}
+
+law encode_raw_middle_base:
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  EncodeMiddleRaw(image_board(image),0n,suffix,p,d)
+
+law encode_raw_middle_step_image:
+  for +image: BoardImage
+  for +k: Nat
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for before: EncodeApart(1n+k,p,walk_position(1n+k,p))
+  for safe: RoutedApart(flag_slot(walk_position(1n+k,p)),walk_position(1n+k,p))
+  for after: EncodeApart(suffix,(walk_position(1n+k,p) + 1 : U32),walk_position(1n+k,p))
+  for nonblank: Nonblank(d)
+  for digit: {cell_value(image_board(image),walk_position(1n+k,p)) == digit_word(d) : U32}
+  for next: EncodeMiddleRawProof(k,suffix,(p + 1 : U32),d)
+  {cell_value(Q.encode_go(with_center(1n+k,suffix),p,image_board(image)),walk_position(1n+k,p)) == fixed_word(d) : U32}
+
+law encode_raw_middle_step:
+  for +image: BoardImage
+  for +k: Nat
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  for next: EncodeMiddleRawProof(k,suffix,(p + 1 : U32),d)
+  EncodeMiddleRaw(image_board(image),1n+k,suffix,p,d)
+
+law encode_raw_middle_from_image:
+  for +prefix: Nat
+  for +image: BoardImage
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  EncodeMiddleRaw(image_board(image),prefix,suffix,p,d)
+
+law encode_raw_middle_value:
+  for b: Array<U32>
+  for +prefix: Nat
+  for +suffix: Nat
+  for +p: U32
+  for +d: BoardDigit
+  EncodeMiddleRaw(b,prefix,suffix,p,d)
+
+
+def Encode81At(-b: Array<U32>, +before: Nat, +after: Nat, +d: BoardDigit) -> Type:
+  Board128(b) ->
+  RoutedApart(109,walk_position(before,0)) ->
+  RoutedApart(110,walk_position(before,0)) ->
+  RoutedApart(111,walk_position(before,0)) ->
+  EncodeApart(before,0,walk_position(before,0)) ->
+  RoutedApart(flag_slot(walk_position(before,0)),walk_position(before,0)) ->
+  EncodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0)) ->
+  {with_center(before,after) == 81n : Nat} ->
+  Nonblank(d) ->
+  {cell_value(b,walk_position(before,0)) == digit_word(d) : U32} ->
+  {cell_value(Q.encode(b),walk_position(before,0)) == fixed_word(d) : U32}
+
+law encode81_at_step:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for r9: RoutedApart(109,walk_position(before,0))
+  for r10: RoutedApart(110,walk_position(before,0))
+  for r11: RoutedApart(111,walk_position(before,0))
+  for ep: EncodeApart(before,0,walk_position(before,0))
+  for safe: RoutedApart(flag_slot(walk_position(before,0)),walk_position(before,0))
+  for es: EncodeApart(after,(walk_position(before,0) + 1 : U32),walk_position(before,0))
+  for count: {with_center(before,after) == 81n : Nat}
+  for nonblank: Nonblank(d)
+  for digit: {cell_value(image_board(image),walk_position(before,0)) == digit_word(d) : U32}
+  {cell_value(Q.encode(image_board(image)),walk_position(before,0)) == fixed_word(d) : U32}
+
+law encode81_at_image:
+  for +image: BoardImage
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  Encode81At(image_board(image),before,after,d)
+
+law public_queue_encode_nonblank_at:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  Encode81At(b,before,after,d)
+
+law public_encode_nonblank_routes:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for routes: WindowRoutes(before,after,walk_position(before,0),(walk_position(before,0) + 1 : U32))
+  for count: {with_center(before,after) == 81n : Nat}
+  for nonblank: Nonblank(d)
+  for digit: {cell_value(b,walk_position(before,0)) == digit_word(d) : U32}
+  {cell_value(Q.encode(b),walk_position(before,0)) == fixed_word(d) : U32}
+
+law public_encode_nonblank_checked:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for window: VerifiedWindow(before,after)
+  for nonblank: Nonblank(d)
+  for digit: {cell_value(b,walk_position(before,0)) == digit_word(d) : U32}
+  {cell_value(Q.encode(b),walk_position(before,0)) == fixed_word(d) : U32}
+
+law any_logical_cell_encode_nonblank:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for nonblank: Nonblank(d)
+  for digit: {cell_value(b,logical_position(row,col)) == digit_word(d) : U32}
+  {cell_value(Q.encode(b),logical_position(row,col)) == fixed_word(d) : U32}
+
+
+law activation_shape_and_word_parts:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for word: {cell_value(image_board(image),logical_position(row,col)) == digit_word(d) : U32}
+  FixedClue(Fast.activated(False{},image_board(image)),logical_position(row,col),d)
+
+law activation_shape_and_word_image:
+  for +image: BoardImage
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  for clue: PlainWord(image_board(image),logical_position(row,col),digit_word(d))
+  FixedClue(Fast.activated(False{},image_board(image)),logical_position(row,col),d)
+
+law adaptive_activation_fixed_clue:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  for clue: PlainWord(b,logical_position(row,col),digit_word(d))
+  FixedClue(Fast.activated(False{},b),logical_position(row,col),d)
+
+law guessed_ignores_supplied_mode:
+  for -frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for -snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +digit: U32
+  for +remaining: U32
+  for pair: Array<U32> & Array<U32>
+  {Fast.guessed(p,digit,remaining,frames,depth,found,snapshots,False{},pair) ==
+    Fast.guessed(p,digit,remaining,frames,depth,found,snapshots,True{},pair) : Fast.State}
+
+law adaptive_first_guess_matches_queued:
+  for b: Array<U32>
+  for -frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for -snapshots: List<&1,Array<U32>>
+  for +p: U32
+  for +digit: U32
+  for +remaining: U32
+  {Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,False{},b) ==
+    Fast.place(True{},p,digit,remaining,frames,depth,found,snapshots,True{},Q.encode(b)) : Fast.State}
+
+law adaptive_first_guess_live_keeps_clue_image:
+  for +image: BoardImage
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +remaining: U32
+  for nonblank: Nonblank(fixed)
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: PlainWord(image_board(image),logical_position(qr,qc),digit_word(fixed))
+  {searching_word(Fast.place(True{},logical_position(sr,sc),digit_word(digit),remaining,frames,depth,found,snapshots,False{},image_board(image)),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_first_guess_live_keeps_clue:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +remaining: U32
+  for nonblank: Nonblank(fixed)
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for clue: PlainWord(b,logical_position(qr,qc),digit_word(fixed))
+  {searching_word(Fast.place(True{},logical_position(sr,sc),digit_word(digit),remaining,frames,depth,found,snapshots,False{},b),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_first_guess_snapshot_keeps_clue_image:
+  for +image: BoardImage
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +remaining: U32
+  for nonblank: Nonblank(fixed)
+  for clue: PlainWord(image_board(image),logical_position(qr,qc),digit_word(fixed))
+  {searching_snapshot_word(Fast.place(True{},logical_position(sr,sc),digit_word(digit),remaining,frames,depth,found,snapshots,False{},image_board(image)),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+law adaptive_first_guess_snapshot_keeps_clue:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for +remaining: U32
+  for nonblank: Nonblank(fixed)
+  for clue: PlainWord(b,logical_position(qr,qc),digit_word(fixed))
+  {searching_snapshot_word(Fast.place(True{},logical_position(sr,sc),digit_word(digit),remaining,frames,depth,found,snapshots,False{},b),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+# The production selectors trust metadata; shape and a fixed cell alone do
+# not suffice to prove a selector avoids it.
+def inconsistent_queued_board() -> Array<U32>:
+  B.set_cell(B.set_cell(B.empty(),0,1024),109,1)
+
+def inconsistent_plain_board() -> Array<U32>:
+  B.set_cell(B.set_cell(B.empty(),0,1),81,2044)
+
+law queued_stale_flag_can_select_clue:
+  ({cell_value(inconsistent_queued_board(),0) == 1024 : U32} &
+   {Pair.snd(Array<U32>,C.Choice,Q.select(inconsistent_queued_board())) == C.Choice{0,1024,1} : C.Choice})
+
+law ordinary_stale_bitmap_can_select_clue:
+  ({cell_value(inconsistent_plain_board(),0) == 1 : U32} &
+   {Pair.snd(Array<U32>,C.Choice,C.cached_select(inconsistent_plain_board())) == C.Choice{0,2,1} : C.Choice})

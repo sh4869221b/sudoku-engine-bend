@@ -295,3 +295,22 @@ claim about reachable search caches or prove solver soundness.
   transition to a selectable state. Future cache correctness laws must
   distinguish selectable states and retained snapshots from transient
   unwind state; the isolation theorem does not establish those laws.
+
+## First guess, queued guesses, and selector preconditions
+
+- At every one of the 81 logical cells, a known digit 1–9 in a regular
+  ordinary board becomes exactly the digit shifted left ten bits after
+  actual activation. This proves the raw word, including zero in its lower
+  ten bits, not merely that a subsequent decode recovers the digit.
+- A guess saves the exact word of the activated board, including at the
+  chosen cell. The active guess preserves a different fixed cell in the
+  working board, and the same guarantees hold for the first guess that
+  activates queued mode. The snapshot guarantee does not require
+  distinct coordinates; the working-board guarantee does.
+- Both production selectors trust their metadata. The kernel checks two
+  deliberately inconsistent boards: a queued urgency flag selects the
+  actual fixed word 1024 at cell 0, and an ordinary stale empty-column
+  bit selects cell 0 even though it contains digit 1. These boards are
+  not claimed reachable. Establishing that neither case occurs on a
+  reachable forward turn requires maintenance of the urgency flags and
+  ordinary empty-column bits as a separate invariant.
