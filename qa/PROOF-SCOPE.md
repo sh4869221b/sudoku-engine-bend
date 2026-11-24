@@ -195,6 +195,20 @@ claim about reachable search caches or prove solver soundness.
   actual 81-step public round trip, including the initial flag resets.
   This is a pointwise theorem conditional on a perfect 128-slot tree, a digit
   in 0–9 at the chosen cell, and route separation for the preceding and
-  following writes. The preceding bounded route checks are separate
-  declarations; the proof does not yet supply every routing premise in
-  one unconditional 81-cell theorem. It does not prove solver soundness.
+  following writes. The next theorem discharges those routing premises
+  for every logical position.
+
+## All 81 logical cells
+
+- The board-position theorem accepts any of nine rows and nine columns.
+  Each combination reduces to its actual prefix and suffix in the
+  81-step sweep. The kernel checks both the exact iteration count and the
+  normalized routes for the three initial padding writes, the target
+  cell's flag write, and all preceding and following logical and flag
+  writes. A constructive proof turns those checks into the encoder and
+  decoder premises rather than assuming they hold independently.
+- On any perfect 128-slot board, for any logical cell whose input is a
+  Sudoku digit (including zero for blank), the actual public encoder
+  followed by the 81-step decoder preserves that digit. The proof covers
+  logical cell values, not word-for-word equality of the entire backing
+  array or preservation of metadata. It does not prove solver soundness.

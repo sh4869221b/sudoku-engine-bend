@@ -2274,3 +2274,289 @@ def L.roundtrip81_at_image(image,before,after,d,shape,r9,r10,r11,ep,safe,es,dp,d
 def L.public_queue_roundtrip_at(b,before,after,d):
   L.on_reified_board(b,x => L.RoundTrip81At(x,before,after,d),
     L.reify_board(b),image => L.roundtrip81_at_image(image,before,after,d))
+
+def L.both_true(a,b,combined):
+  match a:
+    case True{}:
+      ({==},combined)
+    case False{}:
+      Empty.absurd(({False{} == True{} : Bool} & {b == True{} : Bool}),L.false_is_not_true(combined))
+
+def L.copy_true(a,valid):
+  %valid : ({a == _ : Bool} & {a == _ : Bool})
+  ({==},{==})
+
+def L.sweep_witness_combine(n,p,q,logical,flag,later):
+  (for_encode,for_decode) = logical
+  (enc,dec) = later
+  ((for_encode,(flag,enc)),(for_decode,dec))
+
+def L.sweep_witness_parts(n,p,q,first,right,recurse):
+  (flag,more) = right
+  L.sweep_witness_combine(n,p,q,L.copy_true(L.apart_guard(p,q),first),flag,recurse(more))
+
+def L.sweep_witness_head(n,p,q,parts,recurse):
+  (first,tail) = parts
+  L.sweep_witness_parts(n,p,q,first,
+    L.both_true(L.apart_guard(L.flag_slot(p),q),L.sweep_guard(n,(p + 1 : U32),q),tail),
+    recurse)
+
+def L.sweep_witnesses(n,p,q,valid):
+  match n:
+    case 0n:
+      ({==},{==})
+    case 1n+k:
+      L.sweep_witness_head(k,p,q,
+        L.both_true(L.apart_guard(p,q),Bool.and(L.apart_guard(L.flag_slot(p),q),L.sweep_guard(k,(p + 1 : U32),q)),valid),
+        proof => L.sweep_witnesses(k,(p + 1 : U32),q,proof))
+
+def L.window_routes_split_4(before,after,q,next,r9,r10,r11,safe,parts):
+  (prior,rest) = parts
+  (r9,(r10,(r11,(safe,(L.sweep_witnesses(before,0,q,prior),L.sweep_witnesses(after,next,q,rest))))))
+
+def L.window_routes_split_3(before,after,q,next,r9,r10,r11,parts):
+  (safe,rest) = parts
+  L.window_routes_split_4(before,after,q,next,r9,r10,r11,safe,
+    L.both_true(L.sweep_guard(before,0,q),L.sweep_guard(after,next,q),rest))
+
+def L.window_routes_split_2(before,after,q,next,r9,r10,parts):
+  (r11,rest) = parts
+  L.window_routes_split_3(before,after,q,next,r9,r10,r11,
+    L.both_true(L.apart_guard(L.flag_slot(q),q),Bool.and(L.sweep_guard(before,0,q),L.sweep_guard(after,next,q)),rest))
+
+def L.window_routes_split_1(before,after,q,next,r9,parts):
+  (r10,rest) = parts
+  L.window_routes_split_2(before,after,q,next,r9,r10,
+    L.both_true(L.apart_guard(111,q),Bool.and(L.apart_guard(L.flag_slot(q),q),Bool.and(L.sweep_guard(before,0,q),L.sweep_guard(after,next,q))),rest))
+
+def L.window_routes_split_0(before,after,q,next,parts):
+  (r9,rest) = parts
+  L.window_routes_split_1(before,after,q,next,r9,
+    L.both_true(L.apart_guard(110,q),Bool.and(L.apart_guard(111,q),Bool.and(L.apart_guard(L.flag_slot(q),q),Bool.and(L.sweep_guard(before,0,q),L.sweep_guard(after,next,q)))),rest))
+
+def L.window_routes(before,after,q,next,e):
+  L.window_routes_split_0(before,after,q,next,
+    L.both_true(L.apart_guard(109,q),Bool.and(L.apart_guard(110,q),Bool.and(L.apart_guard(111,q),Bool.and(L.apart_guard(L.flag_slot(q),q),Bool.and(L.sweep_guard(before,0,q),L.sweep_guard(after,next,q))))),e))
+
+def L.public_roundtrip_routes(b,before,after,d,shape,routes,count,digit):
+  (r9,(r10,(r11,(safe,((ep,dp),(es,ds)))))) = routes
+  L.public_queue_roundtrip_at(b,before,after,d)(shape,r9,r10,r11,ep,safe,es,dp,ds,count,digit)
+
+def L.public_roundtrip_checked(b,before,after,d,shape,window,digit):
+  (guard,count) = window
+  +q = L.walk_position(before,0)
+  L.public_roundtrip_routes(b,before,after,d,shape,
+    L.window_routes(before,after,q,(q + 1 : U32),guard),count,digit)
+
+def L.row_window_0(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_1(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_2(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_3(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_4(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_5(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_6(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_7(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.row_window_8(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{}:
+      ({==},{==})
+
+def L.every_cell_window(row,col):
+  match row:
+    case L.Coordinate0{}:
+      L.row_window_0(col)
+    case L.Coordinate1{}:
+      L.row_window_1(col)
+    case L.Coordinate2{}:
+      L.row_window_2(col)
+    case L.Coordinate3{}:
+      L.row_window_3(col)
+    case L.Coordinate4{}:
+      L.row_window_4(col)
+    case L.Coordinate5{}:
+      L.row_window_5(col)
+    case L.Coordinate6{}:
+      L.row_window_6(col)
+    case L.Coordinate7{}:
+      L.row_window_7(col)
+    case L.Coordinate8{}:
+      L.row_window_8(col)
+
+def L.any_logical_cell_roundtrip(b,row,col,d,shape,digit):
+  L.public_roundtrip_checked(b,L.logical_offset(row,col),L.logical_tail(row,col),d,shape,L.every_cell_window(row,col),digit)

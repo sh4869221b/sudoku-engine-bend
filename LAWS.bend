@@ -2704,3 +2704,262 @@ law public_queue_roundtrip_at:
   for +after: Nat
   for +d: BoardDigit
   RoundTrip81At(b,before,after,d)
+
+law both_true:
+  for +a: Bool
+  for +b: Bool
+  for combined: {Bool.and(a,b) == True{} : Bool}
+  ({a == True{} : Bool} & {b == True{} : Bool})
+
+law copy_true:
+  for -a: Bool
+  for valid: {a == True{} : Bool}
+  ({a == True{} : Bool} & {a == True{} : Bool})
+
+def apart_guard(+p: U32, +q: U32) -> Bool:
+  regular_routes(normalized_route(p),normalized_route(q))
+
+def sweep_guard(+n: Nat, +p: U32, +q: U32) -> Bool:
+  match n:
+    case 0n:
+      True{}
+    case 1n+k:
+      Bool.and(apart_guard(p,q),Bool.and(apart_guard(flag_slot(p),q),sweep_guard(k,(p + 1 : U32),q)))
+
+def SweepWitnesses(+n: Nat, +p: U32, +q: U32) -> Type:
+  (EncodeApart(n,p,q) & DecodeApart(n,p,q))
+
+law sweep_witness_combine:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for logical: (RoutedApart(p,q) & RoutedApart(p,q))
+  for flag: RoutedApart(flag_slot(p),q)
+  for later: SweepWitnesses(n,(p + 1 : U32),q)
+  SweepWitnesses(1n+n,p,q)
+
+law sweep_witness_parts:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for first: RoutedApart(p,q)
+  for right: ({apart_guard(flag_slot(p),q) == True{} : Bool} & {sweep_guard(n,(p + 1 : U32),q) == True{} : Bool})
+  for recurse: ({sweep_guard(n,(p + 1 : U32),q) == True{} : Bool} -> SweepWitnesses(n,(p + 1 : U32),q))
+  SweepWitnesses(1n+n,p,q)
+
+law sweep_witness_head:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for parts: (RoutedApart(p,q) & {Bool.and(apart_guard(flag_slot(p),q),sweep_guard(n,(p + 1 : U32),q)) == True{} : Bool})
+  for recurse: ({sweep_guard(n,(p + 1 : U32),q) == True{} : Bool} -> SweepWitnesses(n,(p + 1 : U32),q))
+  SweepWitnesses(1n+n,p,q)
+
+law sweep_witnesses:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for valid: {sweep_guard(n,p,q) == True{} : Bool}
+  SweepWitnesses(n,p,q)
+
+def window_guard(+before: Nat, +after: Nat, +q: U32, +next: U32) -> Bool:
+  Bool.and(apart_guard(109,q),Bool.and(apart_guard(110,q),Bool.and(apart_guard(111,q),Bool.and(apart_guard(flag_slot(q),q),Bool.and(sweep_guard(before,0,q),sweep_guard(after,next,q))))))
+
+def WindowRoutes(+before: Nat, +after: Nat, +q: U32, +next: U32) -> Type:
+  RoutedApart(109,q) & RoutedApart(110,q) & RoutedApart(111,q) & RoutedApart(flag_slot(q),q) & SweepWitnesses(before,0,q) & SweepWitnesses(after,next,q)
+
+law window_routes_split_4:
+  for +before: Nat
+  for +after: Nat
+  for +q: U32
+  for +next: U32
+  for r9: RoutedApart(109,q)
+  for r10: RoutedApart(110,q)
+  for r11: RoutedApart(111,q)
+  for safe: RoutedApart(flag_slot(q),q)
+  for parts: ({sweep_guard(before,0,q) == True{} : Bool} & {sweep_guard(after,next,q) == True{} : Bool})
+  WindowRoutes(before,after,q,next)
+
+law window_routes_split_3:
+  for +before: Nat
+  for +after: Nat
+  for +q: U32
+  for +next: U32
+  for r9: RoutedApart(109,q)
+  for r10: RoutedApart(110,q)
+  for r11: RoutedApart(111,q)
+  for parts: ({apart_guard(flag_slot(q),q) == True{} : Bool} & {Bool.and(sweep_guard(before,0,q),sweep_guard(after,next,q)) == True{} : Bool})
+  WindowRoutes(before,after,q,next)
+
+law window_routes_split_2:
+  for +before: Nat
+  for +after: Nat
+  for +q: U32
+  for +next: U32
+  for r9: RoutedApart(109,q)
+  for r10: RoutedApart(110,q)
+  for parts: ({apart_guard(111,q) == True{} : Bool} & {Bool.and(apart_guard(flag_slot(q),q),Bool.and(sweep_guard(before,0,q),sweep_guard(after,next,q))) == True{} : Bool})
+  WindowRoutes(before,after,q,next)
+
+law window_routes_split_1:
+  for +before: Nat
+  for +after: Nat
+  for +q: U32
+  for +next: U32
+  for r9: RoutedApart(109,q)
+  for parts: ({apart_guard(110,q) == True{} : Bool} & {Bool.and(apart_guard(111,q),Bool.and(apart_guard(flag_slot(q),q),Bool.and(sweep_guard(before,0,q),sweep_guard(after,next,q)))) == True{} : Bool})
+  WindowRoutes(before,after,q,next)
+
+law window_routes_split_0:
+  for +before: Nat
+  for +after: Nat
+  for +q: U32
+  for +next: U32
+  for parts: ({apart_guard(109,q) == True{} : Bool} & {Bool.and(apart_guard(110,q),Bool.and(apart_guard(111,q),Bool.and(apart_guard(flag_slot(q),q),Bool.and(sweep_guard(before,0,q),sweep_guard(after,next,q))))) == True{} : Bool})
+  WindowRoutes(before,after,q,next)
+
+law window_routes:
+  for +before: Nat
+  for +after: Nat
+  for +q: U32
+  for +next: U32
+  for guard: {window_guard(before,after,q,next) == True{} : Bool}
+  WindowRoutes(before,after,q,next)
+
+def VerifiedWindow(+before: Nat, +after: Nat) -> Type:
+  ({window_guard(before,after,walk_position(before,0),(walk_position(before,0) + 1 : U32)) == True{} : Bool}
+    & {with_center(before,after) == 81n : Nat})
+
+law public_roundtrip_routes:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for routes: WindowRoutes(before,after,walk_position(before,0),(walk_position(before,0) + 1 : U32))
+  for count: {with_center(before,after) == 81n : Nat}
+  for digit: {cell_value(b,walk_position(before,0)) == digit_word(d) : U32}
+  {cell_value(Q.decode(81n,0,Q.encode(b)),walk_position(before,0)) == digit_word(d) : U32}
+
+law public_roundtrip_checked:
+  for b: Array<U32>
+  for +before: Nat
+  for +after: Nat
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for window: VerifiedWindow(before,after)
+  for digit: {cell_value(b,walk_position(before,0)) == digit_word(d) : U32}
+  {cell_value(Q.decode(81n,0,Q.encode(b)),walk_position(before,0)) == digit_word(d) : U32}
+
+type CellCoordinate is Data:
+  Coordinate0{}
+  Coordinate1{}
+  Coordinate2{}
+  Coordinate3{}
+  Coordinate4{}
+  Coordinate5{}
+  Coordinate6{}
+  Coordinate7{}
+  Coordinate8{}
+
+def coordinate_nat(+index: CellCoordinate) -> Nat:
+  match index:
+    case Coordinate0{}:
+      0n
+    case Coordinate1{}:
+      1n
+    case Coordinate2{}:
+      2n
+    case Coordinate3{}:
+      3n
+    case Coordinate4{}:
+      4n
+    case Coordinate5{}:
+      5n
+    case Coordinate6{}:
+      6n
+    case Coordinate7{}:
+      7n
+    case Coordinate8{}:
+      8n
+
+def row_start(+row: CellCoordinate) -> Nat:
+  match row:
+    case Coordinate0{}:
+      0n
+    case Coordinate1{}:
+      9n
+    case Coordinate2{}:
+      18n
+    case Coordinate3{}:
+      27n
+    case Coordinate4{}:
+      36n
+    case Coordinate5{}:
+      45n
+    case Coordinate6{}:
+      54n
+    case Coordinate7{}:
+      63n
+    case Coordinate8{}:
+      72n
+
+def logical_offset(+row: CellCoordinate, +col: CellCoordinate) -> Nat:
+  Nat.add(row_start(row),coordinate_nat(col))
+
+def logical_tail(+row: CellCoordinate, +col: CellCoordinate) -> Nat:
+  Nat.sub(80n,logical_offset(row,col))
+
+def logical_position(+row: CellCoordinate, +col: CellCoordinate) -> U32:
+  walk_position(logical_offset(row,col),0)
+
+law row_window_0:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate0{},col),logical_tail(Coordinate0{},col))
+
+law row_window_1:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate1{},col),logical_tail(Coordinate1{},col))
+
+law row_window_2:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate2{},col),logical_tail(Coordinate2{},col))
+
+law row_window_3:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate3{},col),logical_tail(Coordinate3{},col))
+
+law row_window_4:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate4{},col),logical_tail(Coordinate4{},col))
+
+law row_window_5:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate5{},col),logical_tail(Coordinate5{},col))
+
+law row_window_6:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate6{},col),logical_tail(Coordinate6{},col))
+
+law row_window_7:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate7{},col),logical_tail(Coordinate7{},col))
+
+law row_window_8:
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(Coordinate8{},col),logical_tail(Coordinate8{},col))
+
+law every_cell_window:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  VerifiedWindow(logical_offset(row,col),logical_tail(row,col))
+
+
+law any_logical_cell_roundtrip:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for digit: {cell_value(b,logical_position(row,col)) == digit_word(d) : U32}
+  {cell_value(Q.decode(81n,0,Q.encode(b)),logical_position(row,col)) == digit_word(d) : U32}
