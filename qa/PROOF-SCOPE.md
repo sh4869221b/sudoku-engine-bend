@@ -336,3 +336,30 @@ claim about reachable search caches or prove solver soundness.
 - The preservation result assumes a fixed clue on the restored board.
   Reaching such a board by all production selectors still requires the
   ordinary cached vacancy and queued urgency metadata invariants.
+
+## Read-only candidate selection and generator acceptance
+
+- The production ordinary selector reads slot 108, the row bitmap, and
+  unit occupancy without changing any board word. This extends to the
+  actual row scanner for arbitrary fuel and arbitrary intermediate
+  state, including both exhaustion and early singleton or contradiction
+  exits. The `C.cached_select` result carries exactly the input tree,
+  even when the metadata values are inconsistent. This says nothing
+  about whether a selected cell is actually blank.
+- The queued scan's single-cell inspection and its urgent-choice read
+  also retain the board. Its normal scan ignores exact fixed-digit words
+  1–9 shifted left ten bits. Selection through queued urgency flags
+  still depends on a separately maintained flag invariant.
+- The actual generator reports fuel exhaustion rather than accepting a
+  removal if its count has no fuel. A completed count of one is the only
+  result whose branch returns the candidate and decrements the clue
+  total. The real removal attempt counts an exact clone of the board it
+  proposes to accept, and a fuel result is terminal through the dig loop.
+  This verifies the acceptance protocol, not the correspondence between
+  the count and mathematical uniqueness.
+- A pinned native probe of a valid one-blank puzzle returned (found,
+  first cell) equal to (1,5) for solve's limit-one search, and (1,0)
+  for count's limit-two exhaustion; the public counter correctly returned
+  1. The count API discards the decoded scratch-board payload. A
+  completed solution-event theorem must be kept separate from a theorem
+  about every terminal count payload.

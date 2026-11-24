@@ -1,3 +1,4 @@
+import ./sudoku/generator.bend as G
 import Base
 import ./LAWS.bend as L
 import ./sudoku/batch.bend as B
@@ -5719,3 +5720,250 @@ def L.adaptive_normalized_restore_snapshot_keeps_clue_split(saved,frames,depth,f
 
 def L.adaptive_normalized_restore_snapshot_keeps_clue(saved,frames,depth,found,snapshots,p,q,fixed,mask,present,clipped,clue):
   L.adaptive_normalized_restore_snapshot_keeps_clue_split(saved,frames,depth,found,snapshots,p,q,fixed,mask,L.copy_mask_nonempty(mask,present),clipped,clue)
+
+def L.generator_accept_gate(old,candidate,clues,size,count):
+  match count:
+    case T.CountOne{}:
+      {==}
+    case T.CountZero{}:
+      {==}
+    case T.CountMany{}:
+      {==}
+    case T.CountFuel{}:
+      {==}
+
+def L.generator_count_gate(fuel,old,clues,size,candidate,test):
+  L.generator_accept_gate(old,candidate,clues,size,K.count2(fuel,test))
+
+def L.generator_attempt_counts_exact_removed_board(fuel,pos,symmetry,clues,size,old,candidate):
+  Equal.cong(Array<U32> & Array<U32>,G.DigResult,
+    pair => G.count_candidate(fuel,old,clues,size,pair),
+    Array.clone(U32,G.remove_unit(candidate,pos,symmetry)),
+    (G.remove_unit(candidate,pos,symmetry),G.remove_unit(candidate,pos,symmetry)),
+    L.array_clone_exact(G.remove_unit(candidate,pos,symmetry)))
+
+def L.generator_count_zero_fuel_rejects(old,clues,size,candidate,test):
+  {==}
+
+def L.generator_fuel_stays_terminal(units,fuel,target,symmetry):
+  match units:
+    case Nil{}:
+      {==}
+    case unit <> tail:
+      {==}
+
+def L.generator_skips_disallowed_removal(fuel,pos,symmetry,clues,size,board):
+  {==}
+
+def L.row_mask_reads_board(b,col,boxbase,used):
+  +a = (90 + col : U32)
+  +z = (boxbase + M.div3(col) : U32)
+  L.on_reified_board(b,x => L.SameBoardRead(x,C.row_mask(x,col,boxbase,used)),
+    L.reify_board(b),image =>
+      L.invert_observed(L.image_board(image),
+        C.cached_add(z,C.cached_add(a,(L.image_board(image),used))),
+        L.cached_add_observed(L.image_board(image),C.cached_add(a,(L.image_board(image),used)),z,
+          L.cached_add_observed(L.image_board(image),(L.image_board(image),used),a,
+            (L.image_board(image),used,({==},{==}))))))
+
+def L.row_scan_open_reads_board(b,open,row,p,m,size,word):
+  match open:
+    case True{}:
+      {==}
+    case False{}:
+      {==}
+
+def L.row_scan_start_reads_board(b,r,row,p,m,size,read):
+  (same,+word,(kept,observed)) = read
+  %Equal.sym(Array<U32> & U32,r,(same,word),observed) :
+    {L.row_state_board(C.row_scan_start(row,p,m,size,_)) == b : Array<U32>}
+  Equal.trans(Array<U32>,L.row_state_board(C.row_scan_start(row,p,m,size,(same,word))),same,b,
+    L.row_scan_open_reads_board(same,(row < 9 : U32),row,p,m,size,word),kept)
+
+def L.row_scan_result_keeps_board(b,urgent,row,bits,used,boxbase,pos,mask,count,p,m,size):
+  match urgent:
+    case True{}:
+      {==}
+    case False{}:
+      {==}
+
+def L.row_scan_take_reads_board(b,r,row,bits,used,boxbase,pos,p,m,size,read):
+  (same,+mask,(kept,observed)) = read
+  +count = C.mask_count(mask)
+  %Equal.sym(Array<U32> & U32,r,(same,mask),observed) :
+    {L.row_state_board(C.row_scan_take(row,bits,used,boxbase,pos,p,m,size,_)) == b : Array<U32>}
+  Equal.trans(Array<U32>,L.row_state_board(C.row_scan_take(row,bits,used,boxbase,pos,p,m,size,(same,mask))),same,b,
+    L.row_scan_result_keeps_board(same,(count <= 1 : U32),row,bits,used,boxbase,pos,mask,count,p,m,size),kept)
+
+def L.ordinary_row_take_normalized_keeps(image,row,bits,used,boxbase,p,m,size):
+  +col = L.alternative_digit(bits)
+  L.row_scan_take_reads_board(L.image_board(image),C.row_mask(L.image_board(image),col,boxbase,used),
+    row,L.alternatives_after(bits),used,boxbase,(row * 9 + col : U32),p,m,size,
+    L.row_mask_reads_board(L.image_board(image),col,boxbase,used))
+
+def L.ordinary_row_step_preserves_board_image(image,row,bits,used,boxbase,p,m,size):
+  match bits:
+    case 0:
+      L.row_scan_start_reads_board(L.image_board(image),Array.get(U32,L.image_board(image),(82 + row : U32)),
+        (row + 1 : U32),p,m,size,L.board_read_witness(L.image_board(image),(82 + row : U32)))
+    case U32{WCon{True{}, rest}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{True{}, rest}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{True{}, rest}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{True{}, rest}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{True{}, rest}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, rest}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+    case U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}:
+      L.ordinary_row_take_normalized_keeps(image,row,U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}},used,boxbase,p,m,size)
+
+def L.ordinary_row_step_preserves_board(b,row,bits,used,boxbase,p,m,size):
+  L.on_reified_board(b,x => {L.row_state_board(C.row_scan_step(row,bits,used,boxbase,p,m,size,x)) == x : Array<U32>},
+    L.reify_board(b),image => L.ordinary_row_step_preserves_board_image(image,row,bits,used,boxbase,p,m,size))
+
+def L.ordinary_row_scan_join(fuel,b,next,next_keeps,later):
+  Equal.trans(Array<U32>,Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,next)),L.row_state_board(next),b,later,next_keeps)
+
+def L.ordinary_row_scan_continue_image(fuel,image,row,bits,used,boxbase,p,m,size,later):
+  L.ordinary_row_scan_join(fuel,L.image_board(image),
+    C.row_scan_step(row,bits,used,boxbase,p,m,size,L.image_board(image)),
+    L.ordinary_row_step_preserves_board(L.image_board(image),row,bits,used,boxbase,p,m,size),
+    later(C.row_scan_step(row,bits,used,boxbase,p,m,size,L.image_board(image))))
+
+def L.ordinary_row_scan_continue(fuel,b,row,bits,used,boxbase,p,m,size,later):
+  L.on_reified_board(b,x =>
+    {Pair.fst(Array<U32>,C.Choice,C.row_scan(1n+fuel,C.RowLive{x,row,bits,used,boxbase,p,m,size})) == x : Array<U32>},
+    L.reify_board(b),image => L.ordinary_row_scan_continue_image(fuel,image,row,bits,used,boxbase,p,m,size,later))
+
+def L.ordinary_row_scan_preserves_board(fuel,state):
+  match fuel state:
+    case _ C.RowDone{b,p,m,size}:
+      {==}
+    case 0n C.RowLive{b,row,bits,used,boxbase,p,m,size}:
+      {==}
+    case 1n+k C.RowLive{b,+row,+bits,+used,+boxbase,+p,+m,+size}:
+      L.ordinary_row_scan_continue(k,b,row,bits,used,boxbase,p,m,size,next => L.ordinary_row_scan_preserves_board(k,next))
+
+def L.ordinary_row_begin_from_image(row,index,fuel,image):
+  L.ordinary_row_scan_join(fuel,L.image_board(image),
+    C.row_scan_start(row,81,0,10,Array.get(U32,L.image_board(image),index)),
+    L.row_scan_start_reads_board(L.image_board(image),Array.get(U32,L.image_board(image),index),row,81,0,10,
+      L.board_read_witness(L.image_board(image),index)),
+    L.ordinary_row_scan_preserves_board(fuel,C.row_scan_start(row,81,0,10,Array.get(U32,L.image_board(image),index))))
+
+def L.ordinary_row_begin_reads_board(b,r,read):
+  (same,+start,(kept,observed)) = read
+  +row = M.div9(start)
+  +index = (81 + row : U32)
+  +fuel = U32.to_nat((90 - row : U32))
+  %Equal.sym(Array<U32> & U32,r,(same,start),observed) :
+    {Pair.fst(Array<U32>,C.Choice,C.row_scan_begin(_)) == b : Array<U32>}
+  Equal.trans(Array<U32>,Pair.fst(Array<U32>,C.Choice,C.row_scan_begin((same,start))),same,b,
+    L.on_reified_board(same,x => {Pair.fst(Array<U32>,C.Choice,C.row_scan_begin((x,start))) == x : Array<U32>},
+      L.reify_board(same),image => L.ordinary_row_begin_from_image(row,index,fuel,image)),kept)
+
+def L.ordinary_production_selector_does_not_write(b):
+  L.ordinary_row_begin_reads_board(b,Array.get(U32,b,108),L.board_read_witness(b,108))
+
+def L.queued_advance_keeps_board(b,open,pos,p,m,size,word):
+  match open:
+    case True{}:
+      {==}
+    case False{}:
+      {==}
+
+def L.queued_inspected_reads_board(b,r,pos,p,m,size,read):
+  (same,+word,(kept,observed)) = read
+  %Equal.sym(Array<U32> & U32,r,(same,word),observed) :
+    {L.scalar_board(Q.inspected(pos,p,m,size,_)) == b : Array<U32>}
+  Equal.trans(Array<U32>,L.scalar_board(Q.inspected(pos,p,m,size,(same,word))),same,b,
+    L.queued_advance_keeps_board(same,(word < 1024 : U32),pos,p,m,size,word),kept)
+
+def L.queued_urgent_reads_board(b,r,pos,read):
+  (same,+word,(kept,observed)) = read
+  %Equal.sym(Array<U32> & U32,r,(same,word),observed) :
+    {Pair.fst(Array<U32>,C.Choice,Q.urgent(pos,_)) == b : Array<U32>}
+  kept
+
+def L.queue_fixed_raw_word_is_closed(d,nonblank):
+  match d:
+    case L.D0{}:
+      Empty.absurd({(L.fixed_word(L.D0{}) < 1024 : U32) == False{} : Bool},
+        L.false_is_not_true(Equal.sym(Bool,True{},False{},nonblank)))
+    case L.D1{}:
+      {==}
+    case L.D2{}:
+      {==}
+    case L.D3{}:
+      {==}
+    case L.D4{}:
+      {==}
+    case L.D5{}:
+      {==}
+    case L.D6{}:
+      {==}
+    case L.D7{}:
+      {==}
+    case L.D8{}:
+      {==}
+    case L.D9{}:
+      {==}
+
+def L.queued_scan_skips_fixed_word(b,pos,p,m,size,d,nonblank):
+  %Equal.sym(Bool,(L.fixed_word(d) < 1024 : U32),False{},L.queue_fixed_raw_word_is_closed(d,nonblank)) :
+    {Q.advance(_,pos,p,m,size,b,L.fixed_word(d)) == (b,(p,(m,size))) : Array<U32> & U32 & U32 & U32}
+  {==}

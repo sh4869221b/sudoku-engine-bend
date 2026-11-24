@@ -1,3 +1,4 @@
+import ./sudoku/generator.bend as G
 import Base
 import ./sudoku/arithmetic.bend as M
 import ./sudoku/board.bend as B
@@ -5468,3 +5469,271 @@ law adaptive_normalized_restore_snapshot_keeps_clue:
   for clipped: {U32.and(1022,mask) == mask : U32}
   for clue: FixedClue(saved,q,fixed)
   {searching_snapshot_word(Fast.restore(p,mask,frames,depth,found,saved <> snapshots,True{}),q) == fixed_word(fixed) : U32}
+
+# The generator's acceptance gate is independent of correspondence between
+# CountOne and mathematical uniqueness.
+def removal_gate_spec(old: Array<U32>, candidate: Array<U32>, +clues: U32, +size: U32, count: T.Count) -> G.DigResult:
+  match count:
+    case T.CountOne{}:
+      G.DigDone{candidate,(clues - size : U32)}
+    case T.CountFuel{}:
+      G.DigFuel{}
+    case T.CountZero{}:
+      G.DigDone{old,clues}
+    case T.CountMany{}:
+      G.DigDone{old,clues}
+
+law generator_accept_gate:
+  for -old: Array<U32>
+  for -candidate: Array<U32>
+  for +clues: U32
+  for +size: U32
+  for count: T.Count
+  {G.accept(old,candidate,clues,size,count) == removal_gate_spec(old,candidate,clues,size,count) : G.DigResult}
+
+law generator_count_gate:
+  for +fuel: Nat
+  for -old: Array<U32>
+  for +clues: U32
+  for +size: U32
+  for -candidate: Array<U32>
+  for test: Array<U32>
+  {G.count_candidate(fuel,old,clues,size,(candidate,test)) == removal_gate_spec(old,candidate,clues,size,K.count2(fuel,test)) : G.DigResult}
+
+law generator_attempt_counts_exact_removed_board:
+  for +fuel: Nat
+  for +pos: U32
+  for +symmetry: Bool
+  for +clues: U32
+  for +size: U32
+  for old: Array<U32>
+  for candidate: Array<U32>
+  {G.attempt(fuel,pos,symmetry,clues,size,(old,candidate)) ==
+    G.count_candidate(fuel,old,clues,size,
+      (G.remove_unit(candidate,pos,symmetry),G.remove_unit(candidate,pos,symmetry))) : G.DigResult}
+
+law generator_count_zero_fuel_rejects:
+  for -old: Array<U32>
+  for +clues: U32
+  for +size: U32
+  for -candidate: Array<U32>
+  for -test: Array<U32>
+  {G.count_candidate(0n,old,clues,size,(candidate,test)) == G.DigFuel{} : G.DigResult}
+
+law generator_fuel_stays_terminal:
+  for units: List<&2,G.RemovalUnit>
+  for +fuel: Nat
+  for +target: U32
+  for +symmetry: Bool
+  {G.dig_go(units,fuel,target,symmetry,G.DigFuel{}) == G.DigFuel{} : G.DigResult}
+
+law generator_skips_disallowed_removal:
+  for +fuel: Nat
+  for +pos: U32
+  for +symmetry: Bool
+  for +clues: U32
+  for +size: U32
+  for -board: Array<U32>
+  {G.try_unit(False{},fuel,pos,symmetry,clues,size,board) == G.DigDone{board,clues} : G.DigResult}
+
+# Extract the owned board from the actual ordinary selector state.
+def row_state_board(state: C.RowScan) -> Array<U32>:
+  match state:
+    case C.RowDone{b,p,m,size}:
+      b
+    case C.RowLive{b,row,bits,used,boxbase,p,m,size}:
+      b
+
+law row_mask_reads_board:
+  for b: Array<U32>
+  for +col: U32
+  for +boxbase: U32
+  for +used: U32
+  SameBoardRead(b,C.row_mask(b,col,boxbase,used))
+
+law row_scan_open_reads_board:
+  for -b: Array<U32>
+  for +open: Bool
+  for +row: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for +word: U32
+  {row_state_board(C.row_scan_open(open,row,p,m,size,(b,word))) == b : Array<U32>}
+
+law row_scan_start_reads_board:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for +row: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for read: SameBoardRead(b,r)
+  {row_state_board(C.row_scan_start(row,p,m,size,r)) == b : Array<U32>}
+
+law row_scan_result_keeps_board:
+  for -b: Array<U32>
+  for +urgent: Bool
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +pos: U32
+  for +mask: U32
+  for +count: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  {row_state_board(C.row_scan_result(urgent,row,bits,used,boxbase,pos,mask,count,p,m,size,b)) == b : Array<U32>}
+
+law row_scan_take_reads_board:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for read: SameBoardRead(b,r)
+  {row_state_board(C.row_scan_take(row,bits,used,boxbase,pos,p,m,size,r)) == b : Array<U32>}
+
+
+law ordinary_row_take_normalized_keeps:
+  for +image: BoardImage
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  {row_state_board(C.row_scan_take(row,alternatives_after(bits),used,boxbase,(row * 9 + alternative_digit(bits) : U32),p,m,size,
+    C.row_mask(image_board(image),alternative_digit(bits),boxbase,used))) == image_board(image) : Array<U32>}
+
+law ordinary_row_step_preserves_board_image:
+  for +image: BoardImage
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  {row_state_board(C.row_scan_step(row,bits,used,boxbase,p,m,size,image_board(image))) == image_board(image) : Array<U32>}
+
+law ordinary_row_step_preserves_board:
+  for b: Array<U32>
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  {row_state_board(C.row_scan_step(row,bits,used,boxbase,p,m,size,b)) == b : Array<U32>}
+
+law ordinary_row_scan_join:
+  for +fuel: Nat
+  for -b: Array<U32>
+  for -next: C.RowScan
+  for next_keeps: {row_state_board(next) == b : Array<U32>}
+  for later: {Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,next)) == row_state_board(next) : Array<U32>}
+  {Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,next)) == b : Array<U32>}
+
+law ordinary_row_scan_continue_image:
+  for +fuel: Nat
+  for +image: BoardImage
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for later: @next:C.RowScan -> {Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,next)) == row_state_board(next) : Array<U32>}
+  {Pair.fst(Array<U32>,C.Choice,C.row_scan(1n+fuel,C.RowLive{image_board(image),row,bits,used,boxbase,p,m,size})) == image_board(image) : Array<U32>}
+
+law ordinary_row_scan_continue:
+  for +fuel: Nat
+  for b: Array<U32>
+  for +row: U32
+  for +bits: U32
+  for +used: U32
+  for +boxbase: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for later: @next:C.RowScan -> {Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,next)) == row_state_board(next) : Array<U32>}
+  {Pair.fst(Array<U32>,C.Choice,C.row_scan(1n+fuel,C.RowLive{b,row,bits,used,boxbase,p,m,size})) == b : Array<U32>}
+
+law ordinary_row_scan_preserves_board:
+  for +fuel: Nat
+  for state: C.RowScan
+  {Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,state)) == row_state_board(state) : Array<U32>}
+
+
+law ordinary_row_begin_from_image:
+  for +row: U32
+  for +index: U32
+  for +fuel: Nat
+  for +image: BoardImage
+  {Pair.fst(Array<U32>,C.Choice,C.row_scan(fuel,C.row_scan_start(row,81,0,10,Array.get(U32,image_board(image),index)))) == image_board(image) : Array<U32>}
+
+law ordinary_row_begin_reads_board:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for read: SameBoardRead(b,r)
+  {Pair.fst(Array<U32>,C.Choice,C.row_scan_begin(r)) == b : Array<U32>}
+
+law ordinary_production_selector_does_not_write:
+  for b: Array<U32>
+  {Pair.fst(Array<U32>,C.Choice,C.cached_select(b)) == b : Array<U32>}
+
+def scalar_board(r: Array<U32> & U32 & U32 & U32) -> Array<U32>:
+  (b,rest) = r
+  b
+
+law queued_advance_keeps_board:
+  for -b: Array<U32>
+  for +open: Bool
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for +word: U32
+  {scalar_board(Q.advance(open,pos,p,m,size,b,word)) == b : Array<U32>}
+
+law queued_inspected_reads_board:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for read: SameBoardRead(b,r)
+  {scalar_board(Q.inspected(pos,p,m,size,r)) == b : Array<U32>}
+
+law queued_urgent_reads_board:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for +pos: U32
+  for read: SameBoardRead(b,r)
+  {Pair.fst(Array<U32>,C.Choice,Q.urgent(pos,r)) == b : Array<U32>}
+
+law queue_fixed_raw_word_is_closed:
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  {(fixed_word(d) < 1024 : U32) == False{} : Bool}
+
+law queued_scan_skips_fixed_word:
+  for -b: Array<U32>
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for +d: BoardDigit
+  for nonblank: Nonblank(d)
+  {Q.inspected(pos,p,m,size,(b,fixed_word(d))) == (b,(p,(m,size))) : Array<U32> & U32 & U32 & U32}
