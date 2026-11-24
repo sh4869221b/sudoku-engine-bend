@@ -6652,3 +6652,249 @@ law queued_completion_conflicts_with_eligible:
   for exists: QueueHasEligible(b,U32.to_nat((81 - logical_position(row,col) : U32)),logical_position(row,col))
   for completed: {selector_position(Q.start((b,logical_position(row,col)))) == 81 : U32}
   Empty
+
+def eligible_candidate_bits(+bits: Word(9n)) -> Bool:
+  +mask = candidate_bits_word(bits)
+  Bool.and((mask < 1024 : U32),(C.scalar_size(mask) < 10 : U32))
+
+def candidate_eligibility_tree_9(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool,+b6: Bool,+b7: Bool,+b8: Bool) -> Bool:
+  eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,WNil{}}}}}}}}}})
+
+def candidate_eligibility_tree_8(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool,+b6: Bool,+b7: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,False{}),candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,True{}))
+
+def candidate_eligibility_tree_7(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool,+b6: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,False{}),candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,True{}))
+
+def candidate_eligibility_tree_6(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool,+b5: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,False{}),candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,True{}))
+
+def candidate_eligibility_tree_5(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool,+b4: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_6(b0,b1,b2,b3,b4,False{}),candidate_eligibility_tree_6(b0,b1,b2,b3,b4,True{}))
+
+def candidate_eligibility_tree_4(+b0: Bool,+b1: Bool,+b2: Bool,+b3: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_5(b0,b1,b2,b3,False{}),candidate_eligibility_tree_5(b0,b1,b2,b3,True{}))
+
+def candidate_eligibility_tree_3(+b0: Bool,+b1: Bool,+b2: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_4(b0,b1,b2,False{}),candidate_eligibility_tree_4(b0,b1,b2,True{}))
+
+def candidate_eligibility_tree_2(+b0: Bool,+b1: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_3(b0,b1,False{}),candidate_eligibility_tree_3(b0,b1,True{}))
+
+def candidate_eligibility_tree_1(+b0: Bool) -> Bool:
+  Bool.and(candidate_eligibility_tree_2(b0,False{}),candidate_eligibility_tree_2(b0,True{}))
+
+def candidate_eligibility_tree_0() -> Bool:
+  Bool.and(candidate_eligibility_tree_1(False{}),candidate_eligibility_tree_1(True{}))
+
+law check_candidate_eligibility_tree_9:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +b8: Bool
+  for +suffix: Word(0n)
+  for checked: {candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,b8) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,WCon{b8,suffix}}}}}}}}}) == True{} : Bool}
+
+law select_eligibility_subtree_8:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,False{}) == True{} : Bool} & {candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_8:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +b7: Bool
+  for +suffix: Word(1n)
+  for checked: {candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,b7) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,WCon{b7,suffix}}}}}}}}) == True{} : Bool}
+
+law select_eligibility_subtree_7:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,False{}) == True{} : Bool} & {candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_7:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +b6: Bool
+  for +suffix: Word(2n)
+  for checked: {candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,b6) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,WCon{b6,suffix}}}}}}}) == True{} : Bool}
+
+law select_eligibility_subtree_6:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,False{}) == True{} : Bool} & {candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_6:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +b5: Bool
+  for +suffix: Word(3n)
+  for checked: {candidate_eligibility_tree_6(b0,b1,b2,b3,b4,b5) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,WCon{b5,suffix}}}}}}) == True{} : Bool}
+
+law select_eligibility_subtree_5:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_6(b0,b1,b2,b3,b4,False{}) == True{} : Bool} & {candidate_eligibility_tree_6(b0,b1,b2,b3,b4,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_6(b0,b1,b2,b3,b4,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_5:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +b4: Bool
+  for +suffix: Word(4n)
+  for checked: {candidate_eligibility_tree_5(b0,b1,b2,b3,b4) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,WCon{b4,suffix}}}}}) == True{} : Bool}
+
+law select_eligibility_subtree_4:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_5(b0,b1,b2,b3,False{}) == True{} : Bool} & {candidate_eligibility_tree_5(b0,b1,b2,b3,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_5(b0,b1,b2,b3,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_4:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +b3: Bool
+  for +suffix: Word(5n)
+  for checked: {candidate_eligibility_tree_4(b0,b1,b2,b3) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,WCon{b3,suffix}}}}) == True{} : Bool}
+
+law select_eligibility_subtree_3:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_4(b0,b1,b2,False{}) == True{} : Bool} & {candidate_eligibility_tree_4(b0,b1,b2,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_4(b0,b1,b2,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_3:
+  for +b0: Bool
+  for +b1: Bool
+  for +b2: Bool
+  for +suffix: Word(6n)
+  for checked: {candidate_eligibility_tree_3(b0,b1,b2) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,WCon{b2,suffix}}}) == True{} : Bool}
+
+law select_eligibility_subtree_2:
+  for +b0: Bool
+  for +b1: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_3(b0,b1,False{}) == True{} : Bool} & {candidate_eligibility_tree_3(b0,b1,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_3(b0,b1,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_2:
+  for +b0: Bool
+  for +b1: Bool
+  for +suffix: Word(7n)
+  for checked: {candidate_eligibility_tree_2(b0,b1) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,WCon{b1,suffix}}) == True{} : Bool}
+
+law select_eligibility_subtree_1:
+  for +b0: Bool
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_2(b0,False{}) == True{} : Bool} & {candidate_eligibility_tree_2(b0,True{}) == True{} : Bool})
+  {candidate_eligibility_tree_2(b0,bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_1:
+  for +b0: Bool
+  for +suffix: Word(8n)
+  for checked: {candidate_eligibility_tree_1(b0) == True{} : Bool}
+  {eligible_candidate_bits(WCon{b0,suffix}) == True{} : Bool}
+
+law select_eligibility_subtree_0:
+  for +bit: Bool
+  for both: ({candidate_eligibility_tree_1(False{}) == True{} : Bool} & {candidate_eligibility_tree_1(True{}) == True{} : Bool})
+  {candidate_eligibility_tree_1(bit) == True{} : Bool}
+
+law check_candidate_eligibility_tree_0:
+  for +suffix: Word(9n)
+  for checked: {candidate_eligibility_tree_0() == True{} : Bool}
+  {eligible_candidate_bits(suffix) == True{} : Bool}
+
+law check_all_normalized_candidate_masks:
+  {candidate_eligibility_tree_0() == True{} : Bool}
+
+law normalized_candidate_bits_are_eligible:
+  for +bits: Word(9n)
+  QueueEligibleWord(candidate_bits_word(bits))
+
+law normalized_word_eligibility_from_bits:
+  for +raw: U32
+  for image: CandidateMaskImage(raw)
+  QueueEligibleWord(U32.and(1022,raw))
+
+law normalized_masks_are_eligible:
+  for +mask: U32
+  for normalized: {U32.and(1022,mask) == mask : U32}
+  QueueEligibleWord(mask)
+
+law queued_visible_normalized_word_board_image:
+  for +image: BoardImage
+  for +start: U32
+  for +before: Nat
+  for +after: Nat
+  for interval: QueuedScanRange(with_center(before,after),start)
+  for normalized: {U32.and(1022,cell_value(image_board(image),walk_position(before,start))) == cell_value(image_board(image),walk_position(before,start)) : U32}
+  NotCompleted(selector_position(Q.scan(with_center(before,after),start,QueueInitial(image_board(image)))))
+
+law queued_visible_normalized_word_prevents_completion:
+  for b: Array<U32>
+  for +start: U32
+  for +before: Nat
+  for +after: Nat
+  for interval: QueuedScanRange(with_center(before,after),start)
+  for normalized: {U32.and(1022,cell_value(b,walk_position(before,start))) == cell_value(b,walk_position(before,start)) : U32}
+  NotCompleted(selector_position(Q.scan(with_center(before,after),start,QueueInitial(b))))
+

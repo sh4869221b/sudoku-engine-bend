@@ -439,3 +439,19 @@ claim about reachable search caches or prove solver soundness.
   must still show that the start does not skip any true blank and that
   all true blanks carry an eligible mask, in every live reachable state.
   This theorem does not assume those state invariants.
+
+## Candidate shape implies fallback eligibility
+
+- Every candidate word containing only bits 1–9 is below 1024 and
+  has actual scalar size below 10. The proof reflects all 512 legal
+  bit words into the production size lookup and extracts a case
+  for an arbitrary normalized word by following its real bits.
+- A bounded fallback interval containing a normalized candidate word
+  at any witnessed position therefore cannot finish with the completion
+  marker. The proof uses the actual array read and actual scan, not a
+  mathematical substitute for the candidate-size table.
+- The remaining completeness assumptions are state properties: a
+  reachable queued blank must have a normalized mask, and the pointer
+  must start no later than any of the blanks. This declaration does
+  not prove those invariants or that each stored bit is Sudoku-legal
+  for the neighboring digits.

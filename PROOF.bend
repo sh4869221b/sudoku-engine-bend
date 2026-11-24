@@ -7927,3 +7927,166 @@ def L.queued_scanned_eligible_prevents_completion(b,start,before,after,range,wit
 
 def L.queued_completion_conflicts_with_eligible(b,row,col,exists,completed):
   L.queued_logical_start_cannot_hide_eligible(b,row,col,exists)(completed)
+
+def L.check_candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,b8,suffix,checked):
+  match suffix:
+    case WNil{}:
+      checked
+
+def L.select_eligibility_subtree_8(b0,b1,b2,b3,b4,b5,b6,b7,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,False{}) == True{} : Bool},{L.candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,False{}) == True{} : Bool},{L.candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,b7,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,bit,rest,
+        L.select_eligibility_subtree_8(b0,b1,b2,b3,b4,b5,b6,b7,bit,
+          L.both_true(L.candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,False{}),L.candidate_eligibility_tree_9(b0,b1,b2,b3,b4,b5,b6,b7,True{}),checked)))
+
+def L.select_eligibility_subtree_7(b0,b1,b2,b3,b4,b5,b6,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,False{}) == True{} : Bool},{L.candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,False{}) == True{} : Bool},{L.candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,b6,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,bit,rest,
+        L.select_eligibility_subtree_7(b0,b1,b2,b3,b4,b5,b6,bit,
+          L.both_true(L.candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,False{}),L.candidate_eligibility_tree_8(b0,b1,b2,b3,b4,b5,b6,True{}),checked)))
+
+def L.select_eligibility_subtree_6(b0,b1,b2,b3,b4,b5,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,False{}) == True{} : Bool},{L.candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,False{}) == True{} : Bool},{L.candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_6(b0,b1,b2,b3,b4,b5,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,bit,rest,
+        L.select_eligibility_subtree_6(b0,b1,b2,b3,b4,b5,bit,
+          L.both_true(L.candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,False{}),L.candidate_eligibility_tree_7(b0,b1,b2,b3,b4,b5,True{}),checked)))
+
+def L.select_eligibility_subtree_5(b0,b1,b2,b3,b4,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_6(b0,b1,b2,b3,b4,False{}) == True{} : Bool},{L.candidate_eligibility_tree_6(b0,b1,b2,b3,b4,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_6(b0,b1,b2,b3,b4,False{}) == True{} : Bool},{L.candidate_eligibility_tree_6(b0,b1,b2,b3,b4,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_5(b0,b1,b2,b3,b4,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_6(b0,b1,b2,b3,b4,bit,rest,
+        L.select_eligibility_subtree_5(b0,b1,b2,b3,b4,bit,
+          L.both_true(L.candidate_eligibility_tree_6(b0,b1,b2,b3,b4,False{}),L.candidate_eligibility_tree_6(b0,b1,b2,b3,b4,True{}),checked)))
+
+def L.select_eligibility_subtree_4(b0,b1,b2,b3,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_5(b0,b1,b2,b3,False{}) == True{} : Bool},{L.candidate_eligibility_tree_5(b0,b1,b2,b3,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_5(b0,b1,b2,b3,False{}) == True{} : Bool},{L.candidate_eligibility_tree_5(b0,b1,b2,b3,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_4(b0,b1,b2,b3,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_5(b0,b1,b2,b3,bit,rest,
+        L.select_eligibility_subtree_4(b0,b1,b2,b3,bit,
+          L.both_true(L.candidate_eligibility_tree_5(b0,b1,b2,b3,False{}),L.candidate_eligibility_tree_5(b0,b1,b2,b3,True{}),checked)))
+
+def L.select_eligibility_subtree_3(b0,b1,b2,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_4(b0,b1,b2,False{}) == True{} : Bool},{L.candidate_eligibility_tree_4(b0,b1,b2,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_4(b0,b1,b2,False{}) == True{} : Bool},{L.candidate_eligibility_tree_4(b0,b1,b2,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_3(b0,b1,b2,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_4(b0,b1,b2,bit,rest,
+        L.select_eligibility_subtree_3(b0,b1,b2,bit,
+          L.both_true(L.candidate_eligibility_tree_4(b0,b1,b2,False{}),L.candidate_eligibility_tree_4(b0,b1,b2,True{}),checked)))
+
+def L.select_eligibility_subtree_2(b0,b1,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_3(b0,b1,False{}) == True{} : Bool},{L.candidate_eligibility_tree_3(b0,b1,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_3(b0,b1,False{}) == True{} : Bool},{L.candidate_eligibility_tree_3(b0,b1,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_2(b0,b1,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_3(b0,b1,bit,rest,
+        L.select_eligibility_subtree_2(b0,b1,bit,
+          L.both_true(L.candidate_eligibility_tree_3(b0,b1,False{}),L.candidate_eligibility_tree_3(b0,b1,True{}),checked)))
+
+def L.select_eligibility_subtree_1(b0,bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_2(b0,False{}) == True{} : Bool},{L.candidate_eligibility_tree_2(b0,True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_2(b0,False{}) == True{} : Bool},{L.candidate_eligibility_tree_2(b0,True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_1(b0,suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_2(b0,bit,rest,
+        L.select_eligibility_subtree_1(b0,bit,
+          L.both_true(L.candidate_eligibility_tree_2(b0,False{}),L.candidate_eligibility_tree_2(b0,True{}),checked)))
+
+def L.select_eligibility_subtree_0(bit,both):
+  match bit:
+    case False{}:
+      Pair.fst({L.candidate_eligibility_tree_1(False{}) == True{} : Bool},{L.candidate_eligibility_tree_1(True{}) == True{} : Bool},both)
+    case True{}:
+      Pair.snd({L.candidate_eligibility_tree_1(False{}) == True{} : Bool},{L.candidate_eligibility_tree_1(True{}) == True{} : Bool},both)
+
+def L.check_candidate_eligibility_tree_0(suffix,checked):
+  match suffix:
+    case WCon{+bit,+rest}:
+      L.check_candidate_eligibility_tree_1(bit,rest,
+        L.select_eligibility_subtree_0(bit,
+          L.both_true(L.candidate_eligibility_tree_1(False{}),L.candidate_eligibility_tree_1(True{}),checked)))
+
+def L.check_all_normalized_candidate_masks():
+  {==}
+
+def L.normalized_candidate_bits_are_eligible(bits):
+  +mask = L.candidate_bits_word(bits)
+  L.both_true((mask < 1024 : U32),(C.scalar_size(mask) < 10 : U32),
+    L.check_candidate_eligibility_tree_0(bits,L.check_all_normalized_candidate_masks()))
+
+def L.normalized_word_eligibility_from_bits(raw,image):
+  (+bits,form) = image
+  %Equal.sym(U32,U32.and(1022,raw),L.candidate_bits_word(bits),form) : L.QueueEligibleWord(_)
+  L.normalized_candidate_bits_are_eligible(bits)
+
+def L.normalized_masks_are_eligible(mask,normalized):
+  %normalized : L.QueueEligibleWord(_)
+  L.normalized_word_eligibility_from_bits(mask,L.low_candidate_mask_image(mask))
+
+def L.queued_visible_normalized_word_board_image(image,start,before,after,interval,normalized):
+  +cell = L.walk_position(before,start)
+  L.queued_scanned_eligible_prevents_completion(L.image_board(image),start,before,after,interval,
+    L.normalized_masks_are_eligible(L.cell_value(L.image_board(image),cell),normalized))
+
+def L.queued_visible_normalized_word_prevents_completion(b,start,before,after,interval,normalized):
+  +cell = L.walk_position(before,start)
+  proof : ({U32.and(1022,L.cell_value(b,cell)) == L.cell_value(b,cell) : U32} ->
+    L.NotCompleted(L.selector_position(Q.scan(L.with_center(before,after),start,L.QueueInitial(b))))) =
+    L.on_reified_board(b,x =>
+      ({U32.and(1022,L.cell_value(x,cell)) == L.cell_value(x,cell) : U32} ->
+        L.NotCompleted(L.selector_position(Q.scan(L.with_center(before,after),start,L.QueueInitial(x))))),
+      L.reify_board(b),image => L.queued_visible_normalized_word_board_image(image,start,before,after,interval))
+  proof(normalized)
