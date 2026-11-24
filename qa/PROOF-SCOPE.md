@@ -269,3 +269,29 @@ claim about reachable search caches or prove solver soundness.
   selector always avoids the given cells across all reachable states,
   or establish the inactive path, snapshot-stack invariant, or solver
   soundness.
+
+## Ordinary (non-queued) placement and clearance
+
+- A witnessed source read followed by a unit or row-cache update writes
+  only its requested metadata slot. The actual first-empty scan can
+  write only slot 108. Both the direct minimum update for clearing a cell
+  and the conditional rescan for filling a cell preserve other logical
+  words and the perfect board shape.
+- The kernel connects the production row, column and box arithmetic to
+  slots 81–107, proves this range and slot 108 are separate from all
+  81 logical cells, and composes the actual `C.swap` target write with
+  all metadata updates. For distinct logical coordinates it preserves
+  the watched word for any replacement value. The inactive adaptive
+  `swapped` and `cleared` paths inherit that result.
+- This is an isolation theorem, independent of the initial metadata
+  values. Both cache construction paths can represent the same logical
+  board with different bit 0 in the raw occupancy word. A runtime probe
+  of row 0 on the all-blank board returned 523265 after `C.cache` and
+  523264 after `P.prepare81`. Candidate computation observes occupancy
+  bits 1–9, not bit 0; the empty-column bitmap and pointer are separate.
+- A second runtime probe observed candidate mask 1022 before placing 1
+  at cell 0, but 1020 at cell 1 after placing and clearing cell 0 in
+  queued mode. That forced clear is part of backtracking, not a
+  transition to a selectable state. Future cache correctness laws must
+  distinguish selectable states and retained snapshots from transient
+  unwind state; the isolation theorem does not establish those laws.

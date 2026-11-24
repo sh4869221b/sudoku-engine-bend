@@ -4153,3 +4153,574 @@ law adaptive_active_forced_place_keeps_clue:
   for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
   for state: FixedClue(b,logical_position(qr,qc),fixed)
   {searching_word(Fast.place(False{},logical_position(sr,sc),digit_word(digit),0,frames,depth,found,snapshots,True{},b),logical_position(qr,qc)) == fixed_word(fixed) : U32}
+
+def PlainWord(-b: Array<U32>, +q: U32, +v: U32) -> Type:
+  (Board128(b) & {cell_value(b,q) == v : U32})
+
+def OneWrite(-b: Array<U32>, -out: Array<U32>, +slot: U32) -> Type:
+  Sigma<&2,&1,U32,value => {out == B.set_cell(b,slot,value) : Array<U32>}>
+
+law plain_write_step:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  for apart: RoutedApart(p,q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: {cell_value(image_board(image),q) == clue : U32}
+  PlainWord(B.set_cell(image_board(image),p,value),q,clue)
+
+law plain_write_image:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  for apart: RoutedApart(p,q)
+  for state: PlainWord(image_board(image),q,clue)
+  PlainWord(B.set_cell(image_board(image),p,value),q,clue)
+
+law plain_write:
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  for apart: RoutedApart(p,q)
+  for state: PlainWord(b,q,clue)
+  PlainWord(B.set_cell(b,p,value),q,clue)
+
+law plain_one_write:
+  for b: Array<U32>
+  for -out: Array<U32>
+  for +slot: U32
+  for +q: U32
+  for +clue: U32
+  for apart: RoutedApart(slot,q)
+  for state: PlainWord(b,q,clue)
+  for write: OneWrite(b,out,slot)
+  PlainWord(out,q,clue)
+
+def ordinary_unit_word(+old: U32, +value: U32, +used: U32) -> U32:
+  U32.or(U32.and(used,U32.not(B.bit(old))),B.bit(value))
+
+def ordinary_row_word(+old: U32, +value: U32, +empty: U32, +used: U32) -> U32:
+  +next = U32.or(U32.and(used,U32.not(U32.and(B.bit(old),1023))),U32.and(B.bit(value),1023))
+  Bool.pick(U32,U32.is_eq(value,0),U32.or(next,empty),U32.and(next,U32.not(empty)))
+
+law ordinary_unit_single_from_read:
+  for -b: Array<U32>
+  for +slot: U32
+  for +old: U32
+  for +value: U32
+  for -same: Array<U32>
+  for +used: U32
+  for kept: {same == b : Array<U32>}
+  for actual: {B.get_cell(b,slot) == (same,used) : Array<U32> & U32}
+  OneWrite(b,C.update_unit(slot,old,value,b),slot)
+
+law ordinary_unit_single:
+  for -b: Array<U32>
+  for +slot: U32
+  for +old: U32
+  for +value: U32
+  for read: BoardReadWitness(b,slot)
+  OneWrite(b,C.update_unit(slot,old,value,b),slot)
+
+def ordinary_row_slot(+p: U32) -> U32:
+  (81 + M.div9(p) : U32)
+
+def ordinary_empty_bit(+p: U32) -> U32:
+  B.bit((10 + M.rem9(p) : U32))
+
+law ordinary_row_single_from_read:
+  for -b: Array<U32>
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  for -same: Array<U32>
+  for +used: U32
+  for kept: {same == b : Array<U32>}
+  for actual: {B.get_cell(b,ordinary_row_slot(p)) == (same,used) : Array<U32> & U32}
+  OneWrite(b,C.update_row(p,old,value,b),ordinary_row_slot(p))
+
+law ordinary_row_single:
+  for -b: Array<U32>
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  for read: BoardReadWitness(b,ordinary_row_slot(p))
+  OneWrite(b,C.update_row(p,old,value,b),ordinary_row_slot(p))
+
+def MetaUpdatesKeeps(-b: Array<U32>, -out: Array<U32>, +slot: U32, +q: U32, +clue: U32) -> Type:
+  RoutedApart(slot,q) -> PlainWord(b,q,clue) -> PlainWord(out,q,clue)
+
+law ordinary_unit_keeps_image:
+  for +image: BoardImage
+  for +slot: U32
+  for +old: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  MetaUpdatesKeeps(image_board(image),C.update_unit(slot,old,value,image_board(image)),slot,q,clue)
+
+law ordinary_unit_keeps:
+  for b: Array<U32>
+  for +slot: U32
+  for +old: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  MetaUpdatesKeeps(b,C.update_unit(slot,old,value,b),slot,q,clue)
+
+law ordinary_row_keeps_image:
+  for +image: BoardImage
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  MetaUpdatesKeeps(image_board(image),C.update_row(p,old,value,image_board(image)),ordinary_row_slot(p),q,clue)
+
+law ordinary_row_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  MetaUpdatesKeeps(b,C.update_row(p,old,value,b),ordinary_row_slot(p),q,clue)
+
+def PlainPointerTail(+n: Nat, +p: U32) -> Type:
+  @b:Array<U32> -> @word:U32 -> FirstOnlyWritesPointer(b,C.first_empty(n,p,(b,word)))
+
+law plain_first_observed:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for same: Array<U32>
+  for +word: U32
+  for kept: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  for next: PlainPointerTail(n,p)
+  FirstOnlyWritesPointer(b,C.first_empty(n,p,B.get_cell(b,p)))
+
+law plain_first_from_read:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for read: BoardReadWitness(b,p)
+  for next: PlainPointerTail(n,p)
+  FirstOnlyWritesPointer(b,C.first_empty(n,p,B.get_cell(b,p)))
+
+law plain_first_branch:
+  for +word: U32
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for later: FirstOnlyWritesPointer(b,C.first_empty(n,(p + 1 : U32),B.get_cell(b,(p + 1 : U32))))
+  FirstOnlyWritesPointer(b,C.first_empty(1n+n,p,(b,word)))
+
+law plain_first_live:
+  for +n: Nat
+  for +p: U32
+  for b: Array<U32>
+  for +word: U32
+  for next: PlainPointerTail(n,(p + 1 : U32))
+  FirstOnlyWritesPointer(b,C.first_empty(1n+n,p,(b,word)))
+
+law plain_first_pointer:
+  for +n: Nat
+  for +p: U32
+  PlainPointerTail(n,p)
+
+law ordinary_refresh_pointer:
+  for b: Array<U32>
+  for +p: U32
+  FirstOnlyWritesPointer(b,C.refresh_start(b,p))
+
+law plain_pointer_keeps:
+  for b: Array<U32>
+  for -out: Array<U32>
+  for +q: U32
+  for +clue: U32
+  for apart: RoutedApart(108,q)
+  for state: PlainWord(b,q,clue)
+  for write: FirstOnlyWritesPointer(b,out)
+  PlainWord(out,q,clue)
+
+def OrdinaryRefreshKeeps(-b: Array<U32>, +which: Bool, +p: U32, +q: U32, +clue: U32) -> Type:
+  RoutedApart(108,q) -> PlainWord(b,q,clue) -> PlainWord(C.refresh_if(which,b,p),q,clue)
+
+law ordinary_refresh_keeps_image:
+  for +image: BoardImage
+  for +which: Bool
+  for +p: U32
+  for +q: U32
+  for +clue: U32
+  OrdinaryRefreshKeeps(image_board(image),which,p,q,clue)
+
+law ordinary_refresh_keeps:
+  for b: Array<U32>
+  for +which: Bool
+  for +p: U32
+  for +q: U32
+  for +clue: U32
+  OrdinaryRefreshKeeps(b,which,p,q,clue)
+
+law ordinary_start_pair_keeps:
+  for +blank: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +start: U32
+  for +q: U32
+  for +clue: U32
+  for apart: RoutedApart(108,q)
+  for state: PlainWord(b,q,clue)
+  PlainWord(C.start_after_set(blank,p,(b,start)),q,clue)
+
+law ordinary_start_keeps_observed:
+  for +blank: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +clue: U32
+  for -same: Array<U32>
+  for +start: U32
+  for kept: {same == b : Array<U32>}
+  for read: {B.get_cell(b,108) == (same,start) : Array<U32> & U32}
+  for apart: RoutedApart(108,q)
+  for state: PlainWord(b,q,clue)
+  PlainWord(C.start_after_set(blank,p,B.get_cell(b,108)),q,clue)
+
+law ordinary_start_keeps_read:
+  for +blank: Bool
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +clue: U32
+  for read: BoardReadWitness(b,108)
+  for apart: RoutedApart(108,q)
+  for state: PlainWord(b,q,clue)
+  PlainWord(C.start_after_set(blank,p,B.get_cell(b,108)),q,clue)
+
+def PlainStartKeeps(-b: Array<U32>, +blank: Bool, +p: U32, +q: U32, +clue: U32) -> Type:
+  RoutedApart(108,q) -> PlainWord(b,q,clue) ->
+  PlainWord(C.start_after_set(blank,p,B.get_cell(b,108)),q,clue)
+
+law ordinary_start_keeps_image:
+  for +image: BoardImage
+  for +blank: Bool
+  for +p: U32
+  for +q: U32
+  for +clue: U32
+  PlainStartKeeps(image_board(image),blank,p,q,clue)
+
+law ordinary_start_keeps:
+  for b: Array<U32>
+  for +blank: Bool
+  for +p: U32
+  for +q: U32
+  for +clue: U32
+  PlainStartKeeps(b,blank,p,q,clue)
+
+def ordinary_col_slot(+p: U32) -> U32:
+  (90 + M.rem9(p) : U32)
+
+def ordinary_box_slot(+p: U32) -> U32:
+  (99 + B.box_of(p) : U32)
+
+def OrdinaryMetaRoutes(+p: U32, +q: U32) -> Type:
+  (RoutedApart(ordinary_row_slot(p),q) & RoutedApart(ordinary_col_slot(p),q)
+    & RoutedApart(ordinary_box_slot(p),q) & RoutedApart(108,q))
+
+def ordinary_from_row(b: Array<U32>, +p: U32, +old: U32, +value: U32) -> Array<U32>:
+  C.update_row(p,old,value,b)
+
+def ordinary_from_col(b: Array<U32>, +p: U32, +old: U32, +value: U32) -> Array<U32>:
+  C.update_unit(ordinary_col_slot(p),old,value,ordinary_from_row(b,p,old,value))
+
+def ordinary_from_box(b: Array<U32>, +p: U32, +old: U32, +value: U32) -> Array<U32>:
+  C.update_unit(ordinary_box_slot(p),old,value,ordinary_from_col(b,p,old,value))
+
+def ordinary_after_write(b: Array<U32>, +p: U32, +old: U32, +value: U32) -> Array<U32>:
+  Pair.fst(Array<U32>,U32,C.swapped(p,value,(b,old)))
+
+def OrdinaryAfterWriteKeeps(-b: Array<U32>, +p: U32, +old: U32, +value: U32, +q: U32, +clue: U32) -> Type:
+  OrdinaryMetaRoutes(p,q) -> PlainWord(b,q,clue) ->
+  PlainWord(ordinary_after_write(b,p,old,value),q,clue)
+
+law ordinary_after_write_image:
+  for +image: BoardImage
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  OrdinaryAfterWriteKeeps(image_board(image),p,old,value,q,clue)
+
+law ordinary_after_write_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +old: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  OrdinaryAfterWriteKeeps(b,p,old,value,q,clue)
+
+law ordinary_swapped_keeps:
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  for edited: (Array<U32> & U32)
+  for routes: OrdinaryMetaRoutes(p,q)
+  for state: PlainWord(Pair.fst(Array<U32>,U32,edited),q,clue)
+  PlainWord(Pair.fst(Array<U32>,U32,C.swapped(p,value,edited)),q,clue)
+
+def swap_board_out(b: Array<U32>, +p: U32, +value: U32) -> Array<U32>:
+  Pair.fst(Array<U32>,U32,C.swap(b,p,value))
+
+def OrdinarySwapKeeps(-b: Array<U32>, +p: U32, +value: U32, +q: U32, +clue: U32) -> Type:
+  RoutedApart(p,q) -> OrdinaryMetaRoutes(p,q) -> PlainWord(b,q,clue) ->
+  PlainWord(swap_board_out(b,p,value),q,clue)
+
+law swap_pair_first_is_set_fin:
+  for r: (Array<U32> & U32)
+  {Pair.fst(Array<U32>,U32,r) == Array.set.fin(U32,r) : Array<U32>}
+
+law use_swap_pair_first:
+  for -r: (Array<U32> & U32)
+  for +q: U32
+  for +clue: U32
+  for eq: {Pair.fst(Array<U32>,U32,r) == Array.set.fin(U32,r) : Array<U32>}
+  for settled: PlainWord(Array.set.fin(U32,r),q,clue)
+  PlainWord(Pair.fst(Array<U32>,U32,r),q,clue)
+
+law ordinary_swap_keeps_image:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  OrdinarySwapKeeps(image_board(image),p,value,q,clue)
+
+law ordinary_swap_keeps:
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for +clue: U32
+  OrdinarySwapKeeps(b,p,value,q,clue)
+
+type CacheGroup is Data:
+  CacheRows{}
+  CacheColumns{}
+  CacheBoxes{}
+
+def cache_group_base(+group: CacheGroup) -> U32:
+  match group:
+    case CacheRows{}:
+      81
+    case CacheColumns{}:
+      90
+    case CacheBoxes{}:
+      99
+
+def cache_group_slot(+group: CacheGroup, +ordinal: CellCoordinate) -> U32:
+  walk_position(coordinate_nat(ordinal),cache_group_base(group))
+
+def meta_guard(+n: Nat, +p: U32, +q: U32) -> Bool:
+  match n:
+    case 0n:
+      True{}
+    case 1n+k:
+      Bool.and(apart_guard(p,q),meta_guard(k,(p + 1 : U32),q))
+
+law meta_guard_first:
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for both: (RoutedApart(p,q) & {meta_guard(n,(p + 1 : U32),q) == True{} : Bool})
+  RoutedApart(p,q)
+
+law meta_guard_tail:
+  for +before: Nat
+  for +after: Nat
+  for +p: U32
+  for +q: U32
+  for both: (RoutedApart(p,q) & {meta_guard(with_center(before,after),(p + 1 : U32),q) == True{} : Bool})
+  for next: ({meta_guard(with_center(before,after),(p + 1 : U32),q) == True{} : Bool} ->
+    RoutedApart(walk_position(before,(p + 1 : U32)),q))
+  RoutedApart(walk_position(1n+before,p),q)
+
+law meta_guard_at:
+  for +before: Nat
+  for +after: Nat
+  for +p: U32
+  for +q: U32
+  for guard: {meta_guard(with_center(before,after),p,q) == True{} : Bool}
+  RoutedApart(walk_position(before,p),q)
+
+law cache_meta_at:
+  for +group: CacheGroup
+  for +index: CellCoordinate
+  for +q: U32
+  for guard: {meta_guard(9n,cache_group_base(group),q) == True{} : Bool}
+  RoutedApart(cache_group_slot(group,index),q)
+
+def CacheMetaFacts(+q: U32) -> Type:
+  ({meta_guard(9n,81,q) == True{} : Bool} & {meta_guard(9n,90,q) == True{} : Bool} & {meta_guard(9n,99,q) == True{} : Bool})
+
+law cache_meta_facts_row_0:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate0{},col))
+
+law cache_meta_facts_row_1:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate1{},col))
+
+law cache_meta_facts_row_2:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate2{},col))
+
+law cache_meta_facts_row_3:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate3{},col))
+
+law cache_meta_facts_row_4:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate4{},col))
+
+law cache_meta_facts_row_5:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate5{},col))
+
+law cache_meta_facts_row_6:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate6{},col))
+
+law cache_meta_facts_row_7:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate7{},col))
+
+law cache_meta_facts_row_8:
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(Coordinate8{},col))
+
+law cache_meta_facts:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  CacheMetaFacts(logical_position(row,col))
+
+type CacheBand is Data:
+  CacheBand0{}
+  CacheBand1{}
+  CacheBand2{}
+
+def cache_band(+coord: CellCoordinate) -> CacheBand:
+  match coord:
+    case Coordinate0{}:
+      CacheBand0{}
+    case Coordinate1{}:
+      CacheBand0{}
+    case Coordinate2{}:
+      CacheBand0{}
+    case Coordinate3{}:
+      CacheBand1{}
+    case Coordinate4{}:
+      CacheBand1{}
+    case Coordinate5{}:
+      CacheBand1{}
+    case Coordinate6{}:
+      CacheBand2{}
+    case Coordinate7{}:
+      CacheBand2{}
+    case Coordinate8{}:
+      CacheBand2{}
+
+def cache_box_coordinate(+row: CacheBand, +col: CacheBand) -> CellCoordinate:
+  match row col:
+    case CacheBand0{} CacheBand0{}:
+      Coordinate0{}
+    case CacheBand0{} CacheBand1{}:
+      Coordinate1{}
+    case CacheBand0{} CacheBand2{}:
+      Coordinate2{}
+    case CacheBand1{} CacheBand0{}:
+      Coordinate3{}
+    case CacheBand1{} CacheBand1{}:
+      Coordinate4{}
+    case CacheBand1{} CacheBand2{}:
+      Coordinate5{}
+    case CacheBand2{} CacheBand0{}:
+      Coordinate6{}
+    case CacheBand2{} CacheBand1{}:
+      Coordinate7{}
+    case CacheBand2{} CacheBand2{}:
+      Coordinate8{}
+
+def box_coordinate(+row: CellCoordinate, +col: CellCoordinate) -> CellCoordinate:
+  cache_box_coordinate(cache_band(row),cache_band(col))
+
+def OrdinaryGeometry(+row: CellCoordinate, +col: CellCoordinate) -> Type:
+  ({ordinary_row_slot(logical_position(row,col)) == cache_group_slot(CacheRows{},row) : U32}
+   & {ordinary_col_slot(logical_position(row,col)) == cache_group_slot(CacheColumns{},col) : U32}
+   & {ordinary_box_slot(logical_position(row,col)) == cache_group_slot(CacheBoxes{},box_coordinate(row,col)) : U32})
+
+law checked_ordinary_geometry:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  OrdinaryGeometry(row,col)
+
+law ordinary_routes_from_geometry:
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for geometry: OrdinaryGeometry(sr,sc)
+  for facts: CacheMetaFacts(logical_position(qr,qc))
+  OrdinaryMetaRoutes(logical_position(sr,sc),logical_position(qr,qc))
+
+law ordinary_routes_from_coordinates:
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  OrdinaryMetaRoutes(logical_position(sr,sc),logical_position(qr,qc))
+
+law logical_ordinary_swap_keeps_clue:
+  for b: Array<U32>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +value: U32
+  for +clue: U32
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for state: PlainWord(b,logical_position(qr,qc),clue)
+  PlainWord(swap_board_out(b,logical_position(sr,sc),value),logical_position(qr,qc),clue)
+
+law inactive_clear_keeps_clue:
+  for b: Array<U32>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +clue: U32
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for state: PlainWord(b,logical_position(qr,qc),clue)
+  PlainWord(Fast.cleared(False{},b,logical_position(sr,sc)),logical_position(qr,qc),clue)
+
+law inactive_swap_keeps_clue:
+  for b: Array<U32>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +value: U32
+  for +clue: U32
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for state: PlainWord(b,logical_position(qr,qc),clue)
+  PlainWord(Pair.fst(Array<U32>,U32,Fast.swapped(False{},b,logical_position(sr,sc),value)),logical_position(qr,qc),clue)
