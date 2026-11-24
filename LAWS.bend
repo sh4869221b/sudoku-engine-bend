@@ -13,6 +13,7 @@ import ./sudoku/candidates.bend as C
 import ./sudoku/search.bend as Search
 import ./sudoku/adaptivesearch.bend as Fast
 import ./sudoku/validate.bend as V
+import ./sudoku/queuedcandidates.bend as Q
 
 law batch_solve_eq_seq:
   for +tree: Batch.JobTree
@@ -814,3 +815,295 @@ law u32_compare_reflexive:
 law peers_never_self:
   for +p: U32
   {B.peers(p, p) == False{} : Bool}
+
+# Compare the real lookup table and low-bit enumeration with independent
+# bit-by-bit references. The finite proof covers all 1,024 normalized inputs.
+def mask_counts(+n: Nat, +mask: U32, +reference: Bool) -> List<&2, U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+k:
+      Bool.pick(U32, reference, C.pop(10n, mask, 0), C.mask_count(mask)) <> mask_counts(k, (mask + 1 : U32), reference)
+
+def mask_lists(+n: Nat, +mask: U32, +reference: Bool) -> List<&2, List<&2, U32>>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+k:
+      Bool.pick(List<&2, U32>, reference, C.digits_go(9n, 1, mask), C.mask_digits(mask)) <> mask_lists(k, (mask + 1 : U32), reference)
+
+law mask_counts_0000:
+  {mask_counts(32n, 0, False{}) == mask_counts(32n, 0, True{}) : List<&2, U32>}
+
+law mask_counts_0032:
+  {mask_counts(32n, 32, False{}) == mask_counts(32n, 32, True{}) : List<&2, U32>}
+
+law mask_counts_0064:
+  {mask_counts(32n, 64, False{}) == mask_counts(32n, 64, True{}) : List<&2, U32>}
+
+law mask_counts_0096:
+  {mask_counts(32n, 96, False{}) == mask_counts(32n, 96, True{}) : List<&2, U32>}
+
+law mask_counts_0128:
+  {mask_counts(32n, 128, False{}) == mask_counts(32n, 128, True{}) : List<&2, U32>}
+
+law mask_counts_0160:
+  {mask_counts(32n, 160, False{}) == mask_counts(32n, 160, True{}) : List<&2, U32>}
+
+law mask_counts_0192:
+  {mask_counts(32n, 192, False{}) == mask_counts(32n, 192, True{}) : List<&2, U32>}
+
+law mask_counts_0224:
+  {mask_counts(32n, 224, False{}) == mask_counts(32n, 224, True{}) : List<&2, U32>}
+
+law mask_counts_0256:
+  {mask_counts(32n, 256, False{}) == mask_counts(32n, 256, True{}) : List<&2, U32>}
+
+law mask_counts_0288:
+  {mask_counts(32n, 288, False{}) == mask_counts(32n, 288, True{}) : List<&2, U32>}
+
+law mask_counts_0320:
+  {mask_counts(32n, 320, False{}) == mask_counts(32n, 320, True{}) : List<&2, U32>}
+
+law mask_counts_0352:
+  {mask_counts(32n, 352, False{}) == mask_counts(32n, 352, True{}) : List<&2, U32>}
+
+law mask_counts_0384:
+  {mask_counts(32n, 384, False{}) == mask_counts(32n, 384, True{}) : List<&2, U32>}
+
+law mask_counts_0416:
+  {mask_counts(32n, 416, False{}) == mask_counts(32n, 416, True{}) : List<&2, U32>}
+
+law mask_counts_0448:
+  {mask_counts(32n, 448, False{}) == mask_counts(32n, 448, True{}) : List<&2, U32>}
+
+law mask_counts_0480:
+  {mask_counts(32n, 480, False{}) == mask_counts(32n, 480, True{}) : List<&2, U32>}
+
+law mask_counts_0512:
+  {mask_counts(32n, 512, False{}) == mask_counts(32n, 512, True{}) : List<&2, U32>}
+
+law mask_counts_0544:
+  {mask_counts(32n, 544, False{}) == mask_counts(32n, 544, True{}) : List<&2, U32>}
+
+law mask_counts_0576:
+  {mask_counts(32n, 576, False{}) == mask_counts(32n, 576, True{}) : List<&2, U32>}
+
+law mask_counts_0608:
+  {mask_counts(32n, 608, False{}) == mask_counts(32n, 608, True{}) : List<&2, U32>}
+
+law mask_counts_0640:
+  {mask_counts(32n, 640, False{}) == mask_counts(32n, 640, True{}) : List<&2, U32>}
+
+law mask_counts_0672:
+  {mask_counts(32n, 672, False{}) == mask_counts(32n, 672, True{}) : List<&2, U32>}
+
+law mask_counts_0704:
+  {mask_counts(32n, 704, False{}) == mask_counts(32n, 704, True{}) : List<&2, U32>}
+
+law mask_counts_0736:
+  {mask_counts(32n, 736, False{}) == mask_counts(32n, 736, True{}) : List<&2, U32>}
+
+law mask_counts_0768:
+  {mask_counts(32n, 768, False{}) == mask_counts(32n, 768, True{}) : List<&2, U32>}
+
+law mask_counts_0800:
+  {mask_counts(32n, 800, False{}) == mask_counts(32n, 800, True{}) : List<&2, U32>}
+
+law mask_counts_0832:
+  {mask_counts(32n, 832, False{}) == mask_counts(32n, 832, True{}) : List<&2, U32>}
+
+law mask_counts_0864:
+  {mask_counts(32n, 864, False{}) == mask_counts(32n, 864, True{}) : List<&2, U32>}
+
+law mask_counts_0896:
+  {mask_counts(32n, 896, False{}) == mask_counts(32n, 896, True{}) : List<&2, U32>}
+
+law mask_counts_0928:
+  {mask_counts(32n, 928, False{}) == mask_counts(32n, 928, True{}) : List<&2, U32>}
+
+law mask_counts_0960:
+  {mask_counts(32n, 960, False{}) == mask_counts(32n, 960, True{}) : List<&2, U32>}
+
+law mask_counts_0992:
+  {mask_counts(32n, 992, False{}) == mask_counts(32n, 992, True{}) : List<&2, U32>}
+
+law mask_lists_0000:
+  {mask_lists(32n, 0, False{}) == mask_lists(32n, 0, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0032:
+  {mask_lists(32n, 32, False{}) == mask_lists(32n, 32, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0064:
+  {mask_lists(32n, 64, False{}) == mask_lists(32n, 64, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0096:
+  {mask_lists(32n, 96, False{}) == mask_lists(32n, 96, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0128:
+  {mask_lists(32n, 128, False{}) == mask_lists(32n, 128, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0160:
+  {mask_lists(32n, 160, False{}) == mask_lists(32n, 160, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0192:
+  {mask_lists(32n, 192, False{}) == mask_lists(32n, 192, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0224:
+  {mask_lists(32n, 224, False{}) == mask_lists(32n, 224, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0256:
+  {mask_lists(32n, 256, False{}) == mask_lists(32n, 256, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0288:
+  {mask_lists(32n, 288, False{}) == mask_lists(32n, 288, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0320:
+  {mask_lists(32n, 320, False{}) == mask_lists(32n, 320, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0352:
+  {mask_lists(32n, 352, False{}) == mask_lists(32n, 352, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0384:
+  {mask_lists(32n, 384, False{}) == mask_lists(32n, 384, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0416:
+  {mask_lists(32n, 416, False{}) == mask_lists(32n, 416, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0448:
+  {mask_lists(32n, 448, False{}) == mask_lists(32n, 448, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0480:
+  {mask_lists(32n, 480, False{}) == mask_lists(32n, 480, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0512:
+  {mask_lists(32n, 512, False{}) == mask_lists(32n, 512, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0544:
+  {mask_lists(32n, 544, False{}) == mask_lists(32n, 544, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0576:
+  {mask_lists(32n, 576, False{}) == mask_lists(32n, 576, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0608:
+  {mask_lists(32n, 608, False{}) == mask_lists(32n, 608, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0640:
+  {mask_lists(32n, 640, False{}) == mask_lists(32n, 640, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0672:
+  {mask_lists(32n, 672, False{}) == mask_lists(32n, 672, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0704:
+  {mask_lists(32n, 704, False{}) == mask_lists(32n, 704, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0736:
+  {mask_lists(32n, 736, False{}) == mask_lists(32n, 736, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0768:
+  {mask_lists(32n, 768, False{}) == mask_lists(32n, 768, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0800:
+  {mask_lists(32n, 800, False{}) == mask_lists(32n, 800, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0832:
+  {mask_lists(32n, 832, False{}) == mask_lists(32n, 832, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0864:
+  {mask_lists(32n, 864, False{}) == mask_lists(32n, 864, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0896:
+  {mask_lists(32n, 896, False{}) == mask_lists(32n, 896, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0928:
+  {mask_lists(32n, 928, False{}) == mask_lists(32n, 928, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0960:
+  {mask_lists(32n, 960, False{}) == mask_lists(32n, 960, True{}) : List<&2, List<&2, U32>>}
+
+law mask_lists_0992:
+  {mask_lists(32n, 992, False{}) == mask_lists(32n, 992, True{}) : List<&2, List<&2, U32>>}
+
+# These are word-level laws. The full encode/decode loop additionally needs
+# noninterference between a logical cell, other cells, and flag slots.
+def fixed_roundtrip(+n: Nat, +digit: U32) -> List<&2, U32>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+k:
+      U32.shrn(U32.shln(digit, 10n), 10n) <> fixed_roundtrip(k, (digit + 1 : U32))
+
+law fixed_word_roundtrip:
+  {fixed_roundtrip(9n, 1) == [1,2,3,4,5,6,7,8,9] : List<&2, U32>}
+
+law decode_cell_written:
+  for board: Array<U32>
+  for +pos: U32
+  for +word: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.decoded(pos, (board, word)), pos)) == U32.shrn(word, 10n) : U32}
+
+law decode_zero_steps:
+  for +pos: U32
+  for board: Array<U32>
+  {Q.decode(0n, pos, board) == board : Array<U32>}
+
+# Q.encoded's fixed-cell branch uses the actual array update.
+
+law encode_fixed_cell_1:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 1)), pos)) == 1024 : U32}
+
+law encode_fixed_cell_2:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 2)), pos)) == 2048 : U32}
+
+law encode_fixed_cell_3:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 3)), pos)) == 3072 : U32}
+
+law encode_fixed_cell_4:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 4)), pos)) == 4096 : U32}
+
+law encode_fixed_cell_5:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 5)), pos)) == 5120 : U32}
+
+law encode_fixed_cell_6:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 6)), pos)) == 6144 : U32}
+
+law encode_fixed_cell_7:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 7)), pos)) == 7168 : U32}
+
+law encode_fixed_cell_8:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 8)), pos)) == 8192 : U32}
+
+law encode_fixed_cell_9:
+  for board: Array<U32>
+  for +pos: U32
+  {Pair.snd(Array<U32>, U32, B.get_cell(Q.encoded(pos, (board, 9)), pos)) == 9216 : U32}
+
+law word_and_repeat:
+  for +n: Nat
+  for +mask: Word(n)
+  for +word: Word(n)
+  {Word.and(n, Word.and(n, word, mask), mask) == Word.and(n, word, mask) : Word(n)}
+
+law mask_digits_normalize:
+  for +mask: U32
+  {C.mask_digits(U32.and(mask, 1022)) == C.mask_digits(mask) : List<&2, U32>}
+
+law mask_count_normalize:
+  for +mask: U32
+  {C.mask_count(U32.and(mask, 1023)) == C.mask_count(mask) : U32}

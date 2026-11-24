@@ -11,6 +11,7 @@ import ./sudoku/solver.bend as S
 import ./sudoku/search.bend as Search
 import ./sudoku/adaptivesearch.bend as Fast
 import ./sudoku/validate.bend as V
+import ./sudoku/queuedcandidates.bend as Q
 import ./sudoku/counter.bend as K
 
 def L.string_append_empty(text):
@@ -827,3 +828,257 @@ def L.peers_never_self(p):
   Equal.cong(Cmp, Bool,
     cmp => Bool.not(Cmp.is_eq(cmp)) && (U32.is_eq((M.div9(p) : U32), (M.div9(p) : U32)) || U32.is_eq((M.rem9(p) : U32), (M.rem9(p) : U32)) || U32.is_eq(Board.box_of(p), Board.box_of(p))),
     U32.cmp(p, p), EQ{}, L.u32_compare_reflexive(p))
+
+def L.mask_counts_0000():
+  {==}
+
+def L.mask_counts_0032():
+  {==}
+
+def L.mask_counts_0064():
+  {==}
+
+def L.mask_counts_0096():
+  {==}
+
+def L.mask_counts_0128():
+  {==}
+
+def L.mask_counts_0160():
+  {==}
+
+def L.mask_counts_0192():
+  {==}
+
+def L.mask_counts_0224():
+  {==}
+
+def L.mask_counts_0256():
+  {==}
+
+def L.mask_counts_0288():
+  {==}
+
+def L.mask_counts_0320():
+  {==}
+
+def L.mask_counts_0352():
+  {==}
+
+def L.mask_counts_0384():
+  {==}
+
+def L.mask_counts_0416():
+  {==}
+
+def L.mask_counts_0448():
+  {==}
+
+def L.mask_counts_0480():
+  {==}
+
+def L.mask_counts_0512():
+  {==}
+
+def L.mask_counts_0544():
+  {==}
+
+def L.mask_counts_0576():
+  {==}
+
+def L.mask_counts_0608():
+  {==}
+
+def L.mask_counts_0640():
+  {==}
+
+def L.mask_counts_0672():
+  {==}
+
+def L.mask_counts_0704():
+  {==}
+
+def L.mask_counts_0736():
+  {==}
+
+def L.mask_counts_0768():
+  {==}
+
+def L.mask_counts_0800():
+  {==}
+
+def L.mask_counts_0832():
+  {==}
+
+def L.mask_counts_0864():
+  {==}
+
+def L.mask_counts_0896():
+  {==}
+
+def L.mask_counts_0928():
+  {==}
+
+def L.mask_counts_0960():
+  {==}
+
+def L.mask_counts_0992():
+  {==}
+
+def L.mask_lists_0000():
+  {==}
+
+def L.mask_lists_0032():
+  {==}
+
+def L.mask_lists_0064():
+  {==}
+
+def L.mask_lists_0096():
+  {==}
+
+def L.mask_lists_0128():
+  {==}
+
+def L.mask_lists_0160():
+  {==}
+
+def L.mask_lists_0192():
+  {==}
+
+def L.mask_lists_0224():
+  {==}
+
+def L.mask_lists_0256():
+  {==}
+
+def L.mask_lists_0288():
+  {==}
+
+def L.mask_lists_0320():
+  {==}
+
+def L.mask_lists_0352():
+  {==}
+
+def L.mask_lists_0384():
+  {==}
+
+def L.mask_lists_0416():
+  {==}
+
+def L.mask_lists_0448():
+  {==}
+
+def L.mask_lists_0480():
+  {==}
+
+def L.mask_lists_0512():
+  {==}
+
+def L.mask_lists_0544():
+  {==}
+
+def L.mask_lists_0576():
+  {==}
+
+def L.mask_lists_0608():
+  {==}
+
+def L.mask_lists_0640():
+  {==}
+
+def L.mask_lists_0672():
+  {==}
+
+def L.mask_lists_0704():
+  {==}
+
+def L.mask_lists_0736():
+  {==}
+
+def L.mask_lists_0768():
+  {==}
+
+def L.mask_lists_0800():
+  {==}
+
+def L.mask_lists_0832():
+  {==}
+
+def L.mask_lists_0864():
+  {==}
+
+def L.mask_lists_0896():
+  {==}
+
+def L.mask_lists_0928():
+  {==}
+
+def L.mask_lists_0960():
+  {==}
+
+def L.mask_lists_0992():
+  {==}
+
+def L.fixed_word_roundtrip():
+  {==}
+
+def L.decode_cell_written(board, pos, word):
+  L.board_set_get(board, pos, U32.shrn(word, 10n))
+
+def L.decode_zero_steps(pos, board):
+  {==}
+
+
+def L.word_and_repeat(n, mask, word):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      match mask word:
+        case WCon{False{}, mt} WCon{False{}, wt}:
+          Equal.cong(Word(k), Word(1n+k), t => WCon{False{}, t}, Word.and(k, Word.and(k, wt, mt), mt), Word.and(k, wt, mt), L.word_and_repeat(k, mt, wt))
+        case WCon{True{}, mt} WCon{False{}, wt}:
+          Equal.cong(Word(k), Word(1n+k), t => WCon{False{}, t}, Word.and(k, Word.and(k, wt, mt), mt), Word.and(k, wt, mt), L.word_and_repeat(k, mt, wt))
+        case WCon{False{}, mt} WCon{True{}, wt}:
+          Equal.cong(Word(k), Word(1n+k), t => WCon{False{}, t}, Word.and(k, Word.and(k, wt, mt), mt), Word.and(k, wt, mt), L.word_and_repeat(k, mt, wt))
+        case WCon{True{}, mt} WCon{True{}, wt}:
+          Equal.cong(Word(k), Word(1n+k), t => WCon{True{}, t}, Word.and(k, Word.and(k, wt, mt), mt), Word.and(k, wt, mt), L.word_and_repeat(k, mt, wt))
+
+def L.mask_digits_normalize(mask):
+  match mask:
+    case U32{word}:
+      Equal.cong(Word(32n), List<&2, U32>, t => C.digits_bits(9n, U32{t}), Word.and(32n, Word.and(32n, word, word_of(1022)), word_of(1022)), Word.and(32n, word, word_of(1022)), L.word_and_repeat(32n, word_of(1022), word))
+
+def L.mask_count_normalize(mask):
+  match mask:
+    case U32{word}:
+      Equal.cong(Word(32n), U32, t => C.count_index(U32{t}), Word.and(32n, Word.and(32n, word, word_of(1023)), word_of(1023)), Word.and(32n, word, word_of(1023)), L.word_and_repeat(32n, word_of(1023), word))
+
+def L.encode_fixed_cell_1(board, pos):
+  L.board_set_get(board, pos, 1024)
+
+def L.encode_fixed_cell_2(board, pos):
+  L.board_set_get(board, pos, 2048)
+
+def L.encode_fixed_cell_3(board, pos):
+  L.board_set_get(board, pos, 3072)
+
+def L.encode_fixed_cell_4(board, pos):
+  L.board_set_get(board, pos, 4096)
+
+def L.encode_fixed_cell_5(board, pos):
+  L.board_set_get(board, pos, 5120)
+
+def L.encode_fixed_cell_6(board, pos):
+  L.board_set_get(board, pos, 6144)
+
+def L.encode_fixed_cell_7(board, pos):
+  L.board_set_get(board, pos, 7168)
+
+def L.encode_fixed_cell_8(board, pos):
+  L.board_set_get(board, pos, 8192)
+
+def L.encode_fixed_cell_9(board, pos):
+  L.board_set_get(board, pos, 9216)

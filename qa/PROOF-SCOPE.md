@@ -66,3 +66,24 @@ restoration. This work does not promote that assumption to a proved claim.
   with parser diagnostics, exit codes, and the large-input regressions. The
   bench command's functional/native/backend checks are not timing measurements
   and remain part of `--skip-benchmark`.
+
+## Candidate enumeration and the queued cell codec
+
+The kernel compares the production lookup and digit enumeration with separate
+bit-by-bit references. Each of the 32 adjacent blocks has 32 inputs, covering
+all 1,024 ten-bit inputs with no gaps. The count includes bit 0; the digit list
+includes only enabled digits 1–9, in ascending order and without duplicates.
+Separate word-level laws show, for every U32, that explicitly normalizing the
+input first does not change either function's result: count masks with 1023,
+and enumeration masks with 1022. These are properties of the representation,
+not a claim that the chosen mask matches legal moves on a Sudoku board.
+
+For the queue representation, the actual fixed-cell encoder writes digit×1024
+back to the addressed cell for each digit 1–9, for any array and index under
+Base's existing array semantics. The decoder writes the packed word shifted
+right by ten; reading that cell after the write returns that value. We also
+check the word-level round trip at each of the nine fixed digits and that
+zero decode steps leave the array unchanged. This is not an 81-cell round-trip
+theorem: the blank branch writes flag metadata and a whole-board proof still
+needs to show that writes to distinct logical or metadata slots don't
+interfere. The runtime codec, candidate, and search regressions remain enabled.
