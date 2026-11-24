@@ -3047,3 +3047,1486 @@ def L.place_keeps_clue_image(image,guess,p,q,fixed,d,apart,flag,routes,state):
 def L.queued_place_keeps_clue(b,guess,p,q,fixed,d):
   L.on_reified_board(b,x => L.PlaceClueKeeps(x,guess,p,q,fixed,d),
     L.reify_board(b),image => L.place_keeps_clue_image(image,guess,p,q,fixed,d))
+
+def L.cmp_is_eq_sound(c,yes):
+  match c:
+    case EQ{}:
+      {==}
+    case LT{}:
+      Empty.absurd(L.IsEqCmp(LT{}),L.false_is_not_true(yes))
+    case GT{}:
+      Empty.absurd(L.IsEqCmp(GT{}),L.false_is_not_true(yes))
+
+def L.word_cmp_fin_head_tail(tail,a,b,yes):
+  match tail a b:
+    case EQ{} True{} True{}:
+      ({==},{==})
+    case EQ{} False{} False{}:
+      ({==},{==})
+    case EQ{} True{} False{}:
+      Empty.absurd(({True{} == False{} : Bool} & {EQ{} == EQ{} : Cmp}),
+        L.false_is_not_true(Equal.cong(Cmp,Bool,c => Cmp.is_eq(c),GT{},EQ{},yes)))
+    case EQ{} False{} True{}:
+      Empty.absurd(({False{} == True{} : Bool} & {EQ{} == EQ{} : Cmp}),
+        L.false_is_not_true(Equal.cong(Cmp,Bool,c => Cmp.is_eq(c),LT{},EQ{},yes)))
+    case LT{} _ _:
+      Empty.absurd(({a == b : Bool} & {LT{} == EQ{} : Cmp}),
+        L.false_is_not_true(Equal.cong(Cmp,Bool,c => Cmp.is_eq(c),LT{},EQ{},yes)))
+    case GT{} _ _:
+      Empty.absurd(({a == b : Bool} & {GT{} == EQ{} : Cmp}),
+        L.false_is_not_true(Equal.cong(Cmp,Bool,c => Cmp.is_eq(c),GT{},EQ{},yes)))
+
+def L.word_cmp_fin_lift(n,a,b,left,right,pair,sub):
+  (same,tail) = pair
+  %Equal.sym(Bool,a,b,same) :
+    {WCon{_,left} == WCon{b,right} : Word(1n+n)}
+  Equal.cong(Word(n),Word(1n+n),t => WCon{b,t},left,right,sub(tail))
+
+def L.word_cmp_equal(n,a,b,proof):
+  match n a b:
+    case 0n WNil{} WNil{}:
+      {==}
+    case 1n+k WCon{ab,at} WCon{bb,bt}:
+      L.word_cmp_fin_lift(k,ab,bb,at,bt,L.word_cmp_fin_head_tail(Word.cmp(k,at,bt),ab,bb,proof),
+        tail => L.word_cmp_equal(k,at,bt,tail))
+
+def L.u32_equals_sound(a,b,yes):
+  match a b:
+    case U32{x} U32{y}:
+      Equal.cong(Word(32n),U32,t => U32{t},x,y,
+        L.word_cmp_equal(32n,x,y,L.cmp_is_eq_sound(Word.cmp(32n,x,y),yes)))
+
+def L.row_entry_first(tail,i,j,both):
+  (first,rest) = both
+  first
+
+def L.row_entry_tail(before,after,i,start,both,next):
+  (first,rest) = both
+  next(rest)
+
+def L.row_entry_at(before,after,i,start,all):
+  match before:
+    case 0n:
+      +start1 = (start + 1 : U32)
+      L.row_entry_first(after,i,start,L.both_true(L.route_matrix_entry(i,start),L.logical_row(after,i,start1),all))
+    case 1n+k:
+      +start1 = (start + 1 : U32)
+      L.row_entry_tail(k,after,i,start,L.both_true(L.route_matrix_entry(i,start),L.logical_row(L.with_center(k,after),i,start1),all),
+        more => L.row_entry_at(k,after,i,start1,more))
+
+def L.matrix_row_first(after,i,both):
+  (first,rest) = both
+  first
+
+def L.matrix_row_tail(before,after,start,both,next):
+  (first,rest) = both
+  next(rest)
+
+def L.matrix_row_at(before,after,start,all):
+  match before:
+    case 0n:
+      +start1 = (start + 1 : U32)
+      L.matrix_row_first(after,start,L.both_true(L.logical_row(81n,start,0),L.logical_rows(after,start1),all))
+    case 1n+k:
+      +start1 = (start + 1 : U32)
+      L.matrix_row_tail(k,after,start,L.both_true(L.logical_row(81n,start,0),L.logical_rows(L.with_center(k,after),start1),all),
+        more => L.matrix_row_at(k,after,start1,more))
+
+def L.column_count_nine(col):
+  match col:
+    case L.Coordinate0{}:
+      {==}
+    case L.Coordinate1{}:
+      {==}
+    case L.Coordinate2{}:
+      {==}
+    case L.Coordinate3{}:
+      {==}
+    case L.Coordinate4{}:
+      {==}
+    case L.Coordinate5{}:
+      {==}
+    case L.Coordinate6{}:
+      {==}
+    case L.Coordinate7{}:
+      {==}
+    case L.Coordinate8{}:
+      {==}
+
+def L.matrix_row_checked(col,start,all):
+  +before = L.coordinate_nat(col)
+  +after = L.column_tail(col)
+  proof : ({L.logical_rows(9n,start) == True{} : Bool} -> {L.logical_row(81n,L.walk_position(before,start),0) == True{} : Bool}) = (
+    %L.column_count_nine(col) : ({L.logical_rows(_,start) == True{} : Bool} -> {L.logical_row(81n,L.walk_position(before,start),0) == True{} : Bool})
+    evidence => L.matrix_row_at(before,after,start,evidence))
+  proof(all)
+
+def L.logical_origin(row,col):
+  match row col:
+    case L.Coordinate0{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate0{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate1{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate2{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate3{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate4{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate5{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate6{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate7{} L.Coordinate8{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate0{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate1{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate2{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate3{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate4{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate5{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate6{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate7{}:
+      {==}
+    case L.Coordinate8{} L.Coordinate8{}:
+      {==}
+
+def L.matrix_start_guard(row):
+  match row:
+    case L.Coordinate0{}:
+      L.logical_routes_00()
+    case L.Coordinate1{}:
+      L.logical_routes_09()
+    case L.Coordinate2{}:
+      L.logical_routes_18()
+    case L.Coordinate3{}:
+      L.logical_routes_27()
+    case L.Coordinate4{}:
+      L.logical_routes_36()
+    case L.Coordinate5{}:
+      L.logical_routes_45()
+    case L.Coordinate6{}:
+      L.logical_routes_54()
+    case L.Coordinate7{}:
+      L.logical_routes_63()
+    case L.Coordinate8{}:
+      L.logical_routes_72()
+
+def L.matrix_logical_row(row,col):
+  %L.logical_origin(row,col) : {L.logical_row(81n,_,0) == True{} : Bool}
+  L.matrix_row_checked(col,L.row_origin(row),L.matrix_start_guard(row))
+
+def L.matrix_logical_entry_checked(i,row,col,all,window):
+  (guard,count) = window
+  +before = L.logical_offset(row,col)
+  +after = L.logical_tail(row,col)
+  proof : ({L.logical_row(81n,i,0) == True{} : Bool} -> {L.route_matrix_entry(i,L.logical_position(row,col)) == True{} : Bool}) = (
+    %count : ({L.logical_row(_,i,0) == True{} : Bool} -> {L.route_matrix_entry(i,L.logical_position(row,col)) == True{} : Bool})
+    evidence => L.row_entry_at(before,after,i,0,evidence))
+  proof(all)
+
+def L.matrix_logical_entry(row1,col1,row2,col2):
+  L.matrix_logical_entry_checked(L.logical_position(row1,col1),row2,col2,L.matrix_logical_row(row1,col1),L.every_cell_window(row2,col2))
+
+def L.logical_address_row_0(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_1(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_2(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_3(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inl{{==}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_4(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_5(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_6(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_7(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inr{Inl{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+
+def L.logical_address_row_8(col):
+  match col:
+    case L.Coordinate0{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate1{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate2{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate3{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate4{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate5{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate6{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate7{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+    case L.Coordinate8{}:
+      ({==},(Inr{Inr{{==}}},({==},({==},({==},{==})))))
+
+def L.logical_address_facts(row,col):
+  match row:
+    case L.Coordinate0{}:
+      L.logical_address_row_0(col)
+    case L.Coordinate1{}:
+      L.logical_address_row_1(col)
+    case L.Coordinate2{}:
+      L.logical_address_row_2(col)
+    case L.Coordinate3{}:
+      L.logical_address_row_3(col)
+    case L.Coordinate4{}:
+      L.logical_address_row_4(col)
+    case L.Coordinate5{}:
+      L.logical_address_row_5(col)
+    case L.Coordinate6{}:
+      L.logical_address_row_6(col)
+    case L.Coordinate7{}:
+      L.logical_address_row_7(col)
+    case L.Coordinate8{}:
+      L.logical_address_row_8(col)
+
+def L.route_for_flag_choice(p,q,fact,a,b,c):
+  match fact:
+    case Inl{at109}:
+      %Equal.sym(U32,L.flag_slot(p),109,at109) : L.RoutedApart(_,q)
+      a
+    case Inr{Inl{at110}}:
+      %Equal.sym(U32,L.flag_slot(p),110,at110) : L.RoutedApart(_,q)
+      b
+    case Inr{Inr{at111}}:
+      %Equal.sym(U32,L.flag_slot(p),111,at111) : L.RoutedApart(_,q)
+      c
+
+def L.flag_slot_peer_route(p,q,facts,slot):
+  (norm,(flags,(ptr,(a,(b,c))))) = facts
+  L.route_for_flag_choice(p,q,slot,a,b,c)
+
+def L.extract_logical_flag_slot(p,facts):
+  (norm,(flag,meta)) = facts
+  flag
+
+def L.any_logical_flag_route(row1,col1,row2,col2):
+  L.flag_slot_peer_route(L.logical_position(row1,col1),L.logical_position(row2,col2),L.logical_address_facts(row2,col2),
+    L.extract_logical_flag_slot(L.logical_position(row1,col1),L.logical_address_facts(row1,col1)))
+
+def L.apart_from_raw(p,q,p_norm,q_norm,good):
+  %Equal.sym(U32,L.normalized_route(p),p,p_norm) :
+    {L.regular_routes(_,L.normalized_route(q)) == True{} : Bool}
+  %Equal.sym(U32,L.normalized_route(q),q,q_norm) :
+    {L.regular_routes(p,_) == True{} : Bool}
+  good
+
+def L.apart_from_logical_facts(p,q,pf,qf,good):
+  (p_norm,p_rest) = pf
+  (q_norm,q_rest) = qf
+  L.apart_from_raw(p,q,p_norm,q_norm,good)
+
+def L.pair_route_decide(p,q,same,equality,check,apart,flag):
+  match same:
+    case True{}:
+      Inl{L.u32_equals_sound(p,q,equality)}
+    case False{}:
+      Inr{(apart(check),flag)}
+
+def L.pair_route_checked(p,q,check,apart,flag):
+  L.pair_route_decide(p,q,U32.is_eq(p,q),{==},check,apart,flag)
+
+def L.logical_pair_peer_route(row1,col1,row2,col2):
+  +p = L.logical_position(row1,col1)
+  +q = L.logical_position(row2,col2)
+  L.pair_route_checked(p,q,L.matrix_logical_entry(row1,col1,row2,col2),
+    good => L.apart_from_logical_facts(p,q,L.logical_address_facts(row1,col1),L.logical_address_facts(row2,col2),good),
+    L.any_logical_flag_route(row1,col1,row2,col2))
+
+def L.row_routes_from_coordinates(source,wr,wc):
+  match source:
+    case L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+    case L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+
+def L.column_routes_from_coordinates(source,wr,wc):
+  match source:
+    case L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate0{},wr,wc),
+        {==})))))))))
+    case L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate1{},wr,wc),
+        {==})))))))))
+    case L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate2{},wr,wc),
+        {==})))))))))
+    case L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate3{},wr,wc),
+        {==})))))))))
+    case L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate4{},wr,wc),
+        {==})))))))))
+    case L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate5{},wr,wc),
+        {==})))))))))
+    case L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate6{},wr,wc),
+        {==})))))))))
+    case L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate7{},wr,wc),
+        {==})))))))))
+    case L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate8{},wr,wc),
+        {==})))))))))
+
+def L.source_place_geometry(row,col):
+  match row col:
+    case L.Coordinate0{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate0{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate1{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate2{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate3{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate4{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate5{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate6{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate7{} L.Coordinate8{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate0{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate1{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate2{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate3{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate4{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate5{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate6{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate7{}:
+      ({==},{==})
+    case L.Coordinate8{} L.Coordinate8{}:
+      ({==},{==})
+
+def L.box_routes_from_coordinates(sr,sc,wr,wc):
+  match sr sc:
+    case L.Coordinate0{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate0{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate1{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate2{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate2{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate0{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate1{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate3{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate4{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate5{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate5{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate3{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate4{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate6{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate7{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate8{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate7{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate0{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate2{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate1{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate2{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate0{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate2{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate1{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate0{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate1{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate3{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate5{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate4{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate5{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate3{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate5{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate4{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate3{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate4{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate6{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate8{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate7{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate8{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate6{},wr,wc),
+        {==}))))
+    case L.Coordinate8{} L.Coordinate8{}:
+      (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate6{},L.Coordinate7{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate6{},wr,wc),
+        (L.logical_pair_peer_route(L.Coordinate7{},L.Coordinate7{},wr,wc),
+        {==}))))
+
+def L.pointer_route_from_logical(p,facts):
+  (norm,(slot,(ptr,rest))) = facts
+  ptr
+
+def L.placement_routes_from_geometry(sr,sc,wr,wc,geometry):
+  (row_eq,col_eq) = geometry
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(wr,wc)
+  %Equal.sym(U32,L.place_row_base(p),L.row_origin(sr),row_eq) :
+    (L.RowClueRoutes(9n,0,_,q) & L.ColumnClueRoutes(9n,0,M.rem9(p),q)
+     & L.PeerListRoutes(L.placed_box_positions(p),q) & L.RoutedApart(108,q))
+  %Equal.sym(U32,M.rem9(p),L.coord_u32(sc),col_eq) :
+    (L.RowClueRoutes(9n,0,L.row_origin(sr),q) & L.ColumnClueRoutes(9n,0,_,q)
+     & L.PeerListRoutes(L.placed_box_positions(p),q) & L.RoutedApart(108,q))
+  (L.row_routes_from_coordinates(sr,wr,wc),
+    (L.column_routes_from_coordinates(sc,wr,wc),
+      (L.box_routes_from_coordinates(sr,sc,wr,wc), L.pointer_route_from_logical(q,L.logical_address_facts(wr,wc)))))
+
+def L.placement_routes_from_coordinates(sr,sc,wr,wc):
+  L.placement_routes_from_geometry(sr,sc,wr,wc,L.source_place_geometry(sr,sc))
+
+def L.logical_distinct_apart(p,q,distinct,checked,pf,qf):
+  proof : ({L.route_matrix_entry(p,q) == True{} : Bool} -> L.RoutedApart(p,q)) = (
+    %Equal.sym(Bool,U32.is_eq(p,q),False{},distinct) :
+      ({Bool.pick(Bool,_,Bool.not(L.regular_routes(p,q)),L.regular_routes(p,q)) == True{} : Bool} -> L.RoutedApart(p,q))
+    valid => L.apart_from_logical_facts(p,q,pf,qf,valid))
+  proof(checked)
+
+def L.logical_placement_keeps_other_clue(b,guess,sr,sc,wr,wc,fixed,digit,distinct,state):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(wr,wc)
+  L.queued_place_keeps_clue(b,guess,p,q,fixed,digit)(
+    L.logical_distinct_apart(p,q,distinct,L.matrix_logical_entry(sr,sc,wr,wc),
+      L.logical_address_facts(sr,sc),L.logical_address_facts(wr,wc)),
+    L.any_logical_flag_route(sr,sc,wr,wc),
+    L.placement_routes_from_coordinates(sr,sc,wr,wc),state)
+
+def L.fixed_clue_word(b,p,d,inherited):
+  (shape,word) = inherited
+  word
+
+def L.adaptive_active_forced_place_keeps_clue(b,frames,depth,found,snapshots,sr,sc,qr,qc,fixed,digit,distinct,state):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(qr,qc)
+  L.fixed_clue_word(Q.place(False{},p,L.digit_word(digit),b),q,fixed,
+    L.logical_placement_keeps_other_clue(b,False{},sr,sc,qr,qc,fixed,digit,distinct,state))

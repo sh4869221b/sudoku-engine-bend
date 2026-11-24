@@ -3795,3 +3795,361 @@ law queued_place_keeps_clue:
   for +fixed: BoardDigit
   for +d: BoardDigit
   PlaceClueKeeps(b,guess,p,q,fixed,d)
+
+def IsEqCmp(c: Cmp) -> Type:
+  {c == EQ{} : Cmp}
+
+law cmp_is_eq_sound:
+  for +c: Cmp
+  for yes: {Cmp.is_eq(c) == True{} : Bool}
+  IsEqCmp(c)
+
+law word_cmp_fin_head_tail:
+  for +tail: Cmp
+  for +a: Bool
+  for +b: Bool
+  for yes: {Word.cmp.fin(a,b,tail) == EQ{} : Cmp}
+  ({a == b : Bool} & {tail == EQ{} : Cmp})
+
+law word_cmp_fin_lift:
+  for +n: Nat
+  for +a: Bool
+  for +b: Bool
+  for +left: Word(n)
+  for +right: Word(n)
+  for pair: ({a == b : Bool} & {Word.cmp(n,left,right) == EQ{} : Cmp})
+  for sub: ({Word.cmp(n,left,right) == EQ{} : Cmp} -> {left == right : Word(n)})
+  {WCon{a,left} == WCon{b,right} : Word(1n+n)}
+
+law word_cmp_equal:
+  for +n: Nat
+  for +a: Word(n)
+  for +b: Word(n)
+  for proof: {Word.cmp(n,a,b) == EQ{} : Cmp}
+  {a == b : Word(n)}
+
+law u32_equals_sound:
+  for +a: U32
+  for +b: U32
+  for yes: {U32.is_eq(a,b) == True{} : Bool}
+  {a == b : U32}
+
+def route_matrix_entry(+i: U32, +j: U32) -> Bool:
+  Bool.pick(Bool,U32.is_eq(i,j),Bool.not(regular_routes(i,j)),regular_routes(i,j))
+
+law row_entry_first:
+  for +tail: Nat
+  for +i: U32
+  for +j: U32
+  for both: ({route_matrix_entry(i,j) == True{} : Bool} & {logical_row(tail,i,(j + 1 : U32)) == True{} : Bool})
+  {route_matrix_entry(i,j) == True{} : Bool}
+
+law row_entry_tail:
+  for +before: Nat
+  for +after: Nat
+  for +i: U32
+  for +start: U32
+  for both: ({route_matrix_entry(i,start) == True{} : Bool} & {logical_row(with_center(before,after),i,(start + 1 : U32)) == True{} : Bool})
+  for next: ({logical_row(with_center(before,after),i,(start + 1 : U32)) == True{} : Bool} ->
+    {route_matrix_entry(i,walk_position(before,(start + 1 : U32))) == True{} : Bool})
+  {route_matrix_entry(i,walk_position(1n+before,start)) == True{} : Bool}
+
+law row_entry_at:
+  for +before: Nat
+  for +after: Nat
+  for +i: U32
+  for +start: U32
+  for all: {logical_row(with_center(before,after),i,start) == True{} : Bool}
+  {route_matrix_entry(i,walk_position(before,start)) == True{} : Bool}
+
+law matrix_row_first:
+  for +after: Nat
+  for +i: U32
+  for both: ({logical_row(81n,i,0) == True{} : Bool} & {logical_rows(after,(i + 1 : U32)) == True{} : Bool})
+  {logical_row(81n,i,0) == True{} : Bool}
+
+law matrix_row_tail:
+  for +before: Nat
+  for +after: Nat
+  for +start: U32
+  for both: ({logical_row(81n,start,0) == True{} : Bool} & {logical_rows(with_center(before,after),(start + 1 : U32)) == True{} : Bool})
+  for next: ({logical_rows(with_center(before,after),(start + 1 : U32)) == True{} : Bool} ->
+    {logical_row(81n,walk_position(before,(start + 1 : U32)),0) == True{} : Bool})
+  {logical_row(81n,walk_position(1n+before,start),0) == True{} : Bool}
+
+law matrix_row_at:
+  for +before: Nat
+  for +after: Nat
+  for +start: U32
+  for all: {logical_rows(with_center(before,after),start) == True{} : Bool}
+  {logical_row(81n,walk_position(before,start),0) == True{} : Bool}
+
+def column_tail(+col: CellCoordinate) -> Nat:
+  Nat.sub(8n,coordinate_nat(col))
+
+law column_count_nine:
+  for +col: CellCoordinate
+  {with_center(coordinate_nat(col),column_tail(col)) == 9n : Nat}
+
+law matrix_row_checked:
+  for +col: CellCoordinate
+  for +start: U32
+  for all: {logical_rows(9n,start) == True{} : Bool}
+  {logical_row(81n,walk_position(coordinate_nat(col),start),0) == True{} : Bool}
+
+def row_origin(+row: CellCoordinate) -> U32:
+  walk_position(row_start(row),0)
+
+law logical_origin:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  {walk_position(coordinate_nat(col),row_origin(row)) == logical_position(row,col) : U32}
+
+law matrix_start_guard:
+  for +row: CellCoordinate
+  {logical_rows(9n,row_origin(row)) == True{} : Bool}
+
+law matrix_logical_row:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  {logical_row(81n,logical_position(row,col),0) == True{} : Bool}
+
+law matrix_logical_entry_checked:
+  for +i: U32
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for all: {logical_row(81n,i,0) == True{} : Bool}
+  for window: VerifiedWindow(logical_offset(row,col),logical_tail(row,col))
+  {route_matrix_entry(i,logical_position(row,col)) == True{} : Bool}
+
+law matrix_logical_entry:
+  for +row1: CellCoordinate
+  for +col1: CellCoordinate
+  for +row2: CellCoordinate
+  for +col2: CellCoordinate
+  {route_matrix_entry(logical_position(row1,col1),logical_position(row2,col2)) == True{} : Bool}
+
+def FlagSlot(+p: U32) -> Type:
+  Either<&1,&1,{flag_slot(p) == 109 : U32},
+    Either<&1,&1,{flag_slot(p) == 110 : U32},{flag_slot(p) == 111 : U32}>>
+
+def LogicalRouteFacts(+p: U32) -> Type:
+  ({normalized_route(p) == p : U32} & FlagSlot(p)
+   & RoutedApart(108,p) & RoutedApart(109,p) & RoutedApart(110,p) & RoutedApart(111,p))
+
+law logical_address_row_0:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate0{},col))
+
+law logical_address_row_1:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate1{},col))
+
+law logical_address_row_2:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate2{},col))
+
+law logical_address_row_3:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate3{},col))
+
+law logical_address_row_4:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate4{},col))
+
+law logical_address_row_5:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate5{},col))
+
+law logical_address_row_6:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate6{},col))
+
+law logical_address_row_7:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate7{},col))
+
+law logical_address_row_8:
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(Coordinate8{},col))
+
+law logical_address_facts:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  LogicalRouteFacts(logical_position(row,col))
+
+
+law route_for_flag_choice:
+  for +p: U32
+  for +q: U32
+  for fact: FlagSlot(p)
+  for a: RoutedApart(109,q)
+  for b: RoutedApart(110,q)
+  for c: RoutedApart(111,q)
+  RoutedApart(flag_slot(p),q)
+
+law flag_slot_peer_route:
+  for +p: U32
+  for +q: U32
+  for facts: LogicalRouteFacts(q)
+  for slot: FlagSlot(p)
+  RoutedApart(flag_slot(p),q)
+
+law extract_logical_flag_slot:
+  for +p: U32
+  for facts: LogicalRouteFacts(p)
+  FlagSlot(p)
+
+law any_logical_flag_route:
+  for +row1: CellCoordinate
+  for +col1: CellCoordinate
+  for +row2: CellCoordinate
+  for +col2: CellCoordinate
+  RoutedApart(flag_slot(logical_position(row1,col1)),logical_position(row2,col2))
+
+law apart_from_raw:
+  for +p: U32
+  for +q: U32
+  for p_norm: {normalized_route(p) == p : U32}
+  for q_norm: {normalized_route(q) == q : U32}
+  for good: {regular_routes(p,q) == True{} : Bool}
+  RoutedApart(p,q)
+
+law apart_from_logical_facts:
+  for +p: U32
+  for +q: U32
+  for pf: LogicalRouteFacts(p)
+  for qf: LogicalRouteFacts(q)
+  for good: {regular_routes(p,q) == True{} : Bool}
+  RoutedApart(p,q)
+
+law pair_route_decide:
+  for +p: U32
+  for +q: U32
+  for +same: Bool
+  for equality: {U32.is_eq(p,q) == same : Bool}
+  for check: {Bool.pick(Bool,same,Bool.not(regular_routes(p,q)),regular_routes(p,q)) == True{} : Bool}
+  for apart: ({regular_routes(p,q) == True{} : Bool} -> RoutedApart(p,q))
+  for flag: RoutedApart(flag_slot(p),q)
+  PeerRoute(p,q)
+
+law pair_route_checked:
+  for +p: U32
+  for +q: U32
+  for check: {route_matrix_entry(p,q) == True{} : Bool}
+  for apart: ({regular_routes(p,q) == True{} : Bool} -> RoutedApart(p,q))
+  for flag: RoutedApart(flag_slot(p),q)
+  PeerRoute(p,q)
+
+law logical_pair_peer_route:
+  for +row1: CellCoordinate
+  for +col1: CellCoordinate
+  for +row2: CellCoordinate
+  for +col2: CellCoordinate
+  PeerRoute(logical_position(row1,col1),logical_position(row2,col2))
+
+def coord_u32(+coord: CellCoordinate) -> U32:
+  walk_position(coordinate_nat(coord),0)
+
+law row_routes_from_coordinates:
+  for +source: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  RowClueRoutes(9n,0,row_origin(source),logical_position(watched_row,watched_col))
+
+law column_routes_from_coordinates:
+  for +source: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  ColumnClueRoutes(9n,0,coord_u32(source),logical_position(watched_row,watched_col))
+
+def PlaceGeometry(+row: CellCoordinate, +col: CellCoordinate) -> Type:
+  ({place_row_base(logical_position(row,col)) == row_origin(row) : U32}
+   & {M.rem9(logical_position(row,col)) == coord_u32(col) : U32})
+
+law source_place_geometry:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  PlaceGeometry(row,col)
+
+def placed_box_positions(+p: U32) -> List<&2,U32>:
+  box_positions(place_box_base(p),place_box_r1(p),place_box_r2(p),place_box_c1(p),place_box_c2(p))
+
+law box_routes_from_coordinates:
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  PeerListRoutes(placed_box_positions(logical_position(source_row,source_col)),logical_position(watched_row,watched_col))
+
+law pointer_route_from_logical:
+  for +p: U32
+  for facts: LogicalRouteFacts(p)
+  RoutedApart(108,p)
+
+law placement_routes_from_geometry:
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  for geometry: PlaceGeometry(source_row,source_col)
+  PlacePeerRoutes(logical_position(source_row,source_col),logical_position(watched_row,watched_col))
+
+law placement_routes_from_coordinates:
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  PlacePeerRoutes(logical_position(source_row,source_col),logical_position(watched_row,watched_col))
+
+law logical_distinct_apart:
+  for +p: U32
+  for +q: U32
+  for distinct: {U32.is_eq(p,q) == False{} : Bool}
+  for checked: {route_matrix_entry(p,q) == True{} : Bool}
+  for pf: LogicalRouteFacts(p)
+  for qf: LogicalRouteFacts(q)
+  RoutedApart(p,q)
+
+law logical_placement_keeps_other_clue:
+  for b: Array<U32>
+  for +guess: Bool
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for distinct: {U32.is_eq(logical_position(source_row,source_col),logical_position(watched_row,watched_col)) == False{} : Bool}
+  for state: FixedClue(b,logical_position(watched_row,watched_col),fixed)
+  FixedClue(Q.place(guess,logical_position(source_row,source_col),digit_word(digit),b),logical_position(watched_row,watched_col),fixed)
+
+def searching_word(state: Fast.State, +p: U32) -> U32:
+  match state:
+    case Fast.Searching{board,frames,depth,found,snapshots,active}:
+      cell_value(board,p)
+    case _:
+      0
+
+law fixed_clue_word:
+  for -b: Array<U32>
+  for +p: U32
+  for +d: BoardDigit
+  for inherited: FixedClue(b,p,d)
+  {cell_value(b,p) == fixed_word(d) : U32}
+
+law adaptive_active_forced_place_keeps_clue:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +sr: CellCoordinate
+  for +sc: CellCoordinate
+  for +qr: CellCoordinate
+  for +qc: CellCoordinate
+  for +fixed: BoardDigit
+  for +digit: BoardDigit
+  for distinct: {U32.is_eq(logical_position(sr,sc),logical_position(qr,qc)) == False{} : Bool}
+  for state: FixedClue(b,logical_position(qr,qc),fixed)
+  {searching_word(Fast.place(False{},logical_position(sr,sc),digit_word(digit),0,frames,depth,found,snapshots,True{},b),logical_position(qr,qc)) == fixed_word(fixed) : U32}

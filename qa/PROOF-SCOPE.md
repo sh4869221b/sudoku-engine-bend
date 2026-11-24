@@ -248,3 +248,24 @@ claim about reachable search caches or prove solver soundness.
   This section does not prove those certificates for every reachable
   selection or show that the inactive cache path satisfies the same
   invariant. It is not a claim about candidate legality or solution count.
+
+## Placement routes for all logical coordinates
+
+- The actual U32 equality test yields a proof of numeric equality.
+  A constructive selector retrieves any entry of the already checked
+  81-by-81 separation matrix, including equal positions. A same-cell peer
+  is discharged by the fixed-word no-op; a different-cell peer is
+  discharged by its data and flag separation.
+- The finite board geometry checks connect the production row base,
+  column index and four remaining box-peer indices to valid logical
+  coordinates, and furnish the corresponding route checks including
+  metadata 108–111. The proof uses the actual division/remainder and
+  indexing expressions.
+- For any two distinct logical cells and any regular queued board with a
+  fixed digit in the observed cell, the actual placement at the other
+  cell preserves that digit and the regular shape. No extra routing
+  premise is required. The same result applies to the active forced
+  placement transition. This does not yet show that the production
+  selector always avoids the given cells across all reachable states,
+  or establish the inactive path, snapshot-stack invariant, or solver
+  soundness.
