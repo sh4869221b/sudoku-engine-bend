@@ -14384,3 +14384,33 @@ def L.prepared_legal_store_writes_exact_digit(digit,p,state,shape):
       L.prepared_legal_digit_shape_for_final_write(p,8,state,shape)
     case L.D9{}:
       L.prepared_legal_digit_shape_for_final_write(p,9,state,shape)
+
+def L.prepared_scan_accept_at_boundary(start,b):
+  {==}
+
+def L.prepared_scan_duplicate_at_boundary(start,bad,b,different):
+  %Equal.sym(Bool,U32.is_eq(bad,27),False{},different) : {P.prepared_reason(_,start,bad,b) == P.ParseError{V.kind(bad)} : P.Parsed}
+  {==}
+
+def L.prepared_scan_nonexact_empty_tail(pos,good,start,state,different):
+  %Equal.sym(Bool,U32.is_eq(pos,81),False{},different) : {P.prepared_end(_,good,start,state) == P.ParseError{"length"} : P.Parsed}
+  {==}
+
+def L.prepared_success_write_exact_image(image,start,row,col,shape):
+  +q = L.logical_position(row,col)
+  (L.board_set_get(L.image_board(image),108,start),
+    L.perfect_write_keeps_cell(L.image_board(image),108,q,start,shape,
+      L.pointer_route_from_logical(q,L.logical_address_facts(row,col))))
+
+def L.prepared_scan_success_exact_image(image,start,row,col,shape):
+  %L.prepared_scan_accept_at_boundary(start,L.image_board(image)) :
+    L.PreparedAcceptedExact(_,start,row,col,L.cell_value(L.image_board(image),L.logical_position(row,col)))
+  L.prepared_success_write_exact_image(image,start,row,col,shape)
+
+def L.prepared_scan_success_exact(b,start,row,col,shape):
+  f : (L.Board128(b) -> L.PreparedAcceptedExact(P.prepared_scan(SNil{},81,True{},start,(b,27)),
+    start,row,col,L.cell_value(b,L.logical_position(row,col)))) =
+    L.on_reified_board(b,x => (L.Board128(x) -> L.PreparedAcceptedExact(P.prepared_scan(SNil{},81,True{},start,(x,27)),
+      start,row,col,L.cell_value(x,L.logical_position(row,col)))),L.reify_board(b),
+      image => L.prepared_scan_success_exact_image(image,start,row,col))
+  f(shape)

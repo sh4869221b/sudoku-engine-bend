@@ -11442,3 +11442,60 @@ law prepared_legal_store_writes_exact_digit:
   for state: Array<U32> & U32
   for shape: PreparedPairShape(state)
   PreparedWord(P.prepared_store(p,digit_word(digit),state),p,digit_word(digit))
+
+law prepared_scan_accept_at_boundary:
+  for +start: U32
+  for b: Array<U32>
+  {P.prepared_scan(SNil{},81,True{},start,(b,27)) ==
+    P.ParsedBoard{B.set_cell(b,108,start)} : P.Parsed}
+
+law prepared_scan_duplicate_at_boundary:
+  for +start: U32
+  for +bad: U32
+  for b: Array<U32>
+  for different: {U32.is_eq(bad,27) == False{} : Bool}
+  {P.prepared_scan(SNil{},81,True{},start,(b,bad)) ==
+    P.ParseError{V.kind(bad)} : P.Parsed}
+
+law prepared_scan_nonexact_empty_tail:
+  for +pos: U32
+  for good: Bool
+  for start: U32
+  for state: Array<U32> & U32
+  for different: {U32.is_eq(pos,81) == False{} : Bool}
+  {P.prepared_scan(SNil{},pos,good,start,state) == P.ParseError{"length"} : P.Parsed}
+
+def PreparedAcceptedExact(result: P.Parsed, +start: U32, +row: CellCoordinate, +col: CellCoordinate, +old: U32) -> Type:
+  match result:
+    case P.ParsedBoard{b}:
+      {cell_value(b,108) == start : U32} &
+        {cell_value(b,logical_position(row,col)) == old : U32}
+    case P.ParseError{r}:
+      Empty
+
+law prepared_success_write_exact_image:
+  for +image: BoardImage
+  for +start: U32
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  PreparedAcceptedExact(P.ParsedBoard{B.set_cell(image_board(image),108,start)},
+    start,row,col,cell_value(image_board(image),logical_position(row,col)))
+
+law prepared_scan_success_exact_image:
+  for +image: BoardImage
+  for +start: U32
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(image_board(image))
+  PreparedAcceptedExact(P.prepared_scan(SNil{},81,True{},start,(image_board(image),27)),
+    start,row,col,cell_value(image_board(image),logical_position(row,col)))
+
+law prepared_scan_success_exact:
+  for b: Array<U32>
+  for +start: U32
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for shape: Board128(b)
+  PreparedAcceptedExact(P.prepared_scan(SNil{},81,True{},start,(b,27)),
+    start,row,col,cell_value(b,logical_position(row,col)))

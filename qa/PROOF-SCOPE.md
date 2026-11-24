@@ -746,3 +746,17 @@ claim about reachable search caches or prove solver soundness.
   physical metadata addresses are checked for all 81 positions.
 - This local result does not establish the full character parser's
   validity decisions or occupancy invariants over its entire scan.
+
+## Prepared scan finalization at the actual parser boundary
+
+- On an empty suffix, the production scan reports a length error at
+  every position other than 81. At 81 with the character flag set
+  and a reported duplicate unit, it returns the diagnostic for that
+  unit. On the successful branch it returns exactly the board with
+  the provided start pointer written to slot 108.
+- On a 128-slot board, reading slot 108 gives that pointer and
+  each of the 81 logical cells keeps its accumulated value.
+- These finalization guarantees do not characterize which input
+  strings reach those terminal states, prove that the provided
+  pointer is the first blank, or prove that the accumulated
+  duplicate and occupancy metadata describe the original string.
