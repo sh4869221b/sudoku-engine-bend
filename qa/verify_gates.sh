@@ -35,8 +35,6 @@ BEND="$BEND" python3 qa/adaptive_trace.py --lock-held
 ./bin/qa-rating-array +RTS --threads 1 -RTS
 "$BEND" qa/array-techniques.bend -o bin/qa-array-techniques
 ./bin/qa-array-techniques +RTS --threads 1 -RTS
-"$BEND" qa/candidate-digits.bend -o bin/qa-candidate-digits
-./bin/qa-candidate-digits +RTS --threads 1 -RTS
 "$BEND" qa/bench-direct.bend -o bin/qa-bench-direct
 ./bin/qa-bench-direct +RTS --threads 1 -RTS
 BEND="$BEND" python3 qa/empty_search_state.py

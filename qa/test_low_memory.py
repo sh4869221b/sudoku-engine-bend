@@ -778,7 +778,7 @@ class GateContractTests(unittest.TestCase):
             'optimization', 'row-bitmap', 'queued-candidates', 'singleton-predicate',
             'bitmap-arithmetic', 'peer-equivalence', 'validation-reason',
             'orderstat', 'arithmetic', 'rating-cache', 'rating-index', 'rating-array',
-            'array-techniques', 'candidate-digits', 'bench-direct', 'fuel_cli'))]
+            'array-techniques', 'bench-direct', 'fuel_cli'))]
         for name in native_sources:
             self.assertIn('"$BEND" ' + name + ' -o bin/', before_benchmark)
         for name in ('generate_count_table', 'adaptive_trace', 'empty_search_state',

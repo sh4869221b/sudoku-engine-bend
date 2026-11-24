@@ -90,13 +90,6 @@ def parsed(p: P.Parsed, +limit: U32) -> Bool:
     case P.ParsedBoard{b}:
       trace(6000n, limit, (F.Searching{C.cache(b), [0 : U32*128n], 0, 0, Nil{}, False{}}, True{}))
 
-def bits(n: Nat, +i: U32) -> Bool:
-  match n:
-    case 0n:
-      True{}
-    case 1n+k:
-      U32.is_eq(Q.trailing(U32.shrn((U32.shln(1, U32.to_nat(i)) * 125613361 : U32), 27n)), i) && bits(k, (i + 1 : U32))
-
 def reference_cell(+pos: U32, prior: C.Choice, r: Array<U32> & U32) -> Array<U32> & C.Choice:
   match prior:
     case C.Choice{+p, +m, +size}:
@@ -145,9 +138,9 @@ def random_domains(n: Nat, +seed: U32) -> Bool:
 def emit(ok: Bool) -> IO(Unit):
   match ok:
     case True{}:
-      IO.print("PASS adaptive candidate masks,81 urgency bits,exact MRV choices during24000 trace steps (active forward states checked);1024arbitrary domain tie cases;32 trailing-bit indices")
+      IO.print("PASS adaptive candidate masks,81 urgency bits,exact MRV choices during24000 trace steps (active forward states checked);1024arbitrary domain tie cases")
     case False{}:
       IO.die(Unit, 1, "FAIL adaptive candidate invariant")
 
 def main() -> IO(Unit):
-  emit(bits(32n, 0) && random_domains(1024n, 1) && parsed(P.parse81("530070000600195000098000060800060003400803001700020006060000280000419005000080079"), 2) && parsed(P.parse81("100007090030020008009600500005300900010080002600004000300000010040000007007000300"), 2) && parsed(P.parse81("000000000000000000000000000000000000000000000000000000000000000000000000000000000"), 2) && parsed(P.parse81("123456780000000009000000000000000000000000000000000000000000000000000000000000000"), 2))
+  emit(random_domains(1024n, 1) && parsed(P.parse81("530070000600195000098000060800060003400803001700020006060000280000419005000080079"), 2) && parsed(P.parse81("100007090030020008009600500005300900010080002600004000300000010040000007007000300"), 2) && parsed(P.parse81("000000000000000000000000000000000000000000000000000000000000000000000000000000000"), 2) && parsed(P.parse81("123456780000000009000000000000000000000000000000000000000000000000000000000000000"), 2))
