@@ -5990,3 +5990,320 @@ law sound_flags_point_to_vacancy:
   for flags: FlaggedVacancies(board,base,bits)
   for nonempty: {U32.is_eq(bits,0) == False{} : Bool}
   QueuedVacantAt(board,urgent_pos(base,bits))
+
+def QueuedChoicePosition(-board: Array<U32>, -pos: U32) -> Type:
+  Either<&1,&1,{pos == 81 : U32},({(pos < 81 : U32) == True{} : Bool} & {(cell_value(board,pos) < 1024 : U32) == True{} : Bool})>
+
+def scalar_result_position(r: U32 & U32 & U32) -> U32:
+  (pos,rest) = r
+  pos
+
+def scalar_choice_position(r: QueuedScanTuple()) -> U32:
+  (board,tail) = r
+  scalar_result_position(tail)
+
+law queued_choose_between_valid_positions:
+  for -b: Array<U32>
+  for +take: Bool
+  for +pos: U32
+  for +best: U32
+  for current: QueuedChoicePosition(b,pos)
+  for prior: QueuedChoicePosition(b,best)
+  QueuedChoicePosition(b,Bool.pick(U32,take,pos,best))
+
+law queued_advance_position_is_valid:
+  for -b: Array<U32>
+  for +open: Bool
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for +word: U32
+  for current: {open == True{} : Bool} -> QueuedVacantAt(b,pos)
+  for prior: QueuedChoicePosition(b,p)
+  QueuedChoicePosition(b,scalar_choice_position(Q.advance(open,pos,p,mask,size,b,word)))
+
+law queued_vacancy_from_read_word:
+  for -b: Array<U32>
+  for +pos: U32
+  for +word: U32
+  for pos_ok: {(pos < 81 : U32) == True{} : Bool}
+  for observe: {cell_value(b,pos) == word : U32}
+  for open: {(word < 1024 : U32) == True{} : Bool}
+  QueuedVacantAt(b,pos)
+
+law duplicate_queued_read_equality:
+  for -lhs: Array<U32> & U32
+  for -rhs: Array<U32> & U32
+  for same: {lhs == rhs : Array<U32> & U32}
+  ({lhs == rhs : Array<U32> & U32} & {lhs == rhs : Array<U32> & U32})
+
+law queued_inspected_with_real_word:
+  for -b: Array<U32>
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for +word: U32
+  for pos_ok: {(pos < 81 : U32) == True{} : Bool}
+  for observed: ({Array.get(U32,b,pos) == (b,word) : Array<U32> & U32} & {Array.get(U32,b,pos) == (b,word) : Array<U32> & U32})
+  for prior: QueuedChoicePosition(b,p)
+  QueuedChoicePosition(b,scalar_choice_position(Q.inspected(pos,p,mask,size,Array.get(U32,b,pos))))
+
+law queued_inspect_from_same_board:
+  for -b: Array<U32>
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for -same: Array<U32>
+  for +word: U32
+  for pos_ok: {(pos < 81 : U32) == True{} : Bool}
+  for same_board: {same == b : Array<U32>}
+  for observed: {Array.get(U32,b,pos) == (same,word) : Array<U32> & U32}
+  for prior: QueuedChoicePosition(b,p)
+  QueuedChoicePosition(b,scalar_choice_position(Q.inspected(pos,p,mask,size,Array.get(U32,b,pos))))
+
+law queued_inspect_from_witness:
+  for -b: Array<U32>
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for pos_ok: {(pos < 81 : U32) == True{} : Bool}
+  for observed: SameBoardRead(b,Array.get(U32,b,pos))
+  for prior: QueuedChoicePosition(b,p)
+  QueuedChoicePosition(b,scalar_choice_position(Q.inspected(pos,p,mask,size,Array.get(U32,b,pos))))
+
+law queued_inspection_preserves_valid_position:
+  for b: Array<U32>
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for pos_ok: {(pos < 81 : U32) == True{} : Bool}
+  for prior: QueuedChoicePosition(b,p)
+  QueuedChoicePosition(b,scalar_choice_position(Q.inspected(pos,p,mask,size,Array.get(U32,b,pos))))
+
+# A low word is not by itself sufficient to exclude false completion:
+# illegal bit zero plus the nine legal bits produces the sentinel's size 10.
+law queued_out_of_contract_full_mask_can_leave_sentinel:
+  ({(1023 < 1024 : U32) == True{} : Bool}
+   & {C.scalar_size(1023) == 10 : U32}
+   & {selector_choice(Q.start((Array.set(U32,[1024 : U32*128n],80,1023),80))) == C.Choice{81,0,10} : C.Choice})
+
+def selector_result_position(r: C.Choice) -> U32:
+  match r:
+    case C.Choice{p,m,s}:
+      p
+
+def selector_position(r: QueuedSelectResult()) -> U32:
+  selector_result_position(selector_choice(r))
+
+def QueuedScanRange(+n: Nat, +pos: U32) -> Type:
+  match n:
+    case 0n:
+      Unit
+    case 1n+k:
+      ({(pos < 81 : U32) == True{} : Bool} & QueuedScanRange(k,(pos + 1 : U32)))
+
+def NextChoicePosition(-r: QueuedScanTuple()) -> Type:
+  QueuedChoicePosition(scalar_board(r),scalar_choice_position(r))
+
+def QueuedSafeScan(-r: QueuedScanTuple(), +n: Nat, +pos: U32) -> Type:
+  QueuedScanRange(n,pos) -> NextChoicePosition(r) ->
+  QueuedChoicePosition(scalar_board(r),selector_position(Q.scan(n,pos,r)))
+
+def QueuedNextSafe(+n: Nat, +pos: U32) -> Type:
+  @r:QueuedScanTuple() -> QueuedSafeScan(r,n,(pos + 1 : U32))
+
+law queued_safe_scan_transport:
+  for +n: Nat
+  for +pos: U32
+  for -b: Array<U32>
+  for next: QueuedScanTuple()
+  for same: {scalar_board(next) == b : Array<U32>}
+  for safe: QueuedChoicePosition(b,scalar_choice_position(next))
+  for range: QueuedScanRange(n,(pos + 1 : U32))
+  for continue: QueuedNextSafe(n,pos)
+  QueuedChoicePosition(b,selector_position(Q.scan(n,(pos + 1 : U32),next)))
+
+law queued_safe_scan_step_image:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for +image: BoardImage
+  for range: QueuedScanRange(1n+n,pos)
+  for prior: QueuedChoicePosition(image_board(image),p)
+  for continue: QueuedNextSafe(n,pos)
+  QueuedChoicePosition(image_board(image),
+    selector_position(Q.scan(n,(pos + 1 : U32),Q.inspected(pos,p,mask,size,Array.get(U32,image_board(image),pos)))))
+
+law queued_safe_scan_step:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +mask: U32
+  for +size: U32
+  for b: Array<U32>
+  for range: QueuedScanRange(1n+n,pos)
+  for prior: QueuedChoicePosition(b,p)
+  for continue: QueuedNextSafe(n,pos)
+  QueuedChoicePosition(b,
+    selector_position(Q.scan(n,(pos + 1 : U32),Q.inspected(pos,p,mask,size,Array.get(U32,b,pos)))))
+
+law queued_safe_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for prior: QueuedChoicePosition(b,p)
+  QueuedChoicePosition(b,selector_position(Q.scan(0n,pos,(b,(p,(m,size))))))
+
+law queued_safe_succ:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for b: Array<U32>
+  for range: QueuedScanRange(1n+n,pos)
+  for prior: QueuedChoicePosition(b,p)
+  for continue: QueuedNextSafe(n,pos)
+  QueuedChoicePosition(b,selector_position(Q.scan(1n+n,pos,(b,(p,(m,size))))))
+
+law queued_safe_last_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for +p: U32
+  for rest: U32 & U32
+  QueuedSafeScan((b,(p,rest)),0n,pos)
+
+law queued_safe_tail_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for tail: U32 & U32 & U32
+  QueuedSafeScan((b,tail),0n,pos)
+
+law queued_safe_tuple_zero:
+  for +pos: U32
+  for r: QueuedScanTuple()
+  QueuedSafeScan(r,0n,pos)
+
+law queued_safe_last_succ:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  for +p: U32
+  for rest: U32 & U32
+  for continue: QueuedNextSafe(n,pos)
+  QueuedSafeScan((b,(p,rest)),1n+n,pos)
+
+law queued_safe_tail_succ:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  for tail: U32 & U32 & U32
+  for continue: QueuedNextSafe(n,pos)
+  QueuedSafeScan((b,tail),1n+n,pos)
+
+law queued_safe_tuple_succ:
+  for +n: Nat
+  for +pos: U32
+  for r: QueuedScanTuple()
+  for continue: QueuedNextSafe(n,pos)
+  QueuedSafeScan(r,1n+n,pos)
+
+law queued_safe_scan:
+  for +n: Nat
+  for +pos: U32
+  for r: QueuedScanTuple()
+  QueuedSafeScan(r,n,pos)
+
+law queued_safe_start:
+  for b: Array<U32>
+  for +pos: U32
+  for range: QueuedScanRange(U32.to_nat((81 - pos : U32)),pos)
+  QueuedChoicePosition(b,selector_position(Q.start((b,pos))))
+
+def queued_range_guard(+n: Nat, +pos: U32) -> Bool:
+  match n:
+    case 0n:
+      True{}
+    case 1n+k:
+      Bool.and((pos < 81 : U32),queued_range_guard(k,(pos + 1 : U32)))
+
+law queued_guard_step:
+  for +n: Nat
+  for +pos: U32
+  for tail: ({(pos < 81 : U32) == True{} : Bool} & {queued_range_guard(n,(pos + 1 : U32)) == True{} : Bool})
+  for next: {queued_range_guard(n,(pos + 1 : U32)) == True{} : Bool} -> QueuedScanRange(n,(pos + 1 : U32))
+  QueuedScanRange(1n+n,pos)
+
+law queued_range_guard_sound:
+  for +n: Nat
+  for +pos: U32
+  for checked: {queued_range_guard(n,pos) == True{} : Bool}
+  QueuedScanRange(n,pos)
+
+def QueuedStartGuard(+row: CellCoordinate, +col: CellCoordinate) -> Type:
+  {queued_range_guard(U32.to_nat((81 - logical_position(row,col) : U32)),logical_position(row,col)) == True{} : Bool}
+
+law queued_start_guard_row_0:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate0{},col)
+
+law queued_start_guard_row_1:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate1{},col)
+
+law queued_start_guard_row_2:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate2{},col)
+
+law queued_start_guard_row_3:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate3{},col)
+
+law queued_start_guard_row_4:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate4{},col)
+
+law queued_start_guard_row_5:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate5{},col)
+
+law queued_start_guard_row_6:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate6{},col)
+
+law queued_start_guard_row_7:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate7{},col)
+
+law queued_start_guard_row_8:
+  for +col: CellCoordinate
+  QueuedStartGuard(Coordinate8{},col)
+
+law queued_start_guard_every_cell:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  QueuedStartGuard(row,col)
+
+law queued_logical_start_range:
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  QueuedScanRange(U32.to_nat((81 - logical_position(row,col) : U32)),logical_position(row,col))
+
+law queued_logical_start_selects_only_vacancy_or_sentinel:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  QueuedChoicePosition(b,selector_position(Q.start((b,logical_position(row,col)))))
+
+law queued_end_start_returns_completion_marker:
+  for -b: Array<U32>
+  {selector_position(Q.start((b,81))) == 81 : U32}

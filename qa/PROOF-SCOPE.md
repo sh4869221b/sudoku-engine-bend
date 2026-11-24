@@ -402,3 +402,23 @@ claim about reachable search caches or prove solver soundness.
   blank, not exact minimum-position equality for sound completion.
   A normal forced-vs-guessed count proof must establish truthful
   urgency metadata as well as the candidate-set correspondence.
+
+## Queued fallback positional soundness
+
+- Each actual fallback inspection retains a previously sound choice or
+  takes an in-range cell whose actual queued word is below 1024. The
+  proof ties the predicate to the actual array read, not an assumed
+  independent value.
+- The actual fallback scan preserves this guarantee through early
+  termination and fuel exhaustion for all scans whose inspected
+  positions are in range. The production fallback started at any of
+  the 81 logical coordinates therefore returns either position 81 or
+  a real queued vacancy. The end-only start at 81 returns the sentinel.
+- This is not the converse theorem that a sentinel implies a full
+  board. It needs a lower bound on blanks and correct mask cardinality.
+  In particular, out-of-contract mask 1023 counts as 10, so the strict
+  comparison does not replace the initial sentinel despite the raw
+  word being below 1024. A pinned native check reproduced that case.
+  Valid Sudoku mask words exclude bit 0 and can contain at most nine
+  candidates; that separate range guarantee must be linked to real
+  live selectable states before proving the no-blank converse.
