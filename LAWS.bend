@@ -7151,3 +7151,352 @@ law adaptive_activation_blank_is_eligible:
   for shape: Board128(b)
   for blank: {cell_value(b,logical_position(row,col)) == 0 : U32}
   QueueEligibleWord(cell_value(Fast.activated(False{},b),logical_position(row,col)))
+
+# The pointwise invariant carries its own distinct flag route for peer self visits.
+def SafeNormalizedAt(-b: Array<U32>, +q: U32) -> Type:
+  (RoutedApart(flag_slot(q),q) & Board128(b) & NormalizedQueueMask(cell_value(b,q)))
+
+law peer_keeps_normalized_same_parts:
+  for +image: BoardImage
+  for +q: U32
+  for +digit: BoardDigit
+  for routes: (RoutedApart(flag_slot(q),q) & RoutedApart(flag_slot(q),q))
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for prior: NormalizedQueueMask(cell_value(image_board(image),q))
+  SafeNormalizedAt(actual_peer(image_board(image),q,B.bit(digit_word(digit))),q)
+
+law peer_keeps_normalized_same:
+  for +image: BoardImage
+  for +q: U32
+  for +digit: BoardDigit
+  for prior: SafeNormalizedAt(image_board(image),q)
+  SafeNormalizedAt(actual_peer(image_board(image),q,B.bit(digit_word(digit))),q)
+
+law peer_keeps_normalized_separate_step:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for +placed: BoardDigit
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for given: NormalizedQueueMask(cell_value(image_board(image),q))
+  for sep: RoutedApart(p,q)
+  for flag: RoutedApart(flag_slot(p),q)
+  SafeNormalizedAt(actual_peer(image_board(image),p,B.bit(digit_word(placed))),q)
+
+law peer_keeps_normalized_separate_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  for apart: (RoutedApart(p,q) & RoutedApart(flag_slot(p),q))
+  SafeNormalizedAt(image_board(image),q) ->
+  SafeNormalizedAt(actual_peer(image_board(image),p,B.bit(digit_word(placed))),q)
+
+def PeerNormalizedTransition(-b: Array<U32>, +p: U32, +q: U32, +placed: BoardDigit) -> Type:
+  PeerRoute(p,q) -> SafeNormalizedAt(b,q) ->
+  SafeNormalizedAt(actual_peer(b,p,B.bit(digit_word(placed))),q)
+
+law peer_normalized_transition_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  PeerNormalizedTransition(image_board(image),p,q,placed)
+
+law peer_normalized_transition:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +placed: BoardDigit
+  PeerNormalizedTransition(b,p,q,placed)
+
+
+def RowNormalizedProof(+n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> RowClueRoutes(n,j,base,q) -> SafeNormalizedAt(b,q) ->
+  SafeNormalizedAt(Q.row_line(n,j,base,placed,B.bit(digit_word(d)),b),q)
+
+def RowNormalizedStep(-b: Array<U32>, +n: Nat, +j: U32, +base: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  RowClueRoutes(1n+n,j,base,q) -> SafeNormalizedAt(b,q) ->
+  RowNormalizedProof(n,(j + 1 : U32),base,placed,q,d) ->
+  SafeNormalizedAt(Q.row_line(1n+n,j,base,placed,B.bit(digit_word(d)),b),q)
+
+law row_normalized_step_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowNormalizedStep(image_board(image),n,j,base,placed,q,d)
+
+law row_normalized_step:
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowNormalizedStep(b,n,j,base,placed,q,d)
+
+law row_normalized_line:
+  for +n: Nat
+  for +j: U32
+  for +base: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  RowNormalizedProof(n,j,base,placed,q,d)
+
+
+def ColumnNormalizedProof(+n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> ColumnClueRoutes(n,j,col,q) -> SafeNormalizedAt(b,q) ->
+  SafeNormalizedAt(Q.column_line(n,j,col,placed,B.bit(digit_word(d)),b),q)
+
+def ColumnNormalizedStep(-b: Array<U32>, +n: Nat, +j: U32, +col: U32, +placed: U32, +q: U32, +d: BoardDigit) -> Type:
+  ColumnClueRoutes(1n+n,j,col,q) -> SafeNormalizedAt(b,q) ->
+  ColumnNormalizedProof(n,(j + 1 : U32),col,placed,q,d) ->
+  SafeNormalizedAt(Q.column_line(1n+n,j,col,placed,B.bit(digit_word(d)),b),q)
+
+law column_normalized_step_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnNormalizedStep(image_board(image),n,j,col,placed,q,d)
+
+law column_normalized_step:
+  for b: Array<U32>
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnNormalizedStep(b,n,j,col,placed,q,d)
+
+law column_normalized_line:
+  for +n: Nat
+  for +j: U32
+  for +col: U32
+  for +placed: U32
+  for +q: U32
+  for +d: BoardDigit
+  ColumnNormalizedProof(n,j,col,placed,q,d)
+
+
+def NormalizedPeerListProof(-positions: List<&2,U32>, +q: U32, +d: BoardDigit) -> Type:
+  @b:Array<U32> -> PeerListRoutes(positions,q) -> SafeNormalizedAt(b,q) ->
+  SafeNormalizedAt(run_peer_list(positions,b,B.bit(digit_word(d))),q)
+
+law normalized_peer_list_step_image:
+  for +image: BoardImage
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  for routes: PeerListRoutes(p <> tail,q)
+  for state: SafeNormalizedAt(image_board(image),q)
+  for next: NormalizedPeerListProof(tail,q,d)
+  SafeNormalizedAt(run_peer_list(p <> tail,image_board(image),B.bit(digit_word(d))),q)
+
+law normalized_peer_list_step:
+  for b: Array<U32>
+  for +p: U32
+  for -tail: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  for routes: PeerListRoutes(p <> tail,q)
+  for state: SafeNormalizedAt(b,q)
+  for next: NormalizedPeerListProof(tail,q,d)
+  SafeNormalizedAt(run_peer_list(p <> tail,b,B.bit(digit_word(d))),q)
+
+law peer_list_normalized:
+  for positions: List<&2,U32>
+  for +q: U32
+  for +d: BoardDigit
+  NormalizedPeerListProof(positions,q,d)
+
+
+law box_four_keeps_normalized:
+  for b: Array<U32>
+  for +base: U32
+  for +r1: U32
+  for +r2: U32
+  for +c1: U32
+  for +c2: U32
+  for +q: U32
+  for +d: BoardDigit
+  for routes: PeerListRoutes(box_positions(base,r1,r2,c1,c2),q)
+  for state: SafeNormalizedAt(b,q)
+  SafeNormalizedAt(Q.box_four(base,r1,r2,c1,c2,B.bit(digit_word(d)),b),q)
+
+law normalized_after_pointer_write:
+  for +image: BoardImage
+  for -out: Array<U32>
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for shape: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: NormalizedQueueMask(cell_value(image_board(image),q))
+  for apart: RoutedApart(108,q)
+  for witness: FirstOnlyWritesPointer(image_board(image),out)
+  SafeNormalizedAt(out,q)
+
+
+law refresh_needed_normalized_image:
+  for +image: BoardImage
+  for +needed: Bool
+  for +start: U32
+  for +q: U32
+  for apart: RoutedApart(108,q)
+  for state: SafeNormalizedAt(image_board(image),q)
+  SafeNormalizedAt(Q.refresh_needed(needed,image_board(image),start),q)
+
+
+def RefreshNormalizedAt(-b: Array<U32>, +p: U32, +q: U32) -> Type:
+  RoutedApart(108,q) -> SafeNormalizedAt(b,q) -> SafeNormalizedAt(refresh_actual(b,p),q)
+
+law refresh_keeps_normalized_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  RefreshNormalizedAt(image_board(image),p,q)
+
+law refresh_keeps_normalized:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  RefreshNormalizedAt(b,p,q)
+
+law clear_forced_normalized_image_step:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for flag: RoutedApart(flag_slot(p),q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: NormalizedQueueMask(cell_value(image_board(image),q))
+  SafeNormalizedAt(Q.clear_forced(False{},image_board(image),p),q)
+
+law clear_forced_normalized_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: SafeNormalizedAt(image_board(image),q)
+  SafeNormalizedAt(Q.clear_forced(guess,image_board(image),p),q)
+
+law clear_forced_normalized:
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for flag: RoutedApart(flag_slot(p),q)
+  for state: SafeNormalizedAt(b,q)
+  SafeNormalizedAt(Q.clear_forced(guess,b,p),q)
+
+law write_normalized_other_step:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for safe: RoutedApart(flag_slot(q),q)
+  for apart: RoutedApart(p,q)
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for known: NormalizedQueueMask(cell_value(image_board(image),q))
+  SafeNormalizedAt(B.set_cell(image_board(image),p,value),q)
+
+law write_normalized_other_image:
+  for +image: BoardImage
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for state: SafeNormalizedAt(image_board(image),q)
+  SafeNormalizedAt(B.set_cell(image_board(image),p,value),q)
+
+law write_normalized_other:
+  for b: Array<U32>
+  for +p: U32
+  for +value: U32
+  for +q: U32
+  for apart: RoutedApart(p,q)
+  for state: SafeNormalizedAt(b,q)
+  SafeNormalizedAt(B.set_cell(b,p,value),q)
+
+
+def PlacePeersNormalized(-b: Array<U32>, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  PlacePeerRoutes(p,q) -> SafeNormalizedAt(b,q) -> SafeNormalizedAt(refresh_actual(place_boxes(b,p,d),p),q)
+
+law place_normalized_peers_image:
+  for +image: BoardImage
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlacePeersNormalized(image_board(image),p,q,d)
+
+law place_peers_keep_normalized:
+  for b: Array<U32>
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlacePeersNormalized(b,p,q,d)
+
+def PlaceKeepsNormalized(-b: Array<U32>, +guess: Bool, +p: U32, +q: U32, +d: BoardDigit) -> Type:
+  RoutedApart(p,q) -> RoutedApart(flag_slot(p),q) -> PlacePeerRoutes(p,q) -> SafeNormalizedAt(b,q) ->
+  SafeNormalizedAt(Q.place(guess,p,digit_word(d),b),q)
+
+law place_keeps_normalized_image:
+  for +image: BoardImage
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlaceKeepsNormalized(image_board(image),guess,p,q,d)
+
+law queued_place_keeps_normalized:
+  for b: Array<U32>
+  for +guess: Bool
+  for +p: U32
+  for +q: U32
+  for +d: BoardDigit
+  PlaceKeepsNormalized(b,guess,p,q,d)
+
+
+law logical_placement_keeps_other_candidate:
+  for b: Array<U32>
+  for +guess: Bool
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  for +digit: BoardDigit
+  for distinct: {U32.is_eq(logical_position(source_row,source_col),logical_position(watched_row,watched_col)) == False{} : Bool}
+  for state: SafeNormalizedAt(b,logical_position(watched_row,watched_col))
+  SafeNormalizedAt(Q.place(guess,logical_position(source_row,source_col),digit_word(digit),b),logical_position(watched_row,watched_col))
+
+
+law safe_normalized_mask:
+  for -b: Array<U32>
+  for +q: U32
+  for state: SafeNormalizedAt(b,q)
+  NormalizedQueueMask(cell_value(b,q))
+
+law logical_placement_preserves_other_candidate_mask:
+  for b: Array<U32>
+  for +guess: Bool
+  for +source_row: CellCoordinate
+  for +source_col: CellCoordinate
+  for +watched_row: CellCoordinate
+  for +watched_col: CellCoordinate
+  for +digit: BoardDigit
+  for distinct: {U32.is_eq(logical_position(source_row,source_col),logical_position(watched_row,watched_col)) == False{} : Bool}
+  for shape: Board128(b)
+  for prior: NormalizedQueueMask(cell_value(b,logical_position(watched_row,watched_col)))
+  NormalizedQueueMask(cell_value(Q.place(guess,logical_position(source_row,source_col),digit_word(digit),b),logical_position(watched_row,watched_col)))

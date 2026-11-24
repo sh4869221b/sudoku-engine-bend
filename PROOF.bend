@@ -8320,3 +8320,237 @@ def L.adaptive_activation_blank_is_eligible(b,row,col,shape,blank):
       L.QueueEligibleWord(L.cell_value(Fast.activated(False{},x),p))),
       L.reify_board(b),image => L.adaptive_activation_blank_is_eligible_image(image,row,col))
   proof(shape,blank)
+
+def L.peer_keeps_normalized_same_parts(image,q,digit,routes,shapes,prior):
+  (keep,use) = routes
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(digit))
+  (keep,(L.peer_perfect(L.image_board(image),q,bit)(s0),
+    L.peer_keeps_normalized(L.image_board(image),q,bit)(s1,use,prior)))
+
+def L.peer_keeps_normalized_same(image,q,digit,prior):
+  (safe,(shape,mask)) = prior
+  L.peer_keeps_normalized_same_parts(image,q,digit,
+    L.copy_true(L.apart_guard(L.flag_slot(q),q),safe),
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),mask)
+
+def L.peer_keeps_normalized_separate_step(image,p,q,safe,placed,shapes,given,sep,flag):
+  (s0,s1) = shapes
+  +bit = Board.bit(L.digit_word(placed))
+  normalized : L.NormalizedQueueMask(L.cell_value(L.actual_peer(L.image_board(image),p,bit),q)) =
+    %Equal.sym(U32,L.cell_value(L.actual_peer(L.image_board(image),p,bit),q),L.cell_value(L.image_board(image),q),
+      L.peer_keeps(L.image_board(image),p,bit,q)(s1,sep,flag)) :
+      L.NormalizedQueueMask(_)
+    given
+  (safe,(L.peer_perfect(L.image_board(image),p,bit)(s0),normalized))
+
+def L.peer_keeps_normalized_separate_image(image,p,q,placed,apart,state):
+  (sep,flag) = apart
+  (safe,(shape,given)) = state
+  L.peer_keeps_normalized_separate_step(image,p,q,safe,placed,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),given,sep,flag)
+
+def L.peer_normalized_transition_image(image,p,q,placed,route,state):
+  match route:
+    case Inl{same}:
+      %Equal.sym(U32,p,q,same) :
+        L.SafeNormalizedAt(L.actual_peer(L.image_board(image),_,Board.bit(L.digit_word(placed))),q)
+      L.peer_keeps_normalized_same(image,q,placed,state)
+    case Inr{apart}:
+      L.peer_keeps_normalized_separate_image(image,p,q,placed,apart,state)
+
+def L.peer_normalized_transition(b,p,q,placed):
+  L.on_reified_board(b,x => L.PeerNormalizedTransition(x,p,q,placed),
+    L.reify_board(b),image => L.peer_normalized_transition_image(image,p,q,placed))
+
+def L.row_normalized_step_image(image,n,j,base,placed,q,d,routes,state,next):
+  (here,tail) = routes
+  +p = (base + j : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_normalized_transition(L.image_board(image),p,q,d)(here,state))
+
+def L.row_normalized_step(b,n,j,base,placed,q,d):
+  L.on_reified_board(b,x => L.RowNormalizedStep(x,n,j,base,placed,q,d),
+    L.reify_board(b),image => L.row_normalized_step_image(image,n,j,base,placed,q,d))
+
+def L.row_normalized_line(n,j,base,placed,q,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.row_normalized_step(b,k,j,base,placed,q,d)(routes,state,
+        sub => rest => witness => L.row_normalized_line(k,(j + 1 : U32),base,placed,q,d,sub,rest,witness))
+
+def L.column_normalized_step_image(image,n,j,col,placed,q,d,routes,state,next):
+  (here,tail) = routes
+  +p = (j * 9 + col : U32)
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),tail,
+    L.peer_normalized_transition(L.image_board(image),p,q,d)(here,state))
+
+def L.column_normalized_step(b,n,j,col,placed,q,d):
+  L.on_reified_board(b,x => L.ColumnNormalizedStep(x,n,j,col,placed,q,d),
+    L.reify_board(b),image => L.column_normalized_step_image(image,n,j,col,placed,q,d))
+
+def L.column_normalized_line(n,j,col,placed,q,d,b,routes,state):
+  match n:
+    case 0n:
+      state
+    case 1n+k:
+      L.column_normalized_step(b,k,j,col,placed,q,d)(routes,state,
+        sub => rest => witness => L.column_normalized_line(k,(j + 1 : U32),col,placed,q,d,sub,rest,witness))
+
+def L.normalized_peer_list_step_image(image,p,tail,q,d,routes,state,next):
+  (here,later) = routes
+  next(L.actual_peer(L.image_board(image),p,Board.bit(L.digit_word(d))),later,
+    L.peer_normalized_transition(L.image_board(image),p,q,d)(here,state))
+
+def L.normalized_peer_list_step(b,p,tail,q,d,routes,state,next):
+  proof : (L.PeerListRoutes(p <> tail,q) -> L.SafeNormalizedAt(b,q) ->
+    L.NormalizedPeerListProof(tail,q,d) -> L.SafeNormalizedAt(L.run_peer_list(p <> tail,b,Board.bit(L.digit_word(d))),q)) =
+    L.on_reified_board(b,x => (L.PeerListRoutes(p <> tail,q) -> L.SafeNormalizedAt(x,q) ->
+      L.NormalizedPeerListProof(tail,q,d) -> L.SafeNormalizedAt(L.run_peer_list(p <> tail,x,Board.bit(L.digit_word(d))),q)),
+      L.reify_board(b),image => L.normalized_peer_list_step_image(image,p,tail,q,d))
+  proof(routes,state,next)
+
+def L.peer_list_normalized(positions,q,d,b,routes,state):
+  match positions:
+    case Nil{}:
+      state
+    case +p <> tail:
+      L.normalized_peer_list_step(b,p,tail,q,d,routes,state,sub => rest => witness => L.peer_list_normalized(tail,q,d,sub,rest,witness))
+
+def L.box_four_keeps_normalized(b,base,r1,r2,c1,c2,q,d,routes,state):
+  L.peer_list_normalized(L.box_positions(base,r1,r2,c1,c2),q,d,b,routes,state)
+
+def L.normalized_after_pointer_write(image,out,q,safe,shapes,known,apart,witness):
+  (s0,s1) = shapes
+  (+ptr,actual) = witness
+  b = L.image_board(image)
+  %Equal.sym(Array<U32>,out,Board.set_cell(b,108,ptr),actual) :
+    L.SafeNormalizedAt(_,q)
+  normalized : L.NormalizedQueueMask(L.cell_value(Board.set_cell(b,108,ptr),q)) =
+    %Equal.sym(U32,L.cell_value(Board.set_cell(b,108,ptr),q),L.cell_value(b,q),
+      L.perfect_write_keeps_cell(L.image_board(image),108,q,ptr,s1,apart)) :
+      L.NormalizedQueueMask(_)
+    known
+  (safe,(L.board_set_keeps_perfect(L.image_board(image),108,ptr,7n,s0),normalized))
+
+
+def L.refresh_needed_normalized_image(image,needed,start,q,apart,state):
+  match needed:
+    case False{}:
+      state
+    case True{}:
+      (safe,(shape,known)) = state
+      +n = U32.to_nat((81 - start : U32))
+      L.normalized_after_pointer_write(image,L.first_actual(L.image_board(image),n,start),q,safe,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known,apart,
+        L.first_actual_pointer(n,start,L.image_board(image),L.board_read_witness(L.image_board(image),start)))
+
+
+def L.refresh_keeps_normalized_image(image,p,q,apart,state):
+  b = L.image_board(image)
+  +start = L.cell_value(L.image_board(image),108)
+  +needed = U32.is_eq(p,start)
+  %Equal.sym(Array<U32>,L.refresh_actual(b,p),Q.refresh_needed(needed,b,start),
+    L.refresh_normalized(b,p,L.board_read_witness(L.image_board(image),108))) :
+    L.SafeNormalizedAt(_,q)
+  L.refresh_needed_normalized_image(image,needed,start,q,apart,state)
+
+def L.refresh_keeps_normalized(b,p,q):
+  L.on_reified_board(b,x => L.RefreshNormalizedAt(x,p,q),
+    L.reify_board(b),image => L.refresh_keeps_normalized_image(image,p,q))
+
+def L.clear_forced_normalized_image_step(image,p,q,safe,flag,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  normalized : L.NormalizedQueueMask(L.cell_value(Q.flag(b,p,False{}),q)) =
+    %Equal.sym(U32,L.cell_value(Q.flag(b,p,False{}),q),L.cell_value(b,q),
+      L.flag_keeps_cell(L.image_board(image),p,False{},q)(s1,flag)) :
+      L.NormalizedQueueMask(_)
+    known
+  (safe,(L.queue_flag_perfect(L.image_board(image),p,False{},s0),normalized))
+
+def L.clear_forced_normalized_image(image,guess,p,q,flag,state):
+  match guess:
+    case True{}:
+      state
+    case False{}:
+      (safe,(shape,known)) = state
+      L.clear_forced_normalized_image_step(image,p,q,safe,flag,
+        L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.clear_forced_normalized(b,guess,p,q,flag,state):
+  proof : (L.RoutedApart(L.flag_slot(p),q) -> L.SafeNormalizedAt(b,q) ->
+    L.SafeNormalizedAt(Q.clear_forced(guess,b,p),q)) =
+    L.on_reified_board(b,x => (L.RoutedApart(L.flag_slot(p),q) -> L.SafeNormalizedAt(x,q) ->
+      L.SafeNormalizedAt(Q.clear_forced(guess,x,p),q)),L.reify_board(b),
+      image => L.clear_forced_normalized_image(image,guess,p,q))
+  proof(flag,state)
+
+def L.write_normalized_other_step(image,p,value,q,safe,apart,shapes,known):
+  (s0,s1) = shapes
+  b = L.image_board(image)
+  normalized : L.NormalizedQueueMask(L.cell_value(Board.set_cell(b,p,value),q)) =
+    %Equal.sym(U32,L.cell_value(Board.set_cell(b,p,value),q),L.cell_value(b,q),
+      L.perfect_write_keeps_cell(L.image_board(image),p,q,value,s1,apart)) :
+      L.NormalizedQueueMask(_)
+    known
+  (safe,(L.board_set_keeps_perfect(L.image_board(image),p,value,7n,s0),normalized))
+
+def L.write_normalized_other_image(image,p,value,q,apart,state):
+  (safe,(shape,known)) = state
+  L.write_normalized_other_step(image,p,value,q,safe,apart,
+    L.copy_shape_proof(L.array_shape(L.image_board(image)),L.perfect_shape(7n),shape),known)
+
+def L.write_normalized_other(b,p,value,q,apart,state):
+  proof : (L.RoutedApart(p,q) -> L.SafeNormalizedAt(b,q) ->
+    L.SafeNormalizedAt(Board.set_cell(b,p,value),q)) =
+    L.on_reified_board(b,x => (L.RoutedApart(p,q) -> L.SafeNormalizedAt(x,q) ->
+      L.SafeNormalizedAt(Board.set_cell(x,p,value),q)),L.reify_board(b),
+      image => L.write_normalized_other_image(image,p,value,q))
+  proof(apart,state)
+
+def L.place_normalized_peers_image(image,p,q,d,routes,state):
+  (row,(col,(box,ptr))) = routes
+  L.refresh_keeps_normalized(L.place_boxes(L.image_board(image),p,d),p,q)(ptr,
+    L.box_four_keeps_normalized(L.place_columns(L.image_board(image),p,d),L.place_box_base(p),L.place_box_r1(p),L.place_box_r2(p),L.place_box_c1(p),L.place_box_c2(p),q,d,box,
+      L.column_normalized_line(9n,0,M.rem9(p),p,q,d,L.place_rows(L.image_board(image),p,d),col,
+        L.row_normalized_line(9n,0,L.place_row_base(p),p,q,d,L.image_board(image),row,state))))
+
+def L.place_peers_keep_normalized(b,p,q,d):
+  L.on_reified_board(b,x => L.PlacePeersNormalized(x,p,q,d),
+    L.reify_board(b),image => L.place_normalized_peers_image(image,p,q,d))
+
+def L.place_keeps_normalized_image(image,guess,p,q,d,apart,flag,routes,state):
+  after_clear = Q.clear_forced(guess,L.image_board(image),p)
+  after_write = Board.set_cell(Q.clear_forced(guess,L.image_board(image),p),p,L.fixed_word(d))
+  L.place_peers_keep_normalized(after_write,p,q,d)(routes,
+    L.write_normalized_other(after_clear,p,L.fixed_word(d),q,apart,
+      L.clear_forced_normalized(L.image_board(image),guess,p,q,flag,state)))
+
+def L.queued_place_keeps_normalized(b,guess,p,q,d):
+  L.on_reified_board(b,x => L.PlaceKeepsNormalized(x,guess,p,q,d),
+    L.reify_board(b),image => L.place_keeps_normalized_image(image,guess,p,q,d))
+
+
+def L.logical_placement_keeps_other_candidate(b,guess,sr,sc,wr,wc,digit,distinct,state):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(wr,wc)
+  L.queued_place_keeps_normalized(b,guess,p,q,digit)(
+    L.logical_distinct_apart(p,q,distinct,L.matrix_logical_entry(sr,sc,wr,wc),
+      L.logical_address_facts(sr,sc),L.logical_address_facts(wr,wc)),
+    L.any_logical_flag_route(sr,sc,wr,wc),
+    L.placement_routes_from_coordinates(sr,sc,wr,wc),state)
+
+
+def L.safe_normalized_mask(b,q,state):
+  (safe,(shape,prior)) = state
+  prior
+
+def L.logical_placement_preserves_other_candidate_mask(b,guess,sr,sc,wr,wc,digit,distinct,shape,prior):
+  +p = L.logical_position(sr,sc)
+  +q = L.logical_position(wr,wc)
+  L.safe_normalized_mask(Q.place(guess,p,L.digit_word(digit),b),q,
+    L.logical_placement_keeps_other_candidate(b,guess,sr,sc,wr,wc,digit,distinct,
+      (L.any_logical_flag_route(wr,wc,wr,wc),(shape,prior))))

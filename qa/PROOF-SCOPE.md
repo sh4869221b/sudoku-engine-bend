@@ -481,3 +481,16 @@ claim about reachable search caches or prove solver soundness.
   an eligible queued candidate at every input blank. This proves
   representation eligibility, not cache legality, scan-pointer coverage
   or preservation after subsequent placements and backtracking.
+
+## Pointwise candidate normalization after full queued placement
+
+- On a 128-slot board, placing a digit at a logical cell preserves
+  the candidate mask format at every other logical cell whose mask
+  was already normalized. The proof follows the actual production
+  placement with either guess flag, including urgency-flag changes,
+  the new fixed-word write, row, column and four additional box
+  peer updates, and the start-pointer refresh.
+- This proves preservation of the candidate format, not that the
+  remaining digits are exactly the Sudoku-legal choices. It also
+  does not prove the pointer stays at or before every remaining
+  blank, or that all backtracking entry states maintain this premise.
