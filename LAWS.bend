@@ -1972,3 +1972,253 @@ law project_shape_transition:
 law queued_encode_preserves_shape:
   for board: Array<U32>
   {array_shape(Q.encode(board)) == array_shape(board) : ArrayShape}
+
+def cell_value(board: Array<U32>, +pos: U32) -> U32:
+  Pair.snd(Array<U32>,U32,B.get_cell(board,pos))
+
+def Board128(-board: Array<U32>) -> Type:
+  {array_shape(board) == perfect_shape(7n) : ArrayShape}
+
+def normalized_route(+i: U32) -> U32:
+  U32.and(i,127)
+
+def RoutedApart(+written: U32, +watched: U32) -> Type:
+  {regular_routes(normalized_route(written),normalized_route(watched)) == True{} : Bool}
+
+law copy_shape_proof:
+  for -a: ArrayShape
+  for -b: ArrayShape
+  for eq: {a == b : ArrayShape}
+  ({a == b : ArrayShape} & {a == b : ArrayShape})
+
+law copy_shape_three:
+  for -a: ArrayShape
+  for -b: ArrayShape
+  for eq: {a == b : ArrayShape}
+  ({a == b : ArrayShape} & {a == b : ArrayShape} & {a == b : ArrayShape})
+
+# A duplicable mathematical image of a source array, with a reconstruction witness.
+type BoardImage is Data:
+  ImageLeaf{value: U32}
+  ImageNode{left: BoardImage, right: BoardImage}
+
+def image_board(+image: BoardImage) -> Array<U32>:
+  match image:
+    case ImageLeaf{value}:
+      ALeaf{value}
+    case ImageNode{left,right}:
+      ANode{image_board(left),image_board(right)}
+
+def ReifiedBoard(-board: Array<U32>) -> Type:
+  Sigma<&2,&1,BoardImage,image => {image_board(image) == board : Array<U32>}>
+
+law reify_board_join:
+  for -left: Array<U32>
+  for -right: Array<U32>
+  for e0: ReifiedBoard(left)
+  for e1: ReifiedBoard(right)
+  ReifiedBoard(ANode{left,right})
+
+law reify_board:
+  for board: Array<U32>
+  ReifiedBoard(board)
+
+law on_reified_board:
+  for -board: Array<U32>
+  for -P: Array<U32> -> Type
+  for witness: ReifiedBoard(board)
+  for prove: @image:BoardImage -> P(image_board(image))
+  P(board)
+
+law perfect_write_keeps_cell_from:
+  for +image: BoardImage
+  for +written: U32
+  for +watched: U32
+  for +value: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)) & Board128(image_board(image)))
+  for apart: RoutedApart(written,watched)
+  {cell_value(B.set_cell(image_board(image),written,value),watched) == cell_value(image_board(image),watched) : U32}
+
+law perfect_write_keeps_cell:
+  for board: Array<U32>
+  for +written: U32
+  for +watched: U32
+  for +value: U32
+  for shape: Board128(board)
+  for apart: RoutedApart(written,watched)
+  {cell_value(B.set_cell(board,written,value),watched) == cell_value(board,watched) : U32}
+
+law observed_word:
+  for -board: Array<U32>
+  for +pos: U32
+  for -same: Array<U32>
+  for -word: U32
+  for observed: {Array.get(U32,board,pos) == (same,word) : Array<U32> & U32}
+  {cell_value(board,pos) == word : U32}
+
+law decode_step_update:
+  for -board: Array<U32>
+  for +pos: U32
+  for -same: Array<U32>
+  for +word: U32
+  for untouched: {same == board : Array<U32>}
+  for observed: {Array.get(U32,board,pos) == (same,word) : Array<U32> & U32}
+  {Q.decoded(pos,Array.get(U32,board,pos)) == B.set_cell(board,pos,U32.shrn(cell_value(board,pos),10n)) : Array<U32>}
+
+law decode_step_normalized:
+  for board: Array<U32>
+  for +pos: U32
+  for read: BoardReadWitness(board,pos)
+  {Q.decoded(pos,Array.get(U32,board,pos)) == B.set_cell(board,pos,U32.shrn(cell_value(board,pos),10n)) : Array<U32>}
+
+law decode_step_keeps_cell_image:
+  for +image: BoardImage
+  for +pos: U32
+  for +watched: U32
+  for shape: Board128(image_board(image))
+  for apart: RoutedApart(pos,watched)
+  {cell_value(Q.decoded(pos,Array.get(U32,image_board(image),pos)),watched) == cell_value(image_board(image),watched) : U32}
+
+law decode_step_keeps_cell:
+  for board: Array<U32>
+  for +pos: U32
+  for +watched: U32
+  for shape: Board128(board)
+  for apart: RoutedApart(pos,watched)
+  {cell_value(Q.decoded(pos,Array.get(U32,board,pos)),watched) == cell_value(board,watched) : U32}
+
+law decode_step_reads_cell_image:
+  for +image: BoardImage
+  for +pos: U32
+  {cell_value(Q.decoded(pos,Array.get(U32,image_board(image),pos)),pos) == U32.shrn(cell_value(image_board(image),pos),10n) : U32}
+
+law decode_step_reads_cell:
+  for board: Array<U32>
+  for +pos: U32
+  {cell_value(Q.decoded(pos,Array.get(U32,board,pos)),pos) == U32.shrn(cell_value(board,pos),10n) : U32}
+
+law decode_step_keeps_perfect_image:
+  for +image: BoardImage
+  for +pos: U32
+  for shape: Board128(image_board(image))
+  Board128(Q.decoded(pos,Array.get(U32,image_board(image),pos)))
+
+law decode_step_keeps_perfect:
+  for board: Array<U32>
+  for +pos: U32
+  for shape: Board128(board)
+  Board128(Q.decoded(pos,Array.get(U32,board,pos)))
+
+def DecodeApart(+n: Nat, +pos: U32, +watched: U32) -> Type:
+  match n:
+    case 0n:
+      {True{} == True{} : Bool}
+    case 1n+k:
+      RoutedApart(pos,watched) & DecodeApart(k,(pos + 1 : U32),watched)
+
+def DecodeTailProof(+n: Nat, +pos: U32, +watched: U32) -> Type:
+  @sub:Array<U32> -> Board128(sub) -> DecodeApart(n,pos,watched) ->
+  {cell_value(Q.decode(n,pos,sub),watched) == cell_value(sub,watched) : U32}
+
+law decode_sweep_keep_step_image:
+  for +n: Nat
+  for +pos: U32
+  for +image: BoardImage
+  for +watched: U32
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for apart: RoutedApart(pos,watched)
+  for rest: DecodeApart(n,(pos + 1 : U32),watched)
+  for recurse: DecodeTailProof(n,(pos + 1 : U32),watched)
+  {cell_value(Q.decode(1n+n,pos,image_board(image)),watched) == cell_value(image_board(image),watched) : U32}
+
+law decode_sweep_keep_step:
+  for +n: Nat
+  for +pos: U32
+  for board: Array<U32>
+  for +watched: U32
+  for shapes: (Board128(board) & Board128(board))
+  for apart: RoutedApart(pos,watched)
+  for rest: DecodeApart(n,(pos + 1 : U32),watched)
+  for recurse: DecodeTailProof(n,(pos + 1 : U32),watched)
+  {cell_value(Q.decode(1n+n,pos,board),watched) == cell_value(board,watched) : U32}
+
+law decode_sweep_keeps_apart:
+  for +n: Nat
+  for +pos: U32
+  for board: Array<U32>
+  for +watched: U32
+  for shape: Board128(board)
+  for apart: DecodeApart(n,pos,watched)
+  {cell_value(Q.decode(n,pos,board),watched) == cell_value(board,watched) : U32}
+
+law decode_head_value_image:
+  for +n: Nat
+  for +pos: U32
+  for +image: BoardImage
+  for shape: Board128(image_board(image))
+  for apart: DecodeApart(n,(pos + 1 : U32),pos)
+  {cell_value(Q.decode(1n+n,pos,image_board(image)),pos) == U32.shrn(cell_value(image_board(image),pos),10n) : U32}
+
+law decode_head_value:
+  for +n: Nat
+  for +pos: U32
+  for board: Array<U32>
+  for shape: Board128(board)
+  for apart: DecodeApart(n,(pos + 1 : U32),pos)
+  {cell_value(Q.decode(1n+n,pos,board),pos) == U32.shrn(cell_value(board,pos),10n) : U32}
+
+def walk_position(+prefix: Nat, +start: U32) -> U32:
+  match prefix:
+    case 0n:
+      start
+    case 1n+k:
+      walk_position(k,(start + 1 : U32))
+
+def with_center(+prefix: Nat, +suffix: Nat) -> Nat:
+  match prefix:
+    case 0n:
+      1n+suffix
+    case 1n+k:
+      1n+with_center(k,suffix)
+
+def DecodeMiddleProof(+prefix: Nat, +suffix: Nat, +start: U32) -> Type:
+  @sub:Array<U32> -> Board128(sub) ->
+  DecodeApart(prefix,start,walk_position(prefix,start)) ->
+  DecodeApart(suffix,(walk_position(prefix,start) + 1 : U32),walk_position(prefix,start)) ->
+  {cell_value(Q.decode(with_center(prefix,suffix),start,sub),walk_position(prefix,start))
+    == U32.shrn(cell_value(sub,walk_position(prefix,start)),10n) : U32}
+
+law decode_middle_value_step_image:
+  for +prefix: Nat
+  for +suffix: Nat
+  for +start: U32
+  for +image: BoardImage
+  for shapes: (Board128(image_board(image)) & Board128(image_board(image)))
+  for prior: DecodeApart(1n+prefix,start,walk_position(1n+prefix,start))
+  for later: DecodeApart(suffix,(walk_position(1n+prefix,start) + 1 : U32),walk_position(1n+prefix,start))
+  for recurse: DecodeMiddleProof(prefix,suffix,(start + 1 : U32))
+  {cell_value(Q.decode(with_center(1n+prefix,suffix),start,image_board(image)),walk_position(1n+prefix,start))
+    == U32.shrn(cell_value(image_board(image),walk_position(1n+prefix,start)),10n) : U32}
+
+law decode_middle_value_step:
+  for +prefix: Nat
+  for +suffix: Nat
+  for +start: U32
+  for board: Array<U32>
+  for shapes: (Board128(board) & Board128(board))
+  for prior: DecodeApart(1n+prefix,start,walk_position(1n+prefix,start))
+  for later: DecodeApart(suffix,(walk_position(1n+prefix,start) + 1 : U32),walk_position(1n+prefix,start))
+  for recurse: DecodeMiddleProof(prefix,suffix,(start + 1 : U32))
+  {cell_value(Q.decode(with_center(1n+prefix,suffix),start,board),walk_position(1n+prefix,start))
+    == U32.shrn(cell_value(board,walk_position(1n+prefix,start)),10n) : U32}
+
+law decode_middle_value:
+  for +prefix: Nat
+  for +suffix: Nat
+  for +start: U32
+  for board: Array<U32>
+  for shape: Board128(board)
+  for prior: DecodeApart(prefix,start,walk_position(prefix,start))
+  for later: DecodeApart(suffix,(walk_position(prefix,start) + 1 : U32),walk_position(prefix,start))
+  {cell_value(Q.decode(with_center(prefix,suffix),start,board),walk_position(prefix,start))
+    == U32.shrn(cell_value(board,walk_position(prefix,start)),10n) : U32}

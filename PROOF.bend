@@ -1724,3 +1724,167 @@ def L.project_shape_transition(board,result,proof):
 
 def L.queued_encode_preserves_shape(board):
   L.project_shape_transition(board,Q.encode(board),L.encoded_full_shape_witness(board))
+
+def L.copy_shape_proof(a,b,eq):
+  %eq : ({a == _ : L.ArrayShape} & {a == _ : L.ArrayShape})
+  ({==},{==})
+
+def L.copy_shape_three(a,b,eq):
+  %eq : ({a == _ : L.ArrayShape} & {a == _ : L.ArrayShape} & {a == _ : L.ArrayShape})
+  ({==},({==},{==}))
+
+def L.reify_board_join(left,right,e0,e1):
+  (+a,ea) = e0
+  (+b,eb) = e1
+  (L.ImageNode{a,b},
+    Equal.trans(Array<U32>,ANode{L.image_board(a),L.image_board(b)},ANode{left,L.image_board(b)},ANode{left,right},
+      Equal.cong(Array<U32>,Array<U32>,x => ANode{x,L.image_board(b)},L.image_board(a),left,ea),
+      Equal.cong(Array<U32>,Array<U32>,x => ANode{left,x},L.image_board(b),right,eb)))
+
+def L.reify_board(board):
+  match board:
+    case ALeaf{+value}:
+      (L.ImageLeaf{value},{==})
+    case ANode{left,right}:
+      L.reify_board_join(left,right,L.reify_board(left),L.reify_board(right))
+
+def L.on_reified_board(board,P,witness,prove):
+  (+image,eq) = witness
+  %eq : P(_)
+  prove(image)
+
+def L.perfect_write_keeps_cell_from(image,written,watched,value,shapes,apart):
+  (s0,(s1,s2)) = shapes
+  +i = L.normalized_route(written)
+  +j = L.normalized_route(watched)
+  new = Board.set_cell(L.image_board(image),written,value)
+  L.board_write_preserves_separate_read(L.image_board(image),128,written,watched,value,
+    L.perfect_board_has_128_slots(L.image_board(image),s0),
+    L.perfect_board_has_128_slots(new,L.board_set_keeps_perfect(L.image_board(image),written,value,7n,s1)),
+    Equal.trans(Bool,
+      L.routes_separate(L.image_board(image),128,i,j,(i < 64 : U32),(j < 64 : U32)),
+      L.regular_routes(i,j),True{},
+      L.routes_from_perfect_shape(L.image_board(image),128,i,j,(i < 64 : U32),(j < 64 : U32),7n,s2),
+      apart))
+
+def L.perfect_write_keeps_cell(board,written,watched,value,shape,apart):
+  proof : (L.Board128(board) -> L.RoutedApart(written,watched) ->
+    {L.cell_value(Board.set_cell(board,written,value),watched) == L.cell_value(board,watched) : U32}) =
+    L.on_reified_board(board,
+      b => (L.Board128(b) -> L.RoutedApart(written,watched) ->
+        {L.cell_value(Board.set_cell(b,written,value),watched) == L.cell_value(b,watched) : U32}),
+      L.reify_board(board),
+      image => s => sep => L.perfect_write_keeps_cell_from(image,written,watched,value,
+        L.copy_shape_three(L.array_shape(L.image_board(image)),L.perfect_shape(7n),s),sep))
+  proof(shape,apart)
+
+def L.observed_word(board,pos,same,word,observed):
+  Equal.cong(Array<U32> & U32,U32,p => Pair.snd(Array<U32>,U32,p),
+    Array.get(U32,board,pos),(same,word),observed)
+
+def L.decode_step_update(board,pos,same,word,untouched,observed):
+  %Equal.sym(Array<U32> & U32,Array.get(U32,board,pos),(same,word),observed) :
+    {Q.decoded(pos,_) == Board.set_cell(board,pos,U32.shrn(Pair.snd(Array<U32>,U32,_),10n)) : Array<U32>}
+  %Equal.sym(Array<U32>,same,board,untouched) :
+    {Board.set_cell(_,pos,U32.shrn(word,10n)) == Board.set_cell(board,pos,U32.shrn(word,10n)) : Array<U32>}
+  {==}
+
+def L.decode_step_normalized(board,pos,read):
+  (same,+word,(untouched,observed)) = read
+  L.decode_step_update(board,pos,same,word,untouched,observed)
+
+def L.decode_step_keeps_cell_image(image,pos,watched,shape,apart):
+  %Equal.sym(Array<U32>,Q.decoded(pos,Array.get(U32,L.image_board(image),pos)),Board.set_cell(L.image_board(image),pos,U32.shrn(L.cell_value(L.image_board(image),pos),10n)),L.decode_step_normalized(L.image_board(image),pos,L.board_read_witness(L.image_board(image),pos))) :
+    {L.cell_value(_,watched) == L.cell_value(L.image_board(image),watched) : U32}
+  L.perfect_write_keeps_cell(L.image_board(image),pos,watched,U32.shrn(L.cell_value(L.image_board(image),pos),10n),shape,apart)
+
+def L.decode_step_keeps_cell(board,pos,watched,shape,apart):
+  proof : (L.Board128(board) -> L.RoutedApart(pos,watched) -> {L.cell_value(Q.decoded(pos,Array.get(U32,board,pos)),watched) == L.cell_value(board,watched) : U32}) =
+    L.on_reified_board(board, b => (L.Board128(b) -> L.RoutedApart(pos,watched) -> {L.cell_value(Q.decoded(pos,Array.get(U32,b,pos)),watched) == L.cell_value(b,watched) : U32}),
+      L.reify_board(board), image => L.decode_step_keeps_cell_image(image, pos, watched))
+  proof(shape, apart)
+
+def L.decode_step_reads_cell_image(image,pos):
+  %Equal.sym(Array<U32>,Q.decoded(pos,Array.get(U32,L.image_board(image),pos)),Board.set_cell(L.image_board(image),pos,U32.shrn(L.cell_value(L.image_board(image),pos),10n)),L.decode_step_normalized(L.image_board(image),pos,L.board_read_witness(L.image_board(image),pos))) :
+    {L.cell_value(_,pos) == U32.shrn(L.cell_value(L.image_board(image),pos),10n) : U32}
+  L.board_set_get(L.image_board(image),pos,U32.shrn(L.cell_value(L.image_board(image),pos),10n))
+
+def L.decode_step_reads_cell(board,pos):
+  L.on_reified_board(board, b => ({L.cell_value(Q.decoded(pos,Array.get(U32,b,pos)),pos) == U32.shrn(L.cell_value(b,pos),10n) : U32}),
+    L.reify_board(board), image => L.decode_step_reads_cell_image(image, pos))
+
+def L.decode_step_keeps_perfect_image(image,pos,shape):
+  %Equal.sym(Array<U32>,Q.decoded(pos,Array.get(U32,L.image_board(image),pos)),Board.set_cell(L.image_board(image),pos,U32.shrn(L.cell_value(L.image_board(image),pos),10n)),L.decode_step_normalized(L.image_board(image),pos,L.board_read_witness(L.image_board(image),pos))) : L.Board128(_)
+  L.board_set_keeps_perfect(L.image_board(image),pos,U32.shrn(L.cell_value(L.image_board(image),pos),10n),7n,shape)
+
+def L.decode_step_keeps_perfect(board,pos,shape):
+  proof : (L.Board128(board) -> L.Board128(Q.decoded(pos,Array.get(U32,board,pos)))) =
+    L.on_reified_board(board, b => (L.Board128(b) -> L.Board128(Q.decoded(pos,Array.get(U32,b,pos)))),
+      L.reify_board(board), image => L.decode_step_keeps_perfect_image(image, pos))
+  proof(shape)
+
+def L.decode_sweep_keep_step_image(n,pos,image,watched,shapes,head,tail,recurse):
+  (s0,s1) = shapes
+  next = Q.decoded(pos,Array.get(U32,L.image_board(image),pos))
+  +p = (pos + 1 : U32)
+  Equal.trans(U32,L.cell_value(Q.decode(n,p,next),watched),L.cell_value(next,watched),L.cell_value(L.image_board(image),watched),
+    recurse(next,L.decode_step_keeps_perfect(L.image_board(image),pos,s0),tail),
+    L.decode_step_keeps_cell(L.image_board(image),pos,watched,s1,head))
+
+def L.decode_sweep_keep_step(n,pos,board,watched,shapes,head,tail,recurse):
+  proof : ((L.Board128(board) & L.Board128(board)) -> L.RoutedApart(pos,watched) -> L.DecodeApart(n,(pos + 1 : U32),watched) -> L.DecodeTailProof(n,(pos + 1 : U32),watched) -> {L.cell_value(Q.decode(1n+n,pos,board),watched) == L.cell_value(board,watched) : U32}) =
+    L.on_reified_board(board, b => ((L.Board128(b) & L.Board128(b)) -> L.RoutedApart(pos,watched) -> L.DecodeApart(n,(pos + 1 : U32),watched) -> L.DecodeTailProof(n,(pos + 1 : U32),watched) -> {L.cell_value(Q.decode(1n+n,pos,b),watched) == L.cell_value(b,watched) : U32}),
+      L.reify_board(board), image => L.decode_sweep_keep_step_image(n, pos, image, watched))
+  proof(shapes, head, tail, recurse)
+
+def L.decode_sweep_keeps_apart(n,pos,board,watched,shape,apart):
+  match n:
+    case 0n:
+      {==}
+    case 1n+k:
+      (head,tail) = apart
+      L.decode_sweep_keep_step(k,pos,board,watched,
+        L.copy_shape_proof(L.array_shape(board),L.perfect_shape(7n),shape),head,tail,
+        sub => sub_shape => sep => L.decode_sweep_keeps_apart(k,(pos + 1 : U32),sub,watched,sub_shape,sep))
+
+def L.decode_head_value_image(n,pos,image,shape,apart):
+  next = Q.decoded(pos,Array.get(U32,L.image_board(image),pos))
+  +p = (pos + 1 : U32)
+  Equal.trans(U32,L.cell_value(Q.decode(n,p,next),pos),L.cell_value(next,pos),U32.shrn(L.cell_value(L.image_board(image),pos),10n),
+    L.decode_sweep_keeps_apart(n,p,next,pos,L.decode_step_keeps_perfect(L.image_board(image),pos,shape),apart),
+    L.decode_step_reads_cell(L.image_board(image),pos))
+
+def L.decode_head_value(n,pos,board,shape,apart):
+  proof : (L.Board128(board) -> L.DecodeApart(n,(pos + 1 : U32),pos) -> {L.cell_value(Q.decode(1n+n,pos,board),pos) == U32.shrn(L.cell_value(board,pos),10n) : U32}) =
+    L.on_reified_board(board, b => (L.Board128(b) -> L.DecodeApart(n,(pos + 1 : U32),pos) -> {L.cell_value(Q.decode(1n+n,pos,b),pos) == U32.shrn(L.cell_value(b,pos),10n) : U32}),
+      L.reify_board(board), image => L.decode_head_value_image(n, pos, image))
+  proof(shape, apart)
+
+def L.decode_middle_value_step_image(k,suffix,start,image,shapes,prior,later,recurse):
+  (s0,s1) = shapes
+  (head,rest) = prior
+  next = Q.decoded(start,Array.get(U32,L.image_board(image),start))
+  +start1 = (start + 1 : U32)
+  +p = L.walk_position(k,start1)
+  Equal.trans(U32,
+    L.cell_value(Q.decode(L.with_center(k,suffix),start1,next),p),
+    U32.shrn(L.cell_value(next,p),10n),
+    U32.shrn(L.cell_value(L.image_board(image),p),10n),
+    recurse(next,L.decode_step_keeps_perfect(L.image_board(image),start,s0),rest,later),
+    Equal.cong(U32,U32,x => U32.shrn(x,10n),L.cell_value(next,p),L.cell_value(L.image_board(image),p),
+      L.decode_step_keeps_cell(L.image_board(image),start,p,s1,head)))
+
+def L.decode_middle_value_step(k,suffix,start,board,shapes,prior,later,recurse):
+  proof : ((L.Board128(board) & L.Board128(board)) -> L.DecodeApart(1n+k,start,L.walk_position(1n+k,start)) -> L.DecodeApart(suffix,(L.walk_position(1n+k,start) + 1 : U32),L.walk_position(1n+k,start)) -> L.DecodeMiddleProof(k,suffix,(start + 1 : U32)) -> {L.cell_value(Q.decode(L.with_center(1n+k,suffix),start,board),L.walk_position(1n+k,start)) == U32.shrn(L.cell_value(board,L.walk_position(1n+k,start)),10n) : U32}) =
+    L.on_reified_board(board, b => ((L.Board128(b) & L.Board128(b)) -> L.DecodeApart(1n+k,start,L.walk_position(1n+k,start)) -> L.DecodeApart(suffix,(L.walk_position(1n+k,start) + 1 : U32),L.walk_position(1n+k,start)) -> L.DecodeMiddleProof(k,suffix,(start + 1 : U32)) -> {L.cell_value(Q.decode(L.with_center(1n+k,suffix),start,b),L.walk_position(1n+k,start)) == U32.shrn(L.cell_value(b,L.walk_position(1n+k,start)),10n) : U32}),
+      L.reify_board(board), image => L.decode_middle_value_step_image(k, suffix, start, image))
+  proof(shapes, prior, later, recurse)
+
+def L.decode_middle_value(prefix,suffix,start,board,shape,prior,later):
+  match prefix:
+    case 0n:
+      L.decode_head_value(suffix,start,board,shape,later)
+    case 1n+k:
+      L.decode_middle_value_step(k,suffix,start,board,
+        L.copy_shape_proof(L.array_shape(board),L.perfect_shape(7n),shape),prior,later,
+        sub => sub_shape => before => after => L.decode_middle_value(k,suffix,(start + 1 : U32),sub,sub_shape,before,after))

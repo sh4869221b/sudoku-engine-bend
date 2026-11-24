@@ -163,3 +163,19 @@ claim about reachable search caches or prove solver soundness.
   and its 81 iterations. Together with the decoder law this preserves the
   certified logical and metadata routes through both passes. It does not
   yet prove value-level encode/decode identity.
+
+## Position-wise queued decoding
+
+- On any perfect depth-seven board, a write preserves reads at every proven
+  separate route. Both indices are normalized by the production 128-slot
+  mask, so distinct raw integers alone are not a sufficient hypothesis.
+- One production decoding step reads the current word, writes that word
+  shifted right by ten to the same slot, and leaves any separately routed
+  watched slot unchanged. Arbitrarily many such steps preserve an unwritten
+  watched value when their routes are certified separate.
+- In a decoder sweep, the value at a chosen iteration is the original word
+  at that position shifted right by ten, provided all earlier and later
+  writes route elsewhere. The theorem composes the production loop over
+  both the prefix and the suffix, not a separate decoder implementation.
+  It does not yet prove that encoding produces the corresponding word at
+  every cell, nor solver soundness or cache correctness.
