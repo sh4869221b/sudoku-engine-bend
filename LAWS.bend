@@ -5737,3 +5737,153 @@ law queued_scan_skips_fixed_word:
   for +d: BoardDigit
   for nonblank: Nonblank(d)
   {Q.inspected(pos,p,m,size,(b,fixed_word(d))) == (b,(p,(m,size))) : Array<U32> & U32 & U32 & U32}
+
+def QueuedScanTuple() -> Type:
+  Array<U32> & U32 & U32 & U32
+
+def QueuedSelectResult() -> Type:
+  Array<U32> & C.Choice
+
+def selector_board(r: QueuedSelectResult()) -> Array<U32>:
+  Pair.fst(Array<U32>,C.Choice,r)
+
+law queued_scan_step_preserves_from_image:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for +image: BoardImage
+  for later: @next:QueuedScanTuple() -> {selector_board(Q.scan(n,(pos + 1 : U32),next)) == scalar_board(next) : Array<U32>}
+  {selector_board(Q.scan(n,(pos + 1 : U32),Q.inspected(pos,p,m,size,Array.get(U32,image_board(image),pos)))) == image_board(image) : Array<U32>}
+
+law queued_scan_step_preserves:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for b: Array<U32>
+  for later: @next:QueuedScanTuple() -> {selector_board(Q.scan(n,(pos + 1 : U32),next)) == scalar_board(next) : Array<U32>}
+  {selector_board(Q.scan(n,(pos + 1 : U32),Q.inspected(pos,p,m,size,Array.get(U32,b,pos)))) == b : Array<U32>}
+
+law queued_scan_zero_keeps:
+  for +pos: U32
+  for -b: Array<U32>
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  {selector_board(Q.scan(0n,pos,(b,(p,(m,size))))) == b : Array<U32>}
+
+law queued_scan_succ_keeps:
+  for +n: Nat
+  for +pos: U32
+  for +p: U32
+  for +m: U32
+  for +size: U32
+  for b: Array<U32>
+  for later: @next:QueuedScanTuple() -> {selector_board(Q.scan(n,(pos + 1 : U32),next)) == scalar_board(next) : Array<U32>}
+  {selector_board(Q.scan(1n+n,pos,(b,(p,(m,size))))) == b : Array<U32>}
+
+law queued_scan_last_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for +p: U32
+  for rest: U32 & U32
+  {selector_board(Q.scan(0n,pos,(b,(p,rest)))) == b : Array<U32>}
+
+law queued_scan_tail_zero:
+  for +pos: U32
+  for -b: Array<U32>
+  for tail: U32 & U32 & U32
+  {selector_board(Q.scan(0n,pos,(b,tail))) == b : Array<U32>}
+
+law queued_scan_last_succ:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  for +p: U32
+  for rest: U32 & U32
+  for later: @next:QueuedScanTuple() -> {selector_board(Q.scan(n,(pos + 1 : U32),next)) == scalar_board(next) : Array<U32>}
+  {selector_board(Q.scan(1n+n,pos,(b,(p,rest)))) == b : Array<U32>}
+
+law queued_scan_tail_succ:
+  for +n: Nat
+  for +pos: U32
+  for b: Array<U32>
+  for tail: U32 & U32 & U32
+  for later: @next:QueuedScanTuple() -> {selector_board(Q.scan(n,(pos + 1 : U32),next)) == scalar_board(next) : Array<U32>}
+  {selector_board(Q.scan(1n+n,pos,(b,tail))) == b : Array<U32>}
+
+law queued_scan_tuple_zero:
+  for +pos: U32
+  for r: QueuedScanTuple()
+  {selector_board(Q.scan(0n,pos,r)) == scalar_board(r) : Array<U32>}
+
+law queued_scan_tuple_succ:
+  for +n: Nat
+  for +pos: U32
+  for r: QueuedScanTuple()
+  for later: @next:QueuedScanTuple() -> {selector_board(Q.scan(n,(pos + 1 : U32),next)) == scalar_board(next) : Array<U32>}
+  {selector_board(Q.scan(1n+n,pos,r)) == scalar_board(r) : Array<U32>}
+
+law queued_scan_reads_board:
+  for +n: Nat
+  for +pos: U32
+  for r: QueuedScanTuple()
+  {selector_board(Q.scan(n,pos,r)) == scalar_board(r) : Array<U32>}
+
+law queued_start_reads_board:
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for read: SameBoardRead(b,r)
+  {selector_board(Q.start(r)) == b : Array<U32>}
+
+def urgent_pos(+base: U32, +bits: U32) -> U32:
+  (base + Q.trailing(U32.shrn((lowest_bit(bits) * 125613361 : U32),27n)) : U32)
+
+law queued_urgent_from_board:
+  for b: Array<U32>
+  for +p: U32
+  {selector_board(Q.urgent(p,Array.get(U32,b,p))) == b : Array<U32>}
+
+law queued_flags_empty_reads_start:
+  for -b: Array<U32>
+  for +base: U32
+  for -r: Array<U32> & U32
+  for read: SameBoardRead(b,r)
+  {selector_board(Q.flags(0n,base,r)) == b : Array<U32>}
+
+law queued_flag_word_keeps_board:
+  for +n: Nat
+  for +base: U32
+  for b: Array<U32>
+  for +bits: U32
+  for next: @p:Array<U32> -> {selector_board(Q.flags(n,(base + 32 : U32),Array.get(U32,p,(110 + U32.shrn(base,5n) : U32)))) == p : Array<U32>}
+  {selector_board(Q.flags(1n+n,base,(b,bits))) == b : Array<U32>}
+
+law queued_flags_step_reads_board:
+  for +n: Nat
+  for +base: U32
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for read: SameBoardRead(b,r)
+  for next: @p:Array<U32> -> {selector_board(Q.flags(n,(base + 32 : U32),Array.get(U32,p,(110 + U32.shrn(base,5n) : U32)))) == p : Array<U32>}
+  {selector_board(Q.flags(1n+n,base,r)) == b : Array<U32>}
+
+law queued_flags_reads_board:
+  for +n: Nat
+  for +base: U32
+  for -b: Array<U32>
+  for -r: Array<U32> & U32
+  for read: SameBoardRead(b,r)
+  {selector_board(Q.flags(n,base,r)) == b : Array<U32>}
+
+law queued_production_selector_does_not_write:
+  for b: Array<U32>
+  {selector_board(Q.select(b)) == b : Array<U32>}
+
+law adaptive_selector_does_not_write:
+  for +active: Bool
+  for b: Array<U32>
+  {selector_board(Fast.selection(active,b)) == b : Array<U32>}

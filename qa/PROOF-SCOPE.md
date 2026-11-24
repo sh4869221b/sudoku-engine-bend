@@ -363,3 +363,16 @@ claim about reachable search caches or prove solver soundness.
   1. The count API discards the decoded scratch-board payload. A
   completed solution-event theorem must be kept separate from a theorem
   about every terminal count payload.
+
+## Full queued and adaptive selectors preserve ownership
+
+- The actual queued fallback scan returns exactly the input board for
+  arbitrary fuel, starting cell, and best-choice fields. The proof
+  covers early exits at sizes 0, 1, and 2 and the real inspection step.
+- The actual urgent-flag traversal retains the input board through the
+  flag read, through live urgent reads and through the first-blank
+  pointer fallback. It is not necessary to assume valid flag words
+  for this non-mutation guarantee.
+- The adaptive selector is read-only in both execution modes. A future
+  selected-square validity theorem must still require and maintain
+  live metadata consistency, not assume it from board identity.
