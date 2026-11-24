@@ -2963,3 +2963,245 @@ law any_logical_cell_roundtrip:
   for shape: Board128(b)
   for digit: {cell_value(b,logical_position(row,col)) == digit_word(d) : U32}
   {cell_value(Q.decode(81n,0,Q.encode(b)),logical_position(row,col)) == digit_word(d) : U32}
+
+def search_digit(+active: Bool, b: Array<U32>, +p: U32) -> U32:
+  match active:
+    case True{}:
+      U32.shrn(cell_value(b,p),10n)
+    case False{}:
+      cell_value(b,p)
+
+law adaptive_activation_finish:
+  for b: Array<U32>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for given: {cell_value(b,logical_position(row,col)) == digit_word(d) : U32}
+  {cell_value(Fast.finish(True{},Fast.activated(False{},b)),logical_position(row,col)) == digit_word(d) : U32}
+
+def answer_digit(state: Fast.State, +p: U32) -> U32:
+  match state:
+    case Fast.SnapshotDone{found,answer}:
+      cell_value(answer,p)
+    case _:
+      0
+
+law adaptive_new_mode_record:
+  for b: Array<U32>
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +row: CellCoordinate
+  for +col: CellCoordinate
+  for +d: BoardDigit
+  for shape: Board128(b)
+  for given: {cell_value(b,logical_position(row,col)) == digit_word(d) : U32}
+  {answer_digit(Fast.record(True{},Fast.activated(False{},b),frames,depth,found,snapshots,True{}),logical_position(row,col))
+    == digit_word(d) : U32}
+
+law adaptive_active_clear_keeps_clue:
+  for b: Array<U32>
+  for +written: U32
+  for +clue: U32
+  for shape: Board128(b)
+  for separate: RoutedApart(written,clue)
+  {search_digit(True{},Fast.cleared(True{},b,written),clue) == search_digit(True{},b,clue) : U32}
+
+law adaptive_active_clear_keeps_shape:
+  for b: Array<U32>
+  for +written: U32
+  for shape: Board128(b)
+  Board128(Fast.cleared(True{},b,written))
+
+def backtrack_digit(state: Fast.State, +p: U32) -> U32:
+  match state:
+    case Fast.Backtracking{board,frames,depth,found,snapshots,+active}:
+      search_digit(active,board,p)
+    case _:
+      0
+
+law adaptive_active_unwind_keeps_clue:
+  for b: Array<U32>
+  for +written: U32
+  for +clue: U32
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for shape: Board128(b)
+  for separate: RoutedApart(written,clue)
+  {backtrack_digit(Fast.popped_guess(False{},written,0,frames,depth,found,snapshots,True{},b),clue)
+    == search_digit(True{},b,clue) : U32}
+
+law adaptive_restore_reads_saved_clue:
+  for saved: Array<U32>
+  for +pos: U32
+  for +clue: U32
+  for frames: Array<U32>
+  for +depth: U32
+  for +found: U32
+  for snapshots: List<&1,Array<U32>>
+  for +active: Bool
+  {backtrack_digit(Fast.restore(pos,0,frames,depth,found,saved <> snapshots,active),clue)
+    == search_digit(active,saved,clue) : U32}
+
+law queue_peer_without_bit:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  for +word: U32
+  for clear: {U32.and(word,bit) == 0 : U32}
+  {Q.peer(p,bit,(b,word)) == b : Array<U32>}
+
+law queue_peer_reads_fixed:
+  for b: Array<U32>
+  for +p: U32
+  for +bit: U32
+  for -same: Array<U32>
+  for +word: U32
+  for unchanged: {same == b : Array<U32>}
+  for observed: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  for clear: {U32.and(word,bit) == 0 : U32}
+  {Q.peer(p,bit,B.get_cell(b,p)) == b : Array<U32>}
+
+def fixed_hi_word(+hi: Word(22n)) -> U32:
+  U32{WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, hi}}}}}}}}}}}
+
+law word_fixed_high_ignores_trimmed:
+  for +hi: Word(22n)
+  for +tail: Word(22n)
+  {Word.and(22n,hi,Word.and(22n,Word.zero(22n),tail)) == Word.zero(22n) : Word(22n)}
+
+law fixed_high_ignores_trimmed:
+  for +hi: Word(22n)
+  for +mask: U32
+  {U32.and(fixed_hi_word(hi),U32.and(1023,mask)) == 0 : U32}
+
+law shifted_digit_ignores_trimmed:
+  for +fixed: BoardDigit
+  for +mask: U32
+  {U32.and(U32.shln(digit_word(fixed),10n),U32.and(1023,mask)) == 0 : U32}
+
+law placement_bit_fits_low:
+  for +d: BoardDigit
+  {B.bit(digit_word(d)) == U32.and(1023,B.bit(digit_word(d))) : U32}
+
+law queued_placement_bit_excludes_fixed:
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  {U32.and(U32.shln(digit_word(fixed),10n),B.bit(digit_word(placed))) == 0 : U32}
+
+law queued_peer_on_fixed_digit:
+  for b: Array<U32>
+  for +p: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  {Q.peer(p,B.bit(digit_word(placed)),(b,U32.shln(digit_word(fixed),10n))) == b : Array<U32>}
+
+law queue_peer_fixed_observed:
+  for b: Array<U32>
+  for +p: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  for -same: Array<U32>
+  for +word: U32
+  for kept: {same == b : Array<U32>}
+  for read: {B.get_cell(b,p) == (same,word) : Array<U32> & U32}
+  for given: {cell_value(b,p) == U32.shln(digit_word(fixed),10n) : U32}
+  {Q.peer(p,B.bit(digit_word(placed)),B.get_cell(b,p)) == b : Array<U32>}
+
+law queue_peer_fixed_read:
+  for b: Array<U32>
+  for +p: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  for rd: BoardReadWitness(b,p)
+  for given: {cell_value(b,p) == U32.shln(digit_word(fixed),10n) : U32}
+  {Q.peer(p,B.bit(digit_word(placed)),B.get_cell(b,p)) == b : Array<U32>}
+
+def PeerFixed(-b: Array<U32>, +p: U32, +fixed: BoardDigit, +placed: BoardDigit) -> Type:
+  {cell_value(b,p) == U32.shln(digit_word(fixed),10n) : U32} ->
+  {Q.peer(p,B.bit(digit_word(placed)),B.get_cell(b,p)) == b : Array<U32>}
+
+law queue_actual_peer_fixed_image:
+  for +image: BoardImage
+  for +p: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  PeerFixed(image_board(image),p,fixed,placed)
+
+law queue_actual_peer_fixed:
+  for b: Array<U32>
+  for +p: U32
+  for +fixed: BoardDigit
+  for +placed: BoardDigit
+  PeerFixed(b,p,fixed,placed)
+
+def FirstOnlyWritesPointer(-b: Array<U32>, -out: Array<U32>) -> Type:
+  Sigma<&2,&1,U32,ptr => {out == B.set_cell(b,108,ptr) : Array<U32>}>
+
+law queued_first_pointer_from_read:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for -same: Array<U32>
+  for +word: U32
+  for kept: {same == b : Array<U32>}
+  for actual: {B.get_cell(b,(p + 1 : U32)) == (same,word) : Array<U32> & U32}
+  for later: FirstOnlyWritesPointer(same,Q.first_step(n,(p + 1 : U32),(same,(word < 1024 : U32))))
+  FirstOnlyWritesPointer(b,Q.first_step(1n+n,p,(b,False{})))
+
+def PointerTail(+n: Nat, +next: U32) -> Type:
+  @sub:Array<U32> -> @open:Bool -> FirstOnlyWritesPointer(sub,Q.first_step(n,next,(sub,open)))
+
+law queued_first_pointer_read:
+  for +n: Nat
+  for +p: U32
+  for -b: Array<U32>
+  for read: BoardReadWitness(b,(p + 1 : U32))
+  for recurse: PointerTail(n,(p + 1 : U32))
+  FirstOnlyWritesPointer(b,Q.first_step(1n+n,p,(b,False{})))
+
+law queued_first_pointer_live:
+  for +n: Nat
+  for +p: U32
+  for b: Array<U32>
+  for +open: Bool
+  for recurse: PointerTail(n,(p + 1 : U32))
+  FirstOnlyWritesPointer(b,Q.first_step(1n+n,p,(b,open)))
+
+law queued_first_pointer:
+  for +n: Nat
+  for +p: U32
+  for b: Array<U32>
+  for +open: Bool
+  FirstOnlyWritesPointer(b,Q.first_step(n,p,(b,open)))
+
+law pointer_keeps_logical_witness:
+  for b: Array<U32>
+  for -out: Array<U32>
+  for +q: U32
+  for shape: Board128(b)
+  for separate: RoutedApart(108,q)
+  for witness: FirstOnlyWritesPointer(b,out)
+  {cell_value(out,q) == cell_value(b,q) : U32}
+
+law queue_first_pointer_keeps_clue_image:
+  for +image: BoardImage
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for +open: Bool
+  Board128(image_board(image)) -> RoutedApart(108,q) ->
+  {cell_value(Q.first_step(n,p,(image_board(image),open)),q) == cell_value(image_board(image),q) : U32}
+
+law queue_first_pointer_keeps_clue:
+  for b: Array<U32>
+  for +n: Nat
+  for +p: U32
+  for +q: U32
+  for +open: Bool
+  Board128(b) -> RoutedApart(108,q) ->
+  {cell_value(Q.first_step(n,p,(b,open)),q) == cell_value(b,q) : U32}

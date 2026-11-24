@@ -212,3 +212,22 @@ claim about reachable search caches or prove solver soundness.
   followed by the 81-step decoder preserves that digit. The proof covers
   logical cell values, not word-for-word equality of the entire backing
   array or preservation of metadata. It does not prove solver soundness.
+
+## Adaptive search boundaries and fixed cells
+
+- Entering queued mode and immediately finishing or recording the encoded
+  board preserves the digit at any of the 81 logical positions. This is a
+  property of the actual adaptive-search functions and assumes a perfect
+  board and a valid digit at the observed position.
+- Clearing a forced placement in queued mode, and the direct forced-unwind
+  branch that calls it, preserve the decoded digit at any separately
+  routed clue. Restoring a snapshot with no remaining alternatives reads
+  the digit from that exact snapshot in its current representation.
+- Removing a candidate bit from a peer whose word is a fixed Sudoku digit
+  shifted by ten is a no-op on the entire board. The proof goes through the
+  actual array read and actual bit from a placed digit, not a simulated
+  peer function. The first-empty pointer scan changes only metadata slot
+  108, so it also preserves separately routed logical cells.
+- These facts do not yet show that the selector always chooses an empty
+  cell on every reachable board, that a whole placement preserves all
+  earlier clues, or that all reachable snapshots have the clue invariant.

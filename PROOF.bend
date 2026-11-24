@@ -2560,3 +2560,170 @@ def L.every_cell_window(row,col):
 
 def L.any_logical_cell_roundtrip(b,row,col,d,shape,digit):
   L.public_roundtrip_checked(b,L.logical_offset(row,col),L.logical_tail(row,col),d,shape,L.every_cell_window(row,col),digit)
+
+def L.adaptive_activation_finish(b,row,col,d,shape,given):
+  L.any_logical_cell_roundtrip(b,row,col,d,shape,given)
+
+def L.adaptive_new_mode_record(b,frames,depth,found,snapshots,row,col,d,shape,given):
+  L.adaptive_activation_finish(b,row,col,d,shape,given)
+
+def L.adaptive_active_clear_keeps_clue(b,written,clue,shape,separate):
+  Equal.cong(U32,U32,x => U32.shrn(x,10n),
+    L.cell_value(Fast.cleared(True{},b,written),clue),L.cell_value(b,clue),
+    L.perfect_write_keeps_cell(b,written,clue,0,shape,separate))
+
+def L.adaptive_active_clear_keeps_shape(b,written,shape):
+  L.board_set_keeps_perfect(b,written,0,7n,shape)
+
+def L.adaptive_active_unwind_keeps_clue(b,written,clue,frames,depth,found,snapshots,shape,separate):
+  L.adaptive_active_clear_keeps_clue(b,written,clue,shape,separate)
+
+def L.adaptive_restore_reads_saved_clue(saved,pos,clue,frames,depth,found,snapshots,active):
+  {==}
+
+def L.queue_peer_without_bit(b,p,bit,word,clear):
+  %Equal.sym(U32,U32.and(word,bit),0,clear) :
+    {Q.changed(U32.is_ne(_,0),p,bit,b,word) == b : Array<U32>}
+  {==}
+
+def L.queue_peer_reads_fixed(b,p,bit,same,word,unchanged,observed,clear):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),observed) :
+    {Q.peer(p,bit,_) == b : Array<U32>}
+  %Equal.sym(Array<U32>,same,b,unchanged) :
+    {Q.peer(p,bit,(_,word)) == b : Array<U32>}
+  L.queue_peer_without_bit(b,p,bit,word,clear)
+
+def L.word_fixed_high_ignores_trimmed(hi,tail):
+  %Equal.sym(Word(22n),Word.and(22n,Word.zero(22n),tail),Word.zero(22n),L.word_zero_and(22n,tail)) :
+    {Word.and(22n,hi,_) == Word.zero(22n) : Word(22n)}
+  L.word_and_zero(22n,hi)
+
+def L.fixed_high_ignores_trimmed(hi,mask):
+  match mask:
+    case U32{WCon{m0, WCon{m1, WCon{m2, WCon{m3, WCon{m4, WCon{m5, WCon{m6, WCon{m7, WCon{m8, WCon{m9, tail}}}}}}}}}}}:
+      Equal.cong(Word(22n),U32,x => L.fixed_hi_word(x),
+        Word.and(22n,hi,Word.and(22n,Word.zero(22n),tail)),Word.zero(22n),
+        L.word_fixed_high_ignores_trimmed(hi,tail))
+
+def L.shifted_digit_ignores_trimmed(fixed,mask):
+  match fixed:
+    case L.D0{}:
+      L.fixed_high_ignores_trimmed(Word.zero(22n),mask)
+    case L.D1{}:
+      L.fixed_high_ignores_trimmed(WCon{True{}, WCon{False{}, WCon{False{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D2{}:
+      L.fixed_high_ignores_trimmed(WCon{False{}, WCon{True{}, WCon{False{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D3{}:
+      L.fixed_high_ignores_trimmed(WCon{True{}, WCon{True{}, WCon{False{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D4{}:
+      L.fixed_high_ignores_trimmed(WCon{False{}, WCon{False{}, WCon{True{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D5{}:
+      L.fixed_high_ignores_trimmed(WCon{True{}, WCon{False{}, WCon{True{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D6{}:
+      L.fixed_high_ignores_trimmed(WCon{False{}, WCon{True{}, WCon{True{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D7{}:
+      L.fixed_high_ignores_trimmed(WCon{True{}, WCon{True{}, WCon{True{}, WCon{False{}, Word.zero(18n)}}}},mask)
+    case L.D8{}:
+      L.fixed_high_ignores_trimmed(WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, Word.zero(18n)}}}},mask)
+    case L.D9{}:
+      L.fixed_high_ignores_trimmed(WCon{True{}, WCon{False{}, WCon{False{}, WCon{True{}, Word.zero(18n)}}}},mask)
+
+def L.placement_bit_fits_low(d):
+  match d:
+    case L.D0{}:
+      {==}
+    case L.D1{}:
+      {==}
+    case L.D2{}:
+      {==}
+    case L.D3{}:
+      {==}
+    case L.D4{}:
+      {==}
+    case L.D5{}:
+      {==}
+    case L.D6{}:
+      {==}
+    case L.D7{}:
+      {==}
+    case L.D8{}:
+      {==}
+    case L.D9{}:
+      {==}
+
+def L.queued_placement_bit_excludes_fixed(fixed,placed):
+  %Equal.sym(U32,Board.bit(L.digit_word(placed)),U32.and(1023,Board.bit(L.digit_word(placed))),L.placement_bit_fits_low(placed)) :
+    {U32.and(U32.shln(L.digit_word(fixed),10n),_) == 0 : U32}
+  L.shifted_digit_ignores_trimmed(fixed,Board.bit(L.digit_word(placed)))
+
+def L.queued_peer_on_fixed_digit(b,p,fixed,placed):
+  L.queue_peer_without_bit(b,p,Board.bit(L.digit_word(placed)),U32.shln(L.digit_word(fixed),10n),
+    L.queued_placement_bit_excludes_fixed(fixed,placed))
+
+def L.queue_peer_fixed_observed(b,p,fixed,placed,same,word,kept,read,given):
+  +bit = Board.bit(L.digit_word(placed))
+  +expected = U32.shln(L.digit_word(fixed),10n)
+  finish : ({L.cell_value(b,p) == expected : U32} ->
+    {Q.peer(p,bit,Board.get_cell(b,p)) == b : Array<U32>}) = (
+    %Equal.sym(Array<U32> & U32,Board.get_cell(b,p),(same,word),read) :
+      ({Pair.snd(Array<U32>,U32,_) == expected : U32} -> {Q.peer(p,bit,_) == b : Array<U32>})
+    old_is =>
+      %Equal.sym(Array<U32>,same,b,kept) :
+        {Q.peer(p,bit,(_,word)) == b : Array<U32>}
+      %Equal.sym(U32,word,expected,old_is) :
+        {Q.peer(p,bit,(b,_)) == b : Array<U32>}
+      L.queued_peer_on_fixed_digit(b,p,fixed,placed))
+  finish(given)
+
+def L.queue_peer_fixed_read(b,p,fixed,placed,rd,given):
+  (same,+word,(kept,read)) = rd
+  L.queue_peer_fixed_observed(b,p,fixed,placed,same,word,kept,read,given)
+
+def L.queue_actual_peer_fixed_image(image,p,fixed,placed,given):
+  L.queue_peer_fixed_read(L.image_board(image),p,fixed,placed,L.board_read_witness(L.image_board(image),p),given)
+
+def L.queue_actual_peer_fixed(b,p,fixed,placed):
+  L.on_reified_board(b,x => L.PeerFixed(x,p,fixed,placed),
+    L.reify_board(b),image => L.queue_actual_peer_fixed_image(image,p,fixed,placed))
+
+def L.queued_first_pointer_from_read(n,p,b,same,word,kept,actual,later):
+  %Equal.sym(Array<U32> & U32,Board.get_cell(b,(p + 1 : U32)),(same,word),actual) :
+    L.FirstOnlyWritesPointer(b,Q.first_step(n,(p + 1 : U32),Q.first_read(_)))
+  %kept :
+    L.FirstOnlyWritesPointer(_,Q.first_step(n,(p + 1 : U32),(same,(word < 1024 : U32))))
+  later
+
+def L.queued_first_pointer_read(n,p,b,read,recurse):
+  (same,+word,(kept,actual)) = read
+  L.queued_first_pointer_from_read(n,p,b,same,word,kept,actual,recurse(same,(word < 1024 : U32)))
+
+def L.queued_first_pointer_live(n,p,b,open,recurse):
+  match open:
+    case True{}:
+      (p,{==})
+    case False{}:
+      L.queued_first_pointer_read(n,p,b,L.board_read_witness(b,(p + 1 : U32)),recurse)
+
+def L.queued_first_pointer(n,p,b,open):
+  match n open:
+    case 0n True{}:
+      (81,{==})
+    case 0n False{}:
+      (81,{==})
+    case 1n+k flag:
+      L.queued_first_pointer_live(k,p,b,flag,sub => more => L.queued_first_pointer(k,(p + 1 : U32),sub,more))
+
+def L.pointer_keeps_logical_witness(b,out,q,shape,separate,witness):
+  (+ptr,actual) = witness
+  %Equal.sym(Array<U32>,out,Board.set_cell(b,108,ptr),actual) :
+    {L.cell_value(_,q) == L.cell_value(b,q) : U32}
+  L.perfect_write_keeps_cell(b,108,q,ptr,shape,separate)
+
+def L.queue_first_pointer_keeps_clue_image(image,n,p,q,open,shape,separate):
+  L.pointer_keeps_logical_witness(L.image_board(image),Q.first_step(n,p,(L.image_board(image),open)),q,shape,separate,
+    L.queued_first_pointer(n,p,L.image_board(image),open))
+
+def L.queue_first_pointer_keeps_clue(b,n,p,q,open):
+  L.on_reified_board(b,x => (L.Board128(x) -> L.RoutedApart(108,q) ->
+      {L.cell_value(Q.first_step(n,p,(x,open)),q) == L.cell_value(x,q) : U32}),
+    L.reify_board(b),image => L.queue_first_pointer_keeps_clue_image(image,n,p,q,open))
