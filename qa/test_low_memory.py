@@ -697,7 +697,8 @@ class IsolationTests(unittest.TestCase):
         env = {'BEND_TOOLCHAIN_DIR': str(self.tools), 'BEND_LOW_MEMORY': '1', **(ambient or {})}
         seen = {}
         def fake_gates(command, *, cwd, env, stdout, stderr, text):
-            self.assertEqual(command, ['sh', 'qa/verify_gates.sh'])
+            group = args[args.index('--group') + 1] if '--group' in args else 'all'
+            self.assertEqual(command, ['sh', 'qa/verify_gates.sh'] + ([] if group == 'all' else [group]))
             self.assertEqual((stdout, stderr, text), (subprocess.PIPE, subprocess.STDOUT, True))
             seen.update(work=pathlib.Path(cwd), env=dict(env))
             self.assertNotEqual(pathlib.Path(cwd), self.root)
@@ -748,6 +749,12 @@ class IsolationTests(unittest.TestCase):
         self.assertEqual(summary['compiler_gc_hint_bytes'], '67108864')
         self.assertEqual(summary['benchmark'], 'PASS')
 
+    def test_group_and_low_memory_are_forwarded_together(self):
+        seen, summary = self.run_isolated(['--group', 'proof', '--low-memory', '--skip-benchmark'])
+        self.assertEqual(seen['env']['BEND_LOW_MEMORY'], '1')
+        self.assertEqual(summary['group'], 'proof')
+        self.assertEqual(summary['benchmark'], 'NOT RUN (explicit --skip-benchmark)')
+
     def test_failure_before_benchmark_is_explicitly_not_run(self):
         _, summary = self.run_isolated(['--low-memory'], exit_code=1, benchmark_written=False)
         self.assertEqual(summary['benchmark'], 'NOT RUN (verification stopped before benchmark completed)')
@@ -767,7 +774,7 @@ class IsolationTests(unittest.TestCase):
 
 
 class GateContractTests(unittest.TestCase):
-    def test_locked_proof_and_remaining_runtime_gates_are_unconditional(self):
+    def test_locked_proof_and_remaining_runtime_invocations_are_present(self):
         source = (QA / 'verify_gates.sh').read_text()
         before_benchmark = source.split('if [ "${BEND_SKIP_BENCHMARK:-0}" != 1 ]; then')[0]
         self.assertNotIn('BEND_LOW_MEMORY', source)
@@ -778,7 +785,7 @@ class GateContractTests(unittest.TestCase):
             'optimization', 'row-bitmap', 'queued-candidates', 'singleton-predicate',
             'bitmap-arithmetic', 'peer-equivalence', 'validation-reason',
             'orderstat', 'arithmetic', 'rating-cache', 'rating-index', 'rating-array',
-            'array-techniques', 'candidate-digits', 'bench-direct', 'fuel_cli'))]
+            'array-techniques', 'bench-direct', 'fuel_cli'))]
         for name in native_sources:
             self.assertIn('"$BEND" ' + name + ' -o bin/', before_benchmark)
         for name in ('generate_count_table', 'adaptive_trace', 'empty_search_state',
@@ -788,6 +795,61 @@ class GateContractTests(unittest.TestCase):
         for name in ('adaptive_trace', 'empty_search_state', 'mutation', 'lanes'):
             self.assertIn('BEND="$BEND" python3 qa/' + name + '.py', before_benchmark)
         self.assertIn('python3 qa/benchmark.py', source)
+
+    def test_shards_cover_each_original_invocation_once_and_fail_closed(self):
+        with tempfile.TemporaryDirectory() as td:
+            root = pathlib.Path(td)
+            (root / 'qa').mkdir()
+            shutil.copy2(QA / 'verify_gates.sh', root / 'qa/verify_gates.sh')
+            (root / 'toolchain-env.sh').write_text('BEND="$FAKE"\n')
+            fake = root / 'trace'
+            fake.write_text('''#!/bin/sh
+set -eu
+printf '%s %s\\n' "${0##*/}" "$*" >> "$TRACE"
+if [ "${BREAK_PROOF:-0}" = 1 ] && [ "${1:-}" = PROOF.bend ]; then exit 17; fi
+if [ "${2:-}" = -o ]; then cp "$FAKE" "$3"; fi
+''')
+            fake.chmod(0o755)
+            for target in ('python3', 'build.sh'):
+                (root / target).symlink_to(fake)
+            log = root / 'calls'
+            env = dict(os.environ, TRACE=str(log), FAKE=str(fake),
+                       PATH=str(root) + os.pathsep + os.environ['PATH'],
+                       BEND_SKIP_BENCHMARK='1')
+
+            def invoke(group, **overrides):
+                log.write_text('')
+                p = subprocess.run(['sh', 'qa/verify_gates.sh', group], cwd=root,
+                                   env=dict(env, **overrides), capture_output=True, text=True)
+                return p, log.read_text().splitlines()
+
+            complete, full = invoke('all')
+            self.assertEqual(complete.returncode, 0, complete.stderr)
+            combined = []
+            for group in ('proof', 'engine', 'core', 'arithmetic', 'rating', 'mutation'):
+                result, calls = invoke(group)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertTrue(calls, group)
+                combined.extend(calls)
+            self.assertCountEqual(full, combined)
+            failure, calls = invoke('proof', BREAK_PROOF='1')
+            self.assertEqual(failure.returncode, 17)
+            self.assertEqual(calls, ['trace PROOF.bend --verdict'])
+            self.assertNotIn('DONE: full proof verdict', failure.stdout)
+            bad, calls = invoke('unknown')
+            self.assertEqual(bad.returncode, 2)
+            self.assertFalse(calls)
+
+    def test_phase_timing_leaves_subprocess_evidence_unchanged(self):
+        result = mock.Mock(stdout=b'proof', stderr=b'', returncode=0)
+        with mock.patch.object(low_memory, 'run', return_value=result) as run, \
+                contextlib.redirect_stderr(io.StringIO()) as timeline:
+            env = {'BEND_PHASE_TIMINGS': '1'}
+            self.assertIs(low_memory.run_phase('proof', ['test'], env, quiet=True), result)
+            run.assert_called_once_with(['test'], env, quiet=True)
+        self.assertIn('START proof', timeline.getvalue())
+        self.assertIn('END proof:', timeline.getvalue())
+        self.assertEqual(result.stdout, b'proof')
 
     def test_existing_subprocess_timeouts_are_unchanged(self):
         expected = {'integration.py': [120], 'cli.py': [120], 'fuel.py': [30],

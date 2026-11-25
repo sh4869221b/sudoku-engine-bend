@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 if __package__:
     from . import toolchain
@@ -51,6 +52,18 @@ def run(command, env, *, quiet=False):
     if result.returncode:
         raise SystemExit(result.returncode if result.returncode > 0 else 128 - result.returncode)
     return result
+
+
+def run_phase(label, command, env, *, quiet=False):
+    if env.get('BEND_PHASE_TIMINGS') != '1':
+        return run(command, env, quiet=quiet)
+    started = time.monotonic()
+    print(f'[bend phase] START {label}', file=sys.stderr, flush=True)
+    try:
+        return run(command, env, quiet=quiet)
+    finally:
+        print(f'[bend phase] END {label}: {time.monotonic() - started:.2f}s',
+              file=sys.stderr, flush=True)
 
 
 def require_fresh_output(output):
@@ -112,21 +125,21 @@ def proof_verdict(source, env):
         tmp = pathlib.Path(td)
         frozen = snapshot_proof(source, tmp / 'source')
         # This rejects unsafe and foreign promises, which export alone does not.
-        checked = run([env['BEND'], frozen, '--check-only'], env, quiet=True)
+        checked = run_phase('proof precheck', [env['BEND'], frozen, '--check-only'], env, quiet=True)
         # Do not print the precheck's success line as a kernel verdict.
         if checked.stdout.strip() != b'ALL PROOFS CHECK\nUse --verdict for mathematical validity.' or checked.stderr:
             sys.stdout.buffer.write(checked.stdout)
             sys.stderr.buffer.write(checked.stderr)
             raise RuntimeError('Unexpected proof precheck output')
         proof = tmp / 'in.bendtt'
-        exported = run([env['BEND'], frozen, '-o', proof], env, quiet=True)
+        exported = run_phase('BendTT export', [env['BEND'], frozen, '-o', proof], env, quiet=True)
         if exported.stdout or exported.stderr:
             sys.stdout.buffer.write(exported.stdout)
             sys.stderr.buffer.write(exported.stderr)
             raise RuntimeError('Refusing proof export with scope diagnostics')
         if not proof.is_file() or not proof.stat().st_size:
             raise RuntimeError('Proof export produced no fresh artifact')
-        kernel = run([env['BENDTT'], proof], dict(env, LEAN_STACK_SIZE_KB='4194304'), quiet=True)
+        kernel = run_phase('BendTT kernel', [env['BENDTT'], proof], dict(env, LEAN_STACK_SIZE_KB='4194304'), quiet=True)
         if kernel.stdout.strip() != b'ALL PROOFS CHECK' or kernel.stderr:
             sys.stdout.buffer.write(kernel.stdout)
             sys.stderr.buffer.write(kernel.stderr)
@@ -140,12 +153,12 @@ def native_build(source, output, env):
     with tempfile.TemporaryDirectory(prefix='bend-low-memory-native-') as td:
         tmp = pathlib.Path(td)
         c_file = tmp / (output.name + '.c')
-        run([env['BEND'], source, '-o', c_file], env)
+        run_phase('C emission', [env['BEND'], source, '-o', c_file], env)
         c = c_file.read_text()
         if sys.platform != 'linux' or not re.search(r'^#define BANGS\s+0$', c, re.M) or '#include <X11/' in c or '#include <alsa/' in c:
             raise RuntimeError('Low-memory mode supports only Linux CPU builds without X11/ALSA')
         binary = tmp / 'compiled'
-        run([env['CC'], '-std=c11', '-O3', c_file, '-lpthread', '-lm', '-o', binary], env)
+        run_phase('Clang', [env['CC'], '-std=c11', '-O3', c_file, '-lpthread', '-lm', '-o', binary], env)
         if not binary.is_file() or not os.access(binary, os.X_OK):
             raise RuntimeError('Clang produced no fresh executable')
         # Exclusive creation prevents overwriting a path created during build.
