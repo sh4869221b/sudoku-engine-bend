@@ -82,8 +82,12 @@ The current target is **Bend 2.0.40**. Native runtime options now go inside
 The old `--threads N --` invocation is no longer runtime-option syntax.
 The CLI help, active verification tools, comparison tools and pinned sequential
 compiler adapter have been migrated. Lean 4.34.1, Clang 19.1.7 and Sudoku
-algorithms remain unchanged. GitHub Actions runs the locked ordinary and
-low-memory correctness/proof/lane gates and compiler boundary checks.
+algorithms remain unchanged. GitHub Actions always runs the locked ordinary
+correctness/proof/lane gates, compiler boundary checks and fast low-memory
+adapter tests on pull requests and pushes to main. The full low-memory lane
+also runs when the adapter, verification/build entry points, toolchain lock or
+setup, or the verification workflow changes. Run **Verify locked Bend** manually
+with **Run workflow** to run both lanes on demand.
 
 The same-host fixed 35-case comparison measured 524.8168 → 537.7896 ms
 (+2.47% elapsed time; speedup 0.97588, paired 95% CI 0.96736–0.98684).

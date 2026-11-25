@@ -7,6 +7,55 @@ on:
 permissions:
   contents: read
 jobs:
+  plan-low-memory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      required: ${{ steps.plan.outputs.required }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Detect changes to the low-memory verification path
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          import subprocess
+
+          paths = {
+              b".github/workflows/verify.yml",
+              b"build.sh", b"setup.sh", b"verify.sh",
+              b"toolchain-env.sh", b"toolchain.lock.json",
+              b"qa/low_memory.py", b"qa/test_low_memory.py",
+              b"qa/toolchain.py", b"qa/verify_gates.sh", b"qa/verify_isolated.py",
+          }
+          event = os.environ["EVENT"]
+          base, head = os.environ["BASE"], os.environ["HEAD"]
+          required = True
+          # Manual runs and diffs that cannot be determined run the full lane.
+          if (event in {"pull_request", "push"}
+              and all(re.fullmatch("[0-9a-f]{40}", sha) for sha in (base, head))):
+              comparison = [f"{base}...{head}"] if event == "pull_request" else [base, head]
+              try:
+                  changed = subprocess.check_output(
+                      ["git", "diff", "--no-renames", "--name-only", "-z", *comparison, "--"]
+                  ).split(b"\0")
+              except subprocess.CalledProcessError:
+                  print("::warning::Could not compare commits; requiring full low-memory verification")
+              else:
+                  required = not paths.isdisjoint(changed)
+          print(f"Full low-memory verification required: {required}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              print(f"required={str(required).lower()}", file=output)
+          PY
+
   verify-ordinary-proof:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -73,6 +122,8 @@ jobs:
         run: ./verify.sh --skip-benchmark --group mutation
 
   verify-sequential-proof:
+    needs: plan-low-memory
+    if: ${{ needs.plan-low-memory.outputs.required == 'true' }}
     runs-on: ubuntu-24.04
     # Budget for sequential precheck, export, and the independent kernel verdict.
     timeout-minutes: 75
@@ -86,6 +137,8 @@ jobs:
         run: ./verify.sh --low-memory --skip-benchmark --group proof
 
   verify-sequential-engine:
+    needs: plan-low-memory
+    if: ${{ needs.plan-low-memory.outputs.required == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -98,6 +151,8 @@ jobs:
         run: ./verify.sh --low-memory --skip-benchmark --group engine
 
   verify-sequential-core:
+    needs: plan-low-memory
+    if: ${{ needs.plan-low-memory.outputs.required == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -108,6 +163,8 @@ jobs:
         run: ./verify.sh --low-memory --skip-benchmark --group core
 
   verify-sequential-arithmetic:
+    needs: plan-low-memory
+    if: ${{ needs.plan-low-memory.outputs.required == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -118,6 +175,8 @@ jobs:
         run: ./verify.sh --low-memory --skip-benchmark --group arithmetic
 
   verify-sequential-rating:
+    needs: plan-low-memory
+    if: ${{ needs.plan-low-memory.outputs.required == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -128,6 +187,8 @@ jobs:
         run: ./verify.sh --low-memory --skip-benchmark --group rating
 
   verify-sequential-mutation:
+    needs: plan-low-memory
+    if: ${{ needs.plan-low-memory.outputs.required == 'true' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
@@ -173,9 +234,10 @@ jobs:
           mkdir -p .verification/upgrade
           python3 qa/compiler-20261106/check_js.py --out .verification/upgrade/js.json
 
-  # Keep the branch-protection check name. Never accept a skipped or cancelled job.
+  # Keep the required check name; only explicitly unneeded jobs may be skipped.
   verify:
     needs:
+      - plan-low-memory
       - verify-ordinary-proof
       - verify-ordinary-engine
       - verify-ordinary-core
@@ -195,7 +257,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
-      - name: Require every verification job to succeed
+      - name: Require every applicable verification job to succeed
         env:
           RESULTS: ${{ toJSON(needs) }}
         run: |
@@ -207,7 +269,15 @@ jobs:
           jobs = json.loads(os.environ["RESULTS"])
           for name, job in sorted(jobs.items()):
               print(f"{name}: {job['result']}")
-          sys.exit(0 if len(jobs) == 15 and all(
-              job["result"] == "success" for job in jobs.values()
+          groups = {"proof", "engine", "core", "arithmetic", "rating", "mutation"}
+          always = {"plan-low-memory", "verify-python", "verify-boundary-kernel",
+                    "verify-boundary-js"} | {f"verify-ordinary-{group}" for group in groups}
+          conditional = {f"verify-sequential-{group}" for group in groups}
+          required = jobs.get("plan-low-memory", {}).get("outputs", {}).get("required")
+          expected = "success" if required == "true" else "skipped"
+          sys.exit(0 if (
+              set(jobs) == always | conditional and required in {"true", "false"}
+              and all(jobs[name]["result"] == "success" for name in always)
+              and all(jobs[name]["result"] == expected for name in conditional)
           ) else 1)
           PY
