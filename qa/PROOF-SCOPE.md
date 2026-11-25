@@ -5,6 +5,17 @@ remaining runtime gates. `./verify.sh --low-memory --skip-benchmark` runs the
 same gates with the separate-process compiler adapter. Neither runs the timing
 suite; use `./verify.sh` when collecting performance measurements.
 
+CI runs six independent groups in each compiler mode: proof verdict, engine
+and CLI/backend integration, search and core, arithmetic, rating, and mutation
+checks. Use `./verify.sh --skip-benchmark --group <group>` to reproduce one
+(`proof`, `engine`, `core`, `arithmetic`, `rating`, `mutation`); add
+`--low-memory` for the separate-process mode. Each job has its own workspace;
+each engine group consumes the main binary it builds. Python and the
+kernel/JS boundary jobs run separately. The required `verify` check accepts
+only success from all 15 dependency jobs. A single heavy subprocess is not
+made faster by this split. CI emits low-memory phase timings for the main build
+and proof in their own jobs without changing the captured verdict evidence.
+
 The laws in [LAWS.bend](../LAWS.bend) refer to the engine's actual Bend
 functions. The proofs in [PROOF.bend](../PROOF.bend) are checked by the
 checksum-locked Bend 2.0.40 compiler and its Lean-built BendTT kernel. The

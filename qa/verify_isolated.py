@@ -17,7 +17,11 @@ parser.add_argument('--skip-benchmark', action='store_true',
                     help='Run all correctness/proof/lane gates; omit timing measurement')
 parser.add_argument('--low-memory', action='store_true',
                     help='Release Bend before Clang/kernel; keep every gate and timeout')
+parser.add_argument('--group', choices=('all', 'proof', 'core', 'arithmetic', 'rating', 'mutation', 'engine'),
+                    default='all', help='Run an independent CI group in an isolated source copy')
 args = parser.parse_args()
+if args.group != 'all' and not args.skip_benchmark:
+    parser.error('--group requires --skip-benchmark')
 results = ROOT / '.verification'
 results.mkdir(exist_ok=True)
 stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ-')
@@ -41,9 +45,13 @@ env['BEND_SKIP_BENCHMARK'] = '1' if args.skip_benchmark else '0'
 started = time.monotonic()
 mode = 'low-memory' if args.low_memory else 'default'
 print(f'Verification mode: {mode}', flush=True)
+print(f'Verification group: {args.group}', flush=True)
+command = ['sh', 'qa/verify_gates.sh']
+if args.group != 'all':
+    command.append(args.group)
 print(f'Verification results: {run}', flush=True)
 with (run / 'verify.log').open('w') as log:
-    process = subprocess.Popen(['sh', 'qa/verify_gates.sh'], cwd=work, env=env,
+    process = subprocess.Popen(command, cwd=work, env=env,
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     for line in process.stdout:
         print(line, end='', flush=True)
@@ -57,7 +65,7 @@ benchmark = ('NOT RUN (explicit --skip-benchmark)' if args.skip_benchmark
 if not args.skip_benchmark and benchmark_file.exists():
     benchmark = json.loads(benchmark_file.read_text()).get('status', 'UNKNOWN')
 summary = {'status': 'PASS' if code == 0 else 'FAIL', 'exit_code': code,
-           'execution_mode': mode,
+           'execution_mode': mode, 'group': args.group,
            'wall_seconds': round(time.monotonic() - started, 3),
            'compiler_gc_hint_bytes': env.get('BUN_JSC_forceRAMSize'),
            'benchmark': benchmark,

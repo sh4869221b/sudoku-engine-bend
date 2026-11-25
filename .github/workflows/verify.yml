@@ -7,65 +7,206 @@ on:
 permissions:
   contents: read
 jobs:
-  verify-ordinary:
+  verify-ordinary-proof:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - &checkout
+        uses: actions/checkout@v4
+      - &prerequisites
+        name: Native prerequisites
+        run: sudo apt-get update && sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
+      - &toolchain
+        name: Install checksum-locked toolchain
+        run: ./setup.sh
+      - name: Run proof checks
+        run: ./verify.sh --skip-benchmark --group proof
+
+  verify-ordinary-engine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run engine checks
+        run: ./verify.sh --skip-benchmark --group engine
+
+  verify-ordinary-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run core checks
+        run: ./verify.sh --skip-benchmark --group core
+
+  verify-ordinary-arithmetic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run arithmetic checks
+        run: ./verify.sh --skip-benchmark --group arithmetic
+
+  verify-ordinary-rating:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run rating checks
+        run: ./verify.sh --skip-benchmark --group rating
+
+  verify-ordinary-mutation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run mutation checks
+        run: ./verify.sh --skip-benchmark --group mutation
+
+  verify-sequential-proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run proof checks
+        env:
+          VERIFY_PHASE_TIMINGS: "1"
+        run: ./verify.sh --low-memory --skip-benchmark --group proof
+
+  verify-sequential-engine:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run engine checks
+        env:
+          VERIFY_PHASE_TIMINGS: "1"
+        run: ./verify.sh --low-memory --skip-benchmark --group engine
+
+  verify-sequential-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run core checks
+        run: ./verify.sh --low-memory --skip-benchmark --group core
+
+  verify-sequential-arithmetic:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run arithmetic checks
+        run: ./verify.sh --low-memory --skip-benchmark --group arithmetic
+
+  verify-sequential-rating:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run rating checks
+        run: ./verify.sh --low-memory --skip-benchmark --group rating
+
+  verify-sequential-mutation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Run mutation checks
+        run: ./verify.sh --low-memory --skip-benchmark --group mutation
+
+  verify-python:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - *checkout
       - name: Python regressions
         run: |
           python3 -m unittest discover -s qa -p 'test_*.py' -v
           python3 -m unittest discover -s qa/compiler-20261106 -p 'test_*.py' -v
           python3 qa/compiler-20261106/check_js.py --self-test
-      - name: Native prerequisites
-        run: sudo apt-get update && sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
-      - name: Install checksum-locked toolchain
-        run: ./setup.sh
-      - name: Verify ordinary compiler path
-        run: ./verify.sh --skip-benchmark
 
-  verify-sequential:
+  verify-boundary-kernel:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - name: Native prerequisites
-        run: sudo apt-get update && sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
-      - name: Install checksum-locked toolchain
-        run: ./setup.sh
-      - name: Verify sequential compiler path
-        run: ./verify.sh --low-memory --skip-benchmark
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Compiler and independent kernel boundary
+        run: |
+          mkdir -p .verification/upgrade
+          python3 qa/compiler-20261106/check_real.py --out .verification/upgrade/kernel.json
 
-  verify-boundary:
+  verify-boundary-js:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - name: Native prerequisites
-        run: sudo apt-get update && sudo apt-get install -y zstd libffi8 libedit2 libz3-4 libxml2 libtinfo6
-      - name: Install checksum-locked toolchain
-        run: ./setup.sh
-      - name: Compiler boundary checks
+      - *checkout
+      - *prerequisites
+      - *toolchain
+      - name: Native and Node compiler boundary
         run: |
           ./build.sh
           mkdir -p .verification/upgrade
-          python3 qa/compiler-20261106/check_real.py --out .verification/upgrade/kernel.json
           python3 qa/compiler-20261106/check_js.py --out .verification/upgrade/js.json
 
-  # Keep the existing check name for branch protection; skipped or cancelled lanes must not pass.
+  # Keep the branch-protection check name. Never accept a skipped or cancelled job.
   verify:
-    needs: [verify-ordinary, verify-sequential, verify-boundary]
+    needs:
+      - verify-ordinary-proof
+      - verify-ordinary-engine
+      - verify-ordinary-core
+      - verify-ordinary-arithmetic
+      - verify-ordinary-rating
+      - verify-ordinary-mutation
+      - verify-sequential-proof
+      - verify-sequential-engine
+      - verify-sequential-core
+      - verify-sequential-arithmetic
+      - verify-sequential-rating
+      - verify-sequential-mutation
+      - verify-python
+      - verify-boundary-kernel
+      - verify-boundary-js
     if: ${{ always() }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Require every verification job to succeed
         env:
-          ORDINARY_RESULT: ${{ needs.verify-ordinary.result }}
-          SEQUENTIAL_RESULT: ${{ needs.verify-sequential.result }}
-          BOUNDARY_RESULT: ${{ needs.verify-boundary.result }}
+          RESULTS: ${{ toJSON(needs) }}
         run: |
-          printf 'ordinary=%s sequential=%s boundary=%s\n' "$ORDINARY_RESULT" "$SEQUENTIAL_RESULT" "$BOUNDARY_RESULT"
-          test "$ORDINARY_RESULT" = success &&
-            test "$SEQUENTIAL_RESULT" = success &&
-            test "$BOUNDARY_RESULT" = success
+          python3 - <<'PY'
+          import json
+          import os
+          import sys
+
+          jobs = json.loads(os.environ["RESULTS"])
+          for name, job in sorted(jobs.items()):
+              print(f"{name}: {job['result']}")
+          sys.exit(0 if len(jobs) == 15 and all(
+              job["result"] == "success" for job in jobs.values()
+          ) else 1)
+          PY
