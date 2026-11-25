@@ -74,7 +74,8 @@ jobs:
 
   verify-sequential-proof:
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    # Budget for sequential precheck, export, and the independent kernel verdict.
+    timeout-minutes: 75
     steps:
       - *checkout
       - *prerequisites
